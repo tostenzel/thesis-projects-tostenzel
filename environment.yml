@@ -9,5 +9,5 @@ dependencies:
 - scipy
 - pip
 - pip:
-  - grmpy
+  - grmpy==0.1.1.dev0
 
