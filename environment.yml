@@ -1,0 +1,13 @@
+name: thesis_project
+
+dependencies:
+- numpy
+- pandas
+- jupyterlab
+- matplotlib
+- seaborn
+- scipy
+- pip
+- pip:
+  - grmpy
+
