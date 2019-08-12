@@ -27,3 +27,5 @@ To ensure full reproducibility of your project, please try to set up a [Travis C
 ## TODO:
 
 * The link for the slack room is wrong. We need to decide to have it in HumanCapitalAnalysis or sth. else.
+
+
