@@ -6,7 +6,7 @@ If you are writing your thesis with our group, please sign up for a [GitHub Acco
 
 ## Python
 
-All thesis projects involve extensive [Python](https://www.python.org) programming. Please see the [Scipy Lecture Notes](https://scipy-lectures.org/) for a gentle introduction to the science stack. [Project Jupyter](https://jupyter.org) and  [PyCharm](https://www.jetbrains.com/pycharm) offer convenient development environments.
+All thesis projects involve extensive [Python](https://www.python.org) programming. Please see the [Scipy Lecture Notes](https://scipy-lectures.org/) for a gentle introduction to the science stack. [Project Jupyter](https://jupyter.org) and  [PyCharm](https://www.jetbrains.com/pycharm) offer convenient development environments for your project.
 
 ## Reproducibility
 
