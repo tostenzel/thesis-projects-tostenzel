@@ -12,7 +12,7 @@ All thesis projects involve extensive [Python](https://www.python.org) programmi
 
 To ensure full reproducibility of your project, please set up a [Travis CI](https://travis-ci.org) as your continuous integration service. This includes the compilation of the final PDF as well as the codes that create the material used there.
 
-[![Build Status](https://travis-ci.org/HumanCapitalAnalysis/thesis-project-template.svg?branch=master)](https://travis-ci.org/HumanCapitalAnalysis/thesis-project-template)
+[![Build Status](https://travis-ci.org/HumanCapitalAnalysis/thesis-project-template.svg?branch=master)](https://travis-ci.org/HumanCapitalAnalysis/template-thesis-project)
 
 ## Basics
 
