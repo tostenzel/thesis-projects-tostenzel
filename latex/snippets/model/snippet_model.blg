@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2018/W32TeX)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: snippet_model.aux
+The style file: chicago.bst
+Database file #1: ../../../bibliography/literature.bib
+You've used 7 entries,
+            2861 wiz_defined-function locations,
+            664 strings with 6315 characters,
+and the built_in function-call counts, 4533 in all, are:
+= -- 387
+> -- 312
+< -- 2
++ -- 94
+- -- 108
+* -- 369
+:= -- 842
+add.period$ -- 22
+call.type$ -- 7
+change.case$ -- 46
+chr.to.int$ -- 7
+cite$ -- 7
+duplicate$ -- 130
+empty$ -- 276
+format.name$ -- 124
+if$ -- 836
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 5
+newline$ -- 38
+num.names$ -- 72
+pop$ -- 35
+preamble$ -- 1
+purify$ -- 90
+quote$ -- 0
+skip$ -- 146
+stack$ -- 0
+substring$ -- 228
+swap$ -- 48
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 130
+warning$ -- 0
+while$ -- 70
+width$ -- 0
+write$ -- 98

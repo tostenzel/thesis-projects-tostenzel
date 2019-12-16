@@ -1,0 +1,126 @@
+\documentclass[a4paper,12pt]{article}
+% packages and main settings
+\usepackage[left=3cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+\usepackage[english]{babel}    
+\usepackage[utf8]{inputenc}  
+\usepackage[T1]{fontenc}        
+\usepackage{lmodern}            
+\usepackage{microtype}          
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb, graphicx, booktabs}
+\usepackage{newclude}   
+\usepackage{placeins}  %surpresses floating tables
+\usepackage[labelfont=sc]{caption} %Figure etc steht dann in small caps 
+\usepackage[flushleft]{threeparttable} % for notes below table
+\usepackage{multirow} % for table cell merge along rows
+\usepackage{graphicx} % to adjust tablesize to textwidth
+\usepackage{caption}  % for centered captions
+\usepackage{float} % to set of autopositioning of tables
+\usepackage[bottom]{footmisc} % forces footnotes to the bottom
+\usepackage{setspace}           % Fuer 1.5 fachen Zeilenabstand  
+\onehalfspacing % 1.5 cm Zeilenabstand
+%Bibtex
+\usepackage[round]{natbib}
+\bibliographystyle{chicago} % chicago bib style like in AER
+\usepackage[hidelinks]{hyperref} % fuer links und verweise. Cleverref ist eigentlich besser. 
+
+
+% Create header. The header must be surpressed for 
+% every first page per section and a solution
+% for the Appendix is used in the respective subfile.
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\chead{\nouppercase{\textit{\leftmark}}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0pt} % no vertical line
+
+%\usepackage{lipsum}  % check if formats work
+
+\usepackage{afterpage} %clearpage w/o pagebreak for "header bug"
+
+% Expectation symbol
+\DeclareMathOperator*{\E}{\mathbb{E}}
+
+
+% for more space in tables
+%\usepackage[landscape]{geometry}% http://ctan.org/pkg/geometry
+%\usepackage{array}% http://ctan.org/pkg/array
+
+% for gray table row color
+\usepackage[table]{xcolor}
+
+% decimal dot alignment in table columns
+\usepackage{siunitx}
+
+% for footnotes in table
+\usepackage[flushleft]{threeparttable}
+
+\begin{document}
+\section{A Review of Uncertainty Quantification in\\ Economics}
+\thispagestyle{plain} % surpress header on first page
+
+The need for UQ as an essential part of quantitative economic studies has long been recognized in the Economics profession.\footnote{See \cite{Hansen.1996}, \cite{Kydland.1992} and \cite{Canova.1994}, amongst others.} Also GSA in particular has had strong advocates.\footnote{See \cite{Canova.1995} and \cite{Gregory.1995}.} However, the demanded evolution of research practice has only been met by a few publications until today. This literature review summarizes these publications with regards to the UQ subfields that are emphasized in the prior section. These are uncertainty propagation and GSA. Table 1 gives an overview of the major measures, methods and topics in the literature. I find eleven contributions that meet the described criteria. Arguably, because UQ is more accomplished in climatology, a large share of research comes from climate economics. The first publications tend to use the conceptually simple Monte Carlo uncertainty propagation.  The majority of papers use surrogate models to save computation time. The later contributions focus on GSA. \cite{Harenberg.2019} gives a well-argued explanation about why GSAs are better than LSAs. The recent works use more sophisticated methods like polynomial chaos expansions (as first applied in \cite{Harenberg.2019}) or intrusive approaches (see, for instance, \cite{Scheidegger.2019}). This section concludes by explaining the choice of measures and methods made in this thesis and by comparing them to those used in the literature.
+
+
+
+\begin{table}[H]
+	\centering
+	\caption{Overview of UQ literature in Economics}
+	\label{tab:my-table}
+	\renewcommand{\arraystretch}{1.2}%
+	\begin{tabular}{lc}
+		\toprule
+		Content                     & \multicolumn{1}{l}{Number of articles} \\ \midrule
+		\rowcolor[gray]{.9} Uncertainty propagation     & 4                                    \\
+		Sobol' indices              & 6                                    \\
+		\rowcolor[gray]{.9} Univariate effects          & 4                                    \\
+		Monte Carlo sampling                & 4                                    \\
+		\rowcolor[gray]{.9} Surrogate models             & 8                                    \\
+		Polynomial chaos expansions & 2                                    \\
+		\rowcolor[gray]{.9} Intrusive methods            & 2                                    \\
+		Climate economics           &
+		5                                    \\
+		\midrule
+		& 11                                   \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\cite{Harrison.1992} suggest to use uncertainty propagation via Monte Carlo sampling for applied general equilibrium modeling to inspect the uncertainty in model inputs. As a showcase, they propagate the distributions of 48 elasticities through a taxation model by drawing 15,000 input parameter vectors. They analyse their results graphically, using a histogram for their QoI as well as confidence intervals for its mean. For further use, N denotes the size of a Monte Carlo sample.
+
+\cite{Canova.1994} proposes to perform a Monte Carlo uncertainty propagation to reflect upon the calibration of dynamic general equilibrium models. The author also addresses challenges and methods for parameter calibration. \citeauthor{Canova.1994} illustrates his approach by plotting distributions and computing moments and prediction intervals for QoIs in an asset-pricing (N=10,000) and a real business cycle model (N=1,000). Moreover, he analyzes the QoIs' sensitivity towards the uncertainty of individual input parameters by propagating different specifications of input distributions.
+
+Recently, \cite{Harenberg.2019} compare measures from LSA to measures from GSA for multiple QoIs of the canonical, macroeconomic real business cycle model. These sensitivity measures are Sobol' indices and univariate effects. They are obtained by polynomial chaos expansions. For this purpose, \citeauthor{Harenberg.2019} introduce the leave-one-out error estimator (see page XX) as a measure to select an orthogonal polynomial as the surrogate model. The authors come to the following conclusion: On the one hand, a LSA can easily be misleading because its perspective is not broad enough. In particular, they criticise the one-at-a-time approach on which LSAs rely. One-at-a-time methods base on changing one uncertain parameter while keeping the others constant. The choice of parameter combinations tends to be arbitrary. These methods are typically used in economics. The authors conclude that LSA is neither adequate for identifying the inputs that drive the uncertainty, nor does it allow to analyse interactions. On the other hand, a GSA can provide profound insights, and polynomial chaos expansions are a fast way to compute approximations for the respective global sensitivity measures.
+
+\cite{Gillingham.2015} conduct an UQ for six major climate models. They select three input parameters that are present in each model. The authors generate a surrogate model from regressing several model outputs separately on a linear-quadratic-interaction specification of the three input parameters on 250 grid points. Then they draw 1,000,000 parameter vectors from the probability density function of the input parameters and evaluate the sample with the surrogate model. They find that the parametric uncertainty contributes to more than 90\% whereas the differences in the six models contribute to less than 10\% of the QoI variances for the year 2100. They also present QoI values for multiple percentiles of each input parameter.
+
+\cite{Ratto.2008} presents global sensitivity measures for multiple variants of DSGE models computed by Monte Carlo methods and surrogate models. The first measure bases on the Smirnov test (see, e.g., \cite{Hornberger.1981}): The QoI range is partitioned into a desired set $B$, and an undesired set $\overline{B}$. Then a Monte Carlo sample of parameter vectors from the input distribution is propagated through the model. From the QoI realizations for each set, two cumulative distribution functions for each input parameter, one conditioned on QoI realizations in set $B$, and the other conditioned on realizations in set $\overline{B}$, are generated. For each input independently, it is tested whether the distributions differ. If they do, the parameters and their specific regions that lead to the undesired QoI realizations can directly be identified. The second measure is first-order Sobol' indices. \citeauthor{Ratto.2008} computes them by employing two different surrogate models. The first surrogate is obtained by state-dependent regression. The idea is to regress the QoI on (combinations of) input parameters. The second surrogate is a polynomial representation of the first one. The author finds that the surrogates provide a good fit for the Monte Carlo sample except for the distribution tails. The fit varies conditional on different input parameters. \citeauthor{Ratto.2008} compares his results for the first-order Sobol' indices computed by both surrogates. The results show some differences in size but not in the ranking.
+
+\cite{Saltelli.2010} criticise the arbitrary input value choices in the sensitivity analysis design of the influential \cite{Stern.2007} report about the consequences of climate change. Particularly, \citeauthor{Stern.2007} argue that their cost-benefit analysis' results about the economic impact of climate change are robust towards the uncertainty in their input parameters. Yet, \cite{Saltelli.2010} contradict \citeauthor{Stern.2007}'s assertion by presenting a more thorough sensitivity analysis with parameter choices that better represent the original input distribution.
+
+A series of papers (\cite{Anderson.2014}, \cite{Butler.2014}, \cite{Miftakhova.2018}) conducts sensitivity analyses for the Dynamic Integrated Climate-Economy (DICE) model in \cite{Nordhaus.2008}.  Each work concludes that a GSA is superior to a LSA for the same reasons as \cite{Harenberg.2019}. Furthermore, all contributions find that leaving some hypothetically low-impact parameters out of the sensitivity analyses lead \citeauthor{Nordhaus.2008} to neglect the uncertainty in important parameters.
+
+\cite{Anderson.2014} use Sobol' Indices, the $\delta$ sensitivity measure, and correlation measures for paired QoIs in their GSA. The $\delta$ sensitivity measure (see, e.g., \cite{Borgonovo.2006}) is given by half the expectation value of the absolute difference between the unconditional distribution of a QoI and the QoI distribution conditioned on one specific, fixed input (group). Estimates for these measures are computed with the algorithm used in \cite{Plischke.2013} applied to a Monte-Carlo sample (N=10,000). In \cite{Anderson.2014}, the $\delta$ sensitivity measure is the main measure of sensitivity and used to rank the parameters in terms of their contributions to the model uncertainty. The authors also use a surrogate model obtained through Cut-HDMR (Cut-High Dimensional Model Representation; see, e.g., \cite{Ziehn.2009}) for graphical analyses of the interaction between input parameters.
+
+\cite{Butler.2014} also generate importance rankings for the uncertainty in input parameters. However, they use first, second and total order Sobol' indices instead of the $\delta$ sensitivity measure. They compute the Sobol' indices based on Sobol' sequences (\cite{Sobol.1967}) for the results and based on Latin Hypercube sampling (\cite{McKay.1979}) as a check. The results in \cite{Butler.2014} and \cite{Anderson.2014} can not be compared as they analyse different QoIs.
+
+\cite{Miftakhova.2018} applies the GSA procedure outlined by \cite{Harenberg.2019}. The importance ranking that she obtains from the polynomial-chaos-expansions-based Sobol' indices is different from the ranking that \cite{Anderson.2014} obtain from the $\delta$ sensitivity measure. Yet, this is not mentioned by \citeauthor{Miftakhova.2018}.\footnote{I do not have access to the numerical codes. Thus the reasons for the discrepancies remain unclear.} However, the author emphasizes that the standard procedure for obtaining Sobol' indices from a variance decomposition as used by \cite{Anderson.2014} and \cite{Butler.2014} is not feasible for the DICE model because a set of input parameters is calibrated jointly in order to let the model match some observables. Therefore, although these input parameters are not correlated in the classical sense, they are dependent. Hence, the variance-based Sobol decomposition is not applicable because the summands are not orthogonal to each other or, in other words, the input-specific variance terms contain a covariance component. Thus, they do not add to the total model variance. \cite{Miftakhova.2018} shows how the set of dependent input parameters can be changed to a set of independent parameters by changing the model structure: She includes uncertain observables as independent parameters and reformulates dependent input parameters as endogenous variables. These endogenous variables are functions of the remaining, formerly dependent parameters and the new input parameters.\footnote{For a discussion of more general methods to compute Sobol' indices in the presence of dependent input parameters see, e.g., \cite{Chastaing.2015} and \cite{Wiederkehr.2018}, with references therein.}
+
+Most recently, \cite{Scheidegger.2019} made a noteworthy contribution that naturally connects the solution process of economic models to UQ with surrogate models. The difference to the prior contributions is that their method is intrusive instead of non-intrusive (see page XX). In particular, they conduct an uncertainty propagation and compute univariate effects. \citeauthor{Scheidegger.2019}' approach is to solve very-high-dimensional dynamic programming problems by approximating and interpolating the value function with a combination of the active subspace method (see, e.g., \cite{Constantine.2015}) and Gaussian process regression (see, for example, \cite{Rasmussen.2005}) within each iteration of the value function iteration algorithm. The authors can apply their method up to a 500-dimensional stochastic growth model. Therefore, they can solve models that contain substantial parameter heterogeneity.
+The link to UQ is that one can also "directly solve for all possible steady state policies as a function of the economic states and parameters in a single computation" \cite[p.~4]{Scheidegger.2019} from the Value function interpolant. In other words, this step yields the QoI expressed by a surrogate model. Thus, to add an UQ, one has to, first, specify the uncertain parameters as continuous state variables, and second, assign a probability distribution to each of these parameters. Then (assuming the uncertain input parameters are independent), one provides a sample from each parameter's distribution as input to the Gaussian process regression to obtain a surrogate model. Following these steps, QoIs can be expressed as functions of the uncertain input parameters without much additional effort. Finally, by using a processed value function interpolant as a surrogate model, \citeauthor{Scheidegger.2019} propagate the model uncertainty and depict univariate effects.
+
+Building on the contributions by \cite{Harenberg.2019} and \cite{Scheidegger.2019}, \cite{Usui.2019} conducts a GSA-based on Sobol' indices and univariate effects to study rare natural disasters in a dynamic stochastic economy. Because the repeated model evaluations required to construct an adequate surrogate model are too computationally expensive, they choose to apply a  method similar to \citeauthor{Scheidegger.2019}' intrusive framework. However different to \cite{Scheidegger.2019}, they generate numerical approximates for their policy functions by time iteration collocation (see, e.g., \cite{Judd.1998}) with adaptive sparse grid (see  \cite{Scheidegger.2018}) instead of Gaussian machine-learning.\\
+\\
+In this thesis, I use uncertainty propagation to obtain the probability distribution of a QoI given the total parameter uncertainty. This allows me to compute simple descriptive statistics and to use visualizations for analysing the distribution's skewness and kurtosis.
+
+Additionally, I choose a global instead of a local level of sensitivity analysis for the reasons explained in \cite{Harenberg.2019}. I do not compute the Smirnov-test-based measure in \cite{Ratto.2008} because I want to make more general statements about the uncertainty of a QoI rather than to focus on two specific partitions of the QoI's range. I also prefer Sobol' indices over the $\delta$ sensitivity measure used in \cite{Anderson.2014} because of two reasons:  First, it is straightforward to compute Sobol' indices because the input parameters in the analysed model are independent. Second, Sobol' indices are easier to interpret because they are scaled by the variance of the model given its total parametric uncertainty. As a second measure, I compute univariate effects to show the relationship between a QoI and one input parameter over the whole parameter range.
+
+The two analysis parts are conducted based on both Monte Carlo sampling and polynomial chaos expansions. Therefore, these methods can be compared for a moderately large computational model with 26 uncertain input parameters. On the one hand, the slow convergence and high computation time of the Monte Carlo method is compared with the potential imprecision of the model approximation by orthogonal polynomials and the numerical methods involved. On the other hand, the reversed opposite properties are what makes these methods appealing to use. Especially attractive is the elegant derivation of Sobol' indices and univariate effects from orthogonal polynomials.
+
+So far, UQ has exclusively been applied to climate or macroeconomic models. This thesis is the first UQ for a labour economic model. The next section describes this model.
+
+\newpage
+\bibliography{../../bibliography/literature}
+
+\end{document}

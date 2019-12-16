@@ -1,0 +1,105 @@
+\newpage
+
+\section{Uncertainty Quantification Framework}
+\thispagestyle{plain} % surpress header on first page
+
+[intrusive vs. non-intrusive.]
+
+mention European guidelines.
+\subsection{Uncertainty Propagation}
+
+\subsection{Global Sensitivity Analysis}
+
+\subsubsection{Sobol' Indices}
+
+\begin{align}
+S_i = \frac{\text{Var}_i[Y|X_i ]}{\text{Var}[Y]}
+\end{align}
+
+\begin{align}
+S_i = \frac{\text{Var}_i[\E_{\sim i}[Y|X_i ]]}{\text{Var}[Y]}
+\end{align}
+
+\begin{align}
+S_{ij} = \frac{\text{Var}_{ij}[\E_{\sim \{i,j\}}[Y|X_i, X_j ]]}{\text{Var}[Y]} - S_i - S_j
+\end{align}
+
+\begin{align}
+S_\text{u} = \frac{\text{Var}_\text{u}[\E_{\sim \text{u}}[Y|X_\text{u} ]]}{\text{Var}[Y]} - \sum_{\text{w} \subset \text{u}} S_\text{w}
+\end{align}
+
+\begin{align}
+S_i^\text{T} = \sum_{i \in \text{u}} S_\text{u}
+\end{align}
+
+\begin{align}
+\text{Var}[Y] = \text{Var}_i[\E_{\sim i}[Y|X_i]] + \E_{i}[\text{Var}_{\sim i}[Y|X_i]]
+\end{align}
+
+\begin{align}
+1 = \frac{\text{Var}_i[\E_{\sim i}[Y|X_i]]}{\text{Var}[Y]} + \frac{\E_{i}[Var_{\sim i}[Y|X_i]]}{\text{Var}[Y]}
+\end{align}
+\begin{align}
+1 = S_i + S_{\sim i}^T
+\end{align}
+
+\begin{align}
+S_{\sim i}^T = \frac{\E_{i}[\text{Var}_{\sim i}[Y|X_i]]}{\text{Var}[Y]}
+\end{align}
+
+\begin{align}
+S_{i}^T = \frac{\E_{\sim i}[\text{Var}_{i}[Y|X_{\sim i}]]}{\text{Var}[Y]}
+\end{align}
+
+\begin{align}
+S_\text{u}^{clo} = \frac{\text{Var}_\text{u}[\E_{\sim \text{u}}[Y|X_\text{u} ]]}{\text{Var}[Y]}
+\end{align}
+
+
+\begin{align}
+Y = \mathcal{M}(\text{x}) = \mathcal{M}_0 + \sum_{i=1}^{M} \mathcal{M}_i(x_i) + \sum_{1 \leq i \leq j \leq M} \mathcal{M}_{ij}(x_i,x_j) + ... + \mathcal{M}_{12..M}(\text{x})
+\end{align}
+
+\begin{align}
+S_i = \frac{\text{Cov}[\mathcal{M}_i(x_i), Y]}{\text{Var}[Y]}
+\end{align}
+
+\begin{align}
+S_i = \frac{\text{Var}[\mathcal{M}_i(x_i)]}{\text{Var}[Y]} + \frac{\text{Cov}[\mathcal{M}_i(x_i)]}{\text{Var}[Y]}
+\end{align}
+
+\begin{align}
+S_i = \frac{\text{Var}_i[\mathcal{M}_i(x_i)]}{\text{Var}[Y]}
+\end{align}
+
+\begin{align}
+S_{ij} = \frac{\text{Var}_{ij}[\mathcal{M}_{ij}(x_i,x_j)]}{\text{Var}[Y]}
+\end{align}
+
+\begin{align}
+\text{Var}[Y] =  \sum_{i=1}^{M} \text{Var}[\mathcal{M}_i(x_i)] + \sum_{1 \leq i \leq j \leq M} \text{Var}[\mathcal{M}_{ij}(x_i,x_j)] + ... + \text{Var}[\mathcal{M}_{12..M}(\text{x})]
+\end{align}
+
+\begin{equation}
+\begin{aligned}
+S_i^T = S_i + \sum_{j \ne i} S_{ij} + \sum_{1 \leq i \leq j \leq M,\{j,k\} \ne i} S_{ijk} + ... = \sum_{i \in \text{w}} S_\text{w} = \\
+\frac{1}{\text{Var}[Y]}\sum_{i \in \text{w}} \text{Var}_i[\mathcal{M}_\text{w}(x_\text{w})]
+\end{aligned}
+\end{equation}
+
+\begin{align}
+S_\text{u}^{clo} = \frac{\text{Var}_\text{u}[\mathcal{M}_\text{u}(\text{x}_\text{u})]}{\text{Var}[Y]} +  \sum_{\text{w} \subseteq \text{u}} \frac{\text{Var}_\text{w}[\mathcal{M}_\text{w}(\text{x}_\text{w})]}{\text{Var}[Y]}
+\end{align}
+
+\subsubsection{Univariate Effects}
+
+\subsection{Surrogate Models and Spectral Expansions}
+
+[Scheidegger: Also called Interpolator in the literature]
+
+[Univariate Effects as a measure for comparative statics]
+
+[Philipp: Please add a plot to your thesis (not our notebook) that implements the idea of the uncertainty cone in Figure 1. 2 in our textbook. For example, Figure 1 from KW97 could use such a cone for hte out of support predictions in the occupational shares.]
+
+\newpage
+%exlude, just to see how large the next chapter is

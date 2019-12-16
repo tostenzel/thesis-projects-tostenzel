@@ -1,0 +1,51 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Albright, Lerman, and Manski}{Albright
+  et~al.}{1977}]{Albright.1977}
+Albright, R.~S., S.~Lerman, and C.~F. Manski (1977).
+\newblock {\em Report on the Development of an Estimation Program for the
+  Multinomial Probit Model}.
+\newblock Cambridge Systematics.
+
+\bibitem[\protect\citeauthoryear{Bellman}{Bellman}{1957}]{Bellman.1957}
+Bellman, R.~E. (1957).
+\newblock {\em Dynamic Programming}.
+\newblock Princeton, NJ: Princeton University Press.
+
+\bibitem[\protect\citeauthoryear{Keane, Todd, and Wolpin}{Keane
+  et~al.}{2011}]{Keane.2011d}
+Keane, M.~P., P.~E. Todd, and K.~I. Wolpin (2011).
+\newblock The structural estimation of behavioral models: Discrete choice
+  dynamic programming methods and applications.
+\newblock In O.~Ashenfelter and D.~Card (Eds.), {\em Handbook of Labor
+  Economics}, Volume~4A, pp.\  331--461. Amsterdam, Netherlands: Elsevier
+  Science.
+
+\bibitem[\protect\citeauthoryear{Keane and Wolpin}{Keane and
+  Wolpin}{1994}]{Keane.1994}
+Keane, M.~P. and K.~I. Wolpin (1994).
+\newblock The solution and estimation of discrete choice dynamic programming
+  models by simulation and interpolation: {M}onte {C}arlo evidence.
+\newblock {\em Review of Economics and Statistics\/}~{\em 76\/}(4), 648--672.
+
+\bibitem[\protect\citeauthoryear{Keane and Wolpin}{Keane and
+  Wolpin}{1997}]{Keane.1997}
+Keane, M.~P. and K.~I. Wolpin (1997).
+\newblock The career decisions of young men.
+\newblock {\em Journal of Political Economy\/}~{\em 105\/}(3), 473--522.
+
+\bibitem[\protect\citeauthoryear{OpenSourceEconomics}{OpenSourceEconomics}{2019}]{Respy-Stenzel.2019}
+OpenSourceEconomics (2019).
+\newblock respy.
+\newblock Python package for the simulation and estimation of a prototypical
+  finite-horizon dynamic discrete choice model based on Keane \& Wolpin (1997).
+  Version: develop@XX.
+  https://github.com/OpenSourceEconomics\-/respy/commit/XX.
+
+\bibitem[\protect\citeauthoryear{Stenzel}{Stenzel}{2020}]{Stenzel.2020}
+Stenzel, T. (2020).
+\newblock \textit{Master's Thesis Replication Repository}.
+\newblock Version: master.
+  https://\-github.com/HumanCapitalAnalysis/thesis-projects-tostenzel.
+
+\end{thebibliography}

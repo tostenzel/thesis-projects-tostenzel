@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99d (TeX Live 2018/W32TeX)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: literature_review.aux
+The style file: chicago.bst
+Database file #1: ../../bibliography/literature.bib
+Warning--no number and no volume in Miftakhova.2018
+Warning--page numbers missing in Miftakhova.2018
+Warning--no number and no volume in Usui.2019
+Warning--page numbers missing in Usui.2019
+You've used 29 entries,
+            2861 wiz_defined-function locations,
+            822 strings with 10112 characters,
+and the built_in function-call counts, 19644 in all, are:
+= -- 1623
+> -- 1429
+< -- 2
++ -- 426
+- -- 500
+* -- 1752
+:= -- 3639
+add.period$ -- 88
+call.type$ -- 29
+change.case$ -- 205
+chr.to.int$ -- 29
+cite$ -- 33
+duplicate$ -- 525
+empty$ -- 1197
+format.name$ -- 564
+if$ -- 3586
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 32
+newline$ -- 148
+num.names$ -- 290
+pop$ -- 148
+preamble$ -- 1
+purify$ -- 383
+quote$ -- 0
+skip$ -- 554
+stack$ -- 0
+substring$ -- 1074
+swap$ -- 169
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 530
+warning$ -- 4
+while$ -- 297
+width$ -- 0
+write$ -- 384
+(There were 4 warnings)
