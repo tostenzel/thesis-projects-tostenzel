@@ -17,9 +17,9 @@ def heatmap_corr_chol(corr_df, save=False):
              r'$\beta_{ww}^{b}$', r'$\beta^{w}$', r'$\beta_{e}^{w}$', 
              r'$\beta_{w}^{w}$', r'$\beta_{ww}^{w}$', r'$\beta_{b}^{w}$',
              r'$\beta_{bb}^{w}$', r'$\beta^{e}$', r'$\beta_{col}^{e}$', r'$\beta_{re}^{e}$',
-             r'$\beta^{h}$', r'$c_{b}$', r'$c_{w}$', r'$c_{e}$',
-             r'$c_{h}$', r'$c_{b,w}$', r'$c_{b3}$', r'$c_{w,e}$', 
-             r'$c_{b,h}$', r'$c_{w,h}$',  r'$c_{e.h}$'])
+             r'$\beta^{h}$', r'$c_{1}$', r'$c_{2}$', r'$c_{3}$',
+             r'$c_{4}$', r'$c_{1,2}$', r'$c_{1,3}$', r'$c_{2,3}$', 
+             r'$c_{1,4}$', r'$c_{2,4}$',  r'$c_{3,4}$'])
 
     fig = plt.figure(figsize=(15,10))
 
@@ -37,7 +37,7 @@ def heatmap_corr_chol(corr_df, save=False):
     ax.set_yticklabels(labels[[0,1,7,13,16,19,20]], ha = 'left', rotation=0);
     ax.set_xticklabels(labels[[0,1,7,13,16,19,20]], rotation=0);
     ax.set_ylabel(r'$\hat{\theta}$', labelpad=+35, rotation=0)
-    ax.set_xlabel(r'$\hat{\theta}$',labelpad=+20)
+    ax.set_xlabel(r'$\hat{\theta}$',labelpad=+25)
 
     cbar = ax.collections[0].colorbar
 

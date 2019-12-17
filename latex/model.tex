@@ -119,7 +119,7 @@ observed wage $\mathcal{W}^{-}_{a(k),t}$, the information can be used to form th
 
 \noindent
 \begin{align}
-\text{p}\big(a_t(k) | \bold{s_t^-},W_{a(k),t}\big) = \int_{\pmb{\varepsilon_t}(a_t(k),\bold{s_t^-})} f(\pmb{\varepsilon_t}|\varepsilon_{a(k),t}) d^{|A|} \pmb{\varepsilon_t}.
+\text{p}\big(a_t(k) | \bold{s_t^-},W^{-}_{a(k),t}\big) = \int_{\pmb{\varepsilon_t}(a_t(k),\bold{s_t^-})} f(\pmb{\varepsilon_t}|\varepsilon_{a(k),t}) d^{|A|} \pmb{\varepsilon_t}.
 \end{align}
 Applying integration by substitution yields the following expression for the probability of the one observed wage:\footnote{See \cite{Raabe.2019}, p. 29 for more details}
 \begin{align}
@@ -153,26 +153,33 @@ Using the property that the values of scores $\E[\text{s}(\theta)]$ are zero at 
 \text{I}(\pmb{\theta}) = \text{Var}(\text{s}(\pmb{\theta})) = \E[\text{s}(\pmb{\theta})\text{s}(\pmb{\theta})'].
 \end{align}
 The estimator\footnote{The computation of $\text{Cov}(\pmb{\theta})$ by using the Jacobian of the individual likelihood contributions is chosen over other approaches because, first, it yields no error in the inversion step of $I(\pmb{\theta})$ and, second, the results are reasonably close to the similar specification in \cite{Keane.1994}.} for the asymptotic variance of the maximum likelihood estimator is thus given by
-\begin{align}
+\begin{align} \label{eq:est-cov}
 \hat{\text{Cov}_J} = \bigg( \frac{1}{N} \sum_{i \in I} \text{s}_i(\pmb{\hat{\theta}})\text{s}_i(\pmb{\hat{\theta}})' \bigg)^{-1}
 \end{align}
 The intuition behind the above expression is the following: Estimator $\pmb{\hat{\theta}}$ maximizes the sample likelihood. This is equivalent to the estimator setting the sample scores to zero. However, the individual likelihood may not be zero at the optimal parameter vector for the sample likelihood. This variation is captured by the variance of the individual scores evaluated at $\pmb{\hat{\theta}}$. The relations in (\ref{eq:scores}) and (\ref{eq:info-matrix}) then imply that the inverse of the variance of the individual scores is equivalent to the variance of the maximum likelihood estimator.
 \subsection{Numerical Implementation}
 
-Besides the commonly used python libraries, the thesis uses the packages \textit{\citetalias{Respy-Stenzel.2019}} and \textit{\citetalias{Estimagic-Stenzel.2019}} to compute the QoI and to estimate the distribution of the input parameters. All other programs can be found in the  \citetalias{Stenzel.2020}.\\
+Besides the commonly used python libraries, the thesis uses the packages \citetalias{Respy-Stenzel.2019} and \citetalias{Gabler.2019} to compute the QoI and to estimate the distribution of the input parameters. All other programs can be found in the  \citetalias{Stenzel.2020}.\\
 
 \noindent
-As standard deviations $\sigma_{a}$ are restricted to positive numbers, drawing them from the estimated unrestricted joint normal distribution can lead to erroneous results. Therefore, covariance matrix $\pmb{\Sigma_\varepsilon}$ is written in terms of the lower triangular matrix $\pmb{\Sigma_\varepsilon^c}$ obtained from the Cholesky decomposition of $\pmb{\Sigma_\varepsilon}$. The contained Cholesky factors are unrestricted and denoted by $c_{i}$ and $c_{i,j}$. $i$ and $j$ are positional indices. Thus, estimates for the Cholesky parameters and their variation replace the estimates for the covariance matrix in the estimation of the input parameters' distribution.
+As standard deviations $\sigma_{a}$ are restricted to positive numbers, drawing them from the estimated unrestricted joint normal distribution can lead to erroneous results. Therefore, covariance matrix $\pmb{\Sigma_\varepsilon}$ is written in terms of the lower triangular matrix $\pmb{\Sigma_\varepsilon^c}$ obtained from the Cholesky decomposition of $\pmb{\Sigma_\varepsilon}$. The contained Cholesky factors are unrestricted and denoted by $c_{i}$ and $c_{i,j}$. $i$ and $j$ are positional indices. Thus, estimates for the Cholesky parameters and their variation replace the estimates for the covariance matrix in the estimation of the input parameters' distribution compared to the specification in the previous subsection.
 
 \subsection{Estimation Results}
-\cite{Keane.1994} simulate data on fictional parameter values to test the estimation method. They obtain good results. The authors estimate mean and standard deviations for their fictional parameter values. However, they do not estimate covariances. Since this restriction seems unrealistic, the thesis computes its own parameter estimation. Table 2 presents the obtained estimates for mean and standard deviation of the model parameters $\pmb{\theta}$. The correlation terms can be found in the \citetalias{Stenzel.2020}.
-[Include notes on Lindas esitmation.]
+The second column in table \ref{tab:params} shows the estimates for the exogenous model parameters $\pmb{\theta}$. They are obtained from a simulated dataset based on the arbitrary parametrization that is used in Data Set One in \cite{Keane.1994}. 
+This parametrization has the following economic implications: The white collar sector is more skill-intensive or, more formally, has higher returns to education and occupational experience than occupation one. Additionally, experience in the blue collar sector is rewarded in the white collar sector but not vice versa.
+Under this specific parametrization, the diagonal elements of the lower triangular matrix $c_{i}$ coincide with the standard deviations of the utility shocks $\pmb{\varepsilon_{a,t}}$. Additionally, for this parameter specifications, the non-diagonal elements $c_{i,j}$ equal the correlation between shocks $\pmb{\varepsilon_{a,t}}$.
+The parameter estimates $\pmb{\hat{\theta}}$ are precise.\\
 
- The mean estimates for $\pmb{\theta}$ have the following economic implications: Occupation two is more skill-intensive or, more formally, has higher returns to education and occupational experience than occupation one. Additionally, experience in occupation one is rewarded in occupation two but not vice versa. The $c$ parameters are the Cholesky factors of the lower triangular matrix $C$ obtained from a Cholesky decomposition of the covariance matrix of the error vector. In this model specification, matrix $C$ coincides with shocks covariance matrix $\Sigma$. Therefore, the error terms are uncorrelated, as well.
+\noindent
+The third column shows the standard errors for $\pmb{\hat{\theta}}$ that are computed for this thesis. The fourth column shows the standard errors computed in \cite{Keane.1994}. Given the differences to the estimation approach in \cite{Keane.1994}, namely the inclusion of $\beta$ and correlations between standard errors, the estimates for this thesis are reasonably close. The one exception are the non-diagonal Choleksy factors $c_{i,j}$. I argue that the estimates in this thesis are better and therefore should be used for the subsequent Uncertainty Quantification based on the following two reasons. These indicate that \cite{Keane.1994} in fact do not estimate the Cholesky factors but the standard errors and correlations of shocks $\pmb{\varepsilon_{a,t}}$. These expressions are equal for the parametrization in table \ref{tab:params}. However, they are conceptually different. Therefore, measures for their variation which, by construction, also consider parameter values other than the mean estimates, have to differ between these different parameter specifications. First, own estimates of the model in terms of standard deviations and correlations of shocks $\pmb{\varepsilon_{a,t}}$ are close to those in \cite{Keane.1994}. Second, the estimates for the non-diagonal elements $c_{i,j}$ except of $c_{1,2}$ would be unlikely corner solutions. Imagine the simulations suggest a fixed variance $\sigma_e^2$ for $\varepsilon_{e,t}$ and write this variance in terms of the Cholesky factors: $\sigma_e^2=c_{3,1}^2+c_{3,2}^2+c_{3}^2$. There are no restrictions that can force the maximum likelihood estimator to attribute $\sigma_e^2$ mainly to $c_{3}$. In fact, the estimates for $c_{i,j}$ in \cite{Keane.1994} are in the scale of the correlation coefficient that ranges from $-1$ to $1$. Therefore, the parameter estimates in \cite{Keane.1994} seem less credible than the estimates computed in this thesis.\\
 
-The estimates for \citeauthor{Keane.1994}' fictional parametrization in Table \ref{tab:params} are the moments used to describe the input parameter distribution for the uncertainty quantification. An estimation for real data is not part of this thesis but can be interesting for future research.
+\noindent
+Figure \ref{fig:corr} depicts the correlations between the standard errors of important parameter estimates $\pmb{\hat{\theta}}$. In general, the share of high correlations is considerable. The variations that stand out are $\text{Corr}(\delta,\beta^e)$, $\text{Corr}(\delta,\beta^h)$, $\text{Corr}(\beta^e,\beta^w)$, $\text{Corr}(c_3,\beta^e)$ and $\text{Corr}(c_4,\beta^h)$ with $-0.83$, $-0.31$, $0.45$, $-0.34$ and $-0.82$, respectively. The intuition behind these results can be obtained from the following insight: Negative correlations imply similar effects and positive correlations imply opposing effects on the likelihood  of observed endogenous variables $\bold{m}$. For instance, consider one individual that was for the first years occupied in the educational sector for a long time and then worked in the white collar sector for the rest of his life. The likelihood to observe this individual is increased indirectly when $\delta$ rises as individuals get more patient and invest more in education but also directly if the educational utility constant $\beta^e$ increases. Hence, the likelihood around the optimal parameter $\pmb{\theta}$ decreases less for changes of both parameters in opposing directions than for changes in the same direction. Therefore, these parameters are negatively correlated in terms of the score function. (\ref{eq:est-cov}) then implies, that their standard errors are negatively correlated.
 
-\begin{figure}[H]
+The above example provided intuition for $\text{Corr}(\delta,\beta^e)=-0.83$ An analogous example can explain $\text{Corr}(\delta,\beta^w)=-0.31$. Yet, this correlation is smaller because $U_{w,t}$ has less covariates than $U_{e,t}$. $\text{Corr}(c_3,\beta^e)=-0.34$ and $\text{Corr}(c_4,\beta^h)=-0.82$ can be explained by the same argument: Individuals decide for Occupation in the eduation or the home sector if the respective utilities are high. This can be achieved by high constant terms or by high positive shocks. The latter can only happen to a number of individuals if the Cholesky factors that are components of the respective shocks are high. Therefore, $c_3$ and $\beta^e$ and $c_4$ and $\beta^h$ impact the likelihood in the same direction. Therefore, their standard errors are negatively correlated. Moreover, the latter relationship is stronger because $U_{h,t}$ has less covariates.
+
+
+\begin{figure}[H] \label{fig:corr}
 	\caption{Correlation between estimates for important input parameters}
 	\centering
 	\includegraphics[scale=0.45]{../figures/heatmap_corr_chol}
@@ -180,7 +187,7 @@ The estimates for \citeauthor{Keane.1994}' fictional parametrization in Table \r
 
 \subsection{Quantity of Interest}
 
-The QoI for the uncertainty quantification is the effect of a \$500 college tuition subsidy on the average years of schooling. Formally, $\beta_{col}^{e,pol} 1(13 \leq s_a \leq 16) = \beta_{col}^e 1(13 \leq s_a \leq 16) - 500$. In \cite{Keane.1994}, the effect is an increase of 1.44 years (see Table 4, p. 668). The same figure computed with \citetalias{Respy-Stenzel.2019} is XX. [Include remarks on precision of KW94.] I choose this quantity because it is relevant to society in many respects, for example, education and inequality. Section XX expands this point. The QoI's relevance allows illustrating the importance of UQ in economics in the context of political decisions.
+The QoI for the uncertainty quantification is the effect of a \$500 college tuition subsidy on the average years of schooling. Formally, $\beta_{col}^{e,pol} 1(13 \leq s_a \leq 16) = \beta_{col}^e 1(13 \leq s_a \leq 16) - 500$. In \cite{Keane.1994}, the effect is an increase of 1.44 years (see table 4, p. 668). The same figure computed with \citetalias{Respy-Stenzel.2019} is 1.5. [Include remarks on precision of KW94.] I choose this quantity because it is relevant to society in many respects, for example, education and inequality. Section XX expands this point. The QoI's relevance allows illustrating the importance of UQ in economics in the context of political decisions.
 
 \begin{figure}[H]
 	\caption{Comparison of occupation paths between scenarios}
@@ -204,34 +211,34 @@ The QoI for the uncertainty quantification is the effect of a \$500 college tuit
 			\textit{Blue Collar}\\	
 			$\beta^b$ & 9.21   & .013            & 0.014      \\
 			$\beta_e^b$ & 0.038  &    0.0011        & 0.0015       \\
-			$\beta_b^b$ & 0.033  & 0.00044            & 0.00079       \\
-			$\beta_b^{bb}$ & -0.0005 & 0.000013           & 0.000019       \\
-			$\beta_w^b$ & 0.0    & 0.00067             & 0.0024      \\
-			$\beta_w^{bb}$ & 0.0    & 0.000029           & 0.000096       \\ \midrule
+			$\beta^b_b$ & 0.033  & 0.00044            & 0.00079       \\
+			$\beta^b_{bb}$ & -0.0005 & 0.000013           & 0.000019       \\
+			$\beta^b_w$ & 0.0    & 0.00067             & 0.0024      \\
+			$\beta^b_{ww}$ & 0.0    & 0.000029           & 0.000096       \\ \midrule
 			\textit{White Collar}\\
 			$\beta^w$ & 8.48   & 0.0076             & 0.0123      \\
-			$\beta_e^w$ & 0.07   & 0.00047          & 0.00096       \\
-			$\beta_w^w$ & 0.067  & 0.00055            & 0.0010      \\
-			$\beta_w^{ww}$ & -0.001  & 0.000017           & 0.000030      \\
-			$\beta_b^w$ & 0.022  & 0.00033           & 0.00090      \\
-			$\beta_b^{ww}$ & -0.0005 & 0.000021         & 0.000070      \\ \midrule
+			$\beta^w_e$ & 0.07   & 0.00047          & 0.00096       \\
+			$\beta^w_w$ & 0.067  & 0.00055            & 0.00090      \\
+			$\beta^w_{ww}$ & -0.001  & 0.000017           & 0.000070     \\
+			$\beta^w_b$ & 0.022  & 0.00033           & 0.0010      \\
+			$\beta^w_{bb}$ & -0.0005 & 0.000021         & 0.000030      \\ \midrule
 			\textit{Education} \\
-			$\beta^e$     & 0.0    & 329                & 459       \\
-			$\beta_{col}^e$     & 0.0    & 156               & 410       \\
-			$\beta_{re}^e$     & -4000   & 201                & 660       \\ \midrule
+			$\beta^e$     & 0.0    & 330                & 459       \\
+			$\beta_{col}^e$     & 0.0    & 155               & 410       \\
+			$\beta_{re}^e$     & -4000   & 202                & 660       \\ \midrule
 			\textit{Home} \\
-			$\beta^h$    & 17750  & 388                & 1442      \\ \midrule
-			\multicolumn{4}{l}{\textit{Standard Deviation/Correlation matrix}} \\
-			$\sigma_{b}$      & 0.2    & 0.0015             & 0.0056      \\
-			$\sigma_{w}$      & 0.25    & 0.0013             & 0.0046     \\
-			$\sigma_{e}$      & 1500   & 108             & 350      \\
-			$\sigma_{h}$      & 1500    & 173              & 786      \\
-			$\rho_{b,w}$     & 0.0    & 0.026              & 0.023     \\
-			$\rho_{b,e}$      & 0.0   & 0.096               & 0.412      \\
-			$\rho_{w,e}$      & 0.0    & 0.077              &  0.379     \\
-			$\rho_{b,h}$      & 0.0    & 0.16             &   0.911    \\
-			$\rho_{w,h}$      & 0.0    & 0.087            & 0.624      \\
-			$\rho_{e,h}$      & 0.0   & 0.12                & 0.870       \\ \bottomrule
+			$\beta^h$    & 17750  & 390                & 1442      \\ \midrule
+			\multicolumn{4}{l}{\textit{Lower Triangular Cholesky Matrix}} \\
+			$c_{1}$      & 0.2    & 0.0015             & 0.0056      \\
+			$c_{2}$      & 0.25    & 0.0013             & 0.0046     \\
+			$c_{3}$      & 1500   & 108             & 350      \\
+			$c_{4}$      & 1500    & 173              & 786      \\
+			$c_{1,2}$     & 0.0    & 0.0064              & 0.023     \\
+			$c_{1,3}$      & 0.0   & 143               & 0.412      \\
+			$c_{2,3}$      & 0.0    & 116             &  0.379     \\
+			$c_{1,4}$      & 0.0    & 232             &   0.911    \\
+			$c_{2,4}$      & 0.0    & 130            & 0.624      \\
+			$c_{3,4}$      & 0.0   & 177                & 0.870       \\ \bottomrule
 		\end{tabular}
 		\begin{tablenotes}
 			\item[a] -

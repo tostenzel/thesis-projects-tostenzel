@@ -3,6 +3,16 @@ Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: main.aux
 The style file: chicago.bst
 Database file #1: ../bibliography/literature.bib
+Warning--no key, author in NLSY79
+Warning--no author, editor, or organization in NLSY79
+Warning--to sort, need author or key in NLSY79
+Warning--no key, author in NLSY79
+Warning--no author, editor, or organization in NLSY79
+Warning--no key, author in NLSY79
+Warning--no author, editor, or organization in NLSY79
+Warning--no key, author in NLSY79
+Warning--no author, editor, or organization in NLSY79
+Warning--empty note in Gabler.2019
 Warning--page numbers missing in Hope.2006
 Warning--no journal in Mattoo.2009
 Warning--no number and no volume in Mattoo.2009
@@ -13,43 +23,43 @@ Warning--no number and no volume in Usui.2019
 Warning--page numbers missing in Usui.2019
 You've used 44 entries,
             2861 wiz_defined-function locations,
-            914 strings with 12603 characters,
-and the built_in function-call counts, 29019 in all, are:
-= -- 2375
-> -- 2150
+            914 strings with 12542 characters,
+and the built_in function-call counts, 28987 in all, are:
+= -- 2372
+> -- 2129
 < -- 2
-+ -- 646
-- -- 756
-* -- 2547
-:= -- 5440
++ -- 642
+- -- 748
+* -- 2562
+:= -- 5394
 add.period$ -- 131
 call.type$ -- 44
-change.case$ -- 309
-chr.to.int$ -- 43
-cite$ -- 52
-duplicate$ -- 772
-empty$ -- 1737
-format.name$ -- 844
-if$ -- 5255
-int.to.chr$ -- 2
+change.case$ -- 308
+chr.to.int$ -- 44
+cite$ -- 66
+duplicate$ -- 774
+empty$ -- 1752
+format.name$ -- 836
+if$ -- 5259
+int.to.chr$ -- 1
 int.to.str$ -- 0
 missing$ -- 43
 newline$ -- 221
-num.names$ -- 438
-pop$ -- 225
+num.names$ -- 430
+pop$ -- 224
 preamble$ -- 1
-purify$ -- 578
+purify$ -- 579
 quote$ -- 0
-skip$ -- 824
+skip$ -- 827
 stack$ -- 0
-substring$ -- 1500
+substring$ -- 1509
 swap$ -- 248
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 806
-warning$ -- 8
-while$ -- 443
+type$ -- 810
+warning$ -- 18
+while$ -- 435
 width$ -- 0
-write$ -- 577
-(There were 8 warnings)
+write$ -- 576
+(There were 18 warnings)

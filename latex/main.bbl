@@ -1,5 +1,11 @@
 \begin{thebibliography}{}
 
+\bibitem[\protect\citeauthoryear{??}{NLS}{1990}]{NLSY79}
+ (1990).
+\newblock National longitudinal survey of youth 1979 cohort, 1979--1990 (rounds
+  1--11).
+\newblock Bureau of Labor Statistics.
+
 \bibitem[\protect\citeauthoryear{Aguirregabiria and Mira}{Aguirregabiria and
   Mira}{2010}]{Aguirregabiria.2010}
 Aguirregabiria, V. and P.~Mira (2010).
@@ -62,6 +68,10 @@ Constantine, P.~G. (2015).
 \newblock {\em Active subspaces: Emerging ideas for dimension reduction in
   parameter studies}, Volume~2.
 \newblock SIAM.
+
+\bibitem[\protect\citeauthoryear{Gabler}{Gabler}{2019}]{Gabler.2019}
+Gabler, J. (2019).
+\newblock A python tool for the estimation of (structural) econometric models.
 
 \bibitem[\protect\citeauthoryear{Gillingham, Nordhaus, Anthoff, Blanford,
   Bosetti, Christensen, McJeon, Reilly, and Sztorc}{Gillingham
@@ -160,19 +170,8 @@ Nordhaus, W.~D. (2008).
 \newblock {\em A question of balance: economic modeling of global warming}.
 \newblock Yale University Press New Haven.
 
-\bibitem[\protect\citeauthoryear{of~Labor~Statistics}{of~Labor~Statistics}{1990}]{NLSY79}
-of~Labor~Statistics, B. (1990).
-\newblock National longitudinal survey of youth 1979 cohort, 1979--1990 (rounds
-  1--11).
-
-\bibitem[\protect\citeauthoryear{OpenSourceEconomics}{OpenSourceEconomics}{2019a}]{Estimagic-Stenzel.2019}
-OpenSourceEconomics (2019a).
-\newblock estimagic.
-\newblock Tools for the estimation of (structural) econometric models.
-  https://github.com/OpenSourceEconomics/estimagic.
-
-\bibitem[\protect\citeauthoryear{OpenSourceEconomics}{OpenSourceEconomics}{2019b}]{Respy-Stenzel.2019}
-OpenSourceEconomics (2019b).
+\bibitem[\protect\citeauthoryear{OpenSourceEconomics}{OpenSourceEconomics}{2019}]{Respy-Stenzel.2019}
+OpenSourceEconomics (2019).
 \newblock respy.
 \newblock Python package for the simulation and estimation of a prototypical
   finite-horizon dynamic discrete choice model based on Keane \& Wolpin (1997).

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/W32TeX) (preloaded format=pdflatex 2018.12.25)  16 DEC 2019 18:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/W32TeX) (preloaded format=pdflatex 2018.12.25)  17 DEC 2019 20:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1378,120 +1378,67 @@ Underfull \hbox (badness 10000) in paragraph at lines 162--163
  []
 
 [18]
-<../figures/heatmap_corr_chol.png, id=574, 879.285pt x 648.2619pt>
+Underfull \hbox (badness 10000) in paragraph at lines 168--172
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--175
+
+ []
+
+
+Package caption Warning: \label without proper reference on input line 182.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `fig:corr' on page 19 undefined on input line 177.
+
+[19]
+<../figures/heatmap_corr_chol.png, id=591, 879.285pt x 653.3208pt>
 File: ../figures/heatmap_corr_chol.png Graphic file (type png)
 <use ../figures/heatmap_corr_chol.png>
 Package pdftex.def Info: ../figures/heatmap_corr_chol.png  used on input line 1
-78.
-(pdftex.def)             Requested size: 395.6746pt x 291.71515pt.
- [19]
-<../figures/occ_paths.png, id=583, 631.158pt x 363.0363pt>
+85.
+(pdftex.def)             Requested size: 395.6746pt x 293.99164pt.
+ [20]
+<../figures/occ_paths.png, id=601, 631.158pt x 363.0363pt>
 File: ../figures/occ_paths.png Graphic file (type png)
 <use ../figures/occ_paths.png>
-Package pdftex.def Info: ../figures/occ_paths.png  used on input line 188.
+Package pdftex.def Info: ../figures/occ_paths.png  used on input line 195.
 (pdftex.def)             Requested size: 473.36734pt x 272.27655pt.
 
-Overfull \hbox (18.12323pt too wide) in paragraph at lines 188--189
+Overfull \hbox (18.12323pt too wide) in paragraph at lines 195--196
  [][] 
  []
 
-[20 <../figures/heatmap_corr_chol.png>]
-Overfull \hbox (19.62492pt too wide) detected at line 203
+[21 <../figures/heatmap_corr_chol.png>]
+Overfull \hbox (19.62492pt too wide) detected at line 210
  
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 205
+Overfull \hbox (5.87498pt too wide) detected at line 212
  
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 205
+Overfull \hbox (5.87498pt too wide) detected at line 212
  
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 206
+Overfull \hbox (5.87498pt too wide) detected at line 213
  
  []
 
 
-Overfull \hbox (11.74997pt too wide) detected at line 206
+Overfull \hbox (11.74997pt too wide) detected at line 213
  
  []
 
 
-Overfull \hbox (11.74997pt too wide) detected at line 206
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 207
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 207
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 207
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 208
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 208
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 208
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 209
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 209
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 210
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 210
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 212
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 212
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 213
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 213
+Overfull \hbox (11.74997pt too wide) detected at line 213
  
  []
 
@@ -1506,17 +1453,12 @@ Overfull \hbox (19.62492pt too wide) detected at line 214
  []
 
 
-Overfull \hbox (11.74997pt too wide) detected at line 214
+Overfull \hbox (19.62492pt too wide) detected at line 214
  
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 215
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 215
+Overfull \hbox (11.74997pt too wide) detected at line 215
  
  []
 
@@ -1526,7 +1468,7 @@ Overfull \hbox (25.49991pt too wide) detected at line 215
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 216
+Overfull \hbox (25.49991pt too wide) detected at line 215
  
  []
 
@@ -1536,12 +1478,7 @@ Overfull \hbox (19.62492pt too wide) detected at line 216
  []
 
 
-Overfull \hbox (19.62492pt too wide) detected at line 216
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 217
+Overfull \hbox (11.74997pt too wide) detected at line 216
  
  []
 
@@ -1556,12 +1493,52 @@ Overfull \hbox (25.49991pt too wide) detected at line 217
  []
 
 
-Overfull \hbox (15.20834pt too wide) detected at line 221
+Overfull \hbox (11.74997pt too wide) detected at line 219
  
  []
 
 
-Overfull \hbox (13.74994pt too wide) detected at line 223
+Overfull \hbox (11.74997pt too wide) detected at line 219
+ 
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 220
+ 
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 220
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 221
+ 
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 221
+ 
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 221
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 222
+ 
+ []
+
+
+Overfull \hbox (25.49991pt too wide) detected at line 222
+ 
+ []
+
+
+Overfull \hbox (25.49991pt too wide) detected at line 222
  
  []
 
@@ -1571,42 +1548,37 @@ Overfull \hbox (5.87498pt too wide) detected at line 223
  []
 
 
-Overfull \hbox (11.74997pt too wide) detected at line 225
+Overfull \hbox (19.62492pt too wide) detected at line 223
  
  []
 
 
-Overfull \hbox (11.74997pt too wide) detected at line 225
+Overfull \hbox (11.74997pt too wide) detected at line 223
  
  []
 
 
-Overfull \hbox (11.74997pt too wide) detected at line 226
+Overfull \hbox (11.74997pt too wide) detected at line 224
  
  []
 
 
-Overfull \hbox (11.74997pt too wide) detected at line 226
+Overfull \hbox (25.49991pt too wide) detected at line 224
  
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 227
+Overfull \hbox (25.49991pt too wide) detected at line 224
  
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 228
+Overfull \hbox (15.20834pt too wide) detected at line 228
  
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 229
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 229
+Overfull \hbox (13.74994pt too wide) detected at line 230
  
  []
 
@@ -1616,32 +1588,22 @@ Overfull \hbox (5.87498pt too wide) detected at line 230
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 230
+Overfull \hbox (11.74997pt too wide) detected at line 232
  
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 231
+Overfull \hbox (11.74997pt too wide) detected at line 232
  
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 231
+Overfull \hbox (11.74997pt too wide) detected at line 233
  
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 232
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 233
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 233
+Overfull \hbox (11.74997pt too wide) detected at line 233
  
  []
 
@@ -1650,11 +1612,51 @@ Overfull \hbox (5.87498pt too wide) detected at line 234
  
  []
 
-) (./up.tex [21 <../figures/occ_paths.png>]) (./gse.tex [22]) (./discussion.tex
-) (./conclusion.tex) [23] (./main.bbl [24] [25]) [26] (./appendix.tex [27
+
+Overfull \hbox (5.87498pt too wide) detected at line 235
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 236
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 236
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 237
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 238
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 239
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 240
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 241
+ 
+ []
+
+) (./up.tex [22 <../figures/occ_paths.png>]) (./gse.tex [23]) (./discussion.tex
+) (./conclusion.tex) [24] (./main.bbl [25] [26]) [27] (./appendix.tex [28
 
 ])
-[28] (./affidavit.tex) [29
+[29] (./affidavit.tex) [30
 
 
 ]
@@ -1665,16 +1667,20 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 135.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 135.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 6D3D92315EB22F8F17062B1CF959E0C1;1604.
+
+
+LaTeX Warning: There were undefined references.
+
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 135.
  ) 
 Here is how much of TeX's memory you used:
- 33180 strings out of 492616
- 634890 string characters out of 6132767
- 718131 words of memory out of 5000000
- 36221 multiletter control sequences out of 15000+600000
- 667886 words of font info for 198 fonts, out of 8000000 for 9000
+ 33185 strings out of 492616
+ 634886 string characters out of 6132767
+ 718217 words of memory out of 5000000
+ 36223 multiletter control sequences out of 15000+600000
+ 667973 words of font info for 199 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,16n,63p,2578b,910s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,16n,63p,2578b,912s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/texlive/2018/tex
 mf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/texlive/2018/texmf-dist/fonts/enc/
 dvips/lm/lm-mathit.enc}{c:/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc
@@ -1696,10 +1702,10 @@ texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/texlive/2018/texmf-dist/fonts/t
 ype1/public/lm/lmsy6.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmsy
 8.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pf
 b>
-Output written on main.pdf (34 pages, 791522 bytes).
+Output written on main.pdf (35 pages, 796006 bytes).
 PDF statistics:
- 743 PDF objects out of 1000 (max. 8388607)
- 675 compressed objects within 7 object streams
- 160 named destinations out of 1000 (max. 500000)
+ 760 PDF objects out of 1000 (max. 8388607)
+ 691 compressed objects within 7 object streams
+ 161 named destinations out of 1000 (max. 500000)
  41695 words of extra memory for PDF output out of 42996 (max. 10000000)
 
