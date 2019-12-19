@@ -12,8 +12,8 @@
 \contentsline {section}{\numberline {3}Uncertainty Quantification in the Economic \\ Literature}{6}{section.3}% 
 \contentsline {section}{\numberline {4}Model and Estimation}{12}{section.4}% 
 \contentsline {subsection}{\numberline {4.1}\cite {Keane.1994}}{13}{subsection.4.1}% 
-\contentsline {subsection}{\numberline {4.2}Simulated Maximum Likelihood Estimation}{15}{subsection.4.2}% 
-\contentsline {subsection}{\numberline {4.3}Numerical Implementation}{18}{subsection.4.3}% 
+\contentsline {subsection}{\numberline {4.2}Simulated Maximum Likelihood Estimation}{16}{subsection.4.2}% 
+\contentsline {subsection}{\numberline {4.3}Numerical Implementation}{19}{subsection.4.3}% 
 \contentsline {subsection}{\numberline {4.4}Estimation Results}{19}{subsection.4.4}% 
 \contentsline {subsection}{\numberline {4.5}Quantity of Interest}{21}{subsection.4.5}% 
 \contentsline {section}{\numberline {5}Uncertainty Propagation}{24}{section.5}% 

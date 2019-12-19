@@ -12,14 +12,14 @@ def heatmap_corr_chol(corr_df, save=False):
     select = corr_df.iloc[[0,1,7,13,16,19,20],[0,1,7,13,16,19,20]]
 
     name="corrs"
-    labels = np.array([r'$\delta$', r'$\beta^{b}$',  r'$\beta_{e}^{b}$',
-             r'$\beta_{b}^{b}$', r'$\beta_{bb}^{b}$', r'$\beta_{w}^{b}$', 
-             r'$\beta_{ww}^{b}$', r'$\beta^{w}$', r'$\beta_{e}^{w}$', 
-             r'$\beta_{w}^{w}$', r'$\beta_{ww}^{w}$', r'$\beta_{b}^{w}$',
-             r'$\beta_{bb}^{w}$', r'$\beta^{e}$', r'$\beta_{col}^{e}$', r'$\beta_{re}^{e}$',
-             r'$\beta^{h}$', r'$c_{1}$', r'$c_{2}$', r'$c_{3}$',
-             r'$c_{4}$', r'$c_{1,2}$', r'$c_{1,3}$', r'$c_{2,3}$', 
-             r'$c_{1,4}$', r'$c_{2,4}$',  r'$c_{3,4}$'])
+    labels = np.array([r'$\hat{\delta}$', r'$\hat{\beta^{b}}$',  r'$\hat{\beta_{e}^{b}}$',
+             r'$\hat{\beta_{b}^{b}}$', r'$\hat{\beta_{bb}^{b}}$', r'$\hat{\beta_{w}^{b}}$', 
+             r'$\hat{\beta_{ww}^{b}}$', r'$\hat{\beta^{w}}$', r'$\hat{\beta_{e}^{w}}$', 
+             r'$\hat{\beta_{w}^{w}}$', r'$\hat{\beta_{ww}^{w}}$', r'$\hat{\beta_{b}^{w}}$',
+             r'$\hat{\beta_{bb}^{w}}$', r'$\hat{\beta^{e}}$', r'$\hat{\beta_{col}^{e}}$', r'$\hat{\beta_{re}^{e}}$',
+             r'$\hat{\beta^{h}}$', r'$\hat{c_{1}}$', r'$\hat{c_{2}}$', r'$\hat{c_{3}}$',
+             r'$\hat{c_{4}}$', r'$\hat{c_{1,2}}$', r'$\hat{c_{1,3}}$', r'$\hat{c_{2,3}}$', 
+             r'$\hat{c_{1,4}}$', r'$\hat{c_{2,4}}$',  r'$\hat{c_{3,4}$}'])
 
     fig = plt.figure(figsize=(15,10))
 
