@@ -1,4 +1,5 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,12pt]{article} 
+
 % packages and main settings
 \usepackage[left=3cm, right=2cm, top=2cm, bottom=2cm]{geometry}
 \usepackage[english]{babel}    
@@ -8,9 +9,11 @@
 \usepackage{microtype}          
 \usepackage{amsmath}
 \usepackage{amsfonts, amsthm, amssymb, graphicx, booktabs}
+\usepackage{bm} %bold epsilon
 \usepackage{newclude}   
 \usepackage{placeins}  %surpresses floating tables
-\usepackage[labelfont=sc]{caption} %Figure etc steht dann in small caps 
+\usepackage[labelfont=bf]{caption} %Figure etc steht dann in small caps 
+\usepackage[labelsep=period]{caption} % dot after figure, table caption.
 \usepackage[flushleft]{threeparttable} % for notes below table
 \usepackage{multirow} % for table cell merge along rows
 \usepackage{graphicx} % to adjust tablesize to textwidth
@@ -20,7 +23,8 @@
 \usepackage{setspace}           % Fuer 1.5 fachen Zeilenabstand  
 \onehalfspacing % 1.5 cm Zeilenabstand
 %Bibtex
-\usepackage[round]{natbib}
+\usepackage[round,sort&compress]{natbib}
+
 \bibliographystyle{chicago} % chicago bib style like in AER
 \usepackage[hidelinks]{hyperref} % fuer links und verweise. Cleverref ist eigentlich besser. 
 
@@ -42,10 +46,13 @@
 % Expectation symbol
 \DeclareMathOperator*{\E}{\mathbb{E}}
 
-
-% for more space in tables
-%\usepackage[landscape]{geometry}% http://ctan.org/pkg/geometry
-%\usepackage{array}% http://ctan.org/pkg/array
+% thin space, limits underneath in displays
+% for strike through
+\DeclareMathOperator*{\argmax}{argmax}
+\newcommand*{\defeq}{\stackrel{\text{def}}{=}}
+\usepackage[normalem]{ulem}
+% try to use strikeout in section headers and others
+\DeclareRobustCommand{\hsout}[1]{\texorpdfstring{\sout{#1}}{#1}}
 
 % for gray table row color
 \usepackage[table]{xcolor}
@@ -56,36 +63,61 @@
 % for footnotes in table
 \usepackage[flushleft]{threeparttable}
 
+% for underbar
+\newcommand{\ubar}[1]{\text{\b{$#1$}}}
+
+\usepackage{tikz}
+
+% Setup for urls
+\usepackage{url}
+
+\defcitealias{Respy-Stenzel.2019}{\textit{respy}}
+\defcitealias{Gabler.2019}{\textit{estimagic}}
+\defcitealias{Stenzel.2020}{\textit{Master's Thesis Replication Repository}}
+\defcitealias{NLSY79}{NLSY79}
+
 
 \usepackage{tikz}
 \begin{document}
 
-\section{Model and Parametrization}
-\thispagestyle{plain} % surpress header on first page
-This section introduces the economic model to which the UQ is applied. It is the dynamic model of occupational choice developed in \cite{Keane.1994}. [Add further remarks on its relevance and \cite{Keane.1997}.] First, I outline the general choice-theoretic framework and the concrete specification of the model. This includes the set of uncertain model parameters. Then, I present the approach that  \citeauthor{Keane.1997} use to estimate these model parameters given data on occupational choices. After that, their results for the means and variances of the respective estimates are shown. These constitute the parametrization for the input distribution in the UQ. The section continues with remarks on the numerical implementation. It concludes with the presentation of the QoI.
+\newpage % delete after section is complete
 
+\section{Model and Estimation}
+\thispagestyle{plain} % suppress header on first page
+This section introduces the economic model whose uncertainty is quantified. It is the partial equilibrium, dynamic model of occupational choice developed in \cite{Keane.1994} (henceforth KW94). In their survey of dynamic discrete choice structural models, \cite{Aguirregabiria.2010} assign this model to the more general class of Eckstein-Keane-Wolpin models. I largely follow their notation to ease comparisons with other models and, most importantly, to ease the explanation of the estimation method. Besides applications to labour economics, Eckstein-Keane-Wolpin models are used to explain educational and occupational choices at the individual level. The model class is structural. This means that, from the perspective of an econometrician, the model structure allows for the estimation of relationships between observable and unobservable state variables. These relationships are governed by exogenous parameters. These parameters may, for example, be utility parameters or distributional parameters which describe the processes of unobserved shocks. Therefore, the exogenous parameters can be estimated given a dataset of observable endogenous variables. Besides the observable states, the observable endogenous variables may also comprise of other parameters like, for instance, payoffs. Estimates for the exogenous parameters allow using simulations (of states) in order to analyse counterfactual policy scenarios. Changes in some exogenous parameters represent these policies. For example, \cite{Keane.1997} obtain the following two results based on data from the \citetalias{NLSY79}: First, unobserved heterogeneity in the endowment at age sixteen accounts for almost 90\% of the variance in lifetime utility whereas shocks to productivity explain 10\%. And second, a college tuition subsidy of 2,000 USD increases high school and college graduation by 3.5\% and 8.4\%, respectively. As the research code for \cite{Keane.1997} is currently in alpha-version, this thesis studies the predecessor model in KW94. The main differences are that the model in KW94 does not contain unobserved permanent agent heterogeneity and that its choice-specific utility functions feature fewer covariates. This difference in complexity implies a decrease of the computational burden for the UQ but also a worse fit to the data. In fact, this thesis does not use estimates from real data but estimates from data simulated on arbitrary parameters choices that are taken from KW94.
 
-\subsection{Economic Model}
+The section proceeds as follows: First, I introduce the  KW94 model specification embedded in the more general Eckstein-Keane-Wolpin framework. In the next step, the estimation method simulated maximum likelihood is presented. This approach is used for the structural estimation of the exogenous model parameters. After remarks on the numerical implementation, I show the estimation results. These include the estimates, the standard errors, and the correlations for all parameters. These results constitute the mean vector and the covariance matrix, which are used to characterize the joint input distribution for the UQ in the next section. The section ends by describing the QoI choice.
 
-\cite{Keane.1994} develop a dynamic economic model to explain occupation decisions between compulsory schooling and pension age. In the general choice-theoretic framework, a representative agent decides for occupation $m$ between $M$ alternatives at each age $a \in A$. These alternatives are mutually exclusive. The decision for occupation $m'$ at age $a$ is denoted by $d_{m'}(a)=1$. This equation is equivalent to $d_{m \in M\setminus m'}(a)=0$. Each occupation decision is immediately rewarded by $R_m(S(a))$. Partly, rewards and prior decisions are intertemporally connected: Agents receive higher rewards if they accumulated skills in past occupations that are useful for the present one. $S(a)$ denotes the state space. The state space is the set of information at age $a$ relevant for the present and future rewards for each occupation choice. $R_m$ is subject to random shocks. The flow of events is depicted in Figure X. \\
+\subsection{\cite{Keane.1994}}
+
+\cite{Aguirregabiria.2010} define Eckstein-Keane-Wolpin models by four characteristics. The first characteristic is that these models allow for permanent unobserved heterogeneity between agents. The simpler model by KW94 considered here does not use this option in contrast to \cite{Keane.1997}. The other three characteristics are as follows:
+\begin{enumerate}
+	\item Unobservable shocks $\varepsilon_t$ do not have to be additively separable from the remainder of the utility functions.
+	\item Shocks $\varepsilon_t$ can be correlated across choices $a_t$.
+	\item Observable payoffs, or wages, $W_{a,t}^{-}$ are not conditionally independent on the unobservable shocks $\varepsilon_t$ given the observable choices $a_t$ and the observable part of the state vector $\bold{s_t^-}$. The reason is that wage shocks enter the wage function directly. The agent can observe this prior to his decision. This decision can then lead to the non-observation of alternative-specific wages. 
+\end{enumerate}
+
+\noindent
+This paragraph describes the Eckstein-Keane-Wolpin model framework without permanent agent heterogeneity as in KW94 in the context of occupational choices. In this setting, agents only differ in their draws of unobserved shocks $\varepsilon_t$.
+
+A representative agent decides for action, or occupation, $a_t$ from the set of alternatives $A$ in each time period $t$. These alternatives are mutually exclusive. From each decision, agents obtain the alternative-specific utility $U_a$. Notation $U_a$ indicates that the utility depends on occupation choice $a_t$. In each time period, Utilities $U_a$ are subject to random shocks $\varepsilon_{a,t}$ which are also alternative-specific. For some occupation alternatives, utility and prior decisions may be intertemporally connected: Agents receive a higher utility if they accumulated skills in past occupations that are useful for these alternatives. Other occupations may not reward experience. $\pmb{S_t}$ denotes the state space. The state space is the set of information in each period $t$ relevant for the present and future utilities for each occupation choice $a_t$. The observable part of the state space comprises the period, the work experience and the choice in the previous period. It is denoted by vector $\bm{s_t^-}$. The unobservable part of the state space is denoted by vector $\pmb{\varepsilon_t}$ and consists of the alternative-specific shocks $\pmb{\varepsilon_{a,t}}$. The sequence of events is depicted in Figure \ref{fig:order}. \\
 
 \begin{figure}[H]
-\caption{Flow of events}
-\vspace{-0.0cm}
-
-	\begin{center}
-		
+	\caption{Sequence of events} \label{fig:order}
+	\vspace{-0.0cm}
+	
+	\begin{center}        
 		\begin{tikzpicture}
 		\draw [ultra thick] (0,0) -- (15,0);
 		\foreach \x in {0,7.5,15}
 		\draw [ultra thick] (\x cm,0.2) -- (\x cm, -0.2);
 		\small % derease fontsize
-		\draw (1.25,0) node[above=0.35cm] {$R_m(S(a))$};
-		\draw (3.50,0) node[above=0.35cm] {$d_m(a)$};
-		\draw (6.0,0) node[above=0.35cm] {$R_m(s(a))$};
-		\draw (9.25,0) node[above=0.35cm] {$R_m(S(a+1))$};
-		\draw (11.5,0) node[above=0.35cm] {$d_m(a+1)$};
-		\draw (13.75,0) node[above=0.35cm] {$R_m(S(a+1))$};
+		\draw (1.25,0) node[above=0.35cm] {$U_a(\bold{s_t^-}, \pmb{\varepsilon_t})$};
+		\draw (3.50,0) node[above=0.35cm] {$a_t$};
+		\draw (6.0,0) node[above=0.35cm] {$U_a(\bold{s_t^-}, \pmb{\varepsilon_t})$};
+		\draw (9.25,0) node[above=0.35cm] {$U_a(\bold{s_{t+1}^-}, \pmb{\varepsilon_{t+1}})$};
+		\draw (11.5,0) node[above=0.35cm] {$a_{t+1}$};
+		\draw (13.75,0) node[above=0.35cm] {$U_a(\bold{s_{t+1}^-}, \pmb{\varepsilon_{t+1}})$};
 		
 		\draw (1.25,0) node[above=1.2cm] {Learn};
 		\draw (3.50,0) node[above=1.2cm] {Choose};
@@ -95,117 +127,222 @@ This section introduces the economic model to which the UQ is applied. It is the
 		\draw (13.75,0) node[above=1.2cm] {Receive};
 		
 		\normalsize %reincrease fontsize
-		\draw (3.75,0) node[below=0.15cm] {$a$};
-		\draw (11.25,0) node[below=0.15cm] {$a+1$};
+		\draw (3.75,0) node[below=0.15cm] {$t$};
+		\draw (11.25,0) node[below=0.15cm] {$t+1$};
 		%\draw (2.35,0) node[above=6pt, align=center] {(estimation \\ window]};
 		\end{tikzpicture}
 	\end{center}
 \end{figure}
 
+\noindent
+At the beginning of each period $t$, the agent recognizes the reward shocks $\pmb{\varepsilon_{a,t}}$ (as opposed to the observer), and the shocks become part of the unobserved state space $\pmb{\varepsilon_t}$. Thus, the utilities $U_a(\bold{s_t^-}, \pmb{\varepsilon_t})$ are known to the agent in period $t$. However, he can only form expectations about rewards in the future as the alternative-specific shocks $\pmb{\varepsilon_{a,t}}$ are stochastic. The specification in KW94 assumes the rewards shocks $\pmb{\varepsilon_{a,t}}$ to be serially uncorrelated. Therefore, prior shocks do not enter the state space. Next, the agent chooses his occupation $a_t$ based on the state space information. Then he receives the occupation-specific reward $U_a$. This flow repeats for each $t < T$.
 
+Agents are rational and forward-looking. Future utilities are subject to time discount factor $\delta  \in [0,1]$. Hence, they choose their optimal sequence of occupations by maximizing the remaining expected, discounted life-time utility. This maximal value is given by value function $V(\bold{s_t^-}, \pmb{\varepsilon_t})$.
+\begin{align}
+V(\bold{s_t^-}, \pmb{\varepsilon_t}) = \max_{\{a\}_{t=0}^T} \bigg\{ \sum_{t=0}^T \delta^t \int_{\pmb{\varepsilon_t}} U(\bold{s_{t}^{-}},\pmb{\varepsilon_{t}}, a_{t}) f(\pmb{\varepsilon_{t}})d^{|A|}\pmb{\varepsilon_{t}}\bigg\}
+\end{align}
+Value $V$ depends directly on time $t$ because $T$ is finite. Together with the discount factor $\delta$, this typically induces life-cycle behaviour. For example, agents invest more in the earlier time periods and work (and consume) more in the following periods. As $\pmb{\varepsilon_{a,t}}$ are the only random parameters and serially independent, the expectation of $U(\bm{s_{t}^{-}},\pmb{\varepsilon_{t}}, a_{t})$ is given by the $|A|$-dimensional integral of U multiplied by the joint probability density function $f(\pmb{\varepsilon_{t}})$ with respect to $\pmb{\varepsilon_{t}}$. $|A|$ denotes the number of occupation choices.
+
+Coursely sketched, the approach to solve the above maximization problem is given by the dynamic programming problem characterized by the Bellman equation (\cite{Bellman.1957}).\footnote{For more details, see \cite{Raabe.2019}, p. 9-19.}
+\begin{align} \label{eq:Bellman}
+V(\bold{s_t^-}, \pmb{\varepsilon_t}) = \max_{a_t} \bigg\{ U(\bold{s_t^-}, \pmb{\varepsilon_t}, a_t) + \delta \int_{\pmb{\varepsilon_t}} \max_{a_{t+1}} V_{a_{t+1}}(\bold{s_{t+1}^{-}},\pmb{\varepsilon_{t+1}}) f(\pmb{\varepsilon_{t+1}})d^{|A|}\pmb{\varepsilon_{t+1}}\bigg\}
+\end{align}
+\noindent
+The Bellman equation states, that solving for the whole sequence of policy functions ${\{a^*\}_{t=0}^T}$ is equivalent to solving iteratively for each optimal, period-specific policy function $a_t^*(\bold{s_t^-}, \pmb{\varepsilon_t})$. For this purpose, choose $a_t$ for each period such that the current period utility and the discounted expected future lifetime utility (given the optimal choice of $a_{t+1}$) are maximized. The finite time horizon eases the problem as the value function for the last period $T$ simplifies to $V(\bold{s_T^-}, \pmb{\varepsilon_T}) = \max_{a_T} U(\bold{s_T^-}, \pmb{\varepsilon_T}, a_T)$. With this condition the problem can be solved for all states by iterating backwards. Given initial states and random draws for the  unobservable shocks $\pmb{\varepsilon_t}$ for each period, these policy equations are used to simulate the occupational paths for a number of agents.\\
 
 \noindent
-At the beginning of each age $a$, the agent recognizes the reward shocks, and the shocks become part of the state space. Thus, $R_m(S(a))$ is known to the agent at age $a$. However, he can only form expectations about rewards in the future. Given \citeauthor{Keane.1994}'s concrete specification, it is assumed that shocks to the reward function are not serially correlated. Therefore, prior shocks do not enter the state space. Thus, the state space comprises the history of choices or, in other words, the occupation experience and the realizations of the contemporaneous shocks. Next, the agent chooses his occupation based on state space information. Then he receives the occupation-specific reward. This flow repeats for each $a < A$.
-
-Agents are rational and forward-looking. Future rewards are subject to time discount factor $\delta  \in [0,1]$. Hence, they choose their optimal sequence of occupations by maximizing the \textit{remaining} expected, discounted life-time rewards \textit{at each age}. This maximal value is given by the value function $V(S(a),a)$.
- 
-\begin{align}
-V(S(a),a) = \max_{(d_m(a))_{m \epsilon M}} \E\bigg[\sum_{\tau=a}^T \delta^{\tau-a} \sum_{m=1}^M R_m(a)d_m(a) | S(a)\bigg]
-\end{align}
-Value $V$ depends directly on age $a$ because $A$ is finite. To re-write the maximization problem as Bellman equation (\cite{Bellman.1957}; rquation \ref{eq:Bellman_b}), it is noted that the value function equals the maximal choice-specific value function (equation \ref{eq:Bellman_a}).
-
-\begin{align} \label{eq:Bellman_a}
-V(S(a),a) = \max_{m \epsilon M} V_m(S(a),a)
-\end{align}
-
-\begin{align} \label{eq:Bellman_b}
-V_m(S(a),a) = \max_{d_m(a)} \bigg\{R_m(S(a),a) + \delta \E\big[V(S(a+1),a+1)\big] \bigg\}
-\end{align}
-Taken together, the above two equations constitute the dynamic programming problem for the general choice-theoretic framework. The agent computes his potential return for every possible scenario order to make the optimal decision. Therefore, this problem is solved for every point in the state space.
-
-The economic model of occupational choice in \cite{Keane.1994} is specified by the four return functions $R_m$ in equation block \ref{eq:Bellman_b} for the following $m$ choices: occupation one, occupation two, school and home. $s_a$ is the number of years of schooling, $x_{1a}$ is the number of years that the agent worked in occupation one. Analogously, $x_{2a}$ is the experience in occupation two. $\alpha_1$ and $\alpha_2$ are vectors that determine the effect of experience and cross-experience in the return functions for occupation one and occupation two. $\beta_0$ is the consumption value of schooling. Indicator function $1$ indicates whether an agent has completed high school, and $\beta_1$ is the post-secondary tuition cost of schooling. $\beta_2$ is an adjustment cost for returning to school when the agent had another occupation the year before ($d_{a-1}=0$). $\gamma_0$ is the mean value for staying at home. An additional assumption is $\delta = 0.9$.
-
-\begin{equation} \label{eq:returns}
+This paragraph addresses the alternative-specific utility functions $U_a(\bold{s_t^-}, \pmb{\varepsilon_t})$ that finally pin down the model structure in KW94. There are four different occupations, $b$, $w$, $e$ and $h$, of which occupations $b$ and $w$ are defined by the same type of utility function. In the following, I will roughly explain how the first two utility functions model characteristics for working in the blue- and the white-collar sector and how the latter two equations sketch receiving institutional education and staying at home. The parametrization that distinguishes the blue from the white-collar sector and additional intuition is given later in subsection Estimation Results and Table \ref{tab:params}. It is assumed that there is a direct mapping from USD to utility. Based on this, the utility functions for occupation $b$ and $w$, $U_b$ and $U_w$, equal the occupation-specific wage, $W_{b,t}$ and $W_{w,t}$, in USD. The wage equations are given by the Mincer equation for earnings (\cite{Mincer.1958}):
+\begin{equation} \label{eq:returns_b_w}
 \begin{aligned}
-R_1(a) &= w_{1a} = \text{exp}(\alpha_{10} + \alpha_{11} s_a + \alpha_{12} x_{1a} - \alpha_{13} x^2_{1a} + \alpha_{14} x_{2a}- \alpha_{15} x^2_{2a} + \epsilon_{1a}) \\
-R_2(a) &= w_{2a} = \text{exp}(\alpha_{20} + \alpha_{21} s_a + \alpha_{22} x_{1a} - \alpha_{23} x^2_{1a} + \alpha_{24} x_{2a}- \alpha_{25} x^2_{2a} + \epsilon_{2a}) \\
-R_3(a) &= \beta_0 - \beta_1 1(s_a \geq 12) (s_a) - \beta_2(1-d_3(a-1)) + \epsilon_{3a} \\
-R_4(a) &= \gamma_0 + \epsilon_{4a} \\
+U_b(\bold{s_t^-}, \pmb{\varepsilon_t}) &= W_{b,t}^{-} = \text{exp}\big\{\beta^b + \beta_e^b x_{e,t} + \beta_b^b x_{b,t} + \beta_{bb}^b x^2_{b,t} + \beta_w^b x_{w,t} + \beta_{ww}^{b} x^2_{w,t} + \varepsilon_{b,t}\big\} \\
+U_w(\bold{s_t^-},\pmb{\varepsilon_t}) &= W_{w,t}^{-} = \text{exp}\big\{\beta^w + \beta_e^w x_{e,t} + \beta_w^w x_{w,t} + \beta_{ww}^w x^2_{w,t} + \beta_b^w x_{b,t} + \beta_{bb}^{w} x^2_{b,t} + \varepsilon_{w,t}\big\}
 \end{aligned}
 \end{equation}
+Both equations comprise of a constant term, years of schooling $x_{e,t}$, linear and quadratic terms of occupation experience, and cross-occupational experience and the  respective shocks in $\pmb{\varepsilon_{a,t}}$. $\pmb{\beta}$ is the vector of coefficients that multiply the previously defined terms.\footnote{The notation for $\pmb{\beta}$ includes two references. The superscript indicates the occupation-specific utility that contains the coefficients. The subscript indicates the occupation-specific experience or abbreviates the condition that regulates the coefficients. Thus, coefficients for constant terms do not have a subscript. Coefficients for quadratic terms are marked by twice the respective subscript.} These coefficieints are called covariates by many structural economists.
 
-\subsection{Parameter Estimation}
+The utilities for education, or schooling, and staying at home are given by the following functions in (\ref{eq:returns_e_h}). These functions are also called non-pecuniary rewards.
+\begin{equation} \label{eq:returns_e_h}
+\begin{aligned}
+U_e(\bold{s_t^-}, \pmb{\varepsilon_t}) &= \beta^e + \beta_{he}^e \bold 1(x_{e,t} \geq 12) + \beta_{re}^e(1-\bold1(a_{t-1}=e)) + \varepsilon_{e,t} \\
+U_h(\bold{s_t^-},\pmb{\varepsilon_t}) &= \beta^h + \varepsilon_{h,t} \\
+\end{aligned}
+\end{equation}
+\noindent
+$\beta^e$ is the consumption reward of schooling. Function $\bold 1(x_{e,t} \geq 12)$ indicates whether an agent has completed high school. $\beta_{he}^e$ is the tuition fee on higher or post-secondary education and $\beta_{re}^e$ is an adjustment cost for returning to school when the agent chose another occupation the previous period ($a_{t-1}\neq e$). $\beta^h$ is the mean reward for staying at home.
 
-Given longitudinal data on occupational choices $m$ of a sample with size $I$, the model parameters $\theta$ in table 2 can be estimated. The approach that \cite{Keane.1994} use is the simulated maximum likelihood method (\cite{Albright.1977}; see \cite{Keane.2011d} for a detailed application to a similar model). Denote the first and the last period observed for agent $i$ by $a_{a_0 i}$ and $a_{A i}$. The sample likelihood function for $\theta$ is given by
+It is assumed that $\pmb{\varepsilon_{a,t}}$ follows a joint normal distribution, such that $\pmb{\varepsilon_{a,t}} \sim \mathcal{N}(0,\,\pmb{\Sigma_\varepsilon})$. \pmb{$\Sigma_\varepsilon$} denotes the covariance matrix for shocks $\pmb{\varepsilon_{a,t}}$. $\sigma_a^{2}$ and $\sigma^{2}_{a(j),a(k\neq j)}$ denote the alternative-specific variances and covariances in \pmb{$\Sigma_\varepsilon$}. Shocks are serially uncorrelated. Indices $j$ and $k$ are used to denote subsets of $a$.
 
-\begin{align} \label{eq:likelihood}
-L(\theta; \text{data}) = \prod_{i=1}^{i=I} \prod_{a=a_0}^{a=A} Pr(d_{ia}=1,S_{ia})^{d_{ia}}Pr(d_{ia}=0,S_{ia})^{1-d_{ia}}.
+Finally, there is a bijective mapping from periods $t$ to age $16$ to $65$. The next subsection describes the estimation method.
+
+\subsection{Simulated Maximum Likelihood Estimation}
+
+To estimate the exogenous model parameters, the approach that this thesis and also KW94 uses is the simulated maximum likelihood method (\cite{Albright.1977})\footnote{see \cite{Aguirregabiria.2010}, p. 42-44 and \cite{Raabe.2019}, p. 21-26 for more details.}.
+
+This method can be applied to a set of longitudinal data on occupational choices $a_t$ and, if available, wages $W_{a,t}^{-}$ of a sample of $i \in I$ individuals starting from age 16. To distinguish from its functional form, let $\mathcal{W}^{-}_{a(k),t}$ henceforth denote the measured wages. For each period $t$, the recorded choices $a_0$, ..., $a_{t-1}$  imply the occupation-specific experiences $x_{a,t}$. Together with $t$, they constitute the observable state vector $\bold{s_t^-}$. Consequently, the measured, observable endogenous variables are $\bold{m}\defeq(\bold{s_t^-},\mathcal{W}^{-}_{a,t})$. Given this setup, the goal is to estimate the exogenous model parameters $\pmb{\theta}=(\delta, \pmb{\beta}, \pmb{\Sigma_\varepsilon})$.\footnote{Improvements in this thesis' estimation over KW94 are that, first, it is not assumed that the standard errors of the parameters estimates are uncorrelated, and second, that $\beta$ is not left out of the estimation.} Thus, in the following, every probability is a function of the exogenous model parameters $\pmb{\theta}$.
+The approach to compute the likelihood function $L_{\bold{m}}(\pmb{\theta})$ of the observables in the data begins with the individual latent variable representation in period $t$.
+\begin{align}
+a_t = \argmax_a V_a(\bold{s_t^-},\pmb{\varepsilon_t})
 \end{align}
+As $a_t$ and $\bold{s_t^-}$ are known, the next step is to derive the unobservable shocks $\pmb{\varepsilon_t}$ in terms of $a_t$ and $\bold{s_t^-}$. Therefore, write the set of shocks for which the alternative-specific value function $V_{a(j)}$ is higher than the other value functions $V_{a(k\neq j)}$ in time $t$ as
+\begin{align}
+\pmb{\varepsilon_t}(a_t(j),\bold{s_t^-}) \defeq \{\pmb{\varepsilon_t}|V_{a_t(j)}(\bold{s_t^-},\pmb{\varepsilon_t}) = \max_a V_a(\bold{s_t^-},\pmb{\varepsilon_t})\}).
+\end{align}
+Note that the set condition is a function of the unobservable model parameters $\pmb{\theta}$.
 
-Assuming normality of $\epsilon$, equation \ref{eq:likelihood} is analytic. The estimation alternates the solution of the dynamic programming problem on the complete parameter grid with the maximum likelihood estimation of the parameters for each period in the data. Thus in each iteration, the agent's problem is solved for each state. This gives the population's joint distribution of choices and parameters. The distribution is represented by the age-specific likelihood. Then, the state vector that maximizes the probability of the distribution of occupational choices in the data is obtained by maximizing the likelihood function.
+Consider first the case of non-working alternatives $a_t(j) \in [e,h]$. The probability of choosing $a_t(j)$ is the probability of set $\pmb{\varepsilon_t}(a_t(j),\bold{s_t^-})$. This probability equals the integral of the probability distribution function $f(\pmb{\varepsilon_t})$ over all elements of set $\pmb{\varepsilon_t}(a_t(j),\bold{s_t^-})$ with respect to $\pmb{\varepsilon_t}$. Formally,
+\begin{align}
+\text{p}\big(a_t(j) | \bold{s_t^-}\big) = \int_{\pmb{\varepsilon_t}(a_t(j),\bold{s_t^-})} f(\pmb{\varepsilon_t}) d^{|A|} \pmb{\varepsilon_t}.
+\end{align}
+\noindent
+The second case is $a_t(k) \in [b,w]$. Assuming the dataset contains wages for the working alternatives $a_t(k)$, the probabilities of choosing $a_t(k)$ take a few steps more to compute. In the first step, note from the wage equations that the the alternative-specific shocks $\pmb{\varepsilon_{a,t}}$ are log normally distributed. Second, in contrary to the non-working alternatives, using (\ref{eq:returns_b_w}), the shocks can directly be expressed as a function of the alternative-specific model parameters $\pmb{\beta_{a(k)}}$ by inserting the inferred alternative-specific experiences $\pmb{x_{a(k),t}}$ into $W_{a(k),t}$ and subtracting the expression from the observed wage $\mathcal{W}^{-}_{a(k),t}$ for each individual. Both wages are logarithmized. Thus,
+\begin{align} \label{eq:epsilon}
+\varepsilon_{a(k),t} = \text{ln}(\mathcal{W}^{-}_{a(k),t}) - \text{ln}(W_{a(k),t}^{-}).
+\end{align}
+Third, the alternative-specific shocks $\pmb{\varepsilon_{a,t}}$ are not distributed independently. Since $\varepsilon_{a(k),t}$ can be inferred from the
+observed wage $\mathcal{W}^{-}_{a(k),t}$, the information can be used to form the expectation about the whole error distribution. Therefore, using the conditional probability density function $f(\pmb{\varepsilon_t}|\varepsilon_{a(k),t})$, the probability of choosing occupation $a_t(k)$ conditional on observed states and wages writes
 
-\cite{Keane.1994} simulate data on fictional parameter values  test the estimation method with good results. Table 2 presents their estimates for mean and standard deviation of model parameters $\theta$. [Substitute true params with params + bias]
+\noindent
+\begin{align} \label{eq:prob-choice}
+\text{p}\big(a_t(k) | \bold{s_t^-},W^{-}_{a(k),t}\big) = \int_{\pmb{\varepsilon_t}(a_t(k),\bold{s_t^-})} f(\pmb{\varepsilon_t}|\varepsilon_{a(k),t}) d^{|A|} \pmb{\varepsilon_t}.
+\end{align}
+Applying integration by substitution yields the following expression for the probability of the observed wage:\footnote{See \cite{Raabe.2019}, p. 29 and p.39-40 for the complete derivation.}
+\begin{align} \label{eq:prob-wage}
+\text{p}\big(\mathcal{W}^{-}_{a(k),t} | \bold{s_t^-}\big) = \omega_t^{-1} \frac{1}{\sigma_{a(k)}} \phi\bigg(\frac{\varepsilon_{a(k),t}}{\sigma_{a(k)}}\bigg)
+\end{align}
+Here, $\omega_t^{-1}$ is the Jacobian of the transformation from observed wage $\mathcal{W}^{-}_{a(k),t}$ to error $\varepsilon_{a(k),t}$ in (\ref{eq:epsilon}) and $\phi$ is the standard normal probability density function.
+Finally, the joint probability of observing choice $a_t(k)$ and wage $\mathcal{W}^{-}_{a(k),t}$ conditional on the observed states is given by the product of the two probabilities in (\ref{eq:prob-choice}) and (\ref{eq:prob-wage}):
+\begin{align}
+\text{p}\big(a_t(k),\mathcal{W}^{-}_{a(k),t}|\bold{s_t^-}\big) = \text{p}\big(a_t(k)|\bold{s_t^-}, \mathcal{W}^{-}_{a(k),t}\big)\text{p}\big(\mathcal{W}^{-}_{a(k),t}|\bold{s_t^-}\big)
+\end{align}
+Based on these results, the likelihood contribution of one individual $i$ can be written as the product of the probability to observe the measured endogenous variables for one individual and for one period over all time periods:
+\begin{align}
+L^{i}_{\bold{m}}(\pmb{\theta}) = P\big(\{a_{t,}^{i},\mathcal{W}^{-,i}_{a,t,}\}_{t=0}^T\big) = \prod_{t=0}^{T} \text{p}\big(a_t^{i},\mathcal{W}_{a,t}^{-,i}|\bold{s_t^{-,i}}\big)
+\end{align}
+Therefore, the sample likelihood is given by the product of the individual likelihoods over the whole sample of individuals:
+\begin{align} \label{eq:sample-likelihood}
+L_{\bold{m}}(\pmb{\theta}) = P\big(\big\{\{a_{t,}^{i},\mathcal{W}^{-,i}_{a,t,}\}_{t=0}^T\big\}_{i \in I}\big) = \prod_{i \in I}\prod_{t=0}^{T} \text{p}(a_t^{i},\mathcal{W}_{a,t}^{-,i}|\bold{s_t^{-,i})}
+\end{align}
+Since the probabilities are functions of the exogenous parameters $\pmb{\theta}$, the simulated maximum likelihood estimator $\pmb{\hat{\theta}}$ is the vector of exogenous parameters that maximizes (\ref{eq:sample-likelihood}). As maximum likelihoods estimates are asymptotically normal\footnote{This property is an advantage of this thesis' estimation approach. It facilitates the uncertainty quantification via Monte Carlo sampling because there is a simple closed form for the (marginal) probability density available.}, these results are taken as the mean vector for the input parameters in the uncertainty quantification.
 
-The mean estimates for $\theta$ have the following economic implications: Occupation two is more skill-intensive or, more formally, has higher returns to education and occupational experience than occupation one. Additionally, experience in occupation one is rewarded in occupation two but not vice versa. The $c$ parameters are the Cholesky factors of the lower triangular matrix $C$ obtained from a Cholesky decomposition of the covariance matrix of the error vector. In this specific parametrization, matrix $C$ coincides with shocks covariance matrix $\Sigma$. Therefore, the error terms are uncorrelated, as well.
+The procedure to estimate the parameter vector $\pmb{\theta}$ using the expressions for the likelihood is as follows: First, The optimization algorithm of choice proposes a parameter vector. Second, the model is solved via backward induction. Third, using the policy functions, the likelihood is computed. These steps are repeated until the optimizer has found the maximal likelihood. 
+\\
 
-The estimates in table \ref{tab:params} are the moments used to describe the input parameter distribution for the uncertainty quantification. However, estimates for parameters based on fictional simulations are an important drawback. The estimates imply uncorrelated input parameters. This does not correspond to the respective economic literature. [Include resources.] A methodological consequence is that the UQ, precisely the computation of Sobol' indices, is simplified. The reason for this parametrization approach is that the numerical implementation, in particular, the part for the likelihood function, is erroneous. Therefore, this thesis foregoes to compute its own parameter estimates. 
+Finally, the calculation of the estimator's covariance is described.\footnote{see \cite{Verbeek.2012}, p. 184-186.} The result is used as the covariance matrix for the input parameters in the UQ.
+
+The asymptotic covariance of a maximum likelihood estimator equals the inverse of the Fisher information matrix: $\text{Var}(\theta)=\text{I}(\theta)^{-1}$. In this thesis, the information matrix $\text{I}(\pmb{\theta})$ is given by the variance of the scores of the parameters.\footnote{The computation of $\text{Cov}(\pmb{\theta})$ by using the Jacobian of the individual likelihood contributions is chosen over other approaches because, first, it yields no error in the inversion step of $I(\pmb{\theta})$ and, second, the results are reasonably close to the similar specification in KW94.} The scores $\text{s}(\pmb{\theta})$ are the first derivatives of the likelihood function. This can be written in terms of sample and individual likelihoods. Formally, the relationships are given by
+\begin{align} \label{eq:scores}
+\text{s}(\pmb{\theta}) \defeq \frac{\partial L_{\bold{m}}({\pmb{\theta}})} {\partial \pmb{\theta}} = \sum_{i \in I} \frac{L_{\bold{m}}^{i}(\pmb{\theta})}{\partial \pmb{\theta}} \defeq \sum_{i \in I}\text{s}_i(\pmb{\theta}).
+\end{align}
+Having multiple individual likelihood contributions, the scores are in the form of the  Jacobian matrix.
+Using the property that the expected values of scores, $\E[\text{s}(\theta)]$, are zero at the maximum likelihood estimator, the variance of the scores is given by (\ref{eq:info-matrix}). It is equal to the inverse of the Fisher information matrix.
+\begin{align} \label{eq:info-matrix}
+\text{I}^{-1}(\pmb{\theta}) = \text{Var}(\text{s}(\pmb{\theta})) = \E[\text{s}(\pmb{\theta})\text{s}(\pmb{\theta})'].
+\end{align}
+Hence, the estimator for the asymptotic covariance of the maximum likelihood estimator is given by
+\begin{align} \label{eq:est-cov}
+\hat{\text{Cov}_J}(\pmb{\hat{\theta}}) = \bigg( \frac{1}{N} \sum_{i \in I} \text{s}_i(\pmb{\hat{\theta}})\text{s}_i(\pmb{\hat{\theta}})' \bigg)^{-1}
+\end{align}
+The intuition behind the above expression is the following: Estimator $\pmb{\hat{\theta}}$ maximizes the sample likelihood. This is equivalent to $\pmb{\hat{\theta}}$ setting the sample scores to zero. However, the individual likelihood may not be zero at the optimal parameter vector for the sample likelihood. This variation is captured by the variance of the individual scores evaluated at $\pmb{\hat{\theta}}$. The relations in (\ref{eq:scores}) and (\ref{eq:info-matrix}) then imply that the inverse of the variance of the individual scores is equivalent to the variance of the maximum likelihood estimator.
+\subsection{Numerical Implementation}
+
+Besides the standard python libraries, the thesis uses the packages \citetalias{Respy-Stenzel.2019} and \citetalias{Gabler.2019} to compute the QoI and to estimate the distribution of the input parameters. All other programs can be found in the  \citetalias{Stenzel.2020}.\\
+
+\noindent
+As standard deviations $\sigma_{a}$ are restricted to positive numbers, drawing them from the unrestricted estimated joint normal distribution can lead to false results. Therefore, covariance matrix $\pmb{\Sigma_\varepsilon}$ is written in terms of the lower triangular matrix $\pmb{\Sigma_\varepsilon^c}$ obtained from the Cholesky decomposition of $\pmb{\Sigma_\varepsilon}$. The contained Cholesky factors are unrestricted and denoted by $c_{i}$ and $c_{i,j}$. $i$ and $j$ are positional indices. Hence, estimates for the Cholesky parameters and their variation replace the respective estimates for $\pmb{\Sigma_\varepsilon}$ in the specification presented in the previous subsection.
+
+\subsection{Estimation Results}
+This subsection presents estimates $\pmb{\hat{\theta}}$ for the exogenous parameters and the standard errors $\text{SE}(\pmb{\hat{\theta}})$. It also shows the correlations between important estimates.
+
+The second column in Table \ref{tab:params} contains the estimates for the exogenous model parameters $\pmb{\theta}$. They are obtained from a simulated dataset of 1000 individuals based on the arbitrary parametrization that is used in Data Set One in KW94.\footnote{see table 1, p. 658; In contrary to the computation of $\text{Corr}(\pmb{\hat{\theta}})$, it is sufficient to find the average likelihood instead of the sample likelihood in (\ref{eq:sample-likelihood}).} 
+This parametrization has the following economic implications: Occupation in the white-collar sector is more skill-intensive or, more technically, has higher returns to education and occupational experience than occupation in the blue-collar sector. Moreover, experience in the blue-collar sector is rewarded in the white-collar sector but not vice versa.
+Under this specific parametrization, the diagonal elements of the lower triangular matrix $c_{i}$ coincide with the standard deviations of the utility shocks $\pmb{\varepsilon_{a,t}}$ and the non-diagonal elements $c_{i,j}$ equal the correlations between different alternative-specific shocks $\pmb{\varepsilon_{a,t}}$.
+The parameter estimates $\pmb{\hat{\theta}}$ are precise. This means they equal the parameters with which the model is simulated.
+
+The third column shows this thesis' estimation of the standard errors $\text{SE}(\pmb{\hat{\theta}})$. The fourth column shows the standard errors computed in KW94. Given the differences between both estimation specifications, namely the inclusion of $\beta$ and correlations between standard errors in this thesis, the estimates are reasonably similar. However, the one exception that stands out is the results for the non-diagonal Choleksy factors $c_{i,j}$. I argue that this thesis' estimates are more precise than the estimates in KW94, and therefore, it is correct to use them in the subsequent Uncertainty Quantification. This claim is based on two reasons. These indicate that KW94, in fact, do not estimate the Cholesky factors, but the standard errors and correlations of shocks $\pmb{\varepsilon_{a,t}}$. Both expressions are equal for the parametrization in Table \ref{tab:params}. Nonetheless, they are conceptually different. Therefore, measures for their variation, which, by construction, also consider parameter values other than the mean estimates, have to differ. The arguments are: First, own estimates of $\text{SE}(\pmb{\hat{\theta}})$ for the model in terms of standard deviations and correlations of shocks $\pmb{\varepsilon_{a,t}}$ are close to those in KW94. Second, the estimates in KW94 for the non-diagonal elements $c_{i,j}$ ,except of the estimate for $c_{1,2}$, would be unlikely corner solutions. For instance, fix the variance for the shocks in $U_e$, $\overline{\sigma_e^2}$, and write this variance in terms of the Cholesky factors such that $\overline{\sigma_e^2}=c_{3,1}^2+c_{3,2}^2+c_{3}^2$\footnote{In general, $\sigma_{i,j}^2 = \sum_{n=1}^{j} c_{j,n}c_{i,n}$.}. There are no restrictions that can force the maximum likelihood estimator to attribute $\sigma_e^2$ mainly to $c_{3}$. In fact and in line with the first argument, the size of the estimates for the standard errors of $c_{i,j}$ in KW94 correspond to the size that one would expect for standard deviations of correlation coefficients that range from -1 to 1. Cholesky coefficients, however, are unresticted, and therefore their standard errors have not to be in this specific size. These arguments undermine the credibility of the estimation results in KW94, and as a consequence, the thesis proceeds with the own estimates.\\
+
+\noindent
+Figure \ref{fig:corr} depicts the correlations between the estimates of important parameters in $\pmb{\theta}$. In general, the share of high correlations is considerable. The coefficients that stand out are $\text{corr}(\hat{\delta},\hat{\beta^e})$, $\text{corr}(\hat{\delta},\hat{\beta^h})$, $\text{corr}(\hat{\beta^e},\hat{\beta^w})$, $\text{corr}(\hat{c_3},\hat{\beta^e})$ and $\text{corr}(\hat{c_4},\hat{\beta^h})$ with $-0.83$, $-0.31$, $0.45$, $-0.34$ and $-0.82$, respectively. 
+
+\begin{figure}[H]
+	\caption{Correlations between estimates for important input parameters}
+	\centering
+	\includegraphics[scale=0.45]{../../../figures/heatmap_corr_chol}
+	\label{fig:corr}
+\end{figure}
+\noindent
+The intuition behind these results can be obtained from the following insight: Negative correlations imply similar effects, and positive correlations imply opposing effects on the likelihood of observed endogenous variables $\bold{m}$. For instance, consider an individual that decides for a long occupation in the education sector in the first years and then continues to work in the white-collar sector for the rest of his life. The likelihood to observe this individual increases when $\delta$ rises because all individuals get more patient, and therefore, ceteris paribus, they invest more in education. However, the same likelihood also increases if the educational utility constant $\beta^e$ rises. Hence, because they can compensate each other, the likelihood around the optimal parameter $\pmb{\hat{\theta}}$ decreases less for changes of both parameters in opposing directions than for changes in the same direction. Therefore, parameters $\delta$ and $\beta^e$ are negatively correlated in terms of the score function in (\ref{eq:scores}) around $\pmb{\hat{\theta}}$. It follows from (\ref{eq:est-cov}) that their standard errors are negatively correlated.
+
+The above example provides intuition for $\text{corr}(\hat{\delta},\hat{\beta^e})=-0.83$ An analogous reasoning for the same example can explain $\text{corr}(\hat{\delta},\hat{\beta^w})=-0.31$. Yet, this correlation is smaller because $U_{w,t}$ has less covariates than $U_{e,t}$. $\text{corr}(\hat{c_3},\hat{\beta^e})=-0.34$ and $\text{corr}(\hat{c_4},\hat{\beta^h})=-0.82$ can be explained by a similar argument: Individuals decide for occupation in education or home sector if the respective utilities are high. This can be achieved by high constant terms or by high positive shocks. The latter can only happen to some individuals if the Cholesky factors are because the factors are components of the respective shock variance. Shocks $\pmb{\varepsilon_{a,t}}$ are known to the agents prior to their decision $a_t$. Negative shocks have a smaller impact on choosing occupation $e$ or $h$ because individuals tend to decide against these alternatives anyway. Thus, $c_3$ and $\beta^e$, and $c_4$ and $\beta^h$ can impact the likelihood in the same direction. And therefore, their standard errors are negatively correlated. Moreover, the latter relationship is stronger because $U_{h,t}$ has a lower level and less covariates.
+
+
+\subsection{Quantity of Interest}
+
+The QoI is the effect of a 500 USD subsidy on annual tuition costs for higher education on the average years of education. Formally, $\beta_{he}^{e,pol} = \beta_{he}^e - 500$. In KW94, the effect is an increase of 1.44 years (see table 4, p. 668). The same figure computed with \citetalias{Respy-Stenzel.2019} is 1.5.
+
+Figure \ref{fig:paths} depicts a comparison between the shares of occupations in the different sectors for a sample of 1000 individuals over their relevant lifetime between two scenarios. The left graph shows the occupation paths under baseline parametrization $\hat{\theta}$ and the right graph the paths for the same model with tuition subsidy.
+
+\begin{figure}[H]
+	\caption{Comparison of occupation paths between scenarios}
+	\centering
+	\includegraphics[scale=0.75]{../../../figures/occ_paths}
+	\label{fig:paths}
+\end{figure}
+\noindent
+The red, blue, white, and green lines mark the shares of individuals occupied in the education, blue-collar, white-collar, and home sector, respectively. Both graphs show the typical life-cycle behaviour. Many agents tend to invest in their education early and continue in the white-collar sector. Another large group works in the blue-collar, and some of them switch to the white-collar sector, as well. This switch is caused by an accumulated experience that is also rewarded in the white-collar sector and by positive shocks. As the relative participation in the home sector is low, this sector is relatively irrelevant for all ages.
+The QoI is the difference between the red line in the left graph and in the right graph, averaged over the number of years. The reason for this is that the vertical axis can also be interpreted as the share of one year that the average agent is occupied in the education sector. Comparing both graphs, we can see that the tuition subsidy incentivises younger individuals to stay in the education sector and older individuals to work in the white-collar sector. The latter observation is a consequence of the first because education is rewarded in the white-collar sector.
+
+The QoI, the impact of a 500 USD tuition subsidy for higher education on average schooling years, is chosen because it is relevant to society in many areas, for example, education, inequality, and economic growth. The discussion section expands on this point. The QoI's relevance allows me to illustrate the importance of UQ in economics in the context of political decisions.
+
+The next section shows the results of the first part of the UQ, the Uncertainty Propagation.
+
+
 % increase spacing between table columns
 \setlength{\tabcolsep}{18pt} %from 6
 \begin{table}[H] 
 	\centering
-\begin{threeparttable}
-	\caption[Model Parametrization]{Model Parametrization\tnote{a}}
-	\label{tab:params}
-	\renewcommand{\arraystretch}{1.2}%
-	\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]c}
-		\toprule
-		{Parameter}     & {Mean\tnote{b}}   & {Standard Deviation} & {Label} \\ \midrule
-		\rowcolor[gray]{.9} $\alpha_{10}$ & 9.21   & 0.0016             &       \\
-		$\alpha_{11}$ & 0.038  & 0.00016            &       \\
-		\rowcolor[gray]{.9} $\alpha_{12}$ & 0.033  & 0.00014            &       \\
-		$\alpha_{13}$ & 0.0005 & 0.000011           &       \\
-		\rowcolor[gray]{.9} $\alpha_{14}$ & 0.0    & 0.0011             &       \\
-		$\alpha_{15}$ & 0.0    & 0.000058           &       \\
-		\rowcolor[gray]{.9} $\alpha_{20}$ & 8.48   & 0.0019             &       \\
-		$\alpha_{21}$ & 0.07   & 0.000095           &       \\
-		\rowcolor[gray]{.9} $\alpha_{22}$ & 0.067  & 0.00014            &       \\
-		$\alpha_{23}$ & 0.001  & 0.000008           &       \\
-		\rowcolor[gray]{.9} $\alpha_{24}$ & 0.022  & 0.00040            &       \\
-		$\alpha_{25}$ & 0.0005 & 0.000041           &       \\
-		\rowcolor[gray]{.9} $\beta_0$     & 0.0    & 100                &       \\
-		$\beta_1$     & 0.0    & 145                &       \\
-		\rowcolor[gray]{.9} $\beta_2$     & 4000   & 317                &       \\
-		$\gamma_0$    & 17750  & 159                &       \\
-		\rowcolor[gray]{.9} $c_{11}$\tnote{c}      & 0.2    & 0.0030             &       \\
-		$c_{21}$      & 0.0    & 0.016              &       \\
-		\rowcolor[gray]{.9} $c_{22}$      & 0.25   & 0.0044             &       \\
-		$c_{31}$      & 0.0    & 0.261              &       \\
-		\rowcolor[gray]{.9} $c_{32}$      & 0.0    & 0.224              &       \\
-		$c_{33}$      & 1500   & 218                &       \\
-		\rowcolor[gray]{.9} $c_{41}$      & 0.0    & 0.123              &       \\
-		$c_{42}$      & 0.0    & 0.406              &       \\
-		\rowcolor[gray]{.9} $c_{43}$      & 0.0    & -0.588             &       \\
-		$c_{44}$      & 1500   & 360                &       \\ \bottomrule
-	\end{tabular}
-  \begin{tablenotes}
-	\item[a] The numbers are taken from table 4.1 in \cite{Keane.1994}, p.665.
-	\item[b] [Maybe small note on Bayesian perspective of true parameter values.]
-	\item[c] $\epsilon_{1t} = a_{11} \eta_{1t} \\
-    \hspace*{0.66em} \epsilon_{2t} = a_{21} \eta_{2t} + a_{22} \eta_{2t}  \\
-	\hspace*{0.66em}\epsilon_{3t} = a_{31} \eta_{3t} + a_{32} \eta_{3t} + a_{33} \eta_{3t}\\
-	\hspace*{0.66em}\epsilon_{4t} = a_{41} \eta_{4t} + a_{42} \eta_{4t} + a_{43}   \eta_{4t} + a_{44} \eta_{4t} \\
-	\hspace*{0.66em}\eta_k \sim N(0,1), \hspace*{0.66em} k=1,...,4$
-  \end{tablenotes}
-\end{threeparttable}
-\end{table}
-
-\subsection{Numerical Implementation}
-
-The thesis uses the python package \textit{\citetalias{Respy-Stenzel.2019}} to compute the QoI. It is important to transform the input parameters from the format in \cite{Keane.1994} to the \text{respy} convention. This includes, in particular, the transformation of the Cholesky parameters $c$ into standard deviations and correlations. All details can be found in the  \citetalias{Stenzel.2020}.
-
-\subsection{Quantity of Interest}
-
-The QoI for the uncertainty quantification is the effect of a \$500 college tuition subsidy on the average years of schooling. Formally, $\beta_2 1(13 \leq s_a \leq 16) = \beta_2 1(13 \leq s_a \leq 16) - 500$. In \cite{Keane.1994}, the effect is an increase of 1.44 years (see table 4, p.668). The same figure computed with \citetalias{Respy-Stenzel.2019} is 1.449. Given other model outputs, the general ability of \citetalias{Respy-Stenzel.2019} to replicate the model solution in \cite{Keane.1994} is good. Therefore, the QoI computations can be regarded as sufficiently precise. I choose this quantity because it is relevant to society in many respects, for example, education and inequality. Section XX expands this point. The QoI's relevance allows illustrating the importance of UQ in economics in the context of political decisions.
+	\begin{threeparttable}
+		\caption[Model Parametrization]{Estimates for the distribution of input parameters}
+		\label{tab:params}
+		\renewcommand{\arraystretch}{1.2}%
+		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]S[table-format=3.2]}
+			\toprule
+			{Parameter}     & {Mean}   & {Standard error (SE)} & {SE in KW94} \\ \midrule
+			\textit{General} \\
+			$\delta$ & 0.95   & 0.00084 & \textit{-}    \\    \midrule
+			\textit{Blue-collar}\\    
+			$\beta^b$ & 9.21   & .013            & 0.014      \\
+			$\beta_e^b$ & 0.038  &    0.0011        & 0.0015       \\
+			$\beta^b_b$ & 0.033  & 0.00044            & 0.00079       \\
+			$\beta^b_{bb}$ & -0.0005 & 0.000013           & 0.000019       \\
+			$\beta^b_w$ & 0.0    & 0.00067             & 0.0024      \\
+			$\beta^b_{ww}$ & 0.0    & 0.000029           & 0.000096       \\ \midrule
+			\textit{White-collar}\\
+			$\beta^w$ & 8.48   & 0.0076             & 0.0123      \\
+			$\beta^w_e$ & 0.07   & 0.00047          & 0.00096       \\
+			$\beta^w_w$ & 0.067  & 0.00055            & 0.00090      \\
+			$\beta^w_{ww}$ & -0.001  & 0.000017           & 0.000070     \\
+			$\beta^w_b$ & 0.022  & 0.00033           & 0.0010      \\
+			$\beta^w_{bb}$ & -0.0005 & 0.000021         & 0.000030      \\ \midrule
+			\textit{Education} \\
+			$\beta^e$     & 0.0    & 330                & 459       \\
+			$\beta_{he}^e$     & 0.0    & 155               & 410       \\
+			$\beta_{re}^e$     & -4000   & 202                & 660       \\ \midrule
+			\textit{Home} \\
+			$\beta^h$    & 17750  & 390                & 1442      \\ \midrule
+			\multicolumn{4}{l}{\textit{Lower Triangular Cholesky Matrix}} \\
+			$c_{1}$      & 0.2    & 0.0015             & 0.0056      \\
+			$c_{2}$      & 0.25    & 0.0013             & 0.0046     \\
+			$c_{3}$      & 1500   & 108             & 350      \\
+			$c_{4}$      & 1500    & 173              & 786      \\
+			$c_{1,2}$     & 0.0    & 0.0064              & 0.023     \\
+			$c_{1,3}$      & 0.0   & 143               & 0.412      \\
+			$c_{2,3}$      & 0.0    & 116             &  0.379     \\
+			$c_{1,4}$      & 0.0    & 232             &   0.911    \\
+			$c_{2,4}$      & 0.0    & 130            & 0.624      \\
+			$c_{3,4}$      & 0.0   & 177                & 0.870       \\ \bottomrule
+		\end{tabular}
+	\end{threeparttable}
+	\end{table}
 
 \newpage
 \bibliography{../../../bibliography/literature}

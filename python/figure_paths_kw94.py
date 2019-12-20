@@ -67,7 +67,7 @@ def choice_paths(save=False):
 
         legend = fig.legend(
             handles,
-            ["Education", "Blue Collar", "White Collar", "Home"],
+            ["Education", "Blue-collar", "White-collar", "Home"],
             loc="lower center",
             bbox_to_anchor=(0.460, -0.010),
             ncol=4, frameon=True, framealpha=1.0, fontsize=14, edgecolor='black', fancybox=False, borderpad=0.5)

@@ -3,44 +3,55 @@ Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: snippet_model.aux
 The style file: chicago.bst
 Database file #1: ../../../bibliography/literature.bib
-You've used 7 entries,
+Warning--no key, author in NLSY79
+Warning--no author, editor, or organization in NLSY79
+Warning--to sort, need author or key in NLSY79
+Warning--no key, author in NLSY79
+Warning--no author, editor, or organization in NLSY79
+Warning--no key, author in NLSY79
+Warning--no author, editor, or organization in NLSY79
+Warning--no key, author in NLSY79
+Warning--no author, editor, or organization in NLSY79
+Warning--empty note in Gabler.2019
+You've used 12 entries,
             2861 wiz_defined-function locations,
-            664 strings with 6315 characters,
-and the built_in function-call counts, 4533 in all, are:
-= -- 387
-> -- 312
-< -- 2
-+ -- 94
-- -- 108
-* -- 369
-:= -- 842
-add.period$ -- 22
-call.type$ -- 7
-change.case$ -- 46
-chr.to.int$ -- 7
-cite$ -- 7
-duplicate$ -- 130
-empty$ -- 276
-format.name$ -- 124
-if$ -- 836
+            689 strings with 6720 characters,
+and the built_in function-call counts, 6681 in all, are:
+= -- 568
+> -- 399
+< -- 0
++ -- 118
+- -- 148
+* -- 522
+:= -- 1246
+add.period$ -- 35
+call.type$ -- 12
+change.case$ -- 73
+chr.to.int$ -- 12
+cite$ -- 26
+duplicate$ -- 199
+empty$ -- 444
+format.name$ -- 164
+if$ -- 1197
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 5
-newline$ -- 38
-num.names$ -- 72
-pop$ -- 35
+missing$ -- 8
+newline$ -- 62
+num.names$ -- 110
+pop$ -- 54
 preamble$ -- 1
-purify$ -- 90
+purify$ -- 148
 quote$ -- 0
-skip$ -- 146
+skip$ -- 222
 stack$ -- 0
-substring$ -- 228
-swap$ -- 48
-text.length$ -- 2
+substring$ -- 348
+swap$ -- 63
+text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 130
-warning$ -- 0
-while$ -- 70
+type$ -- 220
+warning$ -- 10
+while$ -- 114
 width$ -- 0
-write$ -- 98
+write$ -- 157
+(There were 10 warnings)

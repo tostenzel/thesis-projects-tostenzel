@@ -1,5 +1,17 @@
 \begin{thebibliography}{}
 
+\bibitem[\protect\citeauthoryear{??}{NLS}{1990}]{NLSY79}
+ (1990).
+\newblock National longitudinal survey of youth 1979 cohort, 1979--1990 (rounds
+  1--11).
+\newblock Bureau of Labor Statistics.
+
+\bibitem[\protect\citeauthoryear{Aguirregabiria and Mira}{Aguirregabiria and
+  Mira}{2010}]{Aguirregabiria.2010}
+Aguirregabiria, V. and P.~Mira (2010).
+\newblock Dynamic discrete choice structural models: A survey.
+\newblock {\em Journal of Econometrics\/}~{\em 156\/}(1), 38--67.
+
 \bibitem[\protect\citeauthoryear{Albright, Lerman, and Manski}{Albright
   et~al.}{1977}]{Albright.1977}
 Albright, R.~S., S.~Lerman, and C.~F. Manski (1977).
@@ -12,14 +24,9 @@ Bellman, R.~E. (1957).
 \newblock {\em Dynamic Programming}.
 \newblock Princeton, NJ: Princeton University Press.
 
-\bibitem[\protect\citeauthoryear{Keane, Todd, and Wolpin}{Keane
-  et~al.}{2011}]{Keane.2011d}
-Keane, M.~P., P.~E. Todd, and K.~I. Wolpin (2011).
-\newblock The structural estimation of behavioral models: Discrete choice
-  dynamic programming methods and applications.
-\newblock In O.~Ashenfelter and D.~Card (Eds.), {\em Handbook of Labor
-  Economics}, Volume~4A, pp.\  331--461. Amsterdam, Netherlands: Elsevier
-  Science.
+\bibitem[\protect\citeauthoryear{Gabler}{Gabler}{2019}]{Gabler.2019}
+Gabler, J. (2019).
+\newblock A python tool for the estimation of (structural) econometric models.
 
 \bibitem[\protect\citeauthoryear{Keane and Wolpin}{Keane and
   Wolpin}{1994}]{Keane.1994}
@@ -34,18 +41,33 @@ Keane, M.~P. and K.~I. Wolpin (1997).
 \newblock The career decisions of young men.
 \newblock {\em Journal of Political Economy\/}~{\em 105\/}(3), 473--522.
 
+\bibitem[\protect\citeauthoryear{Mincer}{Mincer}{1958}]{Mincer.1958}
+Mincer, J. (1958).
+\newblock Investment in human capital and personal income distribution.
+\newblock {\em Journal of Political Economy\/}~{\em 66\/}(4), 281--302.
+
 \bibitem[\protect\citeauthoryear{OpenSourceEconomics}{OpenSourceEconomics}{2019}]{Respy-Stenzel.2019}
 OpenSourceEconomics (2019).
 \newblock respy.
 \newblock Python package for the simulation and estimation of a prototypical
   finite-horizon dynamic discrete choice model based on Keane \& Wolpin (1997).
-  Version: develop@XX.
-  https://github.com/OpenSourceEconomics\-/respy/commit/XX.
+  https://github.com/OpenSourceEconomics/respy.
+
+\bibitem[\protect\citeauthoryear{Raabe}{Raabe}{2019}]{Raabe.2019}
+Raabe, T. (2019).
+\newblock A unified estimation framework for some discrete choice dynamic
+  programming models.
+\newblock Master's thesis, Bonn Graduate School of Economics.
 
 \bibitem[\protect\citeauthoryear{Stenzel}{Stenzel}{2020}]{Stenzel.2020}
 Stenzel, T. (2020).
 \newblock \textit{Master's Thesis Replication Repository}.
 \newblock Version: master.
   https://\-github.com/HumanCapitalAnalysis/thesis-projects-tostenzel.
+
+\bibitem[\protect\citeauthoryear{Verbeek}{Verbeek}{2012}]{Verbeek.2012}
+Verbeek, M. (2012).
+\newblock {\em A Guide to Modern Econometrics}.
+\newblock Wiley.
 
 \end{thebibliography}
