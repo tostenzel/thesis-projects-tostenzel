@@ -1,13 +1,26 @@
-name: thesis_project
+name: uq
 
+channels:
+  - defaults
+  - conda-forge
+  - janosg
+  - opensourceeconomics
 dependencies:
+- python=3.6
+- pip
 - numpy
-- pandas
+- pandas=0.24
+- pytest
 - jupyterlab
 - matplotlib
 - seaborn
 - scipy
-- pip
+- estimagic>=0.0.14
+- black
+- flake8
+- doc8
+- restructuredtext_lint
+- respy
 - pip:
-  - grmpy==0.1.1.dev0
-
+  - chaospy
+  - pre-commit
