@@ -3,10 +3,10 @@
 \BOOKMARK [1][-]{section*.3}{List of Tables}{}% 3
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 4
 \BOOKMARK [1][-]{section.2}{Uncertainty Quantification Framework}{}% 5
-\BOOKMARK [2][-]{subsection.2.1}{Uncertainty Propagation}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.1}{Overview of Uncertainty Quantification}{section.2}% 6
 \BOOKMARK [2][-]{subsection.2.2}{Global Sensitivity Analysis}{section.2}% 7
-\BOOKMARK [3][-]{subsubsection.2.2.1}{Sobol' Indices}{subsection.2.2}% 8
-\BOOKMARK [3][-]{subsubsection.2.2.2}{Univariate Effects}{subsection.2.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Morris Screening}{subsection.2.2}% 8
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Sobol' Indices}{subsection.2.2}% 9
 \BOOKMARK [2][-]{subsection.2.3}{Surrogate Models and Spectral Expansions}{section.2}% 10
 \BOOKMARK [1][-]{section.3}{Uncertainty Quantification in the Economic \040Literature}{}% 11
 \BOOKMARK [1][-]{section.4}{Model and Estimation}{}% 12
@@ -17,8 +17,8 @@
 \BOOKMARK [2][-]{subsection.4.5}{Quantity of Interest}{section.4}% 17
 \BOOKMARK [1][-]{section.5}{Uncertainty Propagation}{}% 18
 \BOOKMARK [1][-]{section.6}{Global Sensitivity Analysis}{}% 19
-\BOOKMARK [2][-]{subsection.6.1}{Sobol' Indices}{section.6}% 20
-\BOOKMARK [2][-]{subsection.6.2}{Univariate Effects}{section.6}% 21
+\BOOKMARK [2][-]{subsection.6.1}{Morris screening}{section.6}% 20
+\BOOKMARK [2][-]{subsection.6.2}{Sobol' Indices}{section.6}% 21
 \BOOKMARK [1][-]{section.7}{Discussion}{}% 22
 \BOOKMARK [1][-]{section.8}{Conclusion}{}% 23
 \BOOKMARK [1][-]{section.8}{References}{}% 24

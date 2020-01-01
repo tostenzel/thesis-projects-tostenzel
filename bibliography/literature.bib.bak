@@ -17131,7 +17131,7 @@
 
 @Article{Ziehn.2009,
   author    = {Ziehn, T and Tomlin, Alison S},
-  title     = {GUI-HDMR - A software tool for global sensitivity analysis of complex models},
+  title     = {GUI--HDMR--A software tool for global sensitivity analysis of complex models},
   journal   = {Environmental Modelling \& Software},
   year      = {2009},
   volume    = {24},

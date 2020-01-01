@@ -3,55 +3,49 @@ Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: snippet_model.aux
 The style file: chicago.bst
 Database file #1: ../../../bibliography/literature.bib
-Warning--no key, author in NLSY79
-Warning--no author, editor, or organization in NLSY79
-Warning--to sort, need author or key in NLSY79
-Warning--no key, author in NLSY79
-Warning--no author, editor, or organization in NLSY79
-Warning--no key, author in NLSY79
-Warning--no author, editor, or organization in NLSY79
-Warning--no key, author in NLSY79
-Warning--no author, editor, or organization in NLSY79
-Warning--empty note in Gabler.2019
+Warning--empty publisher in Gabler.2019
+Warning--can't use both author and editor fields in NLSY79
+Warning--empty publisher in NLSY79
+Warning--empty publisher in Respy-Stenzel.2019
 You've used 12 entries,
             2861 wiz_defined-function locations,
-            689 strings with 6720 characters,
-and the built_in function-call counts, 6681 in all, are:
-= -- 568
-> -- 399
+            691 strings with 6798 characters,
+and the built_in function-call counts, 6804 in all, are:
+= -- 550
+> -- 425
 < -- 0
-+ -- 118
-- -- 148
-* -- 522
-:= -- 1246
-add.period$ -- 35
++ -- 126
+- -- 158
+* -- 532
+:= -- 1312
+add.period$ -- 36
 call.type$ -- 12
-change.case$ -- 73
+change.case$ -- 71
 chr.to.int$ -- 12
-cite$ -- 26
-duplicate$ -- 199
-empty$ -- 444
-format.name$ -- 164
-if$ -- 1197
+cite$ -- 16
+duplicate$ -- 207
+empty$ -- 449
+format.name$ -- 174
+if$ -- 1200
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 8
-newline$ -- 62
-num.names$ -- 110
-pop$ -- 54
+missing$ -- 14
+newline$ -- 63
+num.names$ -- 120
+pop$ -- 62
 preamble$ -- 1
-purify$ -- 148
+purify$ -- 149
 quote$ -- 0
-skip$ -- 222
+skip$ -- 226
 stack$ -- 0
-substring$ -- 348
-swap$ -- 63
+substring$ -- 346
+swap$ -- 64
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 220
-warning$ -- 10
-while$ -- 114
+type$ -- 190
+warning$ -- 4
+while$ -- 124
 width$ -- 0
-write$ -- 157
-(There were 10 warnings)
+write$ -- 160
+(There were 4 warnings)

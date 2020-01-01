@@ -1,11 +1,5 @@
 \begin{thebibliography}{}
 
-\bibitem[\protect\citeauthoryear{??}{NLS}{1990}]{NLSY79}
- (1990).
-\newblock National longitudinal survey of youth 1979 cohort, 1979--1990 (rounds
-  1--11).
-\newblock Bureau of Labor Statistics.
-
 \bibitem[\protect\citeauthoryear{Aguirregabiria and Mira}{Aguirregabiria and
   Mira}{2010}]{Aguirregabiria.2010}
 Aguirregabiria, V. and P.~Mira (2010).
@@ -71,7 +65,9 @@ Constantine, P.~G. (2015).
 
 \bibitem[\protect\citeauthoryear{Gabler}{Gabler}{2019}]{Gabler.2019}
 Gabler, J. (2019).
-\newblock A python tool for the estimation of (structural) econometric models.
+\newblock {\em A Python Tool for the Estimation of (Structural) Econometric
+  Models.}
+\newblock URL: https://github.com/OpenSourceEconomics/estimagic.
 
 \bibitem[\protect\citeauthoryear{Gillingham, Nordhaus, Anthoff, Blanford,
   Bosetti, Christensen, McJeon, Reilly, and Sztorc}{Gillingham
@@ -165,17 +161,16 @@ Mincer, J. (1958).
 \newblock Investment in human capital and personal income distribution.
 \newblock {\em Journal of Political Economy\/}~{\em 66\/}(4), 281--302.
 
+\bibitem[\protect\citeauthoryear{NLSY79}{NLSY79}{1990}]{NLSY79}
+NLSY79 (1990).
+\newblock {\em National Longitudinal Survey of Youth 1979 Cohort, 1979--1990
+  (Rounds 1--11)}.
+\newblock URL: https://www.nlsinfo.org/content/cohorts/nlsy79.
+
 \bibitem[\protect\citeauthoryear{Nordhaus}{Nordhaus}{2008}]{Nordhaus.2008}
 Nordhaus, W.~D. (2008).
 \newblock {\em A question of balance: economic modeling of global warming}.
 \newblock Yale University Press New Haven.
-
-\bibitem[\protect\citeauthoryear{OpenSourceEconomics}{OpenSourceEconomics}{2019}]{Respy-Stenzel.2019}
-OpenSourceEconomics (2019).
-\newblock respy.
-\newblock Python package for the simulation and estimation of a prototypical
-  finite-horizon dynamic discrete choice model based on Keane \& Wolpin (1997).
-  https://github.com/OpenSourceEconomics/respy.
 
 \bibitem[\protect\citeauthoryear{Plischke, Borgonovo, and Smith}{Plischke
   et~al.}{2013}]{Plischke.2013}
@@ -200,6 +195,13 @@ Rasmussen, C.~E. and C.~K.~I. Williams (2005).
 Ratto, M. (2008).
 \newblock Analysing dsge models with global sensitivity analysis.
 \newblock {\em Computational Economics\/}~{\em 31\/}(2), 115--139.
+
+\bibitem[\protect\citeauthoryear{respy}{respy}{2019}]{Respy-Stenzel.2019}
+respy (2019).
+\newblock {\em A Python package for the simulation and estimation of a
+  prototypical finite-horizon dynamic discrete choice model based on Keane \&
+  Wolpin (1997)}.
+\newblock URL: https://github.com/OpenSourceEconomics/respy.
 
 \bibitem[\protect\citeauthoryear{Saltelli and D'Hombres}{Saltelli and
   D'Hombres}{2010}]{Saltelli.2010}
@@ -231,8 +233,8 @@ Sobol', I.~M. (1967).
 \bibitem[\protect\citeauthoryear{Stenzel}{Stenzel}{2020}]{Stenzel.2020}
 Stenzel, T. (2020).
 \newblock \textit{Master's Thesis Replication Repository}.
-\newblock Version: master.
-  https://\-github.com/HumanCapitalAnalysis/thesis-projects-tostenzel.
+\newblock \\URL:
+  https://github.com/HumanCapitalAnalysis/thesis-projects-tostenzel.
 
 \bibitem[\protect\citeauthoryear{Stern}{Stern}{2007}]{Stern.2007}
 Stern, N.~H. (2007).
@@ -247,7 +249,7 @@ Usui, T. (2019).
 
 \bibitem[\protect\citeauthoryear{Verbeek}{Verbeek}{2012}]{Verbeek.2012}
 Verbeek, M. (2012).
-\newblock {\em A Guide to Modern Econometrics}.
+\newblock {\em A Guide to Modern Econometrics\/} (4 ed.).
 \newblock Wiley.
 
 \bibitem[\protect\citeauthoryear{Webster, Sokolov, Reilly, Forest, Paltsev,
@@ -266,7 +268,7 @@ Wiederkehr, P. (2018).
 \bibitem[\protect\citeauthoryear{Ziehn and Tomlin}{Ziehn and
   Tomlin}{2009}]{Ziehn.2009}
 Ziehn, T. and A.~S. Tomlin (2009).
-\newblock Gui--hdmr--a software tool for global sensitivity analysis of complex
+\newblock Gui-hdmr - a software tool for global sensitivity analysis of complex
   models.
 \newblock {\em Environmental Modelling \& Software\/}~{\em 24\/}(7), 775--785.
 

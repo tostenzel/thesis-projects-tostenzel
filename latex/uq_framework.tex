@@ -3,12 +3,42 @@
 \section{Uncertainty Quantification Framework}
 \thispagestyle{plain} % surpress header on first page
 
-[intrusive vs. non-intrusive.]
+\subsection{Overview of Uncertainty Quantification}
+Model-based forecasting includes two main steps: The first step is the calibration. This means, the input parameters of the model are estimated. The second step is the prediction. The prediction contains the evaluation of the estimated parameters with the model to make statements about the future. These statements are made in probabilistic way. Thereby, the uncertainty of these statement is considered.\\
+\newline
+There are four sources of uncertainty in modern forecasts that are based on complex computational models. The first source, the model uncertainty, is the uncertainty of whether the mathematical model represents the reality appropriately.\footnote{However, It seems that there are not many powerful instruments to evaluate and improve the model uncertainty except of comparing statements derived from the model to the data and then improving it where approriate.} The second source, the input uncertainty, is the uncertainty about the size of the input parameters of the model. The third one, the numerical uncertainty, comes from potential errors and uncertainties introduced by the conversion from mathematical to computational model. The last source of uncertainty, the measurement uncertainty, is the accuracy of the experimental data that is used to approximate and calibrate the model.\\
+\newline
+The thesis deals with the second source of uncertainty, the input uncertainty. In my view, this is the source for which uncertainty quantification offers the most instruments and also the strongest instruments. This results from the fact, that the estimation step yields basic measures for the variability or uncertainty in the input parameter estimates. These can then be used to compute a wide variety of measures for the input uncertainty.\\
+\newline
+The following explains the basic notation for the quantification of the input uncertainty. An essential step is to define the quantity that one wants to predict from the model. It is called Quantity of Interest (henceforth QoI) and denoted by $q$. The uncertain model parameters are denoted by vector $\pmb{\theta}$. The function that computes QoI $q$ by evaluating a model and, if necessary, post-processing the model output is denoted by $\mathcal{M}$. Thus,
+\begin{align}
+q = \mathcal{M}(\pmb{\theta}).
+\end{align}
+Large-scale UQ applications draw from various disciplines like probability, statistics, analysis and numeric. They are used in a combined effort for parameter estimation, surrogate model construction, parameter selection, uncertainty propagation, LSA and GSA, amongst others. 
 
-mention European guidelines.
-\subsection{Uncertainty Propagation}
+Parameter estimation covers the calibration step. There is a large number of estimation techniques for various types of models. The thesis uses a maximum likelihood approach detailed in the Model and Estimation section. However, the parameter estimation is is not the main focus.
+
+
+If the run time of a model is too long to compute some UQ measures, surrogate models are constructed to substitute the original model $\mathcal{M}$. These surrogate models are functions of the model input parameters that are faster to evaluate. They are also called interpolants, because these functions are computed from a random sample of input parameter vectors drawn from the input distribution and evaluated by the model. Therefore, evaluations of the surrogate model interpolate this sample. Some techniques yield functions that have properties which simplify the computation of some UQ measures tremendously.
+
+Another way to reduce computation, not necessarily of the model, but of UQ measures, is to reduce the number of uncertain input parameters. This is the approach that the thesis takes vice versa the construction of a surrogate model. The technique is called Morris sampling and detailed in the following GSA subsection.
+
+Uncertainty propagation is the core of the prediction step. It comprises the construction of the QoI's probability distribution by propagating the input uncertainty through the model. For instance, this can be achieved by repeatedly evaluating a sample of random input parameters by the model (as also required for the construction of a surrogate model). Uncertainty propagation also involves the computation of descriptive statistics like the probabilities for a set of specific events in the QoI range. Conceptually, this is simple. The results are presented in the Uncertainty Propagation section.
+
+LSA
+\\
+\newline
+The subfields I pick and do not pick.
+\\
+\newline
+QoI explanation.\\
+\newline
+correlated inputs
+
+
 
 \subsection{Global Sensitivity Analysis}
+\subsubsection{Morris Screening}
 
 \subsubsection{Sobol' Indices}
 
@@ -91,7 +121,6 @@ S_i^T = S_i + \sum_{j \ne i} S_{ij} + \sum_{1 \leq i \leq j \leq M,\{j,k\} \ne i
 S_\text{u}^{clo} = \frac{\text{Var}_\text{u}[\mathcal{M}_\text{u}(\text{x}_\text{u})]}{\text{Var}[Y]} +  \sum_{\text{w} \subseteq \text{u}} \frac{\text{Var}_\text{w}[\mathcal{M}_\text{w}(\text{x}_\text{w})]}{\text{Var}[Y]}
 \end{align}
 
-\subsubsection{Univariate Effects}
 
 \subsection{Surrogate Models and Spectral Expansions}
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/W32TeX) (preloaded format=pdflatex 2018.12.25)  20 DEC 2019 22:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/W32TeX) (preloaded format=pdflatex 2018.12.25)  31 DEC 2019 17:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1258,48 +1258,57 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
+Underfull \hbox (badness 10000) in paragraph at lines 87--94
 
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\begingroup' on input line 91.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<let>-command' on input line 91.
+ []
 
 
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\NAT@ctype' on input line 91.
+Underfull \hbox (badness 10000) in paragraph at lines 87--94
+
+ []
 
 
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\z@' on input line 91.
+Underfull \hbox (badness 10000) in paragraph at lines 87--94
 
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\let' on input line 91.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\let' on input line 91.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\new@ifnextchar' on input line 91.
+ []
 
 [1
 
 {c:/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\begingroup' on input line 95.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<let>-command' on input line 95.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\NAT@ctype' on input line 95.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\z@' on input line 95.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\let' on input line 95.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\let' on input line 95.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\new@ifnextchar' on input line 95.
+
+
 Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
-d on input line 97.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 103--104
-
- []
+d on input line 101.
 
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 115.
+(Font)              <10.95> on input line 126.
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 14.49998pt.
@@ -1307,273 +1316,86 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [2]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 146.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 146.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 146.
-
-Underfull \hbox (badness 10000) in paragraph at lines 149--152
+Underfull \hbox (badness 10000) in paragraph at lines 158--162
 
  []
 
-[3] [4] [5] [6]
-Underfull \hbox (badness 10000) in paragraph at lines 227--229
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 167.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 167.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 167.
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 170--173
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 248--249
+[4] [5] [6]
+Underfull \hbox (badness 10000) in paragraph at lines 253--256
 
  []
 
 [7]
-Underfull \hbox (badness 10000) in paragraph at lines 261--262
+Underfull \hbox (badness 10000) in paragraph at lines 274--275
 
  []
 
 [8]
-<../../../figures/heatmap_corr_chol.png, id=192, 879.285pt x 658.8615pt>
+Underfull \hbox (badness 10000) in paragraph at lines 280--286
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 287--290
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 287--290
+
+ []
+
+[9]
+<../../../figures/heatmap_corr_chol.png, id=207, 879.285pt x 658.8615pt>
 File: ../../../figures/heatmap_corr_chol.png Graphic file (type png)
 <use ../../../figures/heatmap_corr_chol.png>
 Package pdftex.def Info: ../../../figures/heatmap_corr_chol.png  used on input 
-line 269.
+line 297.
 (pdftex.def)             Requested size: 395.6746pt x 296.48492pt.
- [9 <../../../figures/heatmap_corr_chol.png>]
-<../../../figures/occ_paths.png, id=207, 631.158pt x 363.0363pt>
+ [10 <../../../figures/heatmap_corr_chol.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 308--311
+
+ []
+
+<../../../figures/occ_paths.png, id=222, 631.158pt x 363.0363pt>
 File: ../../../figures/occ_paths.png Graphic file (type png)
 <use ../../../figures/occ_paths.png>
-Package pdftex.def Info: ../../../figures/occ_paths.png  used on input line 287
+Package pdftex.def Info: ../../../figures/occ_paths.png  used on input line 316
 .
 (pdftex.def)             Requested size: 473.36734pt x 272.27655pt.
 
-Overfull \hbox (18.12323pt too wide) in paragraph at lines 287--289
+Overfull \hbox (18.12323pt too wide) in paragraph at lines 316--318
  [][] 
  []
 
-[10]
-Overfull \hbox (19.62492pt too wide) detected at line 311
+[11]
+Underfull \hbox (badness 10000) in paragraph at lines 319--325
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 319--325
+
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 338
  
  []
 
 
-Overfull \hbox (5.87498pt too wide) detected at line 313
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 313
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 314
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 314
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 314
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 315
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 315
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 315
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 316
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 316
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 316
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 317
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 317
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 318
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 318
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 320
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 320
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 321
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 321
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 322
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 322
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 322
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 323
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 323
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 323
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 324
- 
- []
-
-
-Overfull \hbox (19.62492pt too wide) detected at line 324
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 324
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 325
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 325
- 
- []
-
-
-Overfull \hbox (25.49991pt too wide) detected at line 325
- 
- []
-
-
-Overfull \hbox (15.20834pt too wide) detected at line 329
- 
- []
-
-
-Overfull \hbox (13.74994pt too wide) detected at line 331
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 331
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 333
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 333
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 334
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 334
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 335
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 336
- 
- []
-
-
-Overfull \hbox (11.74997pt too wide) detected at line 337
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 337
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 338
- 
- []
-
-
-Overfull \hbox (5.87498pt too wide) detected at line 339
+Overfull \hbox (5.87498pt too wide) detected at line 340
  
  []
 
@@ -1588,29 +1410,244 @@ Overfull \hbox (5.87498pt too wide) detected at line 341
  []
 
 
+Overfull \hbox (11.74997pt too wide) detected at line 341
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 341
+ 
+ []
+
+
 Overfull \hbox (5.87498pt too wide) detected at line 342
  
  []
 
-[11 <../../../figures/occ_paths.png>] [12] (./snippet_model.bbl) [13]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 350.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 350.
+
+Overfull \hbox (19.62492pt too wide) detected at line 342
+ 
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 342
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 343
+ 
+ []
+
+
+Overfull \hbox (25.49991pt too wide) detected at line 343
+ 
+ []
+
+
+Overfull \hbox (25.49991pt too wide) detected at line 343
+ 
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 344
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 344
+ 
+ []
+
+
+Overfull \hbox (25.49991pt too wide) detected at line 345
+ 
+ []
+
+
+Overfull \hbox (25.49991pt too wide) detected at line 345
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 347
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 347
+ 
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 348
+ 
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 348
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 349
+ 
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 349
+ 
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 349
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 350
+ 
+ []
+
+
+Overfull \hbox (25.49991pt too wide) detected at line 350
+ 
+ []
+
+
+Overfull \hbox (25.49991pt too wide) detected at line 350
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 351
+ 
+ []
+
+
+Overfull \hbox (19.62492pt too wide) detected at line 351
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 351
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 352
+ 
+ []
+
+
+Overfull \hbox (25.49991pt too wide) detected at line 352
+ 
+ []
+
+
+Overfull \hbox (25.49991pt too wide) detected at line 352
+ 
+ []
+
+
+Overfull \hbox (15.20834pt too wide) detected at line 356
+ 
+ []
+
+
+Overfull \hbox (13.74994pt too wide) detected at line 358
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 358
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 360
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 360
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 361
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 361
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 362
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 363
+ 
+ []
+
+
+Overfull \hbox (11.74997pt too wide) detected at line 364
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 364
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 365
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 366
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 367
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 368
+ 
+ []
+
+
+Overfull \hbox (5.87498pt too wide) detected at line 369
+ 
+ []
+
+[12 <../../../figures/occ_paths.png>] [13] (./snippet_model.bbl) [14]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 377.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 377.
 
 (./snippet_model.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 350.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 350.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 377.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 377.
 Package rerunfilecheck Info: File `snippet_model.out' has not changed.
 (rerunfilecheck)             Checksum: 354CAA5169AE5DFC1CEB58D6A1324EE1;411.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 350.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 377.
  ) 
 Here is how much of TeX's memory you used:
- 32894 strings out of 492616
- 630660 string characters out of 6132767
- 716708 words of memory out of 5000000
- 36096 multiletter control sequences out of 15000+600000
- 655254 words of font info for 185 fonts, out of 8000000 for 9000
+ 32920 strings out of 492616
+ 630969 string characters out of 6132767
+ 717742 words of memory out of 5000000
+ 36100 multiletter control sequences out of 15000+600000
+ 656143 words of font info for 194 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,16n,63p,2514b,774s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,16n,63p,1951b,769s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{c:/texlive/2018
 /texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/texlive/2018/texmf-dist/fonts/enc/
 dvips/lm/lm-mathsy.enc}{c:/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc
@@ -1632,10 +1669,10 @@ exmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/texlive/2018/texmf-dist/fonts/ty
 pe1/public/lm/lmsy10.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmsy
 6.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmsy8.pfb><c:/texlive/2
 018/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on snippet_model.pdf (13 pages, 747434 bytes).
+Output written on snippet_model.pdf (14 pages, 755492 bytes).
 PDF statistics:
- 326 PDF objects out of 1000 (max. 8388607)
- 282 compressed objects within 3 object streams
- 67 named destinations out of 1000 (max. 500000)
+ 344 PDF objects out of 1000 (max. 8388607)
+ 299 compressed objects within 3 object streams
+ 71 named destinations out of 1000 (max. 500000)
  37959 words of extra memory for PDF output out of 42996 (max. 10000000)
 
