@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/W32TeX) (preloaded format=pdflatex 2018.12.25)  1 JAN 2020 18:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/W32TeX) (preloaded format=pdflatex 2018.12.25)  1 JAN 2020 22:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1284,38 +1284,23 @@ red
 l.1 \newpage
              [1]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 9.
+(Font)              <10> on input line 13.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 9.
+(Font)              <7> on input line 13.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 9.
+(Font)              <5> on input line 13.
 
-Underfull \hbox (badness 10000) in paragraph at lines 7--14
+Underfull \hbox (badness 10000) in paragraph at lines 11--14
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 7--14
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 7--14
+Underfull \hbox (badness 10000) in paragraph at lines 15--18
 
  []
 
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 28--37
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 28--37
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 28--37
+Underfull \hbox (badness 10000) in paragraph at lines 34--37
 
  []
 
@@ -1325,7 +1310,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[3] [4] [5]) (./literature_review.tex
+[3] [4] [5] [6]) (./literature_review.tex
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `\\' on input line 1.
@@ -1350,14 +1335,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 34--45
 
  []
 
-[6]
+[7]
 
 Package Fancyhdr Warning: \headheight is too small (14.49998pt): 
  Make it at least 27.11652pt.
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[7
+[8
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 48--55
@@ -1374,7 +1359,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 48--55
 
  []
 
-[8]
+[9]
 Underfull \hbox (badness 10000) in paragraph at lines 60--70
 
  []
@@ -1394,7 +1379,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 60--70
 
  []
 
-[9] [10]) (./model.tex
+[10] [11]) (./model.tex
 Underfull \hbox (badness 10000) in paragraph at lines 79--1
 
  []
@@ -1404,7 +1389,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 79--1
 
  []
 
-[11] [12]
+[12] [13]
 Underfull \hbox (badness 10000) in paragraph at lines 5--12
 
  []
@@ -1419,7 +1404,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 5--12
 
  []
 
-[13]
+[14]
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `\begingroup' on input line 13.
@@ -1454,27 +1439,27 @@ d on input line 19.
 
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10.95> on input line 44.
-[14]
+[15]
 Underfull \hbox (badness 10000) in paragraph at lines 76--80
 
  []
 
-[15]
+[16]
 Underfull \hbox (badness 10000) in paragraph at lines 88--91
 
  []
 
-[16] [17] [18]
+[17] [18] [19]
 Underfull \hbox (badness 10000) in paragraph at lines 171--174
 
  []
 
-[19]
+[20]
 Underfull \hbox (badness 10000) in paragraph at lines 192--193
 
  []
 
-[20]
+[21]
 Underfull \hbox (badness 10000) in paragraph at lines 198--204
 
  []
@@ -1489,19 +1474,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 205--208
 
  []
 
-[21]
-<../figures/heatmap_corr_chol.png, id=576, 879.285pt x 658.8615pt>
+[22]
+<../figures/heatmap_corr_chol.png, id=581, 879.285pt x 658.8615pt>
 File: ../figures/heatmap_corr_chol.png Graphic file (type png)
 <use ../figures/heatmap_corr_chol.png>
 Package pdftex.def Info: ../figures/heatmap_corr_chol.png  used on input line 2
 15.
 (pdftex.def)             Requested size: 395.6746pt x 296.48492pt.
- [22 <../figures/heatmap_corr_chol.png>]
+ [23 <../figures/heatmap_corr_chol.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 226--229
 
  []
 
-<../figures/occ_paths.png, id=590, 631.158pt x 363.0363pt>
+<../figures/occ_paths.png, id=595, 631.158pt x 363.0363pt>
 File: ../figures/occ_paths.png Graphic file (type png)
 <use ../figures/occ_paths.png>
 Package pdftex.def Info: ../figures/occ_paths.png  used on input line 234.
@@ -1511,7 +1496,7 @@ Overfull \hbox (18.12323pt too wide) in paragraph at lines 234--236
  [][] 
  []
 
-[23]
+[24]
 Underfull \hbox (badness 10000) in paragraph at lines 237--243
 
  []
@@ -1761,7 +1746,7 @@ Overfull \hbox (5.87498pt too wide) detected at line 287
  
  []
 
-) (./up.tex [24 <../figures/occ_paths.png>]) (./gse.tex [25]) (./discussion.tex
+) (./up.tex [25 <../figures/occ_paths.png>]) (./gse.tex [26]) (./discussion.tex
 ) (./conclusion.tex
 Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/12'.
@@ -1769,10 +1754,10 @@ Package microtype Info: Character `029' is missing
 Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/20.74'.
 (microtype)             Ignoring protrusion settings for this character.
-) [26] (./main.bbl [27] [28]) [29] (./appendix.tex [30
+) [27] (./main.bbl [28] [29]) [30] (./appendix.tex [31
 
 ])
-[31] (./affidavit.tex) [32
+[32] (./affidavit.tex) [33
 
 
 ]
@@ -1787,10 +1772,10 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 134.
  ) 
 Here is how much of TeX's memory you used:
  33221 strings out of 492616
- 635310 string characters out of 6132767
+ 635309 string characters out of 6132767
  720467 words of memory out of 5000000
  36230 multiletter control sequences out of 15000+600000
- 668945 words of font info for 209 fonts, out of 8000000 for 9000
+ 668862 words of font info for 208 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,16n,63p,1956b,910s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2018/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{c:/texlive/2018
@@ -1814,10 +1799,10 @@ exmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/texlive/2018/texmf-dist/fonts/ty
 pe1/public/lm/lmsy10.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmsy
 6.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/lm/lmsy8.pfb><c:/texlive/2
 018/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (37 pages, 816718 bytes).
+Output written on main.pdf (38 pages, 819381 bytes).
 PDF statistics:
- 760 PDF objects out of 1000 (max. 8388607)
- 688 compressed objects within 7 object streams
- 170 named destinations out of 1000 (max. 500000)
+ 765 PDF objects out of 1000 (max. 8388607)
+ 692 compressed objects within 7 object streams
+ 172 named destinations out of 1000 (max. 500000)
  41695 words of extra memory for PDF output out of 42996 (max. 10000000)
 
