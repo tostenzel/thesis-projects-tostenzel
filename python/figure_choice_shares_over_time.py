@@ -9,7 +9,7 @@ current_palette = sns.color_palette("deep")
 sns.set_palette(current_palette)
 
 
-def figure_choices_over_time(save=False):
+def figure_choice_shares_over_time(save=False):
     """
     Create figures of shares of occupation choices over time for a
     sample of 1000 agents in KW94.
