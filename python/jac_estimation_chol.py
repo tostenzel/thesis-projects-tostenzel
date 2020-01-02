@@ -1,9 +1,8 @@
 """
-Estimates covariance matrix for KW94 Dataset 1 with Simulated Max. Likelihood.
+Estimates covariance matrix for KW94 Dataset 1 with
+Simulated Max. Likelihood.
 
 """
-import json
-
 import numpy as np
 import pandas as pd
 import respy as rp
@@ -16,7 +15,8 @@ from respy.likelihood import get_crit_func
 def jac_estimation_chol(save=False):
     """
     Estimates covariance matrix for KW94 Dataset 1 with Simulated Max. Likelihood.
-    The Jacobian matrix is used instead of Hessian because its much faster.
+    The Jacobian matrix is used instead of Hessian because it yields no inversion
+    error.
     The parameters contain Cholesky factors instead of SD-Corr-Matrix because
     these factors are unconstrained. Therefore, their distribution can be estimated
     by an unconstrained normal distribution.
@@ -25,14 +25,14 @@ def jac_estimation_chol(save=False):
     ----------
     save: Bool
         Indicates wether to save data.
-    
+
     Returns
     -------
-    par_df: DataFrame
+    par__chol_df: DataFrame
         Df containing parameters, SDs and lower and upper bound in estimagic format.
-    cov_df: DataFrame
+    cov_chol_df: DataFrame
         Df containing the covariance matrix.
-    corr_df: DataFrame
+    corr_chol_df: DataFrame
         DF containing the correlation matrix.
 
     """
@@ -53,6 +53,16 @@ def jac_estimation_chol(save=False):
     constr = rp.get_parameter_constraints("kw_94_one")
     # Kick out constraints for SD-Corr-Matrix. Cholesky factors are unconstrained.
     constr_chol = constr[1:4]
+
+    _, par_estimates = maximize(
+        crit_func,
+        params_chol,
+        "scipy_L-BFGS-B",
+        db_options={"rollover": 200},
+        algo_options={"maxfun": 1},
+        constraints=constr_chol,
+        dashboard=False,
+    )
 
     # df  will take lower and upper bounds after standard error esitmation
     # so that cols fit topography plot requirements.
@@ -97,18 +107,8 @@ def jac_estimation_chol(save=False):
     crit_func = rp.get_crit_func(params_chol, options, df, "log_like")
 
     constr = rp.get_parameter_constraints("kw_94_one")
-    # kick out constraints for SD-Corr-Matrix. Cholesky factors are unconstrained.
+    # Kick out constraints for SD-Corr-Matrix. Cholesky factors are unconstrained.
     constr_chol = constr[1:4]
-
-    _, par_estimates = maximize(
-        crit_func,
-        params_chol,
-        "scipy_L-BFGS-B",
-        db_options={"rollover": 200},
-        algo_options={"maxfun": 1},
-        constraints=constr_chol,
-        dashboard=False,
-    )
 
     # Include upper and lower bounds to par_df for topography plot.
     par_chol_df["sd"] = np.sqrt(np.diag(jacobian_cov_matrix))
@@ -128,18 +128,20 @@ def jac_estimation_chol(save=False):
 
 
 def _chol_indexed_params(params):
-    """ Creates the params Df with Cholesky factors and the right indices for respy.
-    This transformation holds only true for the parametrization in KW94 Dataset 1.
-    It simply changes SD-Corr indices to cholesky indices.
+    """Creates the params Df with Cholesky factors and the right indices for
+    respy. This transformation holds only true for the parametrization
+    in KW94 Dataset 1.
+    Thus, this function simply changes SD-Corr indices to cholesky indices.
     Without the slicing and merging, index ('maximum_exp', 'edu') yields
-    an uniqueness error for the second index when (..., 'sd_edu') is set to (..., 'edu').
-    Yet, since we have double_indices the indices ARE unique.
+    an uniqueness error for the second index when (..., 'sd_edu') is set to
+    (..., 'edu'). Yet, because we have double_indices the indices ARE unique.
 
     """
     p_chol_slice = params.iloc[17:27, :]
-    # remove unused inherited index levels
+    # Remove unused inherited index levels.
     p_chol_slice.index = p_chol_slice.index.remove_unused_levels()
-    # Use the SPECIFIC property of Dataset 1 in KW94 where SD-Corr-Matrix equals Cholesky maxtrix
+    # Use the SPECIFIC property of Dataset 1 in KW94 where SD-Corr-Matrix
+    # equals Cholesky maxtrix.
     # This mean we just need to, firstly, rename the first index.
     p_chol_slice.index = p_chol_slice.index.set_levels(
         p_chol_slice.index.levels[0].str.replace("shocks_sdcorr", "shocks_chol"),
@@ -153,7 +155,7 @@ def _chol_indexed_params(params):
             p_chol_slice.index.levels[1].str.replace(i, j), level=1
         )
 
-    # insert params_chol with index in params by merging slices.
+    # Insert params_chol with index in params by merging slices.
     part_1 = params.iloc[0:17, :]
     part_1.index = part_1.index.remove_unused_levels()
     part_3 = params.iloc[27:31, :]

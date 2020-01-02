@@ -1,9 +1,8 @@
 """
-Estimates covariance matrix for KW94 Dataset 1 with Simulated Max. Likelihood.
+Estimates covariance matrix for KW94 Dataset 1 with
+Simulated Max. Likelihood.
 
 """
-import json
-
 import numpy as np
 import pandas as pd
 import respy as rp
@@ -16,23 +15,23 @@ from respy.likelihood import get_crit_func
 def jac_estimation_sdcorr(save=False):
     """
     Estimates covariance matrix for KW94 Dataset 1 with Simulated Max. Likelihood.
-    The Jacobian matrix is used instead of Hessian because its much faster.
-    The parameters contain sdcorresky factors instead of SD-Corr-Matrix because
-    these factors are unconstrained. Therefore, their distribution can be estimated
-    by an unconstrained normal distribution.
+    The Jacobian matrix is used instead of Hessian because its much yields no inversion
+    error.
+    The parameters contain  SD-Corr-Matrix elements. The outputs are used for
+    comparisons with those containing the Cholesky factors.
 
     Parameters
     ----------
     save: Bool
         Indicates wether to save data.
-    
+
     Returns
     -------
-    par_df: DataFrame
+    par_sdcorr_df: DataFrame
         Df containing parameters, SDs and lower and upper bound in estimagic format.
-    cov_df: DataFrame
+    cov_sdcorr_df: DataFrame
         Df containing the covariance matrix.
-    corr_df: DataFrame
+    corr_sdcorr_df: DataFrame
         DF containing the correlation matrix.
 
     """
@@ -46,6 +45,16 @@ def jac_estimation_sdcorr(save=False):
 
     # Get constraint for parameter estimation
     constr_sdcorr = rp.get_parameter_constraints("kw_94_one")
+
+    _, par_estimates = maximize(
+        crit_func,
+        params_sdcorr,
+        "scipy_L-BFGS-B",
+        db_options={"rollover": 200},
+        algo_options={"maxfun": 1},
+        constraints=constr_sdcorr,
+        dashboard=False,
+    )
 
     # df  will take lower and upper bounds after standard error esitmation
     # so that cols fit topography plot requirements.
@@ -94,16 +103,6 @@ def jac_estimation_sdcorr(save=False):
     constr = rp.get_parameter_constraints("kw_94_one")
     # kick out constraints for SD-Corr-Matrix. sdcorresky factors are unconstrained.
     constr_sdcorr = constr[1:4]
-
-    _, par_estimates = maximize(
-        crit_func,
-        params_sdcorr,
-        "scipy_L-BFGS-B",
-        db_options={"rollover": 200},
-        algo_options={"maxfun": 1},
-        constraints=constr_sdcorr,
-        dashboard=False,
-    )
 
     # Include upper and lower bounds to par_df for topography plot.
     par_sdcorr_df["sd"] = np.sqrt(np.diag(jacobian_cov_matrix))

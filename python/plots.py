@@ -2,15 +2,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-
-# plt.style.use('mplstyle/uq.mplstyle')
 
 
 def heatmap_corr_chol(corr_df, save=False):
-    select = corr_df.iloc[[0, 1, 7, 13, 16, 19, 20], [0, 1, 7, 13, 16, 19, 20]]
+    """
+    Creates the heatmap for the correlations between important
+    input parameters.
 
-    name = "corrs"
+    """
+    plt.style.use("mplstyle/uq.mplstyle")
+    # Mask to select the important parameters.
+    select = corr_df.iloc[[0, 1, 7, 13, 16, 19, 20], [0, 1, 7, 13, 16, 19, 20]]
+    mask = np.zeros_like(select)
+    mask[np.triu_indices_from(select, 1)] = True
+
     labels = np.array(
         [
             r"$\hat{\delta}$",
@@ -45,9 +50,6 @@ def heatmap_corr_chol(corr_df, save=False):
 
     fig = plt.figure(figsize=(15, 10))
 
-    mask = np.zeros_like(select)
-    mask[np.triu_indices_from(select, 1)] = True
-
     # Aspects for heigth, pad for whitespace
     ax = sns.heatmap(
         np.round(select, 2),
@@ -59,9 +61,7 @@ def heatmap_corr_chol(corr_df, save=False):
         vmax=1,
         annot=True,
     )
-    # cbar_kws = dict(
-    # use_gridspec=True, location="right", aspect=25, pad=0.05,
-    # shrink=0.965))
+
     ax.tick_params(axis="both", direction="out", length=6, width=2)
     ax.set_yticklabels(labels[[0, 1, 7, 13, 16, 19, 20]], ha="left", rotation=0)
     ax.set_xticklabels(labels[[0, 1, 7, 13, 16, 19, 20]], rotation=0)
@@ -75,12 +75,12 @@ def heatmap_corr_chol(corr_df, save=False):
     cbar.set_ticklabels(["-1.0", " -0.5", "0.0", "0.5", "1.0"])
     cbar.ax.tick_params(direction="out", length=6, width=2)
 
-    # a bit more space for xlabels
+    # A bit more space for xlabels.
     ax.tick_params(axis="x", which="major", pad=8)
 
-    # left-align y labels
+    # Left-align y labels.
     yax = ax.get_yaxis()
-    pad = max(T.label.get_window_extent().width for T in yax.majorTicks) + 5
+    pad = max(tick.label.get_window_extent().width for tick in yax.majorTicks) + 5
     yax.set_tick_params(pad=pad)
 
     if save is True:
