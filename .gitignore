@@ -10,6 +10,6 @@
 *.synctex.gz
 *.toc
 
-__pychace__/
+__pychache__
 
 *.ipynb_checkpoints
