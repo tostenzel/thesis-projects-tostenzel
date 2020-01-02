@@ -2,63 +2,92 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-#plt.style.use('mplstyle/uq.mplstyle')
+# plt.style.use('mplstyle/uq.mplstyle')
 
 
 def heatmap_corr_chol(corr_df, save=False):
-    select = corr_df.iloc[[0,1,7,13,16,19,20],[0,1,7,13,16,19,20]]
+    select = corr_df.iloc[[0, 1, 7, 13, 16, 19, 20], [0, 1, 7, 13, 16, 19, 20]]
 
-    name="corrs"
-    labels = np.array([r'$\hat{\delta}$', r'$\hat{\beta^{b}}$',  r'$\hat{\beta_{e}^{b}}$',
-             r'$\hat{\beta_{b}^{b}}$', r'$\hat{\beta_{bb}^{b}}$', r'$\hat{\beta_{w}^{b}}$', 
-             r'$\hat{\beta_{ww}^{b}}$', r'$\hat{\beta^{w}}$', r'$\hat{\beta_{e}^{w}}$', 
-             r'$\hat{\beta_{w}^{w}}$', r'$\hat{\beta_{ww}^{w}}$', r'$\hat{\beta_{b}^{w}}$',
-             r'$\hat{\beta_{bb}^{w}}$', r'$\hat{\beta^{e}}$', r'$\hat{\beta_{col}^{e}}$', r'$\hat{\beta_{re}^{e}}$',
-             r'$\hat{\beta^{h}}$', r'$\hat{c_{1}}$', r'$\hat{c_{2}}$', r'$\hat{c_{3}}$',
-             r'$\hat{c_{4}}$', r'$\hat{c_{1,2}}$', r'$\hat{c_{1,3}}$', r'$\hat{c_{2,3}}$', 
-             r'$\hat{c_{1,4}}$', r'$\hat{c_{2,4}}$',  r'$\hat{c_{3,4}$}'])
+    name = "corrs"
+    labels = np.array(
+        [
+            r"$\hat{\delta}$",
+            r"$\hat{\beta^{b}}$",
+            r"$\hat{\beta_{e}^{b}}$",
+            r"$\hat{\beta_{b}^{b}}$",
+            r"$\hat{\beta_{bb}^{b}}$",
+            r"$\hat{\beta_{w}^{b}}$",
+            r"$\hat{\beta_{ww}^{b}}$",
+            r"$\hat{\beta^{w}}$",
+            r"$\hat{\beta_{e}^{w}}$",
+            r"$\hat{\beta_{w}^{w}}$",
+            r"$\hat{\beta_{ww}^{w}}$",
+            r"$\hat{\beta_{b}^{w}}$",
+            r"$\hat{\beta_{bb}^{w}}$",
+            r"$\hat{\beta^{e}}$",
+            r"$\hat{\beta_{col}^{e}}$",
+            r"$\hat{\beta_{re}^{e}}$",
+            r"$\hat{\beta^{h}}$",
+            r"$\hat{c_{1}}$",
+            r"$\hat{c_{2}}$",
+            r"$\hat{c_{3}}$",
+            r"$\hat{c_{4}}$",
+            r"$\hat{c_{1,2}}$",
+            r"$\hat{c_{1,3}}$",
+            r"$\hat{c_{2,3}}$",
+            r"$\hat{c_{1,4}}$",
+            r"$\hat{c_{2,4}}$",
+            r"$\hat{c_{3,4}$}",
+        ]
+    )
 
-    fig = plt.figure(figsize=(15,10))
+    fig = plt.figure(figsize=(15, 10))
 
     mask = np.zeros_like(select)
     mask[np.triu_indices_from(select, 1)] = True
 
     # Aspects for heigth, pad for whitespace
     ax = sns.heatmap(
-             np.round(select, 2), mask=mask,
-             cmap="RdBu_r", linewidths=0.0, square=False, vmin=-1, vmax=1, annot=True)
-             #cbar_kws = dict(
-                #use_gridspec=True, location="right", aspect=25, pad=0.05,
-                #shrink=0.965))
-    ax.tick_params(axis='both', direction='out', length=6, width=2)
-    ax.set_yticklabels(labels[[0,1,7,13,16,19,20]], ha = 'left', rotation=0);
-    ax.set_xticklabels(labels[[0,1,7,13,16,19,20]], rotation=0);
-    ax.set_ylabel(r'$\hat{\theta}$', labelpad=+35, rotation=0)
-    ax.set_xlabel(r'$\hat{\theta}$',labelpad=+25)
+        np.round(select, 2),
+        mask=mask,
+        cmap="RdBu_r",
+        linewidths=0.0,
+        square=False,
+        vmin=-1,
+        vmax=1,
+        annot=True,
+    )
+    # cbar_kws = dict(
+    # use_gridspec=True, location="right", aspect=25, pad=0.05,
+    # shrink=0.965))
+    ax.tick_params(axis="both", direction="out", length=6, width=2)
+    ax.set_yticklabels(labels[[0, 1, 7, 13, 16, 19, 20]], ha="left", rotation=0)
+    ax.set_xticklabels(labels[[0, 1, 7, 13, 16, 19, 20]], rotation=0)
+    ax.set_ylabel(r"$\hat{\theta}$", labelpad=+35, rotation=0)
+    ax.set_xlabel(r"$\hat{\theta}$", labelpad=+25)
 
     cbar = ax.collections[0].colorbar
 
     # Positioning at -1 needs vmin.
     cbar.set_ticks([-1, -0.5, 0, 0.5, 1])
-    cbar.set_ticklabels(['-1.0', ' -0.5', '0.0', '0.5', '1.0'])
-    cbar.ax.tick_params(direction='out', length=6, width=2)
-    
-    #a bit more space for xlabels
-    ax.tick_params(axis='x', which='major', pad=8)
+    cbar.set_ticklabels(["-1.0", " -0.5", "0.0", "0.5", "1.0"])
+    cbar.ax.tick_params(direction="out", length=6, width=2)
 
-    #left-align y labels
+    # a bit more space for xlabels
+    ax.tick_params(axis="x", which="major", pad=8)
+
+    # left-align y labels
     yax = ax.get_yaxis()
-    pad = max(T.label.get_window_extent().width for T in yax.majorTicks) +5
+    pad = max(T.label.get_window_extent().width for T in yax.majorTicks) + 5
     yax.set_tick_params(pad=pad)
 
     if save is True:
         plt.savefig("figures/heatmap.png", bbox_inches="tight")
     else:
         pass
-    
+
     return fig, ax
 
 

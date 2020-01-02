@@ -1,23 +1,32 @@
-******************************************
-Uncertainty quantification for economists
-******************************************
+*************************************************************
+Uncertainty Quantification for an Eckstein-Keane-Wolpin model
+*************************************************************
 
-We explore the usefulness of uncertainty quantification for structural economic models. We analyze the seminal model of dynamic human capital investment presented in:
+This repository hosts the Master's Thesis and its replication files by:
 
-  Keane, M. P. & Wolpin, W. I. (1997). `The career decisions of young men <https://www.jstor.org/stable/10.1086/262080>`_,  *Journal of Political Economy*, 105(3): pp. 473-522.
+  Tobias Stenzel
+  Matriculation number 2971049
+  Master of Science in Economics
+  University of Bonn
 
-Please visit our notebook for details.
+Abstract:
+
+Resources:
+
+  Keane, M. P. & Wolpin, W. I. (1994). `The solution and Estimation of Discrete Dynamic Programming Models by Simulation and Interpolation: Monte Carlo Evidence <https://www.jstor.org/stable/10.1086/2109768>`_,  *The Review of Economics and Statistics*, 76(4): pp. 648-672.
+
+I demonstrate the computations of the results in the included jupyter notebooks.
 
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
-     :target: https://nbviewer.jupyter.org/github/OpenSourceEconomics/numerical-toolbox-uncertainty-quantification/blob/master/notebooks/overview.ipynb
-
+     :target: https://nbviewer.jupyter.org/github.com/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/section_model.ipynb
+     
 ----------------------------------------------------------------------------------------
 
-.. image:: https://travis-ci.org/OpenSourceEconomics/numerical-toolbox-uncertainty-quantification.svg?branch=master
-    :target: https://travis-ci.org/OpenSourceEconomics/numerical-toolbox-uncertainty-quantification
+.. image:: https://travis-ci.org/HumanCapitalAnalysis/thesis-projects-tostenzel.svg?branch=master
+    :target: https://travis-ci.org/HumanCapitalAnalysis/thesis-projects-tostenzel
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/python/black
 
 .. image:: https://img.shields.io/badge/License-MIT-blue.svg
-     :target: https://github.com/OpenSourceEconomics/numerical-toolbox-uncertainty-quantification/blob/master/LICENSE
+     :target: https://github.com/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/LICENSE
