@@ -1,0 +1,36 @@
+exclude: >
+        thesis-projects-tostenzel/.ipynb_checkpoints
+repos:
+-   repo: https://github.com/asottile/reorder_python_imports
+    rev: v1.4.0
+    hooks:
+    -   id: reorder-python-imports
+        types: [python]
+
+
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.2.1
+    hooks:
+    -   id: check-yaml
+
+
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 3.7.7
+    hooks:
+    -   id: flake8
+        args: ['--max-line-length=88', '--extend-ignore=D100,D205,D401,C408,D400'
+        ]
+        types: [python]
+        additional_dependencies: [
+            flake8-bugbear, flake8-builtins, flake8-comprehensions, flake8-docstrings,
+            flake8-eradicate, flake8-print, flake8-rst-docstrings, flake8-todo,
+            pep8-naming,
+        ]
+        files: '.*'  # We start with a subfolder and extend the scope later.
+
+
+-   repo: https://github.com/python/black
+    rev: 19.3b0
+    hooks:
+    -   id: black
+        types: [python]

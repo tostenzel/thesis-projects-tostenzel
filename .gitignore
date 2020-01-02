@@ -3,7 +3,8 @@
 *.aux
 *.bbl
 *.bcf
-*.bib_*.utf8
+*.bib_
+*.utf8
 *.blg
 *.dvi
 *.ent
@@ -34,7 +35,7 @@
 *.vrb
 *latexmk
 *synctex.gz
-.*
 !.env
 .*pdfsvn
 __pycache__
+.ipynb_checkpoints/
