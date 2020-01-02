@@ -13,7 +13,7 @@ This repository hosts the Master's Thesis and its replication files by
 
 **Abstract**
 
-**Resources**
+**References**
 
   Keane, M. P. & Wolpin, W. I. (1994). `The solution and Estimation of Discrete Dynamic Programming Models by Simulation and Interpolation: Monte Carlo Evidence <https://www.jstor.org/stable/10.1086/2109768>`_,  *The Review of Economics and Statistics*, 76(4): pp. 648-672.
 
