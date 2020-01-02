@@ -4,13 +4,11 @@ Uncertainty Quantification for an Eckstein-Keane-Wolpin model
 
 This repository hosts the Master's Thesis and its replication files by
 
-  Tobias Stenzel
-
-  Matriculation number 2971049
-
-  Master of Science in Economics
-
-  University of Bonn
+|  Tobias Stenzel
+|  Matriculation number 2971049
+|  Master of Science in Economics
+|  University of Bonn
+|  Supervisor: Prof. Dr. Philipp Eisenhauer
 
 **Abstract**
 
