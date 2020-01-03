@@ -1,3 +1,5 @@
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -83,7 +85,9 @@ def heatmap_corr_chol(corr_df, save=False):
     yax.set_tick_params(pad=pad)
 
     if save is True:
-        plt.savefig("figures/heatmap.png", bbox_inches="tight")
+        # Define the script path relative to the jupyter notebook that calls the script.
+        abs_dir = os.path.dirname(__file__)
+        plt.savefig(os.path.join(abs_dir, "figures/heatmap.png"), bbox_inches="tight")
     else:
         pass
 
@@ -134,7 +138,12 @@ def distplot(sample, qoi_name, save=False):
     ax.legend(handles=[mean], edgecolor="white")
 
     if save is True:
-        plt.savefig("figures/distplot_{}.png".format(qoi_name), bbox_inches="tight")
+        # Define the script path relative to the jupyter notebook that calls the script.
+        abs_dir = os.path.dirname(__file__)
+        plt.savefig(
+            os.path.join(abs_dir, "figures/distplot_{}.png".format(qoi_name)),
+            bbox_inches="tight",
+        )
     else:
         pass
 
@@ -165,7 +174,7 @@ def convergence_plot(sample, expected, qoi_name, absolute_deviation=False, save=
         Returns Figure object setting figure-level attributes.
 
     """
-    df = pd.DataFrame(sample, columns=["qoi_realization"])
+    df = pd.DataFrame(list(sample), columns=["qoi_realization"])
     df["cum_sum"] = df["qoi_realization"].cumsum()
     df["mean_iteration"] = df["cum_sum"] / (df.index.to_series() + 1)
 
@@ -220,8 +229,12 @@ def convergence_plot(sample, expected, qoi_name, absolute_deviation=False, save=
     )
 
     if save is True:
+        # Define the script path relative to the jupyter notebook that calls the script.
+        abs_dir = os.path.dirname(__file__)
         plt.savefig(
-            "figures/convergence_plot_{}_{}.png".format(file_str, qoi_name),
+            os.path.join(abs_dir, "figures/convergence_plot_{}_{}.png").format(
+                file_str, qoi_name
+            ),
             bbox_inches="tight",
         )
     else:

@@ -125,7 +125,7 @@ def jac_estimation_chol(save=False):
         corr_chol_df.to_pickle(os.path.join(abs_dir, "input/corr_chol.uq.pkl"))
         par_chol_df.to_pickle(os.path.join(abs_dir, "input/params_chol.uq.pkl"))
         # contains 3 fixed respy params
-        params_chol.to_pickle(os.path.join(abs_dir, "input/base_params_chol.uq.pkl"))
+        params_chol.to_pickle(os.path.join(abs_dir, "input/rp_params_chol.uq.pkl"))
     else:
         pass
 

@@ -119,9 +119,7 @@ def jac_estimation_sdcorr(save=False):
         corr_sdcorr_df.to_pickle(os.path.join(abs_dir, "input/corr_sdcorr.uq.pkl"))
         par_sdcorr_df.to_pickle(os.path.join(abs_dir, "input/params_sdcorr.uq.pkl"))
         # contains 3 fixed respy params
-        params_sdcorr.to_pickle(
-            os.path.join(abs_dir, "input/base_params_sdcorr.uq.pkl")
-        )
+        params_sdcorr.to_pickle(os.path.join(abs_dir, "input/rp_params_sdcorr.uq.pkl"))
     else:
         pass
 

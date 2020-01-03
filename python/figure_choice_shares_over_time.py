@@ -1,3 +1,5 @@
+import os
+
 import matplotlib.pyplot as plt
 import respy as rp
 import seaborn as sns
@@ -98,7 +100,11 @@ def figure_choice_shares_over_time(save=False):
     fig.subplots_adjust(bottom=0.24)
 
     if save is True:
-        plt.savefig("figures/occ_paths.png", bbox_inches="tight")
+        # Define the script path relative to the jupyter notebook that calls the script.
+        abs_dir = os.path.dirname(__file__)
+        plt.savefig(
+            os.path.join(abs_dir, "figures/occ_choices.png"), bbox_inches="tight"
+        )
     else:
         pass
 
