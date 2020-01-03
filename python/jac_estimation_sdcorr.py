@@ -1,15 +1,18 @@
 """
 Estimates covariance matrix for KW94 Dataset 1 with
 Simulated Max. Likelihood.
+The code is very similar to jac_estimation_chol.py.
+This structure is retained to not commit errors.
 
 """
+import os
+
 import numpy as np
 import pandas as pd
 import respy as rp
 from estimagic.differentiation.differentiation import jacobian
 from estimagic.inference.likelihood_covs import cov_jacobian
 from estimagic.optimization.optimize import maximize
-from respy.likelihood import get_crit_func
 
 
 def jac_estimation_sdcorr(save=False):
@@ -66,7 +69,7 @@ def jac_estimation_sdcorr(save=False):
 
     # The rest of this function estimates the variation of the estimates.
     # Log-likelihood function for sample of agents.
-    log_like_obs_func = get_crit_func(
+    log_like_obs_func = rp.get_crit_func(
         params_sdcorr, options, df, version="log_like_obs"
     )
 
@@ -109,12 +112,16 @@ def jac_estimation_sdcorr(save=False):
     par_sdcorr_df["lower"] = par_sdcorr_df["value"] - 2 * par_sdcorr_df["sd"]
     par_sdcorr_df["upper"] = par_sdcorr_df["value"] + 2 * par_sdcorr_df["sd"]
 
+    # Define the script path relative to the jupyter notebook that calls the script.
+    abs_dir = os.path.dirname(__file__)
     if save is True:
-        cov_sdcorr_df.to_pickle("python/input/cov_sdcorr.uq.pkl")
-        corr_sdcorr_df.to_pickle("python/input/corr_sdcorr.uq.pkl")
-        par_sdcorr_df.to_pickle("python/input/params_sdcorr.uq.pkl")
+        cov_sdcorr_df.to_pickle(os.path.join(abs_dir, "input/cov_sdcorr.uq.pkl"))
+        corr_sdcorr_df.to_pickle(os.path.join(abs_dir, "input/corr_sdcorr.uq.pkl"))
+        par_sdcorr_df.to_pickle(os.path.join(abs_dir, "input/params_sdcorr.uq.pkl"))
         # contains 3 fixed respy params
-        params_sdcorr.to_pickle("python/input/base_params_sdcorr.uq.pkl")
+        params_sdcorr.to_pickle(
+            os.path.join(abs_dir, "input/base_params_sdcorr.uq.pkl")
+        )
     else:
         pass
 

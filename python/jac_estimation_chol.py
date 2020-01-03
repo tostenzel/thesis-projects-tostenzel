@@ -3,13 +3,14 @@ Estimates covariance matrix for KW94 Dataset 1 with
 Simulated Max. Likelihood.
 
 """
+import os
+
 import numpy as np
 import pandas as pd
 import respy as rp
 from estimagic.differentiation.differentiation import jacobian
 from estimagic.inference.likelihood_covs import cov_jacobian
 from estimagic.optimization.optimize import maximize
-from respy.likelihood import get_crit_func
 
 
 def jac_estimation_chol(save=False):
@@ -37,12 +38,12 @@ def jac_estimation_chol(save=False):
 
     """
     # Df is sample of 1000 agents in 40 periods.
-    params, options, df = rp.get_example_model("kw_94_one")
+    params_sdcorr, options, df = rp.get_example_model("kw_94_one")
 
     # Write params in terms of Cholesky factors instead of SD-Corr-matrix.
     # This transformation holds only true for the parametrization in KW94 Dataset 1.
     # Simply change SD-Corr indices to cholesky indices.
-    params_chol = _chol_indexed_params(params)
+    params_chol = chol_reindex_params(params_sdcorr)
 
     # Estimate parameters.
     # log_like = log_like_obs.mean(). Used for consistency with optimizers.
@@ -74,7 +75,9 @@ def jac_estimation_chol(save=False):
 
     # The rest of this function estimates the variation of the estimates.
     # Log-likelihood function for sample of agents.
-    log_like_obs_func = get_crit_func(params_chol, options, df, version="log_like_obs")
+    log_like_obs_func = rp.get_crit_func(
+        params_chol, options, df, version="log_like_obs"
+    )
 
     # Jacobian matrix.
     jacobian_matrix = jacobian(log_like_obs_func, params_chol, extrapolation=False)
@@ -115,20 +118,23 @@ def jac_estimation_chol(save=False):
     par_chol_df["lower"] = par_chol_df["value"] - 2 * par_chol_df["sd"]
     par_chol_df["upper"] = par_chol_df["value"] + 2 * par_chol_df["sd"]
 
+    # Define the script path relative to the jupyter notebook that calls the script.
+    abs_dir = os.path.dirname(__file__)
     if save is True:
-        cov_chol_df.to_pickle("python/input/cov_chol.uq.pkl")
-        corr_chol_df.to_pickle("python/input/corr_chol.uq.pkl")
-        par_chol_df.to_pickle("python/input/params_chol.uq.pkl")
+        cov_chol_df.to_pickle(os.path.join(abs_dir, "input/cov_chol.uq.pkl"))
+        corr_chol_df.to_pickle(os.path.join(abs_dir, "input/corr_chol.uq.pkl"))
+        par_chol_df.to_pickle(os.path.join(abs_dir, "input/params_chol.uq.pkl"))
         # contains 3 fixed respy params
-        params_chol.to_pickle("python/input/base_params_chol.uq.pkl")
+        params_chol.to_pickle(os.path.join(abs_dir, "input/base_params_chol.uq.pkl"))
     else:
         pass
 
     return par_chol_df, cov_chol_df, corr_chol_df
 
 
-def _chol_indexed_params(params):
-    """Creates the params Df with Cholesky factors and the right indices for
+def chol_reindex_params(params_sdcorr):
+    """
+    Creates the params Df with Cholesky factors and the right indices for
     respy. This transformation holds only true for the parametrization
     in KW94 Dataset 1.
     Thus, this function simply changes SD-Corr indices to cholesky indices.
@@ -136,8 +142,19 @@ def _chol_indexed_params(params):
     an uniqueness error for the second index when (..., 'sd_edu') is set to
     (..., 'edu'). Yet, because we have double_indices the indices ARE unique.
 
+    Parameters
+    ----------
+    params_sdcorr: DataFrame
+        Parameters DataFrame in respy format with SD-Corr matrix elements
+
+    Returns
+    -------
+    params_chol: DataFrame
+        Parameters DataFrame in respy format with matrix elements from Choleksy
+        decomposition of covariance matrix that underlies the SD-Corr matrix.
+
     """
-    p_chol_slice = params.iloc[17:27, :]
+    p_chol_slice = params_sdcorr.iloc[17:27, :]
     # Remove unused inherited index levels.
     p_chol_slice.index = p_chol_slice.index.remove_unused_levels()
     # Use the SPECIFIC property of Dataset 1 in KW94 where SD-Corr-Matrix
@@ -155,10 +172,10 @@ def _chol_indexed_params(params):
             p_chol_slice.index.levels[1].str.replace(i, j), level=1
         )
 
-    # Insert params_chol with index in params by merging slices.
-    part_1 = params.iloc[0:17, :]
+    # Insert params_chol with index in params_sdcorr by merging slices.
+    part_1 = params_sdcorr.iloc[0:17, :]
     part_1.index = part_1.index.remove_unused_levels()
-    part_3 = params.iloc[27:31, :]
+    part_3 = params_sdcorr.iloc[27:31, :]
     part_3.index = part_3.index.remove_unused_levels()
 
     parts = [part_1, p_chol_slice, part_3]

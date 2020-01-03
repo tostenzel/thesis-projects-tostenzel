@@ -9,7 +9,11 @@
 *.out
 *.synctex.gz
 *.toc
-
-__pychache__
+*.bib.sav
+*.bib.bak
 
 *.ipynb_checkpoints
+
+# Folder
+__pychache__/
+.pytest_cache/
