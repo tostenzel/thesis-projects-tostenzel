@@ -1,4 +1,7 @@
 """
+Important: This module contains also the second QoI: The education shares
+over time for a sample of agents. This is used for the cone plot.
+
 Model "mathcal{M}(pmb{theta}).
 This represents the Quantity of Interest q as a function of the
 vector of input paramters theta.
@@ -9,7 +12,7 @@ import pandas as pd
 import respy as rp
 
 
-def get_quantity_of_interest(input_params, add_qoi_edu_choices=False):
+def get_quantitiy_of_interest(input_params, add_qoi_edu_choices=False):
     """
     Computes the Quantity of Interest.
 
@@ -18,7 +21,7 @@ def get_quantity_of_interest(input_params, add_qoi_edu_choices=False):
     input_params: np.array
         unindexed input parameters
     add_qoi_edu_choices: bool
-        Specified whether to compute the addition QoIs, education choice shares
+        Specifies whether to compute the addition QoIs, education choice shares
         in the sample over time, to depict a cone plot (confidence interval plot).
 
     Returns
@@ -71,7 +74,7 @@ def model_wrapper_kw_94(
     tuition_subsidy: float
         tuition subsidy that is added to the respective paramter.
     add_qoi_edu_choices: bool
-        Specified whether to compute the addition QoIs, education choice shares
+        Specifies whether to compute the addition QoIs, education choice shares
         in the sample over time, to depict a cone plot (confidence interval plot).
 
     Returns
@@ -132,6 +135,6 @@ def transform_params_kw94_respy(params_idx):
 
     parts = [part_1, part_2]
     rp_params_series = pd.concat(parts)
-    rp_params_df = pd.DataFrame(rp_params_series, columns=["value"])
+    rp_params_df = pd.Series(rp_params_series, columns=["value"])
 
     return rp_params_df

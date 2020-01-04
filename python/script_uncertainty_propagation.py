@@ -56,7 +56,7 @@ def run():
 
     # Global variables.
     seed = 123
-    number_draws = 10_000
+    number_draws = 10
 
     # Init estimates of parameters and their covariance matrix as nummpy arrays.
     params = pd.read_pickle("input/params_chol.uq.pkl")
@@ -77,11 +77,12 @@ def run():
 
     # Parallelized: The default number of worker processes is the number of CPUs.
     # Evaluate the QoI at the randomly drawn input paramter vectors.
-    mc_quantities = Pool().map(get_quantity_of_interest, sample_input_parameters)
+    pool = Pool(8)
+    mc_quantities = pool.map(get_quantity_of_interest, sample_input_parameters)
     # Close worker processes.
-    Pool.close()
+    pool.close()
     # Wait until these are terminated.
-    Pool.join()
+    pool.join()
 
     # Check for errors.
     temp_array = np.array(mc_quantities)
@@ -90,12 +91,12 @@ def run():
 
     # Save the random parameters and the quantity of interest.
     index = pd.read_pickle("input/params_chol.uq.pkl").index
-    mc_params_df = pd.DataFrame(np.column_stack(sample_input_parameters), index=index)
+    mc_params_ser = pd.Series(np.column_stack(sample_input_parameters), index=index)
 
     mc_quantities_df = pd.DataFrame(
         mc_quantities, columns=["avg_schooling"], index=range(number_draws)
     )
-    mc_quantities.index.name = "iteration"
+    mc_quantities_df.index.name = "iteration"
 
     mc_quantities_df.to_pickle("results/mc_quantity.uq.pkl")
     mc_params_df.to_pickle("results/mc_params.uq.pkl")

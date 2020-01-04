@@ -36,19 +36,25 @@ def jac_estimation_chol(save=False):
     corr_chol_df: DataFrame
         DF containing the correlation matrix.
 
+    Notes
+    -----
+    Additionally, the given parameters `params_chol` from which the simulation starts
+    are stored. These equal the estimate results but are in respy format
+    (with the 3 constants parameters). It is handy to use these directly as
+    mean parameter estimates for the Uncertainty Propagation. This saves tedious reindexing.
     """
     # Df is sample of 1000 agents in 40 periods.
-    params_sdcorr, options, df = rp.get_example_model("kw_94_one")
+    sim_params_sdcorr, options, df = rp.get_example_model("kw_94_one")
 
     # Write params in terms of Cholesky factors instead of SD-Corr-matrix.
     # This transformation holds only true for the parametrization in KW94 Dataset 1.
     # Simply change SD-Corr indices to cholesky indices.
-    params_chol = chol_reindex_params(params_sdcorr)
+    params_chol = chol_reindex_params(sim_params_sdcorr)
 
     # Estimate parameters.
     # log_like = log_like_obs.mean(). Used for consistency with optimizers.
     # Gives log-likelihood function for mean agent.
-    crit_func = rp.get_crit_func(params_chol, options, df, "log_like")
+    crit_func = rp.get_crit_func(sim_params_chol, options, df, "log_like")
 
     # Get constraint for parameter estimation
     constr = rp.get_parameter_constraints("kw_94_one")
@@ -113,7 +119,7 @@ def jac_estimation_chol(save=False):
     # Kick out constraints for SD-Corr-Matrix. Cholesky factors are unconstrained.
     constr_chol = constr[1:4]
 
-    # Include upper and lower bounds to par_df for topography plot.
+    # Include upper and lower bounds to par_df for surface/topography plot.
     par_chol_df["sd"] = np.sqrt(np.diag(jacobian_cov_matrix))
     par_chol_df["lower"] = par_chol_df["value"] - 2 * par_chol_df["sd"]
     par_chol_df["upper"] = par_chol_df["value"] + 2 * par_chol_df["sd"]
@@ -125,7 +131,7 @@ def jac_estimation_chol(save=False):
         corr_chol_df.to_pickle(os.path.join(abs_dir, "input/corr_chol.uq.pkl"))
         par_chol_df.to_pickle(os.path.join(abs_dir, "input/params_chol.uq.pkl"))
         # contains 3 fixed respy params
-        params_chol.to_pickle(os.path.join(abs_dir, "input/rp_params_chol.uq.pkl"))
+        params_chol.to_pickle(os.path.join(abs_dir, "input/rp_sim_params_chol.uq.pkl"))
     else:
         pass
 

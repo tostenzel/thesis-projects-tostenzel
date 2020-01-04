@@ -17,7 +17,8 @@ from estimagic.optimization.optimize import maximize
 
 def jac_estimation_sdcorr(save=False):
     """
-    Estimates covariance matrix for KW94 Dataset 1 with Simulated Max. Likelihood.
+    Estimates and stores parameters and covariance matrix for KW94 Dataset 1 with
+    Simulated Max. Likelihood.
     The Jacobian matrix is used instead of Hessian because its much yields no inversion
     error.
     The parameters contain  SD-Corr-Matrix elements. The outputs are used for
@@ -30,28 +31,38 @@ def jac_estimation_sdcorr(save=False):
 
     Returns
     -------
-    par_sdcorr_df: DataFrame
-        Df containing parameters, SDs and lower and upper bound in estimagic format.
+    par_estimates_df. DataFrame:
+        Containes the estimates parameters and the not estimates fixed parameters in respy
+        format.
+    var_par_sdcorr_df: DataFrame
+        Df containing variable parameters, SDs and lower and upper bound in estimagic format.
+        Can be post-processed with surface/topography plot.
     cov_sdcorr_df: DataFrame
         Df containing the covariance matrix.
     corr_sdcorr_df: DataFrame
         DF containing the correlation matrix.
 
+    Notes
+    -----
+    Additionally, the given parameters `params_sdcorr`from which the simulation starts
+    are stored. These equal the estimate results but are in respy format
+    (with the 3 constants parameters). It is handy to use these directly as
+    mean parameter estimates for the Uncertainty Propagation. This saves tedious reindexing.
     """
     # Df is sample of 1000 agents in 40 periods.
-    params_sdcorr, options, df = rp.get_example_model("kw_94_one")
+    sim_params_sdcorr, options, df = rp.get_example_model("kw_94_one")
 
     # Estimate parameters.
     # log_like = log_like_obs.mean(). Used for consistency with optimizers.
     # Gives log-likelihood function for mean agent.
-    crit_func = rp.get_crit_func(params_sdcorr, options, df, "log_like")
+    crit_func = rp.get_crit_func(sim_params_sdcorr, options, df, "log_like")
 
     # Get constraint for parameter estimation
     constr_sdcorr = rp.get_parameter_constraints("kw_94_one")
 
-    _, par_estimates = maximize(
+    _, par_estimates_df = maximize(
         crit_func,
-        params_sdcorr,
+        sim_params_sdcorr,
         "scipy_L-BFGS-B",
         db_options={"rollover": 200},
         algo_options={"maxfun": 1},
@@ -59,22 +70,22 @@ def jac_estimation_sdcorr(save=False):
         dashboard=False,
     )
 
-    # df  will take lower and upper bounds after standard error esitmation
-    # so that cols fit topography plot requirements.
-    par_sdcorr_df = pd.DataFrame(
-        data=par_estimates["value"].values[:27],
-        index=params_sdcorr[:27].index,
+    # Df of variable parameters. It will take lower and upper bounds
+    # after standard error esitmation so that cols fit topography plot requirements.
+    var_par_sdcorr_df = pd.DataFrame(
+        data=par_estimates_df["value"].values[:27],
+        index=sim_params_sdcorr[:27].index,
         columns=["value"],
     )
 
     # The rest of this function estimates the variation of the estimates.
     # Log-likelihood function for sample of agents.
     log_like_obs_func = rp.get_crit_func(
-        params_sdcorr, options, df, version="log_like_obs"
+        par_estimates_df, options, df, version="log_like_obs"
     )
 
     # Jacobian matrix.
-    jacobian_matrix = jacobian(log_like_obs_func, params_sdcorr, extrapolation=False)
+    jacobian_matrix = jacobian(log_like_obs_func, par_estimates_df, extrapolation=False)
 
     # Drop zero lines to avoid multicollinearity for matrix inversion.
     jacobian_matrix = jacobian_matrix.loc[:, (jacobian_matrix != 0).any(axis=0)]
@@ -85,8 +96,8 @@ def jac_estimation_sdcorr(save=False):
 
     cov_sdcorr_df = pd.DataFrame(
         data=jacobian_cov_matrix,
-        index=params_sdcorr[:27].index,
-        columns=params_sdcorr[:27].index,
+        index=par_estimates_df[:27].index,
+        columns=par_estimates_df[:27].index,
     )
 
     corr_sdcorr_df = cov_sdcorr_df.copy(deep=True)
@@ -98,32 +109,32 @@ def jac_estimation_sdcorr(save=False):
 
     assert -1 <= corr_sdcorr_df.values.any() <= 1, "Corrs must be inside [-1,1]"
 
-    # Estimate parameters.
-    # log_like = log_like_obs.mean(). Used for consistency with optimizers.
-    # Gives log-likelihood function for mean agent.
-    crit_func = rp.get_crit_func(params_sdcorr, options, df, "log_like")
-
-    constr = rp.get_parameter_constraints("kw_94_one")
-    # kick out constraints for SD-Corr-Matrix. sdcorresky factors are unconstrained.
-    constr_sdcorr = constr[1:4]
-
     # Include upper and lower bounds to par_df for topography plot.
-    par_sdcorr_df["sd"] = np.sqrt(np.diag(jacobian_cov_matrix))
-    par_sdcorr_df["lower"] = par_sdcorr_df["value"] - 2 * par_sdcorr_df["sd"]
-    par_sdcorr_df["upper"] = par_sdcorr_df["value"] + 2 * par_sdcorr_df["sd"]
+    var_par_sdcorr_df["sd"] = np.sqrt(np.diag(jacobian_cov_matrix))
+    var_par_sdcorr_df["lower"] = (
+        var_par_sdcorr_df["value"] - 2 * var_par_sdcorr_df["sd"]
+    )
+    var_par_sdcorr_df["upper"] = (
+        var_par_sdcorr_df["value"] + 2 * var_par_sdcorr_df["sd"]
+    )
 
     # Define the script path relative to the jupyter notebook that calls the script.
     abs_dir = os.path.dirname(__file__)
     if save is True:
-        cov_sdcorr_df.to_pickle(os.path.join(abs_dir, "input/cov_sdcorr.uq.pkl"))
-        corr_sdcorr_df.to_pickle(os.path.join(abs_dir, "input/corr_sdcorr.uq.pkl"))
-        par_sdcorr_df.to_pickle(os.path.join(abs_dir, "input/params_sdcorr.uq.pkl"))
-        # contains 3 fixed respy params
-        params_sdcorr.to_pickle(os.path.join(abs_dir, "input/rp_params_sdcorr.uq.pkl"))
+        # Contains 3 fixed respy parameters.
+        par_estimates_df.to_pickle(
+            os.path.join(abs_dir, "input/est_rp_params_sdcorr.uq.pkl")
+        )
+        # Contains only flexible parametes. Can be used for surface/topography plot.
+        var_par_sdcorr_df.to_pickle(
+            os.path.join(abs_dir, "input/est_var_params_sdcorr.uq.pkl")
+        )
+        cov_sdcorr_df.to_pickle(os.path.join(abs_dir, "input/est_cov_sdcorr.uq.pkl"))
+        corr_sdcorr_df.to_pickle(os.path.join(abs_dir, "input/est_corr_sdcorr.uq.pkl"))
     else:
         pass
 
-    return par_sdcorr_df, cov_sdcorr_df, corr_sdcorr_df
+    return par_estimates_df, var_par_sdcorr_df, cov_sdcorr_df, corr_sdcorr_df
 
 
 # Call function.
