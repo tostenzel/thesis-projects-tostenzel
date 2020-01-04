@@ -5,6 +5,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+# Set some plt and sns properties: Latex font and custom colors.
+plt.rcParams["mathtext.fontset"] = "cm"
+plt.rcParams["font.family"] = "STIXGeneral"
 
 def heatmap_corr_chol(corr_df, save=False):
     """
@@ -115,9 +118,9 @@ def distplot(sample, qoi_name, save=False):
     """
     fig, ax = plt.subplots()
 
-    # Plot mean as vertical line.
+        # Plot mean as vertical line.
     mean = ax.axvline(
-        np.mean(sample), color="#1245A8", linestyle="--", lw=4, label="Sample Mean"
+        np.mean(sample), color="#1245A8", linestyle="--", lw=4, label="Sample mean"
     )
 
     # Call seaborn.distplot and set options.
@@ -130,18 +133,21 @@ def distplot(sample, qoi_name, save=False):
         hist_kws=dict(alpha=0.4, color="#1245A8", edgecolor="#1245A8"),
         kde_kws=dict(color="#1245A8", linewidth=5),
     )
-
-    ax.set_title("Distribution of {}".format(qoi_name), y=1.05)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.set_ylabel("Kernel Density Estimate", labelpad=30)
+    ax.grid(True, linestyle='-', alpha=0.5)
+    ax.tick_params(axis="both", direction="out", length=6, width=2)
+    # A bit more space for xlabels.
+    ax.tick_params(axis="x", which="major", pad=8)
+    ax.set_xlabel("{}".format(qoi_name), labelpad=20)
+    #ax.spines["top"].set_visible(False)
+    #ax.spines["right"].set_visible(False)
+    ax.set_ylabel("Kernel density estimate", labelpad=15)
     ax.legend(handles=[mean], edgecolor="white")
 
     if save is True:
         # Define the script path relative to the jupyter notebook that calls the script.
         abs_dir = os.path.dirname(__file__)
         plt.savefig(
-            os.path.join(abs_dir, "figures/distplot_{}.png".format(qoi_name)),
+            os.path.join(abs_dir, "figures/distplot.png"),
             bbox_inches="tight",
         )
     else:
