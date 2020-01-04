@@ -29,19 +29,17 @@ def jac_estimation_chol(save=False):
 
     Returns
     -------
-    par__chol_df: DataFrame
-        Df containing parameters, SDs and lower and upper bound in estimagic format.
+    par_estimates_chol_df. DataFrame:
+        Containes the estimates parameters and the not estimates fixed parameters in respy
+        format.
+    rand_par_chol_df: DataFrame
+        Df containing variable parameters, SDs and lower and upper bound in estimagic format.
+        Can be post-processed with surface/topography plot..
     cov_chol_df: DataFrame
         Df containing the covariance matrix.
     corr_chol_df: DataFrame
         DF containing the correlation matrix.
 
-    Notes
-    -----
-    Additionally, the given parameters `params_chol` from which the simulation starts
-    are stored. These equal the estimate results but are in respy format
-    (with the 3 constants parameters). It is handy to use these directly as
-    mean parameter estimates for the Uncertainty Propagation. This saves tedious reindexing.
     """
     # Df is sample of 1000 agents in 40 periods.
     sim_params_sdcorr, options, df = rp.get_example_model("kw_94_one")
@@ -49,7 +47,7 @@ def jac_estimation_chol(save=False):
     # Write params in terms of Cholesky factors instead of SD-Corr-matrix.
     # This transformation holds only true for the parametrization in KW94 Dataset 1.
     # Simply change SD-Corr indices to cholesky indices.
-    params_chol = chol_reindex_params(sim_params_sdcorr)
+    sim_params_chol = chol_reindex_params(sim_params_sdcorr)
 
     # Estimate parameters.
     # log_like = log_like_obs.mean(). Used for consistency with optimizers.
@@ -61,9 +59,9 @@ def jac_estimation_chol(save=False):
     # Kick out constraints for SD-Corr-Matrix. Cholesky factors are unconstrained.
     constr_chol = constr[1:4]
 
-    _, par_estimates = maximize(
+    _, par_estimates_chol_df = maximize(
         crit_func,
-        params_chol,
+        sim_params_chol,
         "scipy_L-BFGS-B",
         db_options={"rollover": 200},
         algo_options={"maxfun": 1},
@@ -73,20 +71,20 @@ def jac_estimation_chol(save=False):
 
     # df  will take lower and upper bounds after standard error esitmation
     # so that cols fit topography plot requirements.
-    par_chol_df = pd.DataFrame(
-        data=par_estimates["value"].values[:27],
-        index=params_chol[:27].index,
+    rand_par_chol_df = pd.DataFrame(
+        data=par_estimates_chol_df["value"].values[:27],
+        index=par_estimates_chol_df[:27].index,
         columns=["value"],
     )
 
     # The rest of this function estimates the variation of the estimates.
     # Log-likelihood function for sample of agents.
     log_like_obs_func = rp.get_crit_func(
-        params_chol, options, df, version="log_like_obs"
+        par_estimates_chol_df, options, df, version="log_like_obs"
     )
 
     # Jacobian matrix.
-    jacobian_matrix = jacobian(log_like_obs_func, params_chol, extrapolation=False)
+    jacobian_matrix = jacobian(log_like_obs_func, par_estimates_chol_df, extrapolation=False)
 
     # Drop zero lines to avoid multicollinearity for matrix inversion.
     jacobian_matrix = jacobian_matrix.loc[:, (jacobian_matrix != 0).any(axis=0)]
@@ -97,8 +95,8 @@ def jac_estimation_chol(save=False):
 
     cov_chol_df = pd.DataFrame(
         data=jacobian_cov_matrix,
-        index=params_chol[:27].index,
-        columns=params_chol[:27].index,
+        index=par_estimates_chol_df[:27].index,
+        columns=par_estimates_chol_df[:27].index,
     )
 
     corr_chol_df = cov_chol_df.copy(deep=True)
@@ -113,29 +111,34 @@ def jac_estimation_chol(save=False):
     # Estimate parameters.
     # log_like = log_like_obs.mean(). Used for consistency with optimizers.
     # Gives log-likelihood function for mean agent.
-    crit_func = rp.get_crit_func(params_chol, options, df, "log_like")
+    crit_func = rp.get_crit_func(par_estimates_chol_df, options, df, "log_like")
 
     constr = rp.get_parameter_constraints("kw_94_one")
     # Kick out constraints for SD-Corr-Matrix. Cholesky factors are unconstrained.
     constr_chol = constr[1:4]
 
     # Include upper and lower bounds to par_df for surface/topography plot.
-    par_chol_df["sd"] = np.sqrt(np.diag(jacobian_cov_matrix))
-    par_chol_df["lower"] = par_chol_df["value"] - 2 * par_chol_df["sd"]
-    par_chol_df["upper"] = par_chol_df["value"] + 2 * par_chol_df["sd"]
+    rand_par_chol_df["sd"] = np.sqrt(np.diag(jacobian_cov_matrix))
+    rand_par_chol_df["lower"] = rand_par_chol_df["value"] - 2 * rand_par_chol_df["sd"]
+    rand_par_chol_df["upper"] = rand_par_chol_df["value"] + 2 * rand_par_chol_df["sd"]
 
     # Define the script path relative to the jupyter notebook that calls the script.
     abs_dir = os.path.dirname(__file__)
     if save is True:
-        cov_chol_df.to_pickle(os.path.join(abs_dir, "input/cov_chol.uq.pkl"))
-        corr_chol_df.to_pickle(os.path.join(abs_dir, "input/corr_chol.uq.pkl"))
-        par_chol_df.to_pickle(os.path.join(abs_dir, "input/params_chol.uq.pkl"))
-        # contains 3 fixed respy params
-        params_chol.to_pickle(os.path.join(abs_dir, "input/rp_sim_params_chol.uq.pkl"))
+        # Contains 3 fixed respy parameters.
+        par_estimates_chol_df.to_pickle(
+            os.path.join(abs_dir, "input/est_rp_params_chol.uq.pkl")
+        )
+        # Contains only flexible parametes. Can be used for surface/topography plot.
+        rand_par_chol_df.to_pickle(
+            os.path.join(abs_dir, "input/est_rand_params_chol.uq.pkl")
+        )
+        cov_chol_df.to_pickle(os.path.join(abs_dir, "input/est_cov_chol.uq.pkl"))
+        corr_chol_df.to_pickle(os.path.join(abs_dir, "input/est_corr_chol.uq.pkl"))
     else:
         pass
 
-    return par_chol_df, cov_chol_df, corr_chol_df
+    return par_estimates_chol_df, rand_par_chol_df, cov_chol_df, corr_chol_df
 
 
 def chol_reindex_params(params_sdcorr):
@@ -188,7 +191,3 @@ def chol_reindex_params(params_sdcorr):
     params_chol = pd.concat(parts)
 
     return params_chol
-
-
-# Call function.
-jac_estimation_chol(save=True)
