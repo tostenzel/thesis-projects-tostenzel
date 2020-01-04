@@ -12,7 +12,7 @@ import pandas as pd
 import respy as rp
 
 
-def get_quantitiy_of_interest(input_params, add_qoi_edu_choices=False):
+def get_quantity_of_interest(input_params):
     """
     Computes the Quantity of Interest.
 
@@ -36,32 +36,22 @@ def get_quantitiy_of_interest(input_params, add_qoi_edu_choices=False):
     # Define the script path relative to the jupyter notebook that calls the script.
     abs_dir = os.path.dirname(__file__)
     # Estimated parameters with Choleskies plus 3 fixed respy parameters.
-    base_params = pd.read_pickle(os.path.join(abs_dir, "input/rp_params_chol.uq.pkl"))
+    base_params = pd.read_pickle(os.path.join(abs_dir, "input/est_rp_params_chol.pkl"))
 
     params_idx = pd.Series(data=input_params, index=base_params.index[0:27])
     params_idx_respy = transform_params_kw94_respy(params_idx)
 
-    if add_qoi_edu_choices is False:
-        policy_edu, _ = model_wrapper_kw_94(params_idx_respy, base_options, 500.0)
-        base_edu, _ = model_wrapper_kw_94(params_idx_respy, base_options, 0.0)
+    policy_edu, policy_shares, _ = model_wrapper_kw_94(
+        params_idx_respy, base_options, 500.0
+    )
 
-        return policy_edu - base_edu
+    base_edu, base_shares, _ = model_wrapper_kw_94(params_idx_respy, base_options, 0.0)
+    change_mean_edu = policy_edu - base_edu
 
-    else:
-        policy_edu, policy_shares = model_wrapper_kw_94(
-            params_idx_respy, base_options, 500.0, True
-        )
-
-        base_edu, base_shares = model_wrapper_kw_94(
-            params_idx_respy, base_options, 0.0, True
-        )
-
-        return policy_edu - base_edu, policy_shares, base_shares
+    return change_mean_edu, policy_shares, base_shares
 
 
-def model_wrapper_kw_94(
-    input_params, base_options, tuition_subsidy, add_qoi_edu_choices=False
-):
+def model_wrapper_kw_94(input_params, base_options, tuition_subsidy):
     """
     Wrapper around respy to compute the mean number of years in education.
 
@@ -95,20 +85,14 @@ def model_wrapper_kw_94(
 
     edu = policy_df.groupby("Identifier")["Experience_Edu"].max().mean()
 
-    if add_qoi_edu_choices is False:
-        return edu, policy_df
+    policy_df["Age"] = policy_df["Period"] + 16
+    edu_shares = (
+        policy_df.groupby("Age").Choice.value_counts(normalize=True).unstack()[["edu"]]
+    )
+    # Set 0 NaNs in edu shares to 0.
+    edu_shares["edu"].fillna(0, inplace=True)
 
-    else:
-        policy_df["Age"] = policy_df["Period"] + 16
-        edu_shares = (
-            policy_df.groupby("Age")
-            .Choice.value_counts(normalize=True)
-            .unstack()[["edu"]]
-        )
-        # Set 0 NaNs in edu shares to 0.
-        edu_shares["edu"].fillna(0, inplace=True)
-
-        return edu, edu_shares, policy_df
+    return edu, edu_shares, policy_df
 
 
 def transform_params_kw94_respy(params_idx):
@@ -135,6 +119,6 @@ def transform_params_kw94_respy(params_idx):
 
     parts = [part_1, part_2]
     rp_params_series = pd.concat(parts)
-    rp_params_df = pd.Series(rp_params_series, columns=["value"])
+    rp_params_df = pd.DataFrame(rp_params_series, columns=["value"])
 
     return rp_params_df
