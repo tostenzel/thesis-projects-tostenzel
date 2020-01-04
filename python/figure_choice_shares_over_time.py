@@ -25,7 +25,7 @@ def figure_choice_shares_over_time(save=False):
     tuition_subsidies = [0, 500]
 
     # Generate data based on a simulation of 1000 agents.
-    shares_df = []
+    shares_dfs_list = []
     for tuition_subsidy in tuition_subsidies:
         params.loc[
             ("nonpec_edu", "at_least_twelve_exp_edu"), "value"
@@ -37,7 +37,9 @@ def figure_choice_shares_over_time(save=False):
             .Choice.value_counts(normalize=True)
             .unstack()[["home", "edu", "a", "b"]]
         )
-        shares_df.append(shares[["edu", "a", "b", "home"]])
+        # Set 0 NaNs in edu shares to 0.
+        shares["edu"].fillna(0, inplace=True)
+        shares_dfs_list.append(shares[["edu", "a", "b", "home"]])
 
     fig, axs = plt.subplots(1, 2, figsize=(10, 5), sharey=True)
 
@@ -45,16 +47,16 @@ def figure_choice_shares_over_time(save=False):
         with sns.axes_style("whitegrid"):
             sns.set_palette("deep")
 
-            shares_df[idx]["edu"].plot(
+            shares_dfs_list[idx]["edu"].plot(
                 ax=axs[idx], legend=True, linewidth=4.0, color=current_palette[3]
             )
-            shares_df[idx]["a"].plot(
+            shares_dfs_list[idx]["a"].plot(
                 ax=axs[idx], linestyle="-.", linewidth=2, color=current_palette[0]
             )
-            shares_df[idx]["b"].plot(
+            shares_dfs_list[idx]["b"].plot(
                 ax=axs[idx], linestyle="-.", linewidth=2, color=current_palette[1]
             )
-            shares_df[idx]["home"].plot(
+            shares_dfs_list[idx]["home"].plot(
                 ax=axs[idx], linestyle="-.", linewidth=2, color=current_palette[2]
             )
 

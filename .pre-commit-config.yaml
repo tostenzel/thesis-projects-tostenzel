@@ -7,6 +7,12 @@ repos:
     -   id: reorder-python-imports
         types: [python]
 
+-   repo: https://github.com/python/black
+    rev: 19.3b0
+    hooks:
+    -   id: black
+        types: [python]
+
 
 -   repo: https://gitlab.com/pycqa/flake8
     rev: 3.7.7
@@ -21,10 +27,3 @@ repos:
             pep8-naming,
         ]
         files: '.*'  # We start with a subfolder and extend the scope later.
-
-
--   repo: https://github.com/python/black
-    rev: 19.3b0
-    hooks:
-    -   id: black
-        types: [python]
