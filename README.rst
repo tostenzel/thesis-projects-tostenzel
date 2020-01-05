@@ -21,7 +21,8 @@ I demonstrate the computations of the results in the included jupyter notebooks.
 
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
      :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/section_model.ipynb
-     
+.. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
+     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/uncertainty_propagation.ipynb     
 ----------------------------------------------------------------------------------------
 
 .. image:: https://travis-ci.org/HumanCapitalAnalysis/thesis-projects-tostenzel.svg?branch=master
