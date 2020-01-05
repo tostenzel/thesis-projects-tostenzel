@@ -111,17 +111,18 @@ def run(args):
     assert np.isinf(temp_array.any()) == 0
     assert np.isnan(temp_array.any()) == 0
 
-    # Save the random parameters and the quantity of interest.
+    # Store the random parameters and the quantity of interest.
     # Paramter x iteration
     tmp_idx = pd.read_pickle("input/est_rand_params_chol.pkl").index
     mc_input_parameters_df = pd.DataFrame(
         np.column_stack(mc_sample_input_parameters), index=tmp_idx
     )
-
+    # The shares for each iteration are stacked along the vertical axis.
+    # Therefore, indices 16-65 are not unique. Dim.: (65-15)*n_iter x 4.
     mc_base_occ_shares_df = pd.concat(mc_base_occ_shares)
     mc_policy_occ_shares_df = pd.concat(mc_policy_occ_shares)
 
-    # 1 x Iteration
+    # Dim.: 1 x Iteration
     mc_change_avg_edu_df = pd.DataFrame(
         mc_change_avg_edu,
         columns=["change_avg_schooling"],

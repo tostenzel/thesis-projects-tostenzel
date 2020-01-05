@@ -7,6 +7,7 @@ import pandas as pd
 import seaborn as sns
 
 from matplotlib.patches import Rectangle
+import matplotlib.patches as mpatches
 
 # Set some plt and sns properties: Latex font and custom colors.
 plt.rcParams["mathtext.fontset"] = "cm"
@@ -155,27 +156,33 @@ def distplot(sample, qoi_name, save=False):
 
     # Plot mean as vertical line.
     mean = ax.axvline(
-        np.mean(sample), color="gainsboro", linestyle="--", lw=4, label="Sample mean"
+        np.mean(sample), color="gainsboro", linestyle="--", lw=4
     )
 
-    # create legend
+
+    # Call seaborn.distplot and set options.
+    dp = sns.distplot(
+        sample, hist=False, kde=True, kde_kws=dict(color=cmap(0.0),
+            linewidth=5, label = "KDE")
+    )
+
+
+    kde_patch = mpatches.Patch(color=cmap(0.0), label='KDE')
     handles = [
         Rectangle((0, 0), 1, 1, color=c, ec="k")
         for c in [perc_2dot5_colour, perc_16_colour, perc_50_colour]
     ]
     handles.append(mean)
+    handles.append(kde_patch)
     labels = [
+        "KDE",
         r"Sample mean $\gamma$",
         r"$\in [\gamma \mp \sigma$]",
         r"$\in [\gamma \mp 2\sigma]$",
         r"$\notin ~[\gamma \mp 2\sigma$]",
     ]
+    # Reverse list order.
     ax.legend(handles[::-1], labels, edgecolor="white", fontsize=20)
-
-    # Call seaborn.distplot and set options.
-    dp = sns.distplot(
-        sample, hist=False, kde=True, kde_kws=dict(color=cmap(0.0), linewidth=5)
-    )
 
     ax.grid(True, linestyle="-", alpha=0.5)
     ax.tick_params(axis="both", direction="out", length=6, width=2)
@@ -184,7 +191,7 @@ def distplot(sample, qoi_name, save=False):
     ax.set_xlabel("{}".format(qoi_name), labelpad=20)
     # ax.spines["top"].set_visible(False)
     # ax.spines["right"].set_visible(False)
-    ax.set_ylabel("Kernel density estimate", labelpad=15)
+    ax.set_ylabel("Probability density", labelpad=15)
 
     if save is True:
         # Define the script path relative to the jupyter notebook that calls the script.
