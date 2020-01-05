@@ -1,5 +1,8 @@
 import os
 
+# Define the script path relative to the jupyter notebook that calls the script.
+abs_dir = os.path.dirname(__file__)
+
 # Use multiprocessing for parall computing. Needs to be set up at the beginning.
 # Restrict number of threads to one for each library.
 update = {
@@ -19,10 +22,9 @@ import respy as rp
 from multiprocessing import Pool
 import argparse
 
-# Define the script path relative to the jupyter notebook that calls the script.
-abs_dir = os.path.dirname(__file__)
 from multi_quantities_of_interest import model_wrapper_kw_94
 from multi_quantities_of_interest import get_quantity_of_interest
+
 
 def propagate_mean_estimates(save=False):
     """Evaluates the QoI at the mean estimates"""
@@ -32,8 +34,12 @@ def propagate_mean_estimates(save=False):
     # Read correctly indexed estimation results in respy format.
     mean_params = pd.read_pickle(os.path.join(abs_dir, "input/est_rp_params_chol.pkl"))
 
-    policy_edu, base_occ_shares_df, _ = model_wrapper_kw_94(mean_params, base_options, 500)
-    base_edu, policy_occ_shares_df, _ = model_wrapper_kw_94(mean_params, base_options, 0)
+    policy_edu, base_occ_shares_df, _ = model_wrapper_kw_94(
+        mean_params, base_options, 500
+    )
+    base_edu, policy_occ_shares_df, _ = model_wrapper_kw_94(
+        mean_params, base_options, 0
+    )
     qoi_mean_params_edu = policy_edu - base_edu
 
     mean_edu_df = pd.DataFrame(
@@ -42,13 +48,13 @@ def propagate_mean_estimates(save=False):
     if save is True:
         mean_edu_df.to_pickle(
             os.path.join(abs_dir, "results/qoi_mean_params_edu_df.pkl")
-            )
+        )
         base_occ_shares_df.to_pickle(
             os.path.join(abs_dir, "results/qoi_mean_params_base_occ_shares_df.pkl")
-            )
+        )
         policy_occ_shares_df.to_pickle(
             os.path.join(abs_dir, "results/qoi_mean_params_policy_occ_shares_df.pkl")
-            )
+        )
     else:
         pass
 
@@ -127,7 +133,9 @@ def run(args):
     mc_input_parameters_df.to_pickle(
         os.path.join(abs_dir, "results/mc_input_parameters_df.pkl")
     )
-    mc_base_occ_shares_df.to_pickle(os.path.join(abs_dir, "results/mc_base_occ_shares_df.pkl"))
+    mc_base_occ_shares_df.to_pickle(
+        os.path.join(abs_dir, "results/mc_base_occ_shares_df.pkl")
+    )
     mc_policy_occ_shares_df.to_pickle(
         os.path.join(abs_dir, "results/mc_policy_occ_shares_df.pkl")
     )
@@ -147,7 +155,7 @@ if __name__ == "__main__":
         "--number_draws",
         action="store",
         dest="number_draws",
-        default=100,
+        default=10_000,
         type=int,
         help="set number of random input parameter draws",
     )

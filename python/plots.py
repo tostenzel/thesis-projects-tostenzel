@@ -12,6 +12,7 @@ from matplotlib.patches import Rectangle
 plt.rcParams["mathtext.fontset"] = "cm"
 plt.rcParams["font.family"] = "STIXGeneral"
 
+
 def heatmap_corr_chol(corr_df, save=False):
     """
     Creates the heatmap for the correlations between important
@@ -120,7 +121,7 @@ def distplot(sample, qoi_name, save=False):
 
     """
     # Init colors.
-    cmap = cm.get_cmap('RdYlBu_r')
+    cmap = cm.get_cmap("RdYlBu_r")
     colour_mid = cmap(0.1)
     colour_outer = cmap(0.2)
     colour_out = cmap(0.999)
@@ -132,12 +133,16 @@ def distplot(sample, qoi_name, save=False):
     perc_97dot5_colour = colour_out
 
     # Plot the Histogram from the random data.
-    fig, ax = plt.subplots(figsize=(10,8))
+    fig, ax = plt.subplots(figsize=(10, 8))
 
-    counts, bins, patches = ax.hist(sample, bins=100, facecolor=perc_50_colour, density=True)
+    counts, bins, patches = ax.hist(
+        sample, bins=100, facecolor=perc_50_colour, density=True
+    )
 
     # Change the colors of bars at the edges.
-    twodotfive, sixteen, eightyfour, ninetyseventdotfive = np.percentile(sample, [2.5, 16, 84, 97.5])
+    twodotfive, sixteen, eightyfour, ninetyseventdotfive = np.percentile(
+        sample, [2.5, 16, 84, 97.5]
+    )
     for patch, leftside, rightside in zip(patches, bins[:-1], bins[1:]):
         if rightside < twodotfive:
             patch.set_facecolor(perc_2dot5_colour)
@@ -153,38 +158,38 @@ def distplot(sample, qoi_name, save=False):
         np.mean(sample), color="gainsboro", linestyle="--", lw=4, label="Sample mean"
     )
 
-
-    #create legend      
-    handles =  [Rectangle((0,0),1,1,color=c,ec="k") for c in [perc_2dot5_colour, perc_16_colour, perc_50_colour]]
+    # create legend
+    handles = [
+        Rectangle((0, 0), 1, 1, color=c, ec="k")
+        for c in [perc_2dot5_colour, perc_16_colour, perc_50_colour]
+    ]
     handles.append(mean)
-    labels = [r"Sample mean $\gamma$", r"$\in [\gamma \mp \sigma$]", r"$\in [\gamma \mp 2\sigma]$", r"$\notin ~[\gamma \mp 2\sigma$]"]
+    labels = [
+        r"Sample mean $\gamma$",
+        r"$\in [\gamma \mp \sigma$]",
+        r"$\in [\gamma \mp 2\sigma]$",
+        r"$\notin ~[\gamma \mp 2\sigma$]",
+    ]
     ax.legend(handles[::-1], labels, edgecolor="white", fontsize=20)
 
     # Call seaborn.distplot and set options.
     dp = sns.distplot(
-        sample,
-        hist=False,
-        kde=True,
-        kde_kws=dict(color=cmap(0.0), linewidth=5)
+        sample, hist=False, kde=True, kde_kws=dict(color=cmap(0.0), linewidth=5)
     )
 
-    ax.grid(True, linestyle='-', alpha=0.5)
+    ax.grid(True, linestyle="-", alpha=0.5)
     ax.tick_params(axis="both", direction="out", length=6, width=2)
     # A bit more space for xlabels.
     ax.tick_params(axis="x", which="major", pad=8)
     ax.set_xlabel("{}".format(qoi_name), labelpad=20)
-    #ax.spines["top"].set_visible(False)
-    #ax.spines["right"].set_visible(False)
+    # ax.spines["top"].set_visible(False)
+    # ax.spines["right"].set_visible(False)
     ax.set_ylabel("Kernel density estimate", labelpad=15)
-
 
     if save is True:
         # Define the script path relative to the jupyter notebook that calls the script.
         abs_dir = os.path.dirname(__file__)
-        plt.savefig(
-            os.path.join(abs_dir, "figures/distplot.png"),
-            bbox_inches="tight",
-        )
+        plt.savefig(os.path.join(abs_dir, "figures/distplot.png"), bbox_inches="tight")
     else:
         pass
 
