@@ -1,5 +1,6 @@
 """Cone Plot"""
 import os
+
 # Define the script path relative to the jupyter notebook that calls the script.
 abs_dir = os.path.dirname(__file__)
 
@@ -17,14 +18,20 @@ sns.set_palette(current_palette)
 
 
 def cone_plot_choice_shares(save=True):
+    """
+    Uses sample of randomly drawn occupation choices shares over time
+    of a sample of agents from the input paramter distribution to plot
+    confidence intervals for these shares around their means.
+
+    """
     tuition_subsidies = [0, 500]
 
     mc_base_shares_occ_df = pd.read_pickle(
         os.path.join(abs_dir, "results/mc_base_occ_shares_df.pkl")
-        )
+    )
     mc_policy_occ_shares_df = pd.read_pickle(
         os.path.join(abs_dir, "results/mc_policy_occ_shares_df.pkl")
-        )
+    )
 
     occupations = ["edu", "a", "b", "home"]
 
@@ -41,9 +48,8 @@ def cone_plot_choice_shares(save=True):
     percentile_1 = [percentile_1_base, percentile_1_policy]
 
     fig, axs = plt.subplots(1, 2, figsize=(10, 5), sharey=True)
-    scenarios = [mc_base_shares_occ_df, mc_policy_occ_shares_df]
 
-    for scenario, idx in zip(scenarios, range(0, len(tuition_subsidies))):
+    for idx in range(0, len(tuition_subsidies)):
         with sns.axes_style("whitegrid"):
             sns.set_palette("deep")
             sort_colour = [3, 0, 1, 2]
@@ -66,18 +72,19 @@ def cone_plot_choice_shares(save=True):
                     means[idx][occ].plot(
                         ax=axs[idx],
                         legend=True,
-                        linewidth=1.0, linestyle='-',
+                        linewidth=1.0,
+                        linestyle="-",
                         color=current_palette[sort_colour[colour_idx]],
                     )
                 else:
                     means[idx][occ].plot(
                         ax=axs[idx],
                         legend=True,
-                        linewidth=1.0, linestyle='-.',
+                        linewidth=1.0,
+                        linestyle="-.",
                         color=current_palette[sort_colour[colour_idx]],
                     )
                 colour_idx += 1
-
 
             axs[idx].set_ylim(0, 0.85)
             axs[idx].set_xticks([16, 20, 25, 30, 35, 40, 45, 50, 55])
@@ -93,9 +100,12 @@ def cone_plot_choice_shares(save=True):
             axs[idx].tick_params(axis="x", which="major", pad=6)
 
             handles = [
-                Line2D([0], [0], color=current_palette[c], lw=1, linestyle='-.')
-                for c in sort_colour[1:4]][::-1]
-            handles.append(Line2D([0], [0], color=current_palette[sort_colour[0]], lw=1))
+                Line2D([0], [0], color=current_palette[c], lw=1, linestyle="-.")
+                for c in sort_colour[1:4]
+            ][::-1]
+            handles.append(
+                Line2D([0], [0], color=current_palette[sort_colour[0]], lw=1)
+            )
             axs[idx].get_legend().remove()
             if idx == 1:
                 label = "with a tuition subsidy of {} USD".format(
@@ -125,7 +135,8 @@ def cone_plot_choice_shares(save=True):
 
     if save is True:
         plt.savefig(
-            os.path.join(abs_dir, "figures/cone_plot_choice_shares.png"), bbox_inches="tight"
+            os.path.join(abs_dir, "figures/cone_plot_choice_shares.png"),
+            bbox_inches="tight",
         )
     else:
         pass

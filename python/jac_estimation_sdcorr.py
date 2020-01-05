@@ -32,11 +32,11 @@ def jac_estimation_sdcorr(save=False):
     Returns
     -------
     par_estimates_sdcorr_df. DataFrame:
-        Containes the estimates parameters and the not estimates fixed parameters in respy
-        format.
+        Containes the estimates parameters and the not estimates fixed parameters in
+        respy format.
     rand_par_sdcorr_df: DataFrame
-        Df containing variable parameters, SDs and lower and upper bound in estimagic format.
-        Can be post-processed with surface/topography plot.
+        Df containing variable parameters, SDs and lower and upper bound in estimagic
+        format. Can be post-processed with surface/topography plot.
     cov_sdcorr_df: DataFrame
         Df containing the covariance matrix.
     corr_sdcorr_df: DataFrame
@@ -44,10 +44,12 @@ def jac_estimation_sdcorr(save=False):
 
     Notes
     -----
-    Additionally, the given parameters `params_sdcorr`from which the simulation starts
+    Additionally, the given parameters `params_sdcorr` from which the simulation starts
     are stored. These equal the estimate results but are in respy format
     (with the 3 constants parameters). It is handy to use these directly as
-    mean parameter estimates for the Uncertainty Propagation. This saves tedious reindexing.
+    mean parameter estimates for the Uncertainty Propagation. This saves tedious
+    reindexing.
+
     """
     # Df is sample of 1000 agents in 40 periods.
     sim_params_sdcorr, options, df = rp.get_example_model("kw_94_one")

@@ -1,13 +1,12 @@
 import os
 
 import matplotlib.cm as cm
-import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from matplotlib.patches import Rectangle
 from matplotlib.lines import Line2D
+
 # Set some plt and sns properties: Latex font and custom colors.
 plt.rcParams["mathtext.fontset"] = "cm"
 plt.rcParams["font.family"] = "STIXGeneral"
@@ -158,16 +157,20 @@ def distplot(sample, qoi_name, save=False):
 
     # Call seaborn.distplot and set options.
     dp = sns.distplot(
-        sample,
-        hist=False,
-        kde=True,
-        kde_kws=dict(color=cmap(0.0), linewidth=5),
+        sample, hist=False, kde=True, kde_kws=dict(color=cmap(0.0), linewidth=5)
     )
 
-    kde_handle = Line2D([0], [0], color=cmap(0.0), lw=5, label='Line')
+    kde_handle = Line2D([0], [0], color=cmap(0.0), lw=5)
     handles = [
-        Line2D([], [], color=c, marker='|', linestyle='None',
-                          markersize=22, markeredgewidth=3.5)
+        Line2D(
+            [],
+            [],
+            color=c,
+            marker="|",
+            linestyle="None",
+            markersize=22,
+            markeredgewidth=3.5,
+        )
         for c in [perc_2dot5_colour, perc_16_colour, perc_50_colour]
     ]
     handles.append(mean)
@@ -177,7 +180,7 @@ def distplot(sample, qoi_name, save=False):
         r"Sample mean $\gamma_q$",
         r"$q_i \in [\gamma_q \mp \sigma_q]$",
         r"$q_i \in [\gamma_q \mp 2\sigma_q]$",
-        r"$q_i \notin ~[\gamma_q \mp 2\sigma_q]$",
+        r"$q_i ~ \notin [\gamma_q \mp 2\sigma_q]$",
     ]
     # Reverse list order.
     ax.legend(handles[::-1], labels, edgecolor="white", fontsize=20)
@@ -187,8 +190,6 @@ def distplot(sample, qoi_name, save=False):
     # A bit more space for xlabels.
     ax.tick_params(axis="x", which="major", pad=8)
     ax.set_xlabel("{}".format(qoi_name), labelpad=20)
-    # ax.spines["top"].set_visible(False)
-    # ax.spines["right"].set_visible(False)
     ax.set_ylabel("Probability density", labelpad=15)
 
     if save is True:

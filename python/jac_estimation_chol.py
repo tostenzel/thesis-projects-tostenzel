@@ -30,11 +30,11 @@ def jac_estimation_chol(save=False):
     Returns
     -------
     par_estimates_chol_df. DataFrame:
-        Containes the estimates parameters and the not estimates fixed parameters in respy
-        format.
+        Containes the estimates parameters and the not estimates fixed parameters
+        in respy format.
     rand_par_chol_df: DataFrame
-        Df containing variable parameters, SDs and lower and upper bound in estimagic format.
-        Can be post-processed with surface/topography plot..
+        Df containing variable parameters, SDs and lower and upper bound in
+        estimagic format. It can be post-processed with surface/topography plot.
     cov_chol_df: DataFrame
         Df containing the covariance matrix.
     corr_chol_df: DataFrame

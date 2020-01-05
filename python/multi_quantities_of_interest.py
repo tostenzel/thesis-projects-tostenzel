@@ -45,7 +45,9 @@ def get_quantity_of_interest(input_params):
         params_idx_respy, base_options, 500.0
     )
 
-    base_edu, base_occ_shares_df, _ = model_wrapper_kw_94(params_idx_respy, base_options, 0.0)
+    base_edu, base_occ_shares_df, _ = model_wrapper_kw_94(
+        params_idx_respy, base_options, 0.0
+    )
     change_mean_edu = policy_edu - base_edu
 
     return change_mean_edu, policy_occ_shares_df, base_occ_shares_df
