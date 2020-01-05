@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib.patches import Rectangle
-
+from matplotlib.lines import Line2D
 # Set some plt and sns properties: Latex font and custom colors.
 plt.rcParams["mathtext.fontset"] = "cm"
 plt.rcParams["font.family"] = "STIXGeneral"
@@ -161,16 +161,17 @@ def distplot(sample, qoi_name, save=False):
         sample,
         hist=False,
         kde=True,
-        kde_kws=dict(color=cmap(0.0), linewidth=5, label="KDE"),
+        kde_kws=dict(color=cmap(0.0), linewidth=5),
     )
 
-    kde_patch = mpatches.Patch(color=cmap(0.0), label="KDE")
+    kde_handle = Line2D([0], [0], color=cmap(0.0), lw=5, label='Line')
     handles = [
-        Rectangle((0, 0), 1, 1, color=c, ec="k")
+        Line2D([], [], color=c, marker='|', linestyle='None',
+                          markersize=22, markeredgewidth=3.5)
         for c in [perc_2dot5_colour, perc_16_colour, perc_50_colour]
     ]
     handles.append(mean)
-    handles.append(kde_patch)
+    handles.append(kde_handle)
     labels = [
         "KDE",
         r"Sample mean $\gamma_q$",

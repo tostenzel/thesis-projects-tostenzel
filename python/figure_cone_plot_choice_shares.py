@@ -1,6 +1,5 @@
 """Cone Plot"""
 import os
-
 # Define the script path relative to the jupyter notebook that calls the script.
 abs_dir = os.path.dirname(__file__)
 
@@ -15,11 +14,15 @@ current_palette = sns.color_palette("deep")
 sns.set_palette(current_palette)
 
 
-def cone_plot_choices(save=True):
+def cone_plot_choice_shares(save=True):
     tuition_subsidies = [0, 500]
 
-    mc_base_shares_occ_df = pd.read_pickle("results/mc_base_occ_shares_df.pkl")
-    mc_policy_occ_shares_df = pd.read_pickle("results/mc_policy_occ_shares_df.pkl")
+    mc_base_shares_occ_df = pd.read_pickle(
+        os.path.join(abs_dir, "results/mc_base_occ_shares_df.pkl")
+        )
+    mc_policy_occ_shares_df = pd.read_pickle(
+        os.path.join(abs_dir, "results/mc_policy_occ_shares_df.pkl")
+        )
 
     occupations = ["edu", "a", "b", "home"]
 
@@ -38,10 +41,11 @@ def cone_plot_choices(save=True):
     fig, axs = plt.subplots(1, 2, figsize=(10, 5), sharey=True)
     scenarios = [mc_base_shares_occ_df, mc_policy_occ_shares_df]
 
-    for scenario, idx in zip(scenarios, range(0, 2)):
+    for scenario, idx in zip(scenarios, range(0, len(tuition_subsidies))):
         with sns.axes_style("whitegrid"):
             sns.set_palette("deep")
-            colour = 0
+            sort_colour = [3, 0, 1, 2]
+            colour_idx = 0
             for occ in occupations:
                 percentile_99[idx][occ].plot(
                     ax=axs[idx], legend=True, linewidth=1.0, color="white"
@@ -49,20 +53,21 @@ def cone_plot_choices(save=True):
                 percentile_1[idx][occ].plot(
                     ax=axs[idx], legend=True, linewidth=1.0, color="white"
                 )
-                means[idx][occ].plot(
-                    ax=axs[idx],
-                    legend=True,
-                    linewidth=1.0,
-                    color=current_palette[colour],
-                )
                 axs[idx].fill_between(
                     means[idx].index,
                     percentile_99[idx][occ],
                     percentile_1[idx][occ],
-                    facecolor=current_palette[colour],
+                    facecolor=current_palette[sort_colour[colour_idx]],
                     alpha=0.2,
                 )
-                colour += 1
+                means[idx][occ].plot(
+                    ax=axs[idx],
+                    legend=True,
+                    linewidth=1.0,
+                    color=current_palette[sort_colour[colour_idx]],
+                )
+                colour_idx += 1
+
 
             axs[idx].set_ylim(0, 0.85)
             axs[idx].set_xticks([16, 20, 25, 30, 35, 40, 45, 50, 55])
@@ -87,27 +92,27 @@ def cone_plot_choices(save=True):
                 label = "without a tuition subsidy"
             axs[idx].set_title(f"Occupational choices \n {label}", size=16)
 
-    legend = fig.legend(
-        handles,
-        ["Education", "Blue-collar", "White-collar", "Home"],
-        loc="lower center",
-        bbox_to_anchor=(0.460, -0.010),
-        ncol=4,
-        frameon=True,
-        framealpha=1.0,
-        fontsize=14,
-        edgecolor="black",
-        fancybox=False,
-        borderpad=0.5,
-    )
-    frame = legend.get_frame()
-    frame.set_linewidth(0.5)
+        legend = fig.legend(
+            handles,
+            ["Education", "Blue-collar", "White-collar", "Home"],
+            loc="lower center",
+            bbox_to_anchor=(0.460, -0.010),
+            ncol=4,
+            frameon=True,
+            framealpha=1.0,
+            fontsize=14,
+            edgecolor="black",
+            fancybox=False,
+            borderpad=0.5,
+        )
+        frame = legend.get_frame()
+        frame.set_linewidth(0.5)
 
     fig.subplots_adjust(bottom=0.24)
 
     if save is True:
         plt.savefig(
-            os.path.join(abs_dir, "figures/cone_plot_choices.png"), bbox_inches="tight"
+            os.path.join(abs_dir, "figures/cone_plot_choice_shares.png"), bbox_inches="tight"
         )
     else:
         pass

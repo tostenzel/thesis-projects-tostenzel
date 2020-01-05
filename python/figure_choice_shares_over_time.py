@@ -105,7 +105,7 @@ def figure_choice_shares_over_time(save=False):
         # Define the script path relative to the jupyter notebook that calls the script.
         abs_dir = os.path.dirname(__file__)
         plt.savefig(
-            os.path.join(abs_dir, "figures/occ_choices.png"), bbox_inches="tight"
+            os.path.join(abs_dir, "figures/occ_choice_shares.png"), bbox_inches="tight"
         )
     else:
         pass
