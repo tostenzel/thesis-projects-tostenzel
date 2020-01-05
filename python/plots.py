@@ -1,9 +1,12 @@
 import os
 
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import numpy as np
 import pandas as pd
 import seaborn as sns
+
+from matplotlib.patches import Rectangle
 
 # Set some plt and sns properties: Latex font and custom colors.
 plt.rcParams["mathtext.fontset"] = "cm"
@@ -104,7 +107,7 @@ def distplot(sample, qoi_name, save=False):
     Parameters
     ----------
     sample: Series, 1d-array, or list.
-        A vector of random observations.
+        A vector of random observations in vertical format.
     qoi_name: str
         Name of Quantity of interest used for x label and png-name.
     save: bool
@@ -116,23 +119,55 @@ def distplot(sample, qoi_name, save=False):
         Returns Figure object setting figure-level attributes.
 
     """
-    fig, ax = plt.subplots()
+    # Init colors.
+    cmap = cm.get_cmap('RdYlBu_r')
+    colour_mid = cmap(0.1)
+    colour_outer = cmap(0.2)
+    colour_out = cmap(0.999)
+    # Colours for different percentiles.
+    perc_2dot5_colour = colour_out
+    perc_16_colour = colour_outer
+    perc_50_colour = colour_mid
+    perc_84_colour = colour_outer
+    perc_97dot5_colour = colour_out
 
-        # Plot mean as vertical line.
+    # Plot the Histogram from the random data.
+    fig, ax = plt.subplots(figsize=(10,8))
+
+    counts, bins, patches = ax.hist(sample, bins=100, facecolor=perc_50_colour, density=True)
+
+    # Change the colors of bars at the edges.
+    twodotfive, sixteen, eightyfour, ninetyseventdotfive = np.percentile(sample, [2.5, 16, 84, 97.5])
+    for patch, leftside, rightside in zip(patches, bins[:-1], bins[1:]):
+        if rightside < twodotfive:
+            patch.set_facecolor(perc_2dot5_colour)
+        elif leftside > ninetyseventdotfive:
+            patch.set_facecolor(perc_97dot5_colour)
+        elif leftside > eightyfour:
+            patch.set_facecolor(perc_84_colour)
+        elif rightside < sixteen:
+            patch.set_facecolor(perc_16_colour)
+
+    # Plot mean as vertical line.
     mean = ax.axvline(
-        np.mean(sample), color="#1245A8", linestyle="--", lw=4, label="Sample mean"
+        np.mean(sample), color="gainsboro", linestyle="--", lw=4, label="Sample mean"
     )
+
+
+    #create legend      
+    handles =  [Rectangle((0,0),1,1,color=c,ec="k") for c in [perc_2dot5_colour, perc_16_colour, perc_50_colour]]
+    handles.append(mean)
+    labels = [r"Sample mean $\gamma$", r"$\in [\gamma \mp \sigma$]", r"$\in [\gamma \mp 2\sigma]$", r"$\notin ~[\gamma \mp 2\sigma$]"]
+    ax.legend(handles[::-1], labels, edgecolor="white", fontsize=20)
 
     # Call seaborn.distplot and set options.
     dp = sns.distplot(
         sample,
-        hist=True,
+        hist=False,
         kde=True,
-        bins=100,
-        norm_hist=True,
-        hist_kws=dict(alpha=0.4, color="#1245A8", edgecolor="#1245A8"),
-        kde_kws=dict(color="#1245A8", linewidth=5),
+        kde_kws=dict(color=cmap(0.0), linewidth=5)
     )
+
     ax.grid(True, linestyle='-', alpha=0.5)
     ax.tick_params(axis="both", direction="out", length=6, width=2)
     # A bit more space for xlabels.
@@ -141,7 +176,7 @@ def distplot(sample, qoi_name, save=False):
     #ax.spines["top"].set_visible(False)
     #ax.spines["right"].set_visible(False)
     ax.set_ylabel("Kernel density estimate", labelpad=15)
-    ax.legend(handles=[mean], edgecolor="white")
+
 
     if save is True:
         # Define the script path relative to the jupyter notebook that calls the script.

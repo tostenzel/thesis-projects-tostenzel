@@ -41,14 +41,14 @@ def get_quantity_of_interest(input_params):
     params_idx = pd.Series(data=input_params, index=base_params.index[0:27])
     params_idx_respy = transform_params_kw94_respy(params_idx)
 
-    policy_edu, policy_shares, _ = model_wrapper_kw_94(
+    policy_edu, policy_occ_shares_df, _ = model_wrapper_kw_94(
         params_idx_respy, base_options, 500.0
     )
 
-    base_edu, base_shares, _ = model_wrapper_kw_94(params_idx_respy, base_options, 0.0)
+    base_edu, base_occ_shares_df, _ = model_wrapper_kw_94(params_idx_respy, base_options, 0.0)
     change_mean_edu = policy_edu - base_edu
 
-    return change_mean_edu, policy_shares, base_shares
+    return change_mean_edu, policy_occ_shares_df, base_occ_shares_df
 
 
 def model_wrapper_kw_94(input_params, base_options, tuition_subsidy):
@@ -86,13 +86,15 @@ def model_wrapper_kw_94(input_params, base_options, tuition_subsidy):
     edu = policy_df.groupby("Identifier")["Experience_Edu"].max().mean()
 
     policy_df["Age"] = policy_df["Period"] + 16
-    edu_shares = (
-        policy_df.groupby("Age").Choice.value_counts(normalize=True).unstack()[["edu"]]
+    occ_shares_df = (
+        policy_df.groupby("Age")
+        .Choice.value_counts(normalize=True)
+        .unstack()[["home", "edu", "a", "b"]]
     )
     # Set 0 NaNs in edu shares to 0.
-    edu_shares["edu"].fillna(0, inplace=True)
+    occ_shares_df["edu"].fillna(0, inplace=True)
 
-    return edu, edu_shares, policy_df
+    return edu, occ_shares_df, policy_df
 
 
 def transform_params_kw94_respy(params_idx):

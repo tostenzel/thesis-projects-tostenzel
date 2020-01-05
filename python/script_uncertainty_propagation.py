@@ -19,12 +19,10 @@ import respy as rp
 from multiprocessing import Pool
 import argparse
 
+# Define the script path relative to the jupyter notebook that calls the script.
+abs_dir = os.path.dirname(__file__)
 from multi_quantities_of_interest import model_wrapper_kw_94
 from multi_quantities_of_interest import get_quantity_of_interest
-
-# Define the script path relative to the jupyter notebook that calls the script.
-# abs_dir = os.path.dirname(__file__)
-
 
 def propagate_mean_estimates(save=False):
     """Evaluates the QoI at the mean estimates"""
@@ -32,23 +30,29 @@ def propagate_mean_estimates(save=False):
     _, base_options = rp.get_example_model("kw_94_one", with_data=False)
 
     # Read correctly indexed estimation results in respy format.
-    mean_params = pd.read_pickle("input/est_rp_params_chol.pkl")
+    mean_params = pd.read_pickle(os.path.join(abs_dir, "input/est_rp_params_chol.pkl"))
 
-    policy_edu, base_shares, _ = model_wrapper_kw_94(mean_params, base_options, 500)
-    base_edu, policy_shares, _ = model_wrapper_kw_94(mean_params, base_options, 0)
+    policy_edu, base_occ_shares_df, _ = model_wrapper_kw_94(mean_params, base_options, 500)
+    base_edu, policy_occ_shares_df, _ = model_wrapper_kw_94(mean_params, base_options, 0)
     qoi_mean_params_edu = policy_edu - base_edu
 
-    mean_edu = pd.DataFrame(
+    mean_edu_df = pd.DataFrame(
         qoi_mean_params_edu, columns=["change_avg_schooling"], index=[0]
     )
     if save is True:
-        mean_edu.to_pickle("results/qoi_mean_params_edu.pkl")
-        base_shares.to_pickle("results/qoi_mean_params_base_shares.pkl")
-        policy_shares.to_pickle("results/qoi_mean_params_policy_shares.pkl")
+        mean_edu_df.to_pickle(
+            os.path.join(abs_dir, "results/qoi_mean_params_edu_df.pkl")
+            )
+        base_occ_shares_df.to_pickle(
+            os.path.join(abs_dir, "results/qoi_mean_params_base_occ_shares_df.pkl")
+            )
+        policy_occ_shares_df.to_pickle(
+            os.path.join(abs_dir, "results/qoi_mean_params_policy_occ_shares_df.pkl")
+            )
     else:
         pass
 
-    return mean_edu, base_shares, policy_shares
+    return mean_edu_df, base_occ_shares_df, policy_occ_shares_df
 
 
 def run(args):
@@ -83,14 +87,14 @@ def run(args):
     # Evaluate the QoI at the randomly drawn input paramter vectors.
     pool = Pool(8)
     mc_change_avg_edu = list()
-    mc_policy_shares = list()
-    mc_base_shares = list()
+    mc_policy_occ_shares = list()
+    mc_base_occ_shares = list()
 
-    # Need Loop to handle the list that pool returns.
+    # Pool returns lists. Need Loop to handle these lists.
     for i, j, k in pool.map(get_quantity_of_interest, mc_sample_input_parameters):
         mc_change_avg_edu.append(i)
-        mc_policy_shares.append(j)
-        mc_base_shares.append(k)
+        mc_policy_occ_shares.append(j)
+        mc_base_occ_shares.append(k)
     # Close worker processes.
     pool.close()
     # Wait until these are terminated.
@@ -108,10 +112,8 @@ def run(args):
         np.column_stack(mc_sample_input_parameters), index=tmp_idx
     )
 
-    # Age x iteration.
-    tmp_idx = pd.read_pickle("results/qoi_mean_params_base_shares.pkl").index
-    mc_base_shares_df = pd.DataFrame(np.column_stack(mc_base_shares), index=tmp_idx)
-    mc_policy_shares_df = pd.DataFrame(np.column_stack(mc_policy_shares), index=tmp_idx)
+    mc_base_occ_shares_df = pd.concat(mc_base_occ_shares)
+    mc_policy_occ_shares_df = pd.concat(mc_policy_occ_shares)
 
     # 1 x Iteration
     mc_change_avg_edu_df = pd.DataFrame(
@@ -125,9 +127,9 @@ def run(args):
     mc_input_parameters_df.to_pickle(
         os.path.join(abs_dir, "results/mc_input_parameters_df.pkl")
     )
-    mc_base_shares_df.to_pickle(os.path.join(abs_dir, "results/mc_base_shares_df.pkl"))
-    mc_policy_shares_df.to_pickle(
-        os.path.join(abs_dir, "results/mc_policy_shares_df.pkl")
+    mc_base_occ_shares_df.to_pickle(os.path.join(abs_dir, "results/mc_base_occ_shares_df.pkl"))
+    mc_policy_occ_shares_df.to_pickle(
+        os.path.join(abs_dir, "results/mc_policy_occ_shares_df.pkl")
     )
     mc_change_avg_edu_df.to_pickle(
         os.path.join(abs_dir, "results/mc_change_avg_edu_df.pkl")
@@ -145,7 +147,7 @@ if __name__ == "__main__":
         "--number_draws",
         action="store",
         dest="number_draws",
-        default=200,
+        default=100,
         type=int,
         help="set number of random input parameter draws",
     )
