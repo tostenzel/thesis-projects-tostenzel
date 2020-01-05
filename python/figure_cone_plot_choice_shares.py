@@ -7,6 +7,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from matplotlib.lines import Line2D
+
 # Set some plt and sns properties: Latex font and custom colors.
 plt.rcParams["mathtext.fontset"] = "cm"
 plt.rcParams["font.family"] = "STIXGeneral"
@@ -60,12 +62,20 @@ def cone_plot_choice_shares(save=True):
                     facecolor=current_palette[sort_colour[colour_idx]],
                     alpha=0.2,
                 )
-                means[idx][occ].plot(
-                    ax=axs[idx],
-                    legend=True,
-                    linewidth=1.0,
-                    color=current_palette[sort_colour[colour_idx]],
-                )
+                if colour_idx == 0:
+                    means[idx][occ].plot(
+                        ax=axs[idx],
+                        legend=True,
+                        linewidth=1.0, linestyle='-',
+                        color=current_palette[sort_colour[colour_idx]],
+                    )
+                else:
+                    means[idx][occ].plot(
+                        ax=axs[idx],
+                        legend=True,
+                        linewidth=1.0, linestyle='-.',
+                        color=current_palette[sort_colour[colour_idx]],
+                    )
                 colour_idx += 1
 
 
@@ -82,7 +92,10 @@ def cone_plot_choice_shares(save=True):
             axs[idx].tick_params(direction="out", length=4, width=1.1, labelsize=14)
             axs[idx].tick_params(axis="x", which="major", pad=6)
 
-            handles, labels = axs[idx].get_legend_handles_labels()
+            handles = [
+                Line2D([0], [0], color=current_palette[c], lw=1, linestyle='-.')
+                for c in sort_colour[1:4]][::-1]
+            handles.append(Line2D([0], [0], color=current_palette[sort_colour[0]], lw=1))
             axs[idx].get_legend().remove()
             if idx == 1:
                 label = "with a tuition subsidy of {} USD".format(
@@ -93,7 +106,7 @@ def cone_plot_choice_shares(save=True):
             axs[idx].set_title(f"Occupational choices \n {label}", size=16)
 
         legend = fig.legend(
-            handles,
+            handles[::-1],
             ["Education", "Blue-collar", "White-collar", "Home"],
             loc="lower center",
             bbox_to_anchor=(0.460, -0.010),
