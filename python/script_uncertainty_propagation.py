@@ -1,9 +1,9 @@
 import os
 
-# Define the script path relative to the jupyter notebook that calls the script.
+# Define the script path relative to the location from where the script is called.
 abs_dir = os.path.dirname(__file__)
 
-# Use multiprocessing for parall computing. Needs to be set up at the beginning.
+# Use multiprocessing for parallel computing. Needs to be set up at the beginning.
 # Restrict number of threads to one for each library.
 update = {
     "NUMBA_NUM_THREADS": "1",
@@ -26,7 +26,7 @@ from multi_quantities_of_interest import model_wrapper_kw_94
 from multi_quantities_of_interest import get_quantity_of_interest
 
 
-def propagate_mean_estimates(save=False):
+def propagate_mean_estimates():
     """Evaluates the QoI at the mean estimates"""
     # Init base_options because its part of the model wrapper argument
     _, base_options = rp.get_example_model("kw_94_one", with_data=False)
@@ -43,20 +43,18 @@ def propagate_mean_estimates(save=False):
     qoi_mean_params_edu = policy_edu - base_edu
 
     mean_edu_df = pd.DataFrame(
-        qoi_mean_params_edu, columns=["change_avg_schooling"], index=[0]
+        qoi_mean_params_edu, columns=["change_mean_schooling"], index=[0]
     )
-    if save is True:
-        mean_edu_df.to_pickle(
-            os.path.join(abs_dir, "results/qoi_mean_params_edu_df.pkl")
-        )
-        base_occ_shares_df.to_pickle(
-            os.path.join(abs_dir, "results/qoi_mean_params_base_occ_shares_df.pkl")
-        )
-        policy_occ_shares_df.to_pickle(
-            os.path.join(abs_dir, "results/qoi_mean_params_policy_occ_shares_df.pkl")
-        )
-    else:
-        pass
+    # Store results.
+    mean_edu_df.to_pickle(
+        os.path.join(abs_dir, "results/qoi_mean_params_change_mean_edu_df.pkl")
+    )
+    base_occ_shares_df.to_pickle(
+        os.path.join(abs_dir, "results/qoi_mean_params_base_occ_shares_df.pkl")
+    )
+    policy_occ_shares_df.to_pickle(
+        os.path.join(abs_dir, "results/qoi_mean_params_policy_occ_shares_df.pkl")
+    )
 
     return mean_edu_df, base_occ_shares_df, policy_occ_shares_df
 
@@ -92,13 +90,13 @@ def run(args):
     # Parallelized: The default number of worker processes is the number of CPUs.
     # Evaluate the QoI at the randomly drawn input paramter vectors.
     pool = Pool(8)
-    mc_change_avg_edu = list()
+    mc_change_mean_edu = list()
     mc_policy_occ_shares = list()
     mc_base_occ_shares = list()
 
     # Pool returns lists. Need Loop to handle these lists.
     for i, j, k in pool.map(get_quantity_of_interest, mc_sample_input_parameters):
-        mc_change_avg_edu.append(i)
+        mc_change_mean_edu.append(i)
         mc_policy_occ_shares.append(j)
         mc_base_occ_shares.append(k)
     # Close worker processes.
@@ -107,7 +105,7 @@ def run(args):
     pool.join()
 
     # Check for errors in main qoi.
-    temp_array = np.array(mc_change_avg_edu)
+    temp_array = np.array(mc_change_mean_edu)
     assert np.isinf(temp_array.any()) == 0
     assert np.isnan(temp_array.any()) == 0
 
@@ -123,14 +121,12 @@ def run(args):
     mc_policy_occ_shares_df = pd.concat(mc_policy_occ_shares)
 
     # Dim.: 1 x Iteration
-    mc_change_avg_edu_df = pd.DataFrame(
-        mc_change_avg_edu,
-        columns=["change_avg_schooling"],
+    mc_change_mean_edu_df = pd.DataFrame(
+        mc_change_mean_edu,
+        columns=["change_mean_schooling"],
         index=range(args.number_draws),
     ).T
 
-    # Define the script path relative to the jupyter notebook that calls the script.
-    abs_dir = os.path.dirname(__file__)
     mc_input_parameters_df.to_pickle(
         os.path.join(abs_dir, "results/mc_input_parameters_df.pkl")
     )
@@ -140,8 +136,8 @@ def run(args):
     mc_policy_occ_shares_df.to_pickle(
         os.path.join(abs_dir, "results/mc_policy_occ_shares_df.pkl")
     )
-    mc_change_avg_edu_df.to_pickle(
-        os.path.join(abs_dir, "results/mc_change_avg_edu_df.pkl")
+    mc_change_mean_edu_df.to_pickle(
+        os.path.join(abs_dir, "results/mc_change_mean_edu_df.pkl")
     )
 
 

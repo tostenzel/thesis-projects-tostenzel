@@ -1,5 +1,4 @@
-"""Test"""
-
+"""Cone Plot"""
 import os
 
 # Define the script path relative to the jupyter notebook that calls the script.

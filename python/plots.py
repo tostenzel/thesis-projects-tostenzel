@@ -1,13 +1,12 @@
 import os
 
-import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-
 from matplotlib.patches import Rectangle
-import matplotlib.patches as mpatches
 
 # Set some plt and sns properties: Latex font and custom colors.
 plt.rcParams["mathtext.fontset"] = "cm"
@@ -155,19 +154,17 @@ def distplot(sample, qoi_name, save=False):
             patch.set_facecolor(perc_16_colour)
 
     # Plot mean as vertical line.
-    mean = ax.axvline(
-        np.mean(sample), color="gainsboro", linestyle="--", lw=4
-    )
-
+    mean = ax.axvline(np.mean(sample), color="gainsboro", linestyle="--", lw=4)
 
     # Call seaborn.distplot and set options.
     dp = sns.distplot(
-        sample, hist=False, kde=True, kde_kws=dict(color=cmap(0.0),
-            linewidth=5, label = "KDE")
+        sample,
+        hist=False,
+        kde=True,
+        kde_kws=dict(color=cmap(0.0), linewidth=5, label="KDE"),
     )
 
-
-    kde_patch = mpatches.Patch(color=cmap(0.0), label='KDE')
+    kde_patch = mpatches.Patch(color=cmap(0.0), label="KDE")
     handles = [
         Rectangle((0, 0), 1, 1, color=c, ec="k")
         for c in [perc_2dot5_colour, perc_16_colour, perc_50_colour]
@@ -176,10 +173,10 @@ def distplot(sample, qoi_name, save=False):
     handles.append(kde_patch)
     labels = [
         "KDE",
-        r"Sample mean $\gamma$",
-        r"$\in [\gamma \mp \sigma$]",
-        r"$\in [\gamma \mp 2\sigma]$",
-        r"$\notin ~[\gamma \mp 2\sigma$]",
+        r"Sample mean $\gamma_q$",
+        r"$q_i \in [\gamma_q \mp \sigma_q]$",
+        r"$q_i \in [\gamma_q \mp 2\sigma_q]$",
+        r"$q_i \notin ~[\gamma_q \mp 2\sigma_q]$",
     ]
     # Reverse list order.
     ax.legend(handles[::-1], labels, edgecolor="white", fontsize=20)
@@ -285,9 +282,7 @@ def convergence_plot(sample, expected, qoi_name, absolute_deviation=False, save=
         # Define the script path relative to the jupyter notebook that calls the script.
         abs_dir = os.path.dirname(__file__)
         plt.savefig(
-            os.path.join(abs_dir, "figures/convergence_plot_{}_{}.png").format(
-                file_str, qoi_name
-            ),
+            os.path.join(abs_dir, "figures/convergence_plot_{}.png").format(file_str),
             bbox_inches="tight",
         )
     else:
