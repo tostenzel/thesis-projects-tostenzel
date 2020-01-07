@@ -27,3 +27,4 @@ repos:
             pep8-naming,
         ]
         files: '.*'  # We start with a subfolder and extend the scope later.
+        exclude: utils/travis_runner.py # Containes commented out code.

@@ -27,10 +27,10 @@ def cone_plot_choice_shares(save=True):
     tuition_subsidies = [0, 500]
 
     mc_base_shares_occ_df = pd.read_pickle(
-        os.path.join(abs_dir, "results/mc_base_occ_shares_df.pkl")
+        os.path.join(abs_dir, "results/10_000_draws/mc_base_occ_shares_df.pkl")
     )
     mc_policy_occ_shares_df = pd.read_pickle(
-        os.path.join(abs_dir, "results/mc_policy_occ_shares_df.pkl")
+        os.path.join(abs_dir, "results/10_000_draws/mc_policy_occ_shares_df.pkl")
     )
 
     occupations = ["edu", "a", "b", "home"]
