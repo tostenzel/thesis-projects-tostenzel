@@ -71,9 +71,9 @@ def run(args):
     # Global variables.
 
     # Init estimates of parameters and their covariance matrix as nummpy arrays.
-    params = pd.read_pickle("input/est_rand_params_chol.pkl")
+    params = pd.read_pickle(os.path.join(abs_dir, "input/est_rand_params_chol.pkl"))
     mean = params["value"].to_numpy()
-    cov = pd.read_pickle("input/est_cov_chol.pkl").to_numpy()
+    cov = pd.read_pickle(os.path.join(abs_dir, "input/est_cov_chol.pkl")).to_numpy()
 
     # Draw the sample of random input parameters.
     np.random.seed(args.seed)
@@ -111,7 +111,9 @@ def run(args):
 
     # Store the random parameters and the quantity of interest.
     # Paramter x iteration
-    tmp_idx = pd.read_pickle("input/est_rand_params_chol.pkl").index
+    tmp_idx = pd.read_pickle(
+        os.path.join(abs_dir, "input/est_rand_params_chol.pkl")
+    ).index
     mc_input_parameters_df = pd.DataFrame(
         np.column_stack(mc_sample_input_parameters), index=tmp_idx
     )

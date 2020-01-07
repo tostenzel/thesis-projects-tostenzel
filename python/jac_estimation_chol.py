@@ -193,3 +193,7 @@ def chol_reindex_params(params_sdcorr):
     params_chol = pd.concat(parts)
 
     return params_chol
+
+
+# Call function in travis_runner.py
+jac_estimation_chol(save=True)
