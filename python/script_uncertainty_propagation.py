@@ -66,7 +66,7 @@ def run(args):
     https://docs.python.org/3/library/multiprocessing.html#multiprocessing-programming
     """
     # Call function.
-    _, _, _ = propagate_mean_estimates(save=True)
+    _, _, _ = propagate_mean_estimates()
 
     # Global variables.
 
