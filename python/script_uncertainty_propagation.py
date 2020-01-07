@@ -152,7 +152,7 @@ if __name__ == "__main__":
         "--number_draws",
         action="store",
         dest="number_draws",
-        default=10_000,
+        default=5,
         type=int,
         help="set number of random input parameter draws",
     )

@@ -178,9 +178,9 @@ def distplot(sample, qoi_name, save=False):
     labels = [
         "KDE",
         r"Sample mean $\gamma_q$",
-        r"$q_i \in [\gamma_q \mp \sigma_q]$",
-        r"$q_i \in [\gamma_q \mp 2\sigma_q]$",
-        r"$q_i ~ \notin [\gamma_q \mp 2\sigma_q]$",
+        r"$q_n \in [\gamma_q \mp \sigma_q]$",
+        r"$q_n \in [\gamma_q \mp 2\sigma_q]$",
+        r"$q_n ~ \notin [\gamma_q \mp 2\sigma_q]$",
     ]
     # Reverse list order.
     ax.legend(handles[::-1], labels, edgecolor="white", fontsize=20)
