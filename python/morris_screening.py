@@ -1,6 +1,6 @@
 """Morris Screening"""
 import numpy as np
-
+import scipy.special
 
 n_inputs = 2
 n_levels = 4
@@ -12,8 +12,8 @@ def stepsize(n_levels):
 
 
 def morris_trajectories(
-        init_input_pars, stepsize, seed=123, test_D_star_rand_2dim=False
-        ):
+    init_input_pars, stepsize, seed=123, test_D_star_rand_2dim=False
+):
     """Returns n parameter vectors, Dim n x Theta.
     n is also Theta+1."""
     n_inputs = len(init_input_pars)
@@ -52,27 +52,26 @@ def elementary_effect_i(model, i_python, init_input_pars, stepsize):
 
 def scaled_elementary_effect_i(
     model, i_python, init_input_pars, stepsize, sd_i, sd_model
-    ):
+):
     """Scales EE by (SD_i / SD_M)"""
     ee_i = elementary_effect_i(model, i_python, init_input_pars, stepsize)
 
     return ee_i * (sd_i / sd_model)
+
 
 def sobol_model(input_pars, coeffs_a):
     """
     Arguments are lists. Strongly nonlinear, nonmonotonic, and nonzero interactions.
     Analytic results for Sobol Indices.
     """
+
     def g_i(input_par_i, coeffs_a_i):
         return (abs(4 * input_par_i - 2) + coeffs_a_i) / (1 + coeffs_a_i)
+
     y = 1
     for i in range(0, len(input_pars)):
         y *= g_i(input_pars[i], coeffs_a[i])
     return y
-
-
-# afterwards implement this for all elements of a traj list.
-
 
 
 def compute_trajectory_distance(traj_0, traj_1):
@@ -83,38 +82,83 @@ def compute_trajectory_distance(traj_0, traj_1):
     
     """
     distance = 0
-    
+
     assert np.size(traj_0, 0) == np.size(traj_0, 1) + 1
     assert traj_0.shape == traj_1.shape
     if np.any(np.not_equal(traj_0, traj_1)):
-        for col_0 in range(0,  np.size(traj_0, 1)):
-            for col_1 in range(0,  np.size(traj_1, 1)):
-                distance += np.sqrt(sum((traj_0[:,col_0] - traj_1[:,col_1])**2))
+        for col_0 in range(0, np.size(traj_0, 1)):
+            for col_1 in range(0, np.size(traj_1, 1)):
+                distance += np.sqrt(sum((traj_0[:, col_0] - traj_1[:, col_1]) ** 2))
     else:
         pass
-    
+
     return distance
 
+
 # afterwards implement this for all elements of a traj list.
-def campolongo_2007(trajectory_list):
-    distance_matrix = np.nan * np.ones(shape=(len(trajectory_list),len(trajectory_list)))
+def distance_matrix(trajectory_list):
+    distance_matrix = np.nan * np.ones(
+        shape=(len(trajectory_list), len(trajectory_list))
+    )
     for i in range(0, len(trajectory_list)):
         for j in range(0, len(trajectory_list)):
-            distance_matrix[i,j] = compute_trajectory_distance(
-                    trajectory_list[i],
-                    trajectory_list[j])
-            return distance_matrix
-
-traj_0 = np.ones((3,2))
-traj_1 = np.zeros((3,2))
-
-compute_trajectory_distance(traj_0, traj_1)
-campolongo_2007([traj_0, traj_1])
-    
-    
-    
+            distance_matrix[i, j] = compute_trajectory_distance(
+                trajectory_list[i], trajectory_list[j]
+            )
+    return distance_matrix
 
 
+traj_0 = np.zeros((3, 2))
+traj_1 = np.ones((3, 2))
+traj_2 = np.full((3, 2), 2)
+traj_3 = np.full((3, 2), 10)
 
 
+traj_matrix = distance_matrix([traj_0, traj_1, traj_2, traj_3])
+n_traj = 3
 
+
+# from itertools import combinations
+
+
+def combinations(iterable, r):
+    # combinations('ABCD', 2) --> AB AC AD BC BD CD
+    # combinations(range(4), 3) --> 012 013 023 123
+    pool = list(iterable)
+    n = len(pool)
+    if r > n:
+        return
+    indices = list(range(r))
+    yield list(pool[i] for i in indices)
+    while True:
+        for i in reversed(range(r)):
+            if indices[i] != i + n - r:
+                break
+        else:
+            return
+        indices[i] += 1
+        for j in range(i + 1, r):
+            indices[j] = indices[j - 1] + 1
+        yield list(pool[i] for i in indices)
+
+
+from scipy.special import binom
+
+# Get all possible combinations of input parameters by their indices.
+# Unfortunatley returned as tuples.
+combi = list(combinations(np.arange(0, np.size(traj_matrix, 1)), n_traj))
+# Convert list of tuples to list of lists.
+
+assert len(combi) == binom(np.size(traj_matrix, 1), n_traj)
+combi_distance = np.ones([len(combi), n_traj + 1]) * np.nan
+combi_distance[:, 0:n_traj] = np.array(combi)
+
+
+# (3,1) (3,2) (3,0) does not work because it need 4 out of 4  indices instead 3 out of 4.
+for row in range(0, np.size(traj_matrix, 0)):
+    combi_distance[row, n_traj] = 0
+    pair_combi = list(combinations(combi[row], 2))
+    for pair in pair_combi:
+
+        combi_distance[row, n_traj] += traj_matrix[int(pair[0])][int(pair[1])] ** 2
+combi_distance[:, n_traj] = np.sqrt(combi_distance[:, n_traj])

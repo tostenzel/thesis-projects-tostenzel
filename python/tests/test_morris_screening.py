@@ -9,7 +9,7 @@ from numpy.testing import assert_array_equal
 from morris_screening import morris_trajectories
 from morris_screening import elementary_effect_i
 from morris_screening import compute_trajectory_distance
-
+from morris_screening import distance_matrix
 
 
 def test_morris_trajectories():
@@ -37,7 +37,14 @@ def test_elemtary_effect_i():
         elementary_effect_i(lin_portfolio, 1, [0.5, 1], stepsize=2 / 3), 10
     )
 
+
 def test_compute_trajectory_distance():
-    traj_0 = np.ones((3,2))
-    traj_1 = np.zeros((3,2))
+    traj_0 = np.ones((3, 2))
+    traj_1 = np.zeros((3, 2))
     assert 4 * np.sqrt(3) == compute_trajectory_distance(traj_0, traj_1)
+
+
+def test_distance_matrix():
+    traj_list = [np.ones((3, 2)), np.zeros((3, 2))]
+    expected = np.array([[0, 4 * np.sqrt(3)], [4 * np.sqrt(3), 0]])
+    assert_array_equal(expected, distance_matrix(traj_list))
