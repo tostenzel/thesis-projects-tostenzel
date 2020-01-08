@@ -2,7 +2,7 @@
 Uncertainty Quantification for an Eckstein-Keane-Wolpin model
 *************************************************************
 
-This repository hosts the Master's Thesis and its replication files by
+This repository hosts the Master's Thesis and its replication files written by
 
   |  Tobias Stenzel
   |  Matriculation number 2971049

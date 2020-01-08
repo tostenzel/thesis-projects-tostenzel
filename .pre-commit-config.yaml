@@ -18,7 +18,7 @@ repos:
     rev: 3.7.7
     hooks:
     -   id: flake8
-        args: ['--max-line-length=88', '--extend-ignore=D100,D205,D401,C408,D400,E402'
+        args: ['--max-line-length=88', '--extend-ignore=D100,D205,D401,C408,D400,E402,T001'
         ]
         types: [python]
         additional_dependencies: [

@@ -178,8 +178,8 @@ def distplot(sample, qoi_name, save=False):
     labels = [
         "KDE",
         r"Sample mean $\gamma_q$",
-        r"$q_n \in [\gamma_q \mp \sigma_q]$",
-        r"$q_n \in [\gamma_q \mp 2\sigma_q]$",
+        r"$q_n \in [\gamma_q \pm \sigma_q]$",
+        r"$q_n \in [\gamma_q \pm 2\sigma_q]$",
         r"$q_n ~ \notin [\gamma_q \mp 2\sigma_q]$",
     ]
     # Reverse list order.
