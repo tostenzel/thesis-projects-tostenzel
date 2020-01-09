@@ -61,6 +61,7 @@ def scaled_elementary_effect_i(
 
 def sobol_model(input_pars, coeffs_a):
     """
+     - Tested by comparing graphs for 3 specifications to book.
     Arguments are lists. Strongly nonlinear, nonmonotonic, and nonzero interactions.
     Analytic results for Sobol Indices.
     """
@@ -96,6 +97,9 @@ def compute_trajectory_distance(traj_0, traj_1):
 
 
 def distance_matrix(trajectory_list):
+    """Compute distance between each pair of trajectories.
+    Return symmetric matrix.
+    """
     distance_matrix = np.nan * np.ones(
         shape=(len(trajectory_list), len(trajectory_list))
     )
@@ -107,25 +111,17 @@ def distance_matrix(trajectory_list):
     return distance_matrix
 
 
-traj_0 = np.zeros((3, 2))
-traj_1 = np.ones((3, 2))
-traj_2 = np.full((3, 2), 2)
-traj_3 = np.full((3, 2), 10)
-
-
-traj_matrix = distance_matrix([traj_0, traj_1, traj_2, traj_3])
-n_traj = 3
-
-
 def combinations(iterable, r):
     """
     Takes list of elements and returns list of list
     of all possible r combinations regardless the order. 
     E.g. combinations(range(4), 3) returns
     [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]].
+    The order matters!!!
     Taken from
     https://docs.python.org/2/library/itertools.html#itertools.combinations
     with slight modifications to update syntax and return lists.
+
 
     """
     pool = list(iterable)
@@ -146,23 +142,38 @@ def combinations(iterable, r):
         yield list(pool[i] for i in indices)
 
 
+def select_trajectories(traj_dist_matrix, n_traj):
+    """
+    Convert symmetric matrix of distances for each trajectory pair
+    to matrix with rows for each combination of n_traj combination of pairs.
+    The distance_matrix are in [row,:n_traj] and the root-squared sum is in
+    [row,n_traj+1]
+    Also returns list of indices for traj_dist list to select the optimal trajs.
+    """
+    # Get all possible combinations of input parameters by their indices.
+    # Unfortunatley returned as tuples.
+    combi = list(combinations(np.arange(0, np.size(traj_dist_matrix, 1)), n_traj))
+    # Convert list of tuples to list of lists.
+    assert np.all(np.abs(traj_dist_matrix - traj_dist_matrix.T) < 1e-8)
+    assert len(combi) == binom(np.size(traj_dist_matrix, 1), n_traj)
+    combi_distance = np.ones([len(combi), n_traj + 1]) * np.nan
+    combi_distance[:, 0:n_traj] = np.array(combi)
 
-"""To be tested"""
-# Get all possible combinations of input parameters by their indices.
-# Unfortunatley returned as tuples.
-combi = list(combinations(np.arange(0, np.size(traj_matrix, 1)), n_traj))
-# Convert list of tuples to list of lists.
+    # (3,1) (3,2) (3,0) does not work because it need 4 out of 4  indices instead 3 out of 4.
+    for row in range(0, np.size(traj_dist_matrix, 0)):
+        combi_distance[row, n_traj] = 0
+        pair_combi = list(combinations(combi[row], 2))
+        for pair in pair_combi:
 
-assert len(combi) == binom(np.size(traj_matrix, 1), n_traj)
-combi_distance = np.ones([len(combi), n_traj + 1]) * np.nan
-combi_distance[:, 0:n_traj] = np.array(combi)
+            combi_distance[row, n_traj] += (
+                traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
+            )
+    combi_distance[:, n_traj] = np.sqrt(combi_distance[:, n_traj])
+    # indices of combination that yields highest distance figure
+    #
+    max_dist_indices_row = combi_distance[:, n_traj].argsort()[-1:][::-1].tolist()
+    max_dist_indices = combi_distance[max_dist_indices_row, 0:n_traj]
+    # Convert list of float indices to list of ints.
+    max_dist_indices = [int(i) for i in max_dist_indices.tolist()[0]]
 
-
-# (3,1) (3,2) (3,0) does not work because it need 4 out of 4  indices instead 3 out of 4.
-for row in range(0, np.size(traj_matrix, 0)):
-    combi_distance[row, n_traj] = 0
-    pair_combi = list(combinations(combi[row], 2))
-    for pair in pair_combi:
-
-        combi_distance[row, n_traj] += traj_matrix[int(pair[0])][int(pair[1])] ** 2
-combi_distance[:, n_traj] = np.sqrt(combi_distance[:, n_traj])
+    return max_dist_indices, combi_distance
