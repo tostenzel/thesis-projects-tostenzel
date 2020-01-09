@@ -100,11 +100,11 @@ def run(args):
     # The approach is outlined in the second answer to the following stackexchange
     # question: https://quant.stackexchange.com/questions/21764/
     # stopping-monte-carlo-simulation-once-certain-convergence-level-is-reached
-    convergence_criterion = 0.2
-    n_parallelized_iter = 8
+    convergence_criterion = 0.5
+    n_parallelized_iter = 500
     while (
         1.96 * np.sqrt(est_var / n) > convergence_criterion
-        and n < args.max_number_draws - 1
+        and n < args.max_number_draws - 1 # maybe n -1 rather
     ):
         for n_temp in range(0, n_parallelized_iter):
             # Pool returns lists. Need Loop to handle these lists.
@@ -116,7 +116,7 @@ def run(args):
                 mc_base_occ_shares.append(k)
             n = +n_temp
         est_var = np.var(mc_change_mean_edu)
-    n = n + 1
+    n = n + 1 # maybe n -1 rather
     # Close worker processes.
     pool.close()
     # Wait until these are terminated.

@@ -1,6 +1,6 @@
 """Morris Screening"""
 import numpy as np
-import scipy.special
+from scipy.special import binom
 
 n_inputs = 2
 n_levels = 4
@@ -95,7 +95,6 @@ def compute_trajectory_distance(traj_0, traj_1):
     return distance
 
 
-# afterwards implement this for all elements of a traj list.
 def distance_matrix(trajectory_list):
     distance_matrix = np.nan * np.ones(
         shape=(len(trajectory_list), len(trajectory_list))
@@ -118,12 +117,17 @@ traj_matrix = distance_matrix([traj_0, traj_1, traj_2, traj_3])
 n_traj = 3
 
 
-# from itertools import combinations
-
-
 def combinations(iterable, r):
-    # combinations('ABCD', 2) --> AB AC AD BC BD CD
-    # combinations(range(4), 3) --> 012 013 023 123
+    """
+    Takes list of elements and returns list of list
+    of all possible r combinations regardless the order. 
+    E.g. combinations(range(4), 3) returns
+    [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]].
+    Taken from
+    https://docs.python.org/2/library/itertools.html#itertools.combinations
+    with slight modifications to update syntax and return lists.
+
+    """
     pool = list(iterable)
     n = len(pool)
     if r > n:
@@ -142,8 +146,8 @@ def combinations(iterable, r):
         yield list(pool[i] for i in indices)
 
 
-from scipy.special import binom
 
+"""To be tested"""
 # Get all possible combinations of input parameters by their indices.
 # Unfortunatley returned as tuples.
 combi = list(combinations(np.arange(0, np.size(traj_matrix, 1)), n_traj))
