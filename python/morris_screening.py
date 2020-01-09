@@ -22,7 +22,7 @@ def morris_trajectories(n_inputs, n_levels, seed=123, test=False):
     # Matrix of zeros with values radom choices between -1 and 1 on main
     # diagonal.
     if test is True:
-        base_value_rand = 1 / 3
+        base_value_vector_rand = [1 / 3] * 2
         P_star_rand = np.identity(n_inputs)
         D_star_rand = np.array([[1, 0], [0, -1]])
     else:
@@ -151,6 +151,7 @@ def select_trajectories(traj_dist_matrix, n_traj):
     combi_distance = np.ones([len(combi), n_traj + 1]) * np.nan
     combi_distance[:, 0:n_traj] = np.array(combi)
 
+    # This loop needs to be parallelized.
     for row in range(0, len(combi)):
         combi_distance[row, n_traj] = 0
         pair_combi = list(combinations(combi[row], 2))
@@ -189,7 +190,7 @@ def sobol_model(input_pars, coeffs_a):
 
 
 # Campolongo_2007
-def campolongo_2007(n_inputs, n_traj_sample, n_traj):
+def campolongo_2007(n_inputs, n_levels, n_traj_sample, n_traj):
     """Takes number of input parametes, samplesize of trajectories,
     and selected number of trajectories as arguments.
     Returns an array with n_inputs at the verical and n_traj at the
@@ -199,19 +200,28 @@ def campolongo_2007(n_inputs, n_traj_sample, n_traj):
     for traj in range(0, n_traj_sample):
         seed = 123 + traj
 
-        sample_traj.append(morris_trajectories(n_inputs=2, n_levels=4, seed=seed))
+        sample_traj.append(morris_trajectories(n_inputs, n_levels, seed=seed))
     pair_matrix = distance_matrix(sample_traj)
-    select_indices, dist_matrix = select_trajectories(pair_matrix, 4)
+    select_indices, dist_matrix = select_trajectories(pair_matrix, n_traj)
 
     select_trajs = [sample_traj[idx] for idx in select_indices]
     # rows are parameters, cols is number of drawn parameter vectors.
     input_par_array = np.vstack(select_trajs)
+
     return input_par_array.T
 
 
-input_par_array = campolongo_2007(n_inputs=2, n_traj_sample=100, n_traj=4)
+input_par_array = campolongo_2007(n_inputs=27, n_levels=6, n_traj_sample=20, n_traj=4)
+
+import itertools
 
 
+new_list = input_par_array.reshape(-1, 1).tolist()
+merged = list(itertools.chain.from_iterable(new_list))
+
+import matplotlib.pyplot as plt
+
+plt.hist(merged, range=[-0.3, 1.3])
 # a = [78, 12, 0.5, 2, 97, 33]
 
 # function_evals = list()
@@ -222,41 +232,3 @@ input_par_array = campolongo_2007(n_inputs=2, n_traj_sample=100, n_traj=4)
 # test = np.ones([5, 6])
 
 # np.tril(test, -1)
-
-
-"""
-np.random.seed(seed)
-step = stepsize(n_levels)
-#  B is (p+1)*p strictily lower triangular matrix of ones.
-B = np.tril(np.ones([n_inputs + 1, n_inputs]), -1)
-# J is (p+1)*p matrix of ones.
-J = np.ones([n_inputs + 1, n_inputs])
-# Matrix of zeros with values radom choices between -1 and 1 on main
-# diagonal.
-if test is True:
-    base_value_rand = 1/3
-    P_star_rand = np.identity(n_inputs)
-    D_star_rand = np.array([[1, 0], [0, -1]])
-else:
-    # Choose a random value from the differenent Elementary Effects.
-    # Must be lower than 1 - step otherwise one could sample values > 1.
-    # base_value rand \in [i/(1-step)]
-    value_grid = [0, 1 - step]
-    idx = 1
-    while idx/(n_levels - 1) < 1 - step:
-        value_grid.append(idx / idx/(n_levels - 1))
-        idx = idx + 1
-    base_value_vector_rand = np.array(random.choices(value_grid, k = n_inputs))
-    # Influenced by seed. Seed 123 generates P_star in book.
-    P_star_rand = np.identity(n_inputs)
-    # Shuffle columns
-    np.random.shuffle(P_star_rand.T)
-    D_star_rand = np.zeros([n_inputs, n_inputs])
-    np.fill_diagonal(D_star_rand, random.choices([-1, 1], k = n_inputs))
-# Be careful with np.dot vs. np.matmul vs. *.
-B_star_rand = np.dot(
-    J*base_value_vector_rand
-    + (step / 2) * (np.dot((2 * B - J), D_star_rand) + J),
-    P_star_rand
-    )
-"""
