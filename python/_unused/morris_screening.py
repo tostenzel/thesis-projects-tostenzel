@@ -73,6 +73,8 @@ def morris_trajectories(
         base_value_vector_rand = np.array(random.choices(value_grid, k=n_inputs))
         # Influenced by seed.
         P_star_rand = np.identity(n_inputs)
+        D_star_rand = np.zeros([n_inputs, n_inputs])
+        np.fill_diagonal(D_star_rand, random.choices([-1, 1], k=n_inputs))
         """Shuffle columns: Commented Out to get simple stairs form!!!"""
         if stairs is False:
             np.random.shuffle(P_star_rand.T)
@@ -82,8 +84,6 @@ def morris_trajectories(
         base_value_vector_rand = [1 / 3] * 2
         P_star_rand = np.identity(n_inputs)
         D_star_rand = np.array([[1, 0], [0, -1]])
-        D_star_rand = np.zeros([n_inputs, n_inputs])
-        np.fill_diagonal(D_star_rand, random.choices([-1, 1], k=n_inputs))
     # Be careful with np.dot vs. np.matmul vs. *.
     B_star_rand = np.dot(
         J * base_value_vector_rand
@@ -223,14 +223,16 @@ def campolongo_2007(n_inputs, n_levels, n_traj_sample, n_traj):
     return input_par_array.T, select_trajs
 
 
-def simple_stairs(n_inputs, n_levels, n_traj_sample, n_traj):
+def simple_stairs(n_inputs, n_levels, n_traj_sample, n_traj, step_function):
     """Creates list of Morris trajectories in winding stairs format."""
     sample_traj = list()
     for traj in range(0, n_traj_sample):
         seed = 123 + traj
 
         sample_traj.append(
-            morris_trajectories(n_inputs, n_levels, step_function=stepsize, seed=seed)
+            morris_trajectories(
+                n_inputs, n_levels, step_function=step_function, seed=seed
+            )
         )
 
     # Rows are parameters, cols is number of drawn parameter vectors.
@@ -239,11 +241,28 @@ def simple_stairs(n_inputs, n_levels, n_traj_sample, n_traj):
     return input_par_array.T, sample_traj
 
 
+"""Experiment stepsize equidistant"""
 input_par_array, trajs_list = simple_stairs(
-    n_inputs=5, n_levels=6, n_traj_sample=1000, n_traj=1000
+    n_inputs=5,
+    n_levels=6,
+    n_traj_sample=1000,
+    n_traj=1000,
+    step_function=stepsize_equidistant,
 )
 
 new_list = input_par_array.reshape(-1, 1).tolist()
 merged = list(itertools.chain.from_iterable(new_list))
 
+plt.figure(2)
+plt.hist(merged, range=[-0.3, 1.3])
+
+"""Experiment stepsize"""
+input_par_array, trajs_list = simple_stairs(
+    n_inputs=5, n_levels=6, n_traj_sample=1000, n_traj=1000, step_function=stepsize
+)
+
+new_list = input_par_array.reshape(-1, 1).tolist()
+merged = list(itertools.chain.from_iterable(new_list))
+
+plt.figure(1)
 plt.hist(merged, range=[-0.3, 1.3])
