@@ -1,4 +1,4 @@
-"""Winding stairs sampling + Morris(1991) improvement  + Campolongo(2007) improvement"""
+"""Winding stairs sampling + Morris(1991) improvement + Campolongo(2007) improvement"""
 import itertools
 import random
 
@@ -223,10 +223,10 @@ def campolongo_2007(n_inputs, n_levels, n_traj_sample, n_traj):
     return input_par_array.T, select_trajs
 
 
-def simple_stairs(n_inputs, n_levels, n_traj_sample, n_traj, step_function):
+def simple_stairs(n_inputs, n_levels, n_traj, step_function):
     """Creates list of Morris trajectories in winding stairs format."""
     sample_traj = list()
-    for traj in range(0, n_traj_sample):
+    for traj in range(0, n_traj):
         seed = 123 + traj
 
         sample_traj.append(
@@ -245,9 +245,19 @@ def simple_stairs(n_inputs, n_levels, n_traj_sample, n_traj, step_function):
 input_par_array, trajs_list = simple_stairs(
     n_inputs=5,
     n_levels=6,
-    n_traj_sample=1000,
-    n_traj=1000,
+    n_traj=100,
     step_function=stepsize_equidistant,
+)
+
+new_list = input_par_array.reshape(-1, 1).tolist()
+merged = list(itertools.chain.from_iterable(new_list))
+
+plt.figure(1)
+plt.hist(merged, range=[-0.3, 1.3])
+
+"""Experiment stepsize"""
+input_par_array, trajs_list = simple_stairs(
+    n_inputs=5, n_levels=6, n_traj=100, step_function=stepsize
 )
 
 new_list = input_par_array.reshape(-1, 1).tolist()
@@ -256,13 +266,13 @@ merged = list(itertools.chain.from_iterable(new_list))
 plt.figure(2)
 plt.hist(merged, range=[-0.3, 1.3])
 
-"""Experiment stepsize"""
-input_par_array, trajs_list = simple_stairs(
-    n_inputs=5, n_levels=6, n_traj_sample=1000, n_traj=1000, step_function=stepsize
+"""Experiment Campolongo"""
+input_par_array, trajs_list = campolongo_2007(
+    n_inputs=5, n_levels=6, n_traj_sample=30, n_traj=25
 )
 
 new_list = input_par_array.reshape(-1, 1).tolist()
 merged = list(itertools.chain.from_iterable(new_list))
 
-plt.figure(1)
+plt.figure(3)
 plt.hist(merged, range=[-0.3, 1.3])
