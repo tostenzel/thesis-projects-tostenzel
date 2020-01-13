@@ -1,6 +1,8 @@
-"""Morris Screening"""
+"""Winding stairs sampling + Morris(1991) improvement  + Campolongo(2007) improvement"""
+import itertools
 import random
 
+import matplotlib.pyplot as plt
 import numpy as np
 from scipy.special import binom
 
@@ -8,40 +10,46 @@ from scipy.special import binom
 def stepsize(n_levels):
     """
     Book recommendation:
-    Leads not to equiprobable sampling from the input distribution
+    Leads not to equiprobable sampling from the input distribution.
+    and is HALFWAY EQUISPACED.
+
     """
     return n_levels / (2 * (n_levels - 1))
+
 
 def stepsize_equidistant(n_levels):
     """
     Leads to concentration at middle-sized values in the sample.
     The reason is the following:
-    Imagine the first parameter start with zero. Then 0.2 is added.
-    This yields to an additional number of 0.2s (because thats also the stepsize).
+    Imagine the levels are linspace(0,1,5).
+    Also imagine the first parameter starts as zero. Then stepsize 0.2 is added.
+    This yields to an additional number of 0.2s.
     The number of additional 0.2 in this case equals the number of paramters.
     This can not happen to 0.0s. If the stepsize does not yield repetitive
     values, there is no equidistance.
-    
-    
+
     """
     return 1 / (n_levels - 1)
 
 
-def morris_trajectories(n_inputs, n_levels, step_function, stairs = True, seed=123, test=False):
+def morris_trajectories(
+    n_inputs, n_levels, step_function, stairs=True, seed=123, test=False
+):
     """
     Returns n parameter vectors, Dim n x Theta.
     n is also Theta+1.
     Uses stepsize function.
-    
+
     IMPORTANT:
     - Shuffling of identity matrix is turned off to obtain stairs
-    for the Qiao We / Menendez (2016) paper for correlated Paramters.
-    
+    for the Qiao We / Menendez (2016) paper for correlated paramters.
     - The levels have not to be equidistant because the first level after zero
     is the step. Thereafter, the levels are equispaced. Therefore, one may want
     to adjust the stepsize to the number of levels by hand instead of following
     the above function.
-    
+    - If the stepsize equals the distance between the other levels,
+    then level 0 is less frequent.
+
     """
     np.random.seed(seed)
     step = step_function(n_levels)
@@ -49,32 +57,31 @@ def morris_trajectories(n_inputs, n_levels, step_function, stairs = True, seed=1
     B = np.tril(np.ones([n_inputs + 1, n_inputs]), -1)
     # J is (p+1)*p matrix of ones.
     J = np.ones([n_inputs + 1, n_inputs])
-    # Matrix of zeros with values radom choices between -1 and 1 on main
+    # Matrix of zeros with random choices between -1 and 1 on main
     # diagonal.
-    if test is True:
-        base_value_vector_rand = [1 / 3] * 2
-        P_star_rand = np.identity(n_inputs)
-        D_star_rand = np.array([[1, 0], [0, -1]])
-    else:
+    if test is False:
         # Choose a random value from the differenent Elementary Effects.
         # Must be lower than 1 - step otherwise one could sample values > 1.
         # base_value rand \in [i/(1-step)]
-        """The upper bound must be 1 - step, because step is added on top of the values."""
+        # !!!The upper bound must be 1 - step, because step is added on top of the
+        # values!!!
         value_grid = [0, 1 - step]
         idx = 1
         while idx / (n_levels - 1) < 1 - step:
-            # The following is wrong: sampling scheme tend to prefer larger levels bc the distance between
-            # highest and second highest level can be smaller then for the others.
             value_grid.append(idx / idx / (n_levels - 1))
             idx = idx + 1
         base_value_vector_rand = np.array(random.choices(value_grid, k=n_inputs))
-        # Influenced by seed. Seed 123 generates P_star in book.
+        # Influenced by seed.
         P_star_rand = np.identity(n_inputs)
         """Shuffle columns: Commented Out to get simple stairs form!!!"""
         if stairs is False:
             np.random.shuffle(P_star_rand.T)
         else:
             pass
+    else:
+        base_value_vector_rand = [1 / 3] * 2
+        P_star_rand = np.identity(n_inputs)
+        D_star_rand = np.array([[1, 0], [0, -1]])
         D_star_rand = np.zeros([n_inputs, n_inputs])
         np.fill_diagonal(D_star_rand, random.choices([-1, 1], k=n_inputs))
     # Be careful with np.dot vs. np.matmul vs. *.
@@ -91,7 +98,7 @@ def compute_trajectory_distance(traj_0, traj_1):
     Computes the sum of the root of the square distance between each
     parameter vector of one trajectory to each vector of the other trajectory.
     Trajectories are np.Arrays with iterations as rows and parameters as vectors.
-    
+
     """
     distance = 0
 
@@ -108,8 +115,10 @@ def compute_trajectory_distance(traj_0, traj_1):
 
 
 def distance_matrix(trajectory_list):
-    """Compute distance between each pair of trajectories.
+    """
+    Computes distance between each pair of trajectories.
     Return symmetric matrix.
+
     """
     distance_matrix = np.nan * np.ones(
         shape=(len(trajectory_list), len(trajectory_list))
@@ -125,7 +134,7 @@ def distance_matrix(trajectory_list):
 def combinations(iterable, r):
     """
     Takes list of elements and returns list of list
-    of all possible r combinations regardless the order. 
+    of all possible r combinations regardless the order.
     E.g. combinations(range(4), 3) returns
     [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]].
     The order matters!!!
@@ -133,14 +142,13 @@ def combinations(iterable, r):
     https://docs.python.org/2/library/itertools.html#itertools.combinations
     with slight modifications to update syntax and return lists.
 
-
     """
     pool = list(iterable)
     n = len(pool)
     if r > n:
         return
     indices = list(range(r))
-    yield list(pool[i] for i in indices)
+    yield [pool[i] for i in indices]
     while True:
         for i in reversed(range(r)):
             if indices[i] != i + n - r:
@@ -150,7 +158,7 @@ def combinations(iterable, r):
         indices[i] += 1
         for j in range(i + 1, r):
             indices[j] = indices[j - 1] + 1
-        yield list(pool[i] for i in indices)
+        yield [pool[i] for i in indices]
 
 
 def select_trajectories(traj_dist_matrix, n_traj):
@@ -160,6 +168,7 @@ def select_trajectories(traj_dist_matrix, n_traj):
     The distance_matrix are in [row,:n_traj] and the root-squared sum is in
     [row,n_traj+1]
     Also returns list of indices for traj_dist list to select the optimal trajs.
+
     """
     # Get all possible combinations of input parameters by their indices.
     # Unfortunatley returned as tuples.
@@ -180,8 +189,7 @@ def select_trajectories(traj_dist_matrix, n_traj):
                 traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
             )
     combi_distance[:, n_traj] = np.sqrt(combi_distance[:, n_traj])
-    # indices of combination that yields highest distance figure
-    #
+    # Indices of combination that yields highest distance figure.
     max_dist_indices_row = combi_distance[:, n_traj].argsort()[-1:][::-1].tolist()
     max_dist_indices = combi_distance[max_dist_indices_row, 0:n_traj]
     # Convert list of float indices to list of ints.
@@ -190,94 +198,52 @@ def select_trajectories(traj_dist_matrix, n_traj):
     return max_dist_indices, combi_distance
 
 
-
 def campolongo_2007(n_inputs, n_levels, n_traj_sample, n_traj):
-    """Takes number of input parametes, samplesize of trajectories,
+    """
+    Takes number of input parametes, samplesize of trajectories,
     and selected number of trajectories as arguments.
     Returns an array with n_inputs at the verical and n_traj at the
     horizontal axis.
+
     """
     sample_traj = list()
     for traj in range(0, n_traj_sample):
         seed = 123 + traj
 
-        sample_traj.append(morris_trajectories(n_inputs, n_levels, step_function=stepsize, seed=seed))
+        sample_traj.append(
+            morris_trajectories(n_inputs, n_levels, step_function=stepsize, seed=seed)
+        )
     pair_matrix = distance_matrix(sample_traj)
     select_indices, dist_matrix = select_trajectories(pair_matrix, n_traj)
 
     select_trajs = [sample_traj[idx] for idx in select_indices]
-    # rows are parameters, cols is number of drawn parameter vectors.
+    # Rows are parameters, cols is number of drawn parameter vectors.
     input_par_array = np.vstack(select_trajs)
 
     return input_par_array.T, select_trajs
 
+
 def simple_stairs(n_inputs, n_levels, n_traj_sample, n_traj):
+    """Creates list of Morris trajectories in winding stairs format."""
     sample_traj = list()
     for traj in range(0, n_traj_sample):
         seed = 123 + traj
 
-        sample_traj.append(morris_trajectories(n_inputs, n_levels, step_function=stepsize, seed=seed))
+        sample_traj.append(
+            morris_trajectories(n_inputs, n_levels, step_function=stepsize, seed=seed)
+        )
 
-    # rows are parameters, cols is number of drawn parameter vectors.
+    # Rows are parameters, cols is number of drawn parameter vectors.
     input_par_array = np.vstack(sample_traj)
 
     return input_par_array.T, sample_traj
 
 
-input_par_array, trajs_list = simple_stairs(n_inputs=5, n_levels=6, n_traj_sample=1000, n_traj=1000)
-
-import itertools
-
+input_par_array, trajs_list = simple_stairs(
+    n_inputs=5, n_levels=6, n_traj_sample=1000, n_traj=1000
+)
 
 new_list = input_par_array.reshape(-1, 1).tolist()
 merged = list(itertools.chain.from_iterable(new_list))
 
-import matplotlib.pyplot as plt
-
 plt.hist(merged, range=[-0.3, 1.3])
-# a = [78, 12, 0.5, 2, 97, 33]
-
-# function_evals = list()
-
-# for i in range(0, np.size(input_par_array, 1)):
-# function_evals.append(sobol_model(input_par_array[:,i], a))
-
-# test = np.ones([5, 6])
-
-# np.tril(test, -1)
-""" TOOLS NOT USED FOR SAMPLING
-
-def sobol_model(input_pars, coeffs_a):
-    """
-     - Tested by comparing graphs for 3 specifications to book.
-    Arguments are lists. Strongly nonlinear, nonmonotonic, and nonzero interactions.
-    Analytic results for Sobol Indices.
-
-    """
-    assert len(input_pars) == len(coeffs_a)
-
-    def g_i(input_par_i, coeffs_a_i):
-        return (abs(4 * input_par_i - 2) + coeffs_a_i) / (1 + coeffs_a_i)
-
-    y = 1
-    for i in range(0, len(input_pars)):
-        y *= g_i(input_pars[i], coeffs_a[i])
-    return y
-    
-def elementary_effect_i(model, i_python, init_input_pars, stepsize):
-    vector_e = np.zeros(len(init_input_pars))
-    vector_e[i_python] = 1
-    step_input_pars = init_input_pars + (vector_e * stepsize)
-
-    return (model(*step_input_pars.tolist()) - model(*init_input_pars)) / stepsize
-
-
-def scaled_elementary_effect_i(
-    model, i_python, init_input_pars, stepsize, sd_i, sd_model
-):
-    """Scales EE by (SD_i / SD_M)"""
-    ee_i = elementary_effect_i(model, i_python, init_input_pars, stepsize)
-
-    return ee_i * (sd_i / sd_model)    
-
-"""
