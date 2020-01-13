@@ -6,15 +6,45 @@ from scipy.special import binom
 
 
 def stepsize(n_levels):
-    """Leads to relatively equiprobable sampling from the input distribution"""
+    """
+    Book recommendation:
+    Leads not to equiprobable sampling from the input distribution
+    """
     return n_levels / (2 * (n_levels - 1))
 
+def stepsize_equidistant(n_levels):
+    """
+    Leads to concentration at middle-sized values in the sample.
+    The reason is the following:
+    Imagine the first parameter start with zero. Then 0.2 is added.
+    This yields to an additional number of 0.2s (because thats also the stepsize).
+    The number of additional 0.2 in this case equals the number of paramters.
+    This can not happen to 0.0s. If the stepsize does not yield repetitive
+    values, there is no equidistance.
+    
+    
+    """
+    return 1 / (n_levels - 1)
 
-def morris_trajectories(n_inputs, n_levels, seed=123, test=False):
-    """Returns n parameter vectors, Dim n x Theta.
-    n is also Theta+1."""
+
+def morris_trajectories(n_inputs, n_levels, step_function, stairs = True, seed=123, test=False):
+    """
+    Returns n parameter vectors, Dim n x Theta.
+    n is also Theta+1.
+    Uses stepsize function.
+    
+    IMPORTANT:
+    - Shuffling of identity matrix is turned off to obtain stairs
+    for the Qiao We / Menendez (2016) paper for correlated Paramters.
+    
+    - The levels have not to be equidistant because the first level after zero
+    is the step. Thereafter, the levels are equispaced. Therefore, one may want
+    to adjust the stepsize to the number of levels by hand instead of following
+    the above function.
+    
+    """
     np.random.seed(seed)
-    step = stepsize(n_levels)
+    step = step_function(n_levels)
     #  B is (p+1)*p strictily lower triangular matrix of ones.
     B = np.tril(np.ones([n_inputs + 1, n_inputs]), -1)
     # J is (p+1)*p matrix of ones.
@@ -29,16 +59,22 @@ def morris_trajectories(n_inputs, n_levels, seed=123, test=False):
         # Choose a random value from the differenent Elementary Effects.
         # Must be lower than 1 - step otherwise one could sample values > 1.
         # base_value rand \in [i/(1-step)]
+        """The upper bound must be 1 - step, because step is added on top of the values."""
         value_grid = [0, 1 - step]
         idx = 1
         while idx / (n_levels - 1) < 1 - step:
+            # The following is wrong: sampling scheme tend to prefer larger levels bc the distance between
+            # highest and second highest level can be smaller then for the others.
             value_grid.append(idx / idx / (n_levels - 1))
             idx = idx + 1
         base_value_vector_rand = np.array(random.choices(value_grid, k=n_inputs))
         # Influenced by seed. Seed 123 generates P_star in book.
         P_star_rand = np.identity(n_inputs)
-        # Shuffle columns
-        np.random.shuffle(P_star_rand.T)
+        """Shuffle columns: Commented Out to get simple stairs form!!!"""
+        if stairs is False:
+            np.random.shuffle(P_star_rand.T)
+        else:
+            pass
         D_star_rand = np.zeros([n_inputs, n_inputs])
         np.fill_diagonal(D_star_rand, random.choices([-1, 1], k=n_inputs))
     # Be careful with np.dot vs. np.matmul vs. *.
@@ -48,23 +84,6 @@ def morris_trajectories(n_inputs, n_levels, seed=123, test=False):
         P_star_rand,
     )
     return B_star_rand
-
-
-def elementary_effect_i(model, i_python, init_input_pars, stepsize):
-    vector_e = np.zeros(len(init_input_pars))
-    vector_e[i_python] = 1
-    step_input_pars = init_input_pars + (vector_e * stepsize)
-
-    return (model(*step_input_pars.tolist()) - model(*init_input_pars)) / stepsize
-
-
-def scaled_elementary_effect_i(
-    model, i_python, init_input_pars, stepsize, sd_i, sd_model
-):
-    """Scales EE by (SD_i / SD_M)"""
-    ee_i = elementary_effect_i(model, i_python, init_input_pars, stepsize)
-
-    return ee_i * (sd_i / sd_model)
 
 
 def compute_trajectory_distance(traj_0, traj_1):
@@ -171,25 +190,7 @@ def select_trajectories(traj_dist_matrix, n_traj):
     return max_dist_indices, combi_distance
 
 
-def sobol_model(input_pars, coeffs_a):
-    """
-     - Tested by comparing graphs for 3 specifications to book.
-    Arguments are lists. Strongly nonlinear, nonmonotonic, and nonzero interactions.
-    Analytic results for Sobol Indices.
 
-    """
-    assert len(input_pars) == len(coeffs_a)
-
-    def g_i(input_par_i, coeffs_a_i):
-        return (abs(4 * input_par_i - 2) + coeffs_a_i) / (1 + coeffs_a_i)
-
-    y = 1
-    for i in range(0, len(input_pars)):
-        y *= g_i(input_pars[i], coeffs_a[i])
-    return y
-
-
-# Campolongo_2007
 def campolongo_2007(n_inputs, n_levels, n_traj_sample, n_traj):
     """Takes number of input parametes, samplesize of trajectories,
     and selected number of trajectories as arguments.
@@ -200,7 +201,7 @@ def campolongo_2007(n_inputs, n_levels, n_traj_sample, n_traj):
     for traj in range(0, n_traj_sample):
         seed = 123 + traj
 
-        sample_traj.append(morris_trajectories(n_inputs, n_levels, seed=seed))
+        sample_traj.append(morris_trajectories(n_inputs, n_levels, step_function=stepsize, seed=seed))
     pair_matrix = distance_matrix(sample_traj)
     select_indices, dist_matrix = select_trajectories(pair_matrix, n_traj)
 
@@ -208,10 +209,22 @@ def campolongo_2007(n_inputs, n_levels, n_traj_sample, n_traj):
     # rows are parameters, cols is number of drawn parameter vectors.
     input_par_array = np.vstack(select_trajs)
 
-    return input_par_array.T
+    return input_par_array.T, select_trajs
+
+def simple_stairs(n_inputs, n_levels, n_traj_sample, n_traj):
+    sample_traj = list()
+    for traj in range(0, n_traj_sample):
+        seed = 123 + traj
+
+        sample_traj.append(morris_trajectories(n_inputs, n_levels, step_function=stepsize, seed=seed))
+
+    # rows are parameters, cols is number of drawn parameter vectors.
+    input_par_array = np.vstack(sample_traj)
+
+    return input_par_array.T, sample_traj
 
 
-input_par_array = campolongo_2007(n_inputs=27, n_levels=6, n_traj_sample=20, n_traj=4)
+input_par_array, trajs_list = simple_stairs(n_inputs=5, n_levels=6, n_traj_sample=1000, n_traj=1000)
 
 import itertools
 
@@ -232,3 +245,39 @@ plt.hist(merged, range=[-0.3, 1.3])
 # test = np.ones([5, 6])
 
 # np.tril(test, -1)
+""" TOOLS NOT USED FOR SAMPLING
+
+def sobol_model(input_pars, coeffs_a):
+    """
+     - Tested by comparing graphs for 3 specifications to book.
+    Arguments are lists. Strongly nonlinear, nonmonotonic, and nonzero interactions.
+    Analytic results for Sobol Indices.
+
+    """
+    assert len(input_pars) == len(coeffs_a)
+
+    def g_i(input_par_i, coeffs_a_i):
+        return (abs(4 * input_par_i - 2) + coeffs_a_i) / (1 + coeffs_a_i)
+
+    y = 1
+    for i in range(0, len(input_pars)):
+        y *= g_i(input_pars[i], coeffs_a[i])
+    return y
+    
+def elementary_effect_i(model, i_python, init_input_pars, stepsize):
+    vector_e = np.zeros(len(init_input_pars))
+    vector_e[i_python] = 1
+    step_input_pars = init_input_pars + (vector_e * stepsize)
+
+    return (model(*step_input_pars.tolist()) - model(*init_input_pars)) / stepsize
+
+
+def scaled_elementary_effect_i(
+    model, i_python, init_input_pars, stepsize, sd_i, sd_model
+):
+    """Scales EE by (SD_i / SD_M)"""
+    ee_i = elementary_effect_i(model, i_python, init_input_pars, stepsize)
+
+    return ee_i * (sd_i / sd_model)    
+
+"""
