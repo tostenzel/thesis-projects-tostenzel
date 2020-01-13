@@ -94,7 +94,6 @@ def morris_trajectories(
 
 
 
-"""Experiment stepsize equidistant"""
 traj = morris_trajectories(
     n_inputs=5,
     n_levels=6,
@@ -103,21 +102,62 @@ traj = morris_trajectories(
 
 # Transformation 1: Shift the first \omega elements to the back to generate
 # an independent vector.
-def transformation_one(traj):
+def transformation_one(traj, p_i_plus_one=False):
     traj_trans_one = np.ones([np.size(traj, 0), np.size(traj, 1)]) * np.nan
-    for w in range(0, np.size(traj, 0)):
-        # MINUS w: move FIRST w elements to the BACK
-        traj_trans_one[w,:] = np.roll(traj[w,:], -w)
-    
+    for i in range(0, np.size(traj, 0)):
+            # move FIRST w elements to the BACK
+            if p_i_plus_one is False:
+                traj_trans_one[i,:] = np.roll(traj[i,:], -(i+1))
+            if p_i_plus_one is True:
+                traj_trans_one[i,:] = np.roll(traj[i,:], -(i))
     return traj_trans_one
 
-def transformation_three(traj):
+# Transformation 3: Undo Transformation 1.
+def transformation_three(traj, p_i_plus_one=False):
     traj_trans_three = np.ones([np.size(traj, 0), np.size(traj, 1)]) * np.nan
-    for w in range(0, np.size(traj, 0)):
-        # MINUS w: move LAST w elements to the FRONT
-        traj_trans_three[w,:] = np.roll(traj[w,:], -(np.size(traj, 1) - w))
-    
+    for i in range(0, np.size(traj, 0)):
+        # move LAST w elements to the FRONT
+        if p_i_plus_one is False:
+            traj_trans_three[i,:] = np.roll(traj[i,:], -(np.size(traj, 1) - (i+1)))
+        if p_i_plus_one is True:
+            traj_trans_three[i,:] = np.roll(traj[i,:], -(np.size(traj, 1) - (i)))
     return traj_trans_three
 
-traj_trans_one =   transformation_one(traj)
-traj_trans_three =   transformation_three(traj_trans_one)
+traj_trans_one =  transformation_one(traj)
+traj_trans_one_compare =  transformation_one(traj, p_i_plus_one=True)
+traj_trans_three =  transformation_three(traj_trans_one)
+traj_trans_three_compare =  transformation_three(traj_trans_one_compare, p_i_plus_one=True)
+
+
+
+"""Try tranformation 2"""
+import scipy.special
+from scipy.stats import multivariate_normal
+
+cov = np.eye(np.size(traj, 1))
+#cov[0, 0] = 1
+#cov[1, 1] = 1
+
+mean = np.array([0, 0, 0, 0, 0])
+# Need to replace ones, because erfinv(1) = inf and zeros because erfinv(0) = -inf
+traj_trans_wo_ones = np.where(traj_trans_one==1, 0.99, traj_trans_one)
+traj_trans_wo_ones = np.where(traj_trans_wo_ones==0, 0.01, traj_trans_wo_ones) 
+
+
+
+
+rbt_0_0 = mean[0] + (cov[0,0] * np.sqrt(2) * scipy.special.erfinv(2*traj_trans_wo_ones[0,0] - 1)) 
+
+rbt_1_1 = (
+        mean[1] + np.dot((cov[1,1] * np.sqrt(2)), scipy.special.erfinv(2*traj_trans_wo_ones[0,1] - 1))
+        ) * multivariate_normal.pdf(rbt_0_0, mean[0], cov[0,0])
+
+rbt_2_2 = (
+        mean[2] + np.dot((cov[2,2] * np.sqrt(2)), scipy.special.erfinv(2*traj_trans_wo_ones[0,2] - 1))
+        ) * multivariate_normal.pdf(np.array([rbt_0_0, rbt_1_1]), mean[0:2], cov[0:2,0:2])
+
+
+
+
+
+

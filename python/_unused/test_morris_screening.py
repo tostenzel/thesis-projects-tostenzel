@@ -1,24 +1,23 @@
 """Test morris_screening.py"""
 # Define parent folder as relative path.
-import sys
+#import sys
 
-sys.path.append("..")
+#sys.path.append("..")
 
 import numpy as np
-
-
-# Delete later
-from scipy.special import binom
 
 from numpy.testing import assert_array_equal
 from numpy.testing import assert_array_almost_equal
 
+from morris_screening import stepsize
 from morris_screening import morris_trajectories
-from morris_screening import elementary_effect_i
+from not_sampling_functions import elementary_effect_i
 from morris_screening import compute_trajectory_distance
 from morris_screening import distance_matrix
 from morris_screening import combinations
 from morris_screening import select_trajectories
+from ge_menendez_2017 import transformation_one
+from ge_menendez_2017 import transformation_three
 
 
 def test_morris_trajectories():
@@ -26,7 +25,7 @@ def test_morris_trajectories():
     """
     expected = np.array([[1 / 3, 1], [1, 1], [1, 1 / 3]])
     assert_array_equal(
-        expected, morris_trajectories(n_inputs=2, stepsize=2 / 3, seed=123, test=True)
+        expected, morris_trajectories(n_inputs=2, n_levels=4, step_function=stepsize, seed=123, test=True)
     )
 
 
@@ -82,33 +81,22 @@ def test_select_trajectories():
     assert_array_almost_equal(test_select[3, :], expected_fourth_row, 0.00000001)
 
 
-"""test"""
-test_traj_dist_matrix = np.array(
-    [[0, 1, 2, 4], [1, 0, 3, 100], [2, 3, 0, 200], [4, 100, 200, 0]]
-)
-test_indices, test_select = select_trajectories(test_traj_dist_matrix, 3)
+def test_transformations():
+	traj = np.array([
+		[0,0,0],
+		[1,0,0],
+		[2,3,0],
+		[4,5,6]])
 
-traj_dist_matrix = test_traj_dist_matrix
-n_traj = 3
+	assert_array_equal(
+		transformation_one(traj), np.array([
+		[0,0,0],
+		[0,0,1],
+		[0,2,3],
+		[4,5,6]])
+		)
 
-
-combi = list(combinations(np.arange(0, np.size(traj_dist_matrix, 1)), n_traj))
-# Convert list of tuples to list of lists.
-assert np.all(np.abs(traj_dist_matrix - traj_dist_matrix.T) < 1e-8)
-assert len(combi) == binom(np.size(traj_dist_matrix, 1), n_traj)
-combi_distance = np.ones([len(combi), n_traj + 1]) * np.nan
-combi_distance[:, 0:n_traj] = np.array(combi)
-
-for row in range(0, len(combi)):
-    combi_distance[row, n_traj] = 0
-    pair_combi = list(combinations(combi[row], 2))
-    for pair in pair_combi:
-
-        combi_distance[row, n_traj] += traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
-combi_distance[:, n_traj] = np.sqrt(combi_distance[:, n_traj])
-# indices of combination that yields highest distance figure
-#
-max_dist_indices_row = combi_distance[:, n_traj].argsort()[-1:][::-1].tolist()
-max_dist_indices = combi_distance[max_dist_indices_row, 0:n_traj]
-# Convert list of float indices to list of ints.
-max_dist_indices = [int(i) for i in max_dist_indices.tolist()[0]]
+	assert_array_equal(
+		traj, transformation_three(
+		transformation_one(traj))
+		)
