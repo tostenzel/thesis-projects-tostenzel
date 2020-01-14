@@ -158,6 +158,7 @@ def select_trajectories(traj_dist_matrix, n_traj):
             combi_distance[row, n_traj] += (
                 traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
             )
+    # Below there is no * 0.5 in contrary to Ge/Menendez (2014).
     combi_distance[:, n_traj] = np.sqrt(combi_distance[:, n_traj])
     # Indices of combination that yields highest distance figure.
     max_dist_indices_row = combi_distance[:, n_traj].argsort()[-1:][::-1].tolist()
@@ -250,8 +251,9 @@ def ge_menendez_2014(n_inputs, n_levels, n_traj_sample, n_traj):
                 combi_distance[row, n_traj_sample - idx] += (
                     traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
                 )
+        # No 0.5 transformation in contrary to Ge / Menendez (2014).
         combi_distance[:, n_traj_sample - idx] = np.sqrt(
-            0.5 * combi_distance[:, n_traj_sample - idx]
+            combi_distance[:, n_traj_sample - idx]
         )
         # Indices of combination that yields highest distance figure.
         max_dist_indices_row = (
@@ -300,7 +302,9 @@ for row in range(0, len(combi)):
             traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
         )
 combi_distance[:, n_traj_sample - 1] = np.sqrt(
-    0.5 * combi_distance[:, n_traj_sample - 1]
+    combi_distance[
+        :, n_traj_sample - 1
+    ]  # Here was 0.5 * combi_distance. This might be wrong.
 )
 # Indices of combination that yields highest distance figure.
 max_dist_indices_row = (
@@ -316,14 +320,18 @@ combi_new = combi_wrapper(max_dist_indices, n_traj_sample - 2)
 combi_distance_new = np.ones([len(combi_new), len(combi_new)]) * np.nan
 combi_distance_new[:, 0 : n_traj_sample - 2] = np.array(combi_new).astype(int)
 lost_traj_idx = [idx for idx in indices if idx not in max_dist_indices][0]
+
+
 sum_dist_squared = 0
 for row in range(0, np.size(combi_distance_new, 0)):
     sum_dist_squared = 0
-    for col in range(0, np.size(combi_distance_new, 1)):
+    for col in range(0, np.size(combi_distance_new, 1) - 1):
+        # Get the distance between lost index trajectory and present ones in row.
         sum_dist_squared += (
-            traj_dist_matrix[int(combi_distance[row, col]), lost_traj_idx]
+            traj_dist_matrix[int(combi_distance_new[row, col]), lost_traj_idx]
         ) ** 2
-    # get aggregate distance of combination with lost index
+    # Search for the old combination of trajs with the lost index
+    # to compute the new aggregate distance with the above distances.
     for row_old in range(0, np.size(combi_distance, 0)):
         old_indices = [
             float(x) for x in combi_distance_new[row, 0 : n_traj_sample - 2].tolist()
