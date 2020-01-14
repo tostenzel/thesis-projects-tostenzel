@@ -31,5 +31,5 @@ repos:
             (?x)^(
                 utils/travis_runner.py|
                 python/tests/test_sampling_trajectory.py|
-                python/tests/test_ge_menendez_2007_trajectory.py|
+                python/tests/test_ge_menendez_2017_trajectory.py|
             )$
