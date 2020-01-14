@@ -1,8 +1,10 @@
-"""Winding stairs sampling + Morris(1991) improvement + Campolongo(2007) improvement"""
-import itertools
+"""
+Winding stairs sampling
++ Morris (1991) improvement + Campolongo (2007) improvement
+
+"""
 import random
 
-import matplotlib.pyplot as plt
 import numpy as np
 from scipy.special import binom
 
@@ -17,22 +19,7 @@ def stepsize(n_levels):
     return n_levels / (2 * (n_levels - 1))
 
 
-def stepsize_equidistant(n_levels):
-    """
-    Leads to concentration at middle-sized values in the sample.
-    The reason is the following:
-    Imagine the levels are linspace(0,1,5).
-    Also imagine the first parameter starts as zero. Then stepsize 0.2 is added.
-    This yields to an additional number of 0.2s.
-    The number of additional 0.2 in this case equals the number of paramters.
-    This can not happen to 0.0s. If the stepsize does not yield repetitive
-    values, there is no equidistance.
-
-    """
-    return 1 / (n_levels - 1)
-
-
-def morris_trajectories(
+def morris_trajectory(
     n_inputs, n_levels, step_function, stairs=True, seed=123, test=False
 ):
     """
@@ -90,6 +77,7 @@ def morris_trajectories(
         + (step / 2) * (np.dot((2 * B - J), D_star_rand) + J),
         P_star_rand,
     )
+
     return B_star_rand
 
 
@@ -211,7 +199,7 @@ def campolongo_2007(n_inputs, n_levels, n_traj_sample, n_traj):
         seed = 123 + traj
 
         sample_traj.append(
-            morris_trajectories(n_inputs, n_levels, step_function=stepsize, seed=seed)
+            morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
         )
     pair_matrix = distance_matrix(sample_traj)
     select_indices, dist_matrix = select_trajectories(pair_matrix, n_traj)
@@ -230,7 +218,7 @@ def simple_stairs(n_inputs, n_levels, n_traj, step_function):
         seed = 123 + traj
 
         sample_traj.append(
-            morris_trajectories(
+            morris_trajectory(
                 n_inputs, n_levels, step_function=step_function, seed=seed
             )
         )
@@ -239,40 +227,3 @@ def simple_stairs(n_inputs, n_levels, n_traj, step_function):
     input_par_array = np.vstack(sample_traj)
 
     return input_par_array.T, sample_traj
-
-
-"""Experiment stepsize equidistant"""
-input_par_array, trajs_list = simple_stairs(
-    n_inputs=5,
-    n_levels=6,
-    n_traj=100,
-    step_function=stepsize_equidistant,
-)
-
-new_list = input_par_array.reshape(-1, 1).tolist()
-merged = list(itertools.chain.from_iterable(new_list))
-
-plt.figure(1)
-plt.hist(merged, range=[-0.3, 1.3])
-
-"""Experiment stepsize"""
-input_par_array, trajs_list = simple_stairs(
-    n_inputs=5, n_levels=6, n_traj=100, step_function=stepsize
-)
-
-new_list = input_par_array.reshape(-1, 1).tolist()
-merged = list(itertools.chain.from_iterable(new_list))
-
-plt.figure(2)
-plt.hist(merged, range=[-0.3, 1.3])
-
-"""Experiment Campolongo"""
-input_par_array, trajs_list = campolongo_2007(
-    n_inputs=5, n_levels=6, n_traj_sample=30, n_traj=25
-)
-
-new_list = input_par_array.reshape(-1, 1).tolist()
-merged = list(itertools.chain.from_iterable(new_list))
-
-plt.figure(3)
-plt.hist(merged, range=[-0.3, 1.3])

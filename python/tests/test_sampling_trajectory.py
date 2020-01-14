@@ -1,31 +1,34 @@
-"""Test morris_screening.py"""
+"""Test sampling_trajectory.py"""
 # Define parent folder as relative path.
-#import sys
+import sys
 
-#sys.path.append("..")
+sys.path.append("..")
 
 import numpy as np
 
 from numpy.testing import assert_array_equal
 from numpy.testing import assert_array_almost_equal
 
-from morris_screening import stepsize
-from morris_screening import morris_trajectories
+from sampling_trajectory import stepsize
+from sampling_trajectory import morris_trajectories
 from not_sampling_functions import elementary_effect_i
-from morris_screening import compute_trajectory_distance
-from morris_screening import distance_matrix
-from morris_screening import combinations
-from morris_screening import select_trajectories
-from ge_menendez_2017 import transformation_one
-from ge_menendez_2017 import transformation_three
+from sampling_trajectory import compute_trajectory_distance
+from sampling_trajectory import distance_matrix
+from sampling_trajectory import combinations
+from sampling_trajectory import select_trajectories
 
 
 def test_morris_trajectories():
-    """Can not account for proplems with the fixed random matrices/vectors/scalers.
+    """
+    Can not account for proplems with the fixed random matrices/vectors/scalers.
+
     """
     expected = np.array([[1 / 3, 1], [1, 1], [1, 1 / 3]])
     assert_array_equal(
-        expected, morris_trajectories(n_inputs=2, n_levels=4, step_function=stepsize, seed=123, test=True)
+        expected,
+        morris_trajectories(
+            n_inputs=2, n_levels=4, step_function=stepsize, seed=123, test=True
+        ),
     )
 
 
@@ -79,24 +82,3 @@ def test_select_trajectories():
 
     assert test_indices == expected_dist_indices
     assert_array_almost_equal(test_select[3, :], expected_fourth_row, 0.00000001)
-
-
-def test_transformations():
-	traj = np.array([
-		[0,0,0],
-		[1,0,0],
-		[2,3,0],
-		[4,5,6]])
-
-	assert_array_equal(
-		transformation_one(traj), np.array([
-		[0,0,0],
-		[0,0,1],
-		[0,2,3],
-		[4,5,6]])
-		)
-
-	assert_array_equal(
-		traj, transformation_three(
-		transformation_one(traj))
-		)
