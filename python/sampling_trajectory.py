@@ -21,7 +21,7 @@ def stepsize(n_levels):
 
 
 def morris_trajectory(
-    n_inputs, n_levels, step_function, stairs=True, seed=123, test=False
+    n_inputs, n_levels, step_function=stepsize, stairs=True, seed=123, test=False
 ):
     """
     Returns n parameter vectors, Dim n x Theta.
@@ -158,7 +158,7 @@ def select_trajectories(traj_dist_matrix, n_traj):
             combi_distance[row, n_traj] += (
                 traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
             )
-    # Below there is no * 0.5 in contrary to Ge/Menendez (2014).
+    # Below, there is no * 0.5 in contrary to Ge/Menendez (2014).
     combi_distance[:, n_traj] = np.sqrt(combi_distance[:, n_traj])
     # Indices of combination that yields highest distance figure.
     max_dist_indices_row = combi_distance[:, n_traj].argsort()[-1:][::-1].tolist()
@@ -169,7 +169,77 @@ def select_trajectories(traj_dist_matrix, n_traj):
     return max_dist_indices, combi_distance
 
 
-def campolongo_2007(n_inputs, n_levels, n_traj_sample, n_traj):
+
+
+
+
+
+
+
+traj_dist_matrix = np.array([
+		[0, 4, 5, 6],
+		[4, 0, 7, 8],
+		[5, 7, 0, 9],
+		[6, 8, 9, 0]])
+
+exp_max_dist_indices = [2, 3]
+
+exp_combi_distance = np.array([
+		[0, 1, np.sqrt(4**2)],
+		[0, 2, np.sqrt(5**2)],
+		[0, 3, np.sqrt(6**2)],
+		[1, 2, np.sqrt(7**2)],
+		[1, 3, np.sqrt(8**2)],
+		[2, 3, np.sqrt(9**2)]])
+
+n_traj = 2
+
+
+def select_trajectories_iteration(traj_dist_matrix, n_traj):
+    """Drop one trajectory in each iteration.
+    Save lost indices. Then return all original indices minus the lost ones?
+    
+    """
+    n_traj_sample = np.size(traj_dist_matrix, 0)
+    lost_indices = []
+    original_indices = np.arange(0, np.size(traj_dist_matrix, 0)).tolist()
+    for i in range(0,n_traj_sample - n_traj):
+    
+        indices = np.arange(0, np.size(traj_dist_matrix, 0)).tolist()
+        # get list of all indices
+        # get list of surviving indices
+        max_dist_indices, combi_distance =  select_trajectories(traj_dist_matrix, np.size(traj_dist_matrix, 0) - 1)
+        # lost index
+        lost_index = [item for item in indices if item not in max_dist_indices][0]
+        # need to account for indices that have been deleted before
+        count = sum(lost_index >= idx for idx in lost_indices)
+        lost_indices.append(lost_index + count)
+        # delete pairs with dropped trajectory from distance matrix
+        traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=0)
+        traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=1)
+    
+    left_max_dist_indices = [item for item in original_indices if item not in lost_indices]
+    
+    return left_max_dist_indices, combi_distance
+
+
+
+        
+
+max_dist_indices, combi_distance = select_trajectories(traj_dist_matrix, 2)
+
+max_dist_indices_iter, combi_distance_iter = select_trajectories_iteration(traj_dist_matrix, 2)    
+    
+
+
+
+
+
+
+
+    
+
+def campolongo_2007(sample_traj_list, n_traj):
     """
     Takes number of input parametes, samplesize of trajectories,
     and selected number of trajectories as arguments.
@@ -177,43 +247,41 @@ def campolongo_2007(n_inputs, n_levels, n_traj_sample, n_traj):
     horizontal axis.
 
     """
-    sample_traj = list()
-    for traj in range(0, n_traj_sample):
-        seed = 123 + traj
 
-        sample_traj.append(
-            morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
-        )
-    pair_matrix = distance_matrix(sample_traj)
+    pair_matrix = distance_matrix(sample_traj_list)
     select_indices, dist_matrix = select_trajectories(pair_matrix, n_traj)
 
-    select_trajs = [sample_traj[idx] for idx in select_indices]
+    select_trajs = [sample_traj_list[idx] for idx in select_indices]
     # Rows are parameters, cols is number of drawn parameter vectors.
     input_par_array = np.vstack(select_trajs)
+    select_dist_matrix = distance_matrix(select_trajs)
 
-    return input_par_array.T, select_trajs
+    return input_par_array.T, select_trajs, select_dist_matrix
 
 
-def simple_stairs(n_inputs, n_levels, n_traj, step_function):
+def simple_stairs(n_inputs, n_levels, n_traj):
     """Creates list of Morris trajectories in winding stairs format."""
-    sample_traj = list()
+    sample_traj_list = list()
     for traj in range(0, n_traj):
         seed = 123 + traj
 
-        sample_traj.append(
+        sample_traj_list.append(
             morris_trajectory(
-                n_inputs, n_levels, step_function=step_function, seed=seed
+                n_inputs, n_levels, step_function=stepsize, seed=seed
             )
         )
 
     # Rows are parameters, cols is number of drawn parameter vectors.
-    input_par_array = np.vstack(sample_traj)
+    input_par_array = np.vstack(sample_traj_list)
 
-    return input_par_array.T, sample_traj
+    return input_par_array.T, sample_traj_list
 
 
-def ge_menendez_2014(n_inputs, n_levels, n_traj_sample, n_traj):
+def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     """
+    Intermediate because it still computes the the distance matrix anew
+    for each decreased sample.
+    
     Selects n_traj trajectories out of n_traj_sample by shrinking the latter by one trajectory in
     each of the n_traj_sample - n_traj iteration.
     This saves the generation of n_traj_sample binomial n_traj combinations.
@@ -221,128 +289,44 @@ def ge_menendez_2014(n_inputs, n_levels, n_traj_sample, n_traj):
     Another differece is also the multiplication wiuth 0.5 in the aggregate distance.
     
     """
-    sample_traj = list()
-    for traj in range(0, n_traj_sample):
-        seed = 123 + traj
+    n_traj_sample = len(sample_traj_list)
+    for i in range(0, n_traj_sample - n_traj + 1):
+        traj_dist_matrix = distance_matrix(sample_traj_list)
+        select_indices, _ = select_trajectories(traj_dist_matrix, n_traj_sample - i)
+        sample_traj_list = [sample_traj_list[idx] for idx in select_indices]
 
-        sample_traj.append(
-            morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
-        )
-    traj_dist_matrix = distance_matrix(sample_traj)
-
-    assert np.all(np.abs(traj_dist_matrix - traj_dist_matrix.T) < 1e-8)
-    for idx in range(1, n_traj_sample - n_traj + 1):
-        combi = combi_wrapper(
-            list(np.arange(0, np.size(traj_dist_matrix, 1))), n_traj_sample - idx
-        )
-        assert len(combi) == binom(np.size(traj_dist_matrix, 1), n_traj_sample - idx)
-
-        # leave last column open for aggregate distance
-        combi_distance = np.ones([len(combi), len(combi)]) * np.nan
-        combi_distance[:, 0 : n_traj_sample - idx] = np.array(combi)
-
-        # This loop needs to be parallelized.
-        for row in range(0, len(combi)):
-            # Assign last column
-            combi_distance[row, n_traj_sample - idx] = 0
-            pair_combi = combi_wrapper(combi[row], 2)
-            for pair in pair_combi:
-
-                combi_distance[row, n_traj_sample - idx] += (
-                    traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
-                )
-        # No 0.5 transformation in contrary to Ge / Menendez (2014).
-        combi_distance[:, n_traj_sample - idx] = np.sqrt(
-            combi_distance[:, n_traj_sample - idx]
-        )
-        # Indices of combination that yields highest distance figure.
-        max_dist_indices_row = (
-            combi_distance[:, n_traj_sample - idx].argsort()[-1:][::-1].tolist()
-        )
-        max_dist_indices = combi_distance[max_dist_indices_row, 0 : n_traj_sample - idx]
-        # Convert list of float indices to list of ints.
-        max_dist_indices = [int(i) for i in max_dist_indices.tolist()[0]]
-        select_trajs_iter = [sample_traj[j] for j in max_dist_indices]
-        traj_dist_matrix = distance_matrix(select_trajs_iter)
-
+    # iteration of distance_matrix may introduce rounding errors?
+    traj_dist_matrix = distance_matrix(sample_traj_list)
     # Rows are parameters, cols is number of drawn parameter vectors.
-    input_par_array = np.vstack(sample_traj)
+    input_par_array = np.vstack(sample_traj_list)
 
-    return input_par_array, select_trajs_iter
-
-
-n_inputs = 4
-n_levels = 5
-n_traj_sample = 5
-n_traj = 3
-
-sample_traj = list()
-for traj in range(0, n_traj_sample):
-    seed = 123 + traj
-
-    sample_traj.append(
-        morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
-    )
-traj_dist_matrix = distance_matrix(sample_traj)
-
-assert np.all(np.abs(traj_dist_matrix - traj_dist_matrix.T) < 1e-8)
-indices = list(np.arange(0, np.size(traj_dist_matrix, 1)))
-combi = combi_wrapper(indices, n_traj_sample - 1)
-assert len(combi) == binom(np.size(traj_dist_matrix, 1), n_traj_sample - 1)
-# leave last column open for aggregate distance
-combi_distance = np.ones([len(combi), len(combi)]) * np.nan
-combi_distance[:, 0 : n_traj_sample - 1] = np.array(combi)
-for row in range(0, len(combi)):
-    # Assign last column
-    combi_distance[row, n_traj_sample - 1] = 0
-    pair_combi = combi_wrapper(combi[row], 2)
-    for pair in pair_combi:
-
-        combi_distance[row, n_traj_sample - 1] += (
-            traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
-        )
-combi_distance[:, n_traj_sample - 1] = np.sqrt(
-    combi_distance[
-        :, n_traj_sample - 1
-    ]  # Here was 0.5 * combi_distance. This might be wrong.
-)
-# Indices of combination that yields highest distance figure.
-max_dist_indices_row = (
-    combi_distance[:, n_traj_sample - 1].argsort()[-1:][::-1].tolist()
-)
-max_dist_indices = combi_distance[max_dist_indices_row, 0 : n_traj_sample - 1]
-# Convert list of float indices to list of ints.
-max_dist_indices = [int(i) for i in max_dist_indices.tolist()[0]]
-select_trajs_iter = [sample_traj[j] for j in max_dist_indices]
-
-combi_new = combi_wrapper(max_dist_indices, n_traj_sample - 2)
-# leave last column open for aggregate distance
-combi_distance_new = np.ones([len(combi_new), len(combi_new)]) * np.nan
-combi_distance_new[:, 0 : n_traj_sample - 2] = np.array(combi_new).astype(int)
-lost_traj_idx = [idx for idx in indices if idx not in max_dist_indices][0]
+    return input_par_array, sample_traj_list, traj_dist_matrix
 
 
-sum_dist_squared = 0
-for row in range(0, np.size(combi_distance_new, 0)):
-    sum_dist_squared = 0
-    for col in range(0, np.size(combi_distance_new, 1) - 1):
-        # Get the distance between lost index trajectory and present ones in row.
-        sum_dist_squared += (
-            traj_dist_matrix[int(combi_distance_new[row, col]), lost_traj_idx]
-        ) ** 2
-    # Search for the old combination of trajs with the lost index
-    # to compute the new aggregate distance with the above distances.
-    for row_old in range(0, np.size(combi_distance, 0)):
-        old_indices = [
-            float(x) for x in combi_distance_new[row, 0 : n_traj_sample - 2].tolist()
-        ]
-        old_indices.append(float(lost_traj_idx))
-        if set(combi_distance[row_old, 0 : n_traj_sample - 1]) == set(old_indices):
-            combi_distance_new[row, n_traj_sample - 2] = np.sqrt(
-                combi_distance[row_old, n_traj_sample - 1] ** 2 - sum_dist_squared
-            )
-        else:
-            pass
+
 
 # Rows are parameters, cols is number of drawn parameter vectors.
 # input_par_array = np.vstack(sample_traj)
+"""compare campolongo with ge/menendez"""
+"""
+n_inputs = 4
+n_levels = 11
+n_traj_sample = 50
+n_traj = 5
+
+
+sample_traj_list = list()
+for traj in range(0, n_traj_sample):
+    seed = 123 + traj
+
+    sample_traj_list.append(
+        morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
+    )
+    
+_, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
+
+_, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
+
+(sum(sum(select_distance_matrix)))
+(sum(sum(select_distance_matrix_2)))
+"""
