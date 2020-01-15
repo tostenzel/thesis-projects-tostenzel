@@ -18,7 +18,7 @@ from sampling_trajectory import combi_wrapper
 from sampling_trajectory import select_trajectories
 from sampling_trajectory import campolongo_2007
 from sampling_trajectory import intermediate_ge_menendez_2014
-
+from sampling_trajectory import select_trajectories_iteration
 
 def test_morris_trajectories():
     """
@@ -73,10 +73,13 @@ def test_combi_wrapper():
     assert expected_4 == combi_wrapper([0, 1, 2, 3], 2)
 
 
-def test_select_trajectories():
-    test_traj_dist_matrix = np.array(
-        [[0, 1, 2, 4], [1, 0, 3, 100], [2, 3, 0, 200], [4, 100, 200, 0]]
-    )
+def test_select_trajectories_1():
+    test_traj_dist_matrix = np.array([
+        [0, 1, 2, 4],
+        [1, 0, 3, 100],
+        [2, 3, 0, 200],
+        [4, 100, 200, 0]])
+
     test_indices, test_select = select_trajectories(test_traj_dist_matrix, 3)
 
     expected_dist_indices = [1, 2, 3]
@@ -126,6 +129,38 @@ def test_select_trajectories_3():
 
 	assert_array_equal(exp_max_dist_indices, max_dist_indices)
 	assert_array_equal(exp_combi_distance, combi_distance)
+
+def test_select_trajectories_iteration_1():
+	dist_matrix = np.array([
+		[0, 4, 5, 6],
+		[4, 0, 7, 8],
+		[5, 7, 0, 9],
+		[6, 8, 9, 0]])
+
+	exp_max_dist_indices = [2, 3]
+
+    # indices in the array below do not match the original dist_matrix.
+	exp_combi_distance = np.array([
+		[0, 1, np.sqrt(7**2)],
+		[0, 2, np.sqrt(8**2)],
+		[1, 2, np.sqrt(9**2)]])
+
+	max_dist_indices, combi_distance = select_trajectories_iteration(dist_matrix, 2)
+
+	assert_array_equal(exp_max_dist_indices, max_dist_indices)
+	assert_array_equal(exp_combi_distance, combi_distance)
+
+def test_select_trajectories_iteration_2():
+    test_traj_dist_matrix = np.array([
+        [0, 1, 2, 4],
+        [1, 0, 3, 100],
+        [2, 3, 0, 200],
+        [4, 100, 200, 0]])
+
+    max_dist_indices, _= select_trajectories(test_traj_dist_matrix, 2)
+    max_dist_indices_iter, _ = select_trajectories_iteration(test_traj_dist_matrix, 2)
+
+    assert_array_equal(max_dist_indices, max_dist_indices_iter)
 """
 def test_compare_camp_07_int_ge_men_14():
 	n_inputs = 4

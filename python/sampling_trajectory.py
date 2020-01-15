@@ -169,34 +169,18 @@ def select_trajectories(traj_dist_matrix, n_traj):
     return max_dist_indices, combi_distance
 
 
-
-
-
-
-
-
-
-traj_dist_matrix = np.array([
-		[0, 4, 5, 6],
-		[4, 0, 7, 8],
-		[5, 7, 0, 9],
-		[6, 8, 9, 0]])
-
-exp_max_dist_indices = [2, 3]
-
-exp_combi_distance = np.array([
-		[0, 1, np.sqrt(4**2)],
-		[0, 2, np.sqrt(5**2)],
-		[0, 3, np.sqrt(6**2)],
-		[1, 2, np.sqrt(7**2)],
-		[1, 3, np.sqrt(8**2)],
-		[2, 3, np.sqrt(9**2)]])
-
-n_traj = 2
-
-
 def select_trajectories_iteration(traj_dist_matrix, n_traj):
-    """Drop one trajectory in each iteration.
+    """
+    The combi arrays are different because here we have only the combis from
+    the n_traj+1 trajectories. The select_trajectories has all
+    binomial(np.size(traj_dist_matrix, 0), n_traj) combinations.
+    
+    The indices in combi_distance have no relation to the orgiinal dist_matrix.
+    Only to the one from the last iteration.
+    HOWEVER, the left_max_indices map to the original combi-matrix to obtain
+    the right trajectories!!!
+
+    Drop one trajectory in each iteration.
     Save lost indices. Then return all original indices minus the lost ones?
     
     """
@@ -222,21 +206,6 @@ def select_trajectories_iteration(traj_dist_matrix, n_traj):
     
     return left_max_dist_indices, combi_distance
 
-
-
-        
-
-max_dist_indices, combi_distance = select_trajectories(traj_dist_matrix, 2)
-
-max_dist_indices_iter, combi_distance_iter = select_trajectories_iteration(traj_dist_matrix, 2)    
-    
-
-
-
-
-
-
-
     
 
 def campolongo_2007(sample_traj_list, n_traj):
@@ -249,7 +218,7 @@ def campolongo_2007(sample_traj_list, n_traj):
     """
 
     pair_matrix = distance_matrix(sample_traj_list)
-    select_indices, dist_matrix = select_trajectories(pair_matrix, n_traj)
+    select_indices, combi_distance = select_trajectories(pair_matrix, n_traj)
 
     select_trajs = [sample_traj_list[idx] for idx in select_indices]
     # Rows are parameters, cols is number of drawn parameter vectors.
@@ -289,18 +258,17 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     Another differece is also the multiplication wiuth 0.5 in the aggregate distance.
     
     """
-    n_traj_sample = len(sample_traj_list)
-    for i in range(0, n_traj_sample - n_traj + 1):
-        traj_dist_matrix = distance_matrix(sample_traj_list)
-        select_indices, _ = select_trajectories(traj_dist_matrix, n_traj_sample - i)
-        sample_traj_list = [sample_traj_list[idx] for idx in select_indices]
+    pair_matrix = distance_matrix(sample_traj_list)
+    # this function is the difference to campolongo
+    select_indices, combi_distance = select_trajectories_iteration(pair_matrix, n_traj)
 
-    # iteration of distance_matrix may introduce rounding errors?
-    traj_dist_matrix = distance_matrix(sample_traj_list)
+    select_trajs = [sample_traj_list[idx] for idx in select_indices]
     # Rows are parameters, cols is number of drawn parameter vectors.
-    input_par_array = np.vstack(sample_traj_list)
+    input_par_array = np.vstack(select_trajs)
+    select_dist_matrix = distance_matrix(select_trajs)
 
-    return input_par_array, sample_traj_list, traj_dist_matrix
+    return input_par_array.T, select_trajs, select_dist_matrix 
+
 
 
 
@@ -308,10 +276,10 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
 # Rows are parameters, cols is number of drawn parameter vectors.
 # input_par_array = np.vstack(sample_traj)
 """compare campolongo with ge/menendez"""
-"""
+
 n_inputs = 4
-n_levels = 11
-n_traj_sample = 50
+n_levels = 5
+n_traj_sample = 15
 n_traj = 5
 
 
@@ -323,10 +291,53 @@ for traj in range(0, n_traj_sample):
         morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
     )
     
-_, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
+#_, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
 
-_, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
+#_, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
 
-(sum(sum(select_distance_matrix)))
-(sum(sum(select_distance_matrix_2)))
-"""
+#(sum(sum(select_distance_matrix)))
+#(sum(sum(select_distance_matrix_2)))
+
+
+
+traj_dist_matrix = distance_matrix(sample_traj_list)
+
+n_traj_sample = np.size(traj_dist_matrix, 0)
+lost_indices = []
+lost_indices_dynamic = []
+original_indices = np.arange(0, np.size(traj_dist_matrix, 0)).tolist()
+for i in range(0,n_traj_sample - n_traj):
+
+    indices = np.arange(0, np.size(traj_dist_matrix, 0)).tolist()
+    # get list of all indices
+    # get list of surviving indices
+    max_dist_indices, combi_distance =  select_trajectories(traj_dist_matrix, np.size(traj_dist_matrix, 0) - 1)
+    # lost index
+    lost_index = [item for item in indices if item not in max_dist_indices][0]
+    # Check wether indices smaller than the new one have been deleted
+    # Check wether if one accounts for the shrinkage, there are additional smaller indices.
+    count_1 = 0
+    count_2 = 1
+    count_3 = 2
+    """Here is the problem: Need this as while loop"""
+    count_1 = sum(lost_index >= idx for idx in lost_indices_dynamic)
+    if count_1 > 0:
+        count_2 = sum(lost_index + count_1 >= idx for idx in lost_indices_dynamic) - count_1
+        if count_2 > 0:
+            count_3 = sum(lost_index + count_1 + count_2 >= idx for idx in lost_indices_dynamic) - count_1 - count_2
+        else:
+            pass
+    else:
+        pass
+    lost_indices_dynamic.append(lost_index)
+    # need to account for indices that have been deleted before
+    lost_indices.append(lost_index + count_1 + count_2 + count_3)
+    # delete pairs with dropped trajectory from distance matrix
+    traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=0)
+    traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=1)
+
+left_max_dist_indices = [item for item in original_indices if item not in lost_indices]
+
+
+
+
