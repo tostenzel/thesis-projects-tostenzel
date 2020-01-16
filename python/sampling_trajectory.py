@@ -4,7 +4,7 @@ Winding stairs sampling
 
 """
 import random
-from itertools import combinations as combis
+from itertools import combinations
 
 import numpy as np
 from scipy.special import binom
@@ -121,7 +121,7 @@ def distance_matrix(trajectory_list):
 
 
 def combi_wrapper(iterable, r):
-    tup_tup = combis(iterable, r)
+    tup_tup = combinations(iterable, r)
     list_list = [list(x) for x in tup_tup]
     return list_list
 
@@ -175,37 +175,32 @@ def select_trajectories_iteration(traj_dist_matrix, n_traj):
     the n_traj+1 trajectories. The select_trajectories has all
     binomial(np.size(traj_dist_matrix, 0), n_traj) combinations.
     
-    The indices in combi_distance have no relation to the orgiinal dist_matrix.
+    Thus, the indices in combi_distance have no relation to the orgiinal dist_matrix.
     Only to the one from the last iteration.
-    HOWEVER, the left_max_indices map to the original combi-matrix to obtain
+    HOWEVER, the max_dist_indices map to the original combi-matrix to obtain
     the right trajectories!!!
 
     Drop one trajectory in each iteration.
-    Save lost indices. Then return all original indices minus the lost ones?
+    Save lost indices. Then return all original indices minus the lost ones.
     
     """
     n_traj_sample = np.size(traj_dist_matrix, 0)
-    lost_indices = []
-    original_indices = np.arange(0, np.size(traj_dist_matrix, 0)).tolist()
+    tracker_original_indices = np.arange(0, np.size(traj_dist_matrix, 0))
     for i in range(0,n_traj_sample - n_traj):
-    
+
         indices = np.arange(0, np.size(traj_dist_matrix, 0)).tolist()
         # get list of all indices
         # get list of surviving indices
         max_dist_indices, combi_distance =  select_trajectories(traj_dist_matrix, np.size(traj_dist_matrix, 0) - 1)
         # lost index
         lost_index = [item for item in indices if item not in max_dist_indices][0]
-        # need to account for indices that have been deleted before
-        count = sum(lost_index >= idx for idx in lost_indices)
-        lost_indices.append(lost_index + count)
+        
         # delete pairs with dropped trajectory from distance matrix
         traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=0)
         traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=1)
-        """error, indices get to small"""
+        tracker_original_indices = np.delete(tracker_original_indices, lost_index, axis=0)
     
-    left_max_dist_indices = [item for item in original_indices if item not in lost_indices]
-    
-    return left_max_dist_indices, combi_distance
+    return tracker_original_indices.tolist(), combi_distance
 
     
 
@@ -299,6 +294,11 @@ _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_tra
 #(sum(sum(select_distance_matrix)))
 #(sum(sum(select_distance_matrix_2)))
 
+"""To do: Open select trajectories and see how large the distance differencees are with large samples.
+Confirm that rounding errors might cause the differences.
+
+If one trajectory in campolongo is excluded in ge/menendez this changes a large part there.
+"""
 
 
 traj_dist_matrix = distance_matrix(sample_traj_list)
@@ -320,8 +320,6 @@ for i in range(0,n_traj_sample - n_traj):
     traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=1)
     tracker_original_indices = np.delete(tracker_original_indices, lost_index, axis=0)
 
-"""To do: set indices in indices = np.arange(0, np.size(traj_dist_matrix, 0) to Nans when I
-shrink the matrix."""
 
 solution = [sample_traj_list[i] for i in tracker_original_indices.tolist()]
 

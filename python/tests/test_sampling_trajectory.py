@@ -89,66 +89,66 @@ def test_select_trajectories_1():
     assert_array_almost_equal(test_select[3, :], expected_fourth_row, 0.00000001)
 
 def test_select_trajectories_2():
-	dist_matrix = np.array([
-		[0, 4, 5, 6],
-		[4, 0, 7, 8],
-		[5, 7, 0, 9],
-		[6, 8, 9, 0]])
+    dist_matrix = np.array([
+        [0, 4, 5, 6],
+        [4, 0, 7, 8],
+        [5, 7, 0, 9],
+        [6, 8, 9, 0]])
 
-	exp_max_dist_indices = [1, 2, 3]
+    exp_max_dist_indices = [1, 2, 3]
 
-	exp_combi_distance = np.array([
-		[0, 1, 2, np.sqrt(4**2 + 5**2 + 7**2)],
-		[0, 1, 3, np.sqrt(4**2 + 6**2 + 8**2)],
-		[0, 2, 3, np.sqrt(5**2 + 6**2 + 9**2)],
-		[1, 2, 3, np.sqrt(7**2 + 8**2 + 9**2)]])
+    exp_combi_distance = np.array([
+        [0, 1, 2, np.sqrt(4**2 + 5**2 + 7**2)],
+        [0, 1, 3, np.sqrt(4**2 + 6**2 + 8**2)],
+        [0, 2, 3, np.sqrt(5**2 + 6**2 + 9**2)],
+        [1, 2, 3, np.sqrt(7**2 + 8**2 + 9**2)]])
 
-	max_dist_indices, combi_distance = select_trajectories(dist_matrix, 3)
+    max_dist_indices, combi_distance = select_trajectories(dist_matrix, 3)
 
-	assert_array_equal(exp_max_dist_indices, max_dist_indices)
-	assert_array_equal(exp_combi_distance, combi_distance)
+    assert_array_equal(exp_max_dist_indices, max_dist_indices)
+    assert_array_equal(exp_combi_distance, combi_distance)
 
 def test_select_trajectories_3():
-	dist_matrix = np.array([
-		[0, 4, 5, 6],
-		[4, 0, 7, 8],
-		[5, 7, 0, 9],
-		[6, 8, 9, 0]])
+    dist_matrix = np.array([
+        [0, 4, 5, 6],
+        [4, 0, 7, 8],
+        [5, 7, 0, 9],
+        [6, 8, 9, 0]])
 
-	exp_max_dist_indices = [2, 3]
+    exp_max_dist_indices = [2, 3]
 
-	exp_combi_distance = np.array([
-		[0, 1, np.sqrt(4**2)],
-		[0, 2, np.sqrt(5**2)],
-		[0, 3, np.sqrt(6**2)],
-		[1, 2, np.sqrt(7**2)],
-		[1, 3, np.sqrt(8**2)],
-		[2, 3, np.sqrt(9**2)]])
+    exp_combi_distance = np.array([
+        [0, 1, np.sqrt(4**2)],
+        [0, 2, np.sqrt(5**2)],
+        [0, 3, np.sqrt(6**2)],
+        [1, 2, np.sqrt(7**2)],
+        [1, 3, np.sqrt(8**2)],
+        [2, 3, np.sqrt(9**2)]])
 
-	max_dist_indices, combi_distance = select_trajectories(dist_matrix, 2)
+    max_dist_indices, combi_distance = select_trajectories(dist_matrix, 2)
 
-	assert_array_equal(exp_max_dist_indices, max_dist_indices)
-	assert_array_equal(exp_combi_distance, combi_distance)
+    assert_array_equal(exp_max_dist_indices, max_dist_indices)
+    assert_array_equal(exp_combi_distance, combi_distance)
 
 def test_select_trajectories_iteration_1():
-	dist_matrix = np.array([
-		[0, 4, 5, 6],
-		[4, 0, 7, 8],
-		[5, 7, 0, 9],
-		[6, 8, 9, 0]])
+    dist_matrix = np.array([
+        [0, 4, 5, 6],
+        [4, 0, 7, 8],
+        [5, 7, 0, 9],
+        [6, 8, 9, 0]])
 
-	exp_max_dist_indices = [2, 3]
+    exp_max_dist_indices = [2, 3]
 
     # indices in the array below do not match the original dist_matrix.
-	exp_combi_distance = np.array([
-		[0, 1, np.sqrt(7**2)],
-		[0, 2, np.sqrt(8**2)],
-		[1, 2, np.sqrt(9**2)]])
+    exp_combi_distance = np.array([
+        [0, 1, np.sqrt(7**2)],
+        [0, 2, np.sqrt(8**2)],
+        [1, 2, np.sqrt(9**2)]])
 
-	max_dist_indices, combi_distance = select_trajectories_iteration(dist_matrix, 2)
+    max_dist_indices, combi_distance = select_trajectories_iteration(dist_matrix, 2)
 
-	assert_array_equal(exp_max_dist_indices, max_dist_indices)
-	assert_array_equal(exp_combi_distance, combi_distance)
+    assert_array_equal(exp_max_dist_indices, max_dist_indices)
+    assert_array_equal(exp_combi_distance, combi_distance)
 
 def test_select_trajectories_iteration_2():
     test_traj_dist_matrix = np.array([
@@ -161,26 +161,38 @@ def test_select_trajectories_iteration_2():
     max_dist_indices_iter, _ = select_trajectories_iteration(test_traj_dist_matrix, 2)
 
     assert_array_equal(max_dist_indices, max_dist_indices_iter)
-"""
+
 def test_compare_camp_07_int_ge_men_14():
-	n_inputs = 4
-	n_levels = 11
-	n_traj_sample = 50
-	n_traj = 3
+    """
+    This is the real Lakmus test for select_trajectories_iteration because the number
+    of iterations is high. The other two tests passed even tough the function was erroneous.
+
+    Oftentimes, the test works. Yet, since campolongo_2007 computes (hundret) thousands of
+    distances, they can be very close and sometimes its choices differ from
+    intermediate_ge_menendez_2007.
+
+    """
+    n_inputs = 4
+    n_levels = 11
+    n_traj_sample = 50
+    n_traj = 5
 
 
-	sample_traj_list = list()
-	for traj in range(0, n_traj_sample):
-	    seed = 123 + traj
+    sample_traj_list = list()
+    for traj in range(0, n_traj_sample):
+        seed = 123 + traj
 
-	    sample_traj_list.append(
-	        morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
-	    )
-	    
-	_, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
+        sample_traj_list.append(
+            morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
+        )
+        
+    _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
 
-	_, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
+    _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
 
-	assert_array_equal(np.array(select_list), np.array(select_list_2))
-	assert_array_equal(select_distance_matrix, select_distance_matrix_2)
-"""
+    assert_array_equal(np.array(select_list), np.array(select_list_2)), print("Oftentimes",
+    "the test works. Yet, since campolongo_2007 computes (hundret) thousands of",
+    "distances, they can be very close and sometimes its choices differ from"
+    "intermediate_ge_menendez_2007.")
+
+    assert_array_equal(select_distance_matrix, select_distance_matrix_2)
