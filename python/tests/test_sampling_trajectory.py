@@ -162,14 +162,12 @@ def test_select_trajectories_iteration_2():
 
     assert_array_equal(max_dist_indices, max_dist_indices_iter)
 
-def test_compare_camp_07_int_ge_men_14():
+def test_compare_camp_07_int_ge_men_14_1():
     """
-    This is the real Lakmus test for select_trajectories_iteration because the number
-    of iterations is high. The other two tests passed even tough the function was erroneous.
-
-    Oftentimes, the test works. Yet, since campolongo_2007 computes (hundret) thousands of
-    distances, they can be very close and sometimes its choices differ from
-    intermediate_ge_menendez_2007.
+    A share of times, the test failes because the path of combinations
+    in the iteration in intermediate_ge_menendez_2014 slightly deviates from
+    the optimal one. Yet, the aggregate distance of the given combinations
+    are relative close.
 
     """
     n_inputs = 4
@@ -196,3 +194,5 @@ def test_compare_camp_07_int_ge_men_14():
     "intermediate_ge_menendez_2007.")
 
     assert_array_equal(select_distance_matrix, select_distance_matrix_2)
+
+def test_compare_camp_07_int_ge_men_14_2():
