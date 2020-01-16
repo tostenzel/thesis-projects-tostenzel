@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jan 15 11:59:30 2020
 
-@author: Tobias
-"""
 
 n_inputs = 4
 n_levels = 5
@@ -56,7 +51,6 @@ combi_distance_new[:, 0 : n_traj_sample - 2] = np.array(combi_new).astype(int)
 lost_traj_idx = [idx for idx in indices if idx not in max_dist_indices][0]
 
 
-sum_dist_squared = 0
 for row in range(0, np.size(combi_distance_new, 0)):
     sum_dist_squared = 0
     for col in range(0, np.size(combi_distance_new, 1) - 1):
