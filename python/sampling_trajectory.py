@@ -201,6 +201,7 @@ def select_trajectories_iteration(traj_dist_matrix, n_traj):
         # delete pairs with dropped trajectory from distance matrix
         traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=0)
         traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=1)
+        """error, indices get to small"""
     
     left_max_dist_indices = [item for item in original_indices if item not in lost_indices]
     
@@ -279,7 +280,7 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
 
 n_inputs = 4
 n_levels = 5
-n_traj_sample = 15
+n_traj_sample = 30
 n_traj = 5
 
 
@@ -291,7 +292,7 @@ for traj in range(0, n_traj_sample):
         morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
     )
     
-#_, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
+_, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
 
 #_, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
 
@@ -303,9 +304,8 @@ for traj in range(0, n_traj_sample):
 traj_dist_matrix = distance_matrix(sample_traj_list)
 
 n_traj_sample = np.size(traj_dist_matrix, 0)
-lost_indices = []
-lost_indices_dynamic = []
-original_indices = np.arange(0, np.size(traj_dist_matrix, 0)).tolist()
+
+tracker_original_indices = np.arange(0, np.size(traj_dist_matrix, 0))
 for i in range(0,n_traj_sample - n_traj):
 
     indices = np.arange(0, np.size(traj_dist_matrix, 0)).tolist()
@@ -314,30 +314,14 @@ for i in range(0,n_traj_sample - n_traj):
     max_dist_indices, combi_distance =  select_trajectories(traj_dist_matrix, np.size(traj_dist_matrix, 0) - 1)
     # lost index
     lost_index = [item for item in indices if item not in max_dist_indices][0]
-    # Check wether indices smaller than the new one have been deleted
-    # Check wether if one accounts for the shrinkage, there are additional smaller indices.
-    count_1 = 0
-    count_2 = 1
-    count_3 = 2
-    """Here is the problem: Need this as while loop"""
-    count_1 = sum(lost_index >= idx for idx in lost_indices_dynamic)
-    if count_1 > 0:
-        count_2 = sum(lost_index + count_1 >= idx for idx in lost_indices_dynamic) - count_1
-        if count_2 > 0:
-            count_3 = sum(lost_index + count_1 + count_2 >= idx for idx in lost_indices_dynamic) - count_1 - count_2
-        else:
-            pass
-    else:
-        pass
-    lost_indices_dynamic.append(lost_index)
-    # need to account for indices that have been deleted before
-    lost_indices.append(lost_index + count_1 + count_2 + count_3)
+
     # delete pairs with dropped trajectory from distance matrix
     traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=0)
     traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=1)
+    tracker_original_indices = np.delete(tracker_original_indices, lost_index, axis=0)
 
-left_max_dist_indices = [item for item in original_indices if item not in lost_indices]
+"""To do: set indices in indices = np.arange(0, np.size(traj_dist_matrix, 0) to Nans when I
+shrink the matrix."""
 
-
-
+solution = [sample_traj_list[i] for i in tracker_original_indices.tolist()]
 
