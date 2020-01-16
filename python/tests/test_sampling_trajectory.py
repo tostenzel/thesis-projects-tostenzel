@@ -5,6 +5,7 @@ import sys
 sys.path.append("..")
 
 import numpy as np
+import pytest
 
 from numpy.testing import assert_array_equal
 from numpy.testing import assert_array_almost_equal
@@ -18,7 +19,8 @@ from sampling_trajectory import combi_wrapper
 from sampling_trajectory import select_trajectories
 from sampling_trajectory import campolongo_2007
 from sampling_trajectory import intermediate_ge_menendez_2014
-from sampling_trajectory import select_trajectories_iteration
+from sampling_trajectory import select_trajectories_wrapper_iteration
+from sampling_trajectory import aggregate_combi_distance
 
 def test_morris_trajectories():
     """
@@ -145,7 +147,7 @@ def test_select_trajectories_iteration_1():
         [0, 2, np.sqrt(8**2)],
         [1, 2, np.sqrt(9**2)]])
 
-    max_dist_indices, combi_distance = select_trajectories_iteration(dist_matrix, 2)
+    max_dist_indices, combi_distance = select_trajectories_wrapper_iteration(dist_matrix, 2)
 
     assert_array_equal(exp_max_dist_indices, max_dist_indices)
     assert_array_equal(exp_combi_distance, combi_distance)
@@ -158,10 +160,15 @@ def test_select_trajectories_iteration_2():
         [4, 100, 200, 0]])
 
     max_dist_indices, _= select_trajectories(test_traj_dist_matrix, 2)
-    max_dist_indices_iter, _ = select_trajectories_iteration(test_traj_dist_matrix, 2)
+    max_dist_indices_iter, _ = select_trajectories_wrapper_iteration(test_traj_dist_matrix, 2)
 
     assert_array_equal(max_dist_indices, max_dist_indices_iter)
 
+@pytest.mark.skip(
+    reason="Oftentimes the test works. \
+    However, due to numerical reasons, sometimes intermediate_ge_menendez_2014 \
+    selects a different, slightly worse trajectory set\
+    compared to campolongo_2007.")
 def test_compare_camp_07_int_ge_men_14_1():
     """
     A share of times, the test failes because the path of combinations
@@ -175,6 +182,31 @@ def test_compare_camp_07_int_ge_men_14_1():
     n_traj_sample = 50
     n_traj = 5
 
+    sample_traj_list = list()
+    for traj in range(0, n_traj_sample):
+        seed = 123 + traj
+
+        sample_traj_list.append(
+            morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
+        )
+        
+    _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
+    _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
+
+    assert_array_equal(np.array(select_list), np.array(select_list_2))
+    assert_array_equal(select_distance_matrix, select_distance_matrix_2)
+
+def test_compare_camp_07_int_ge_men_14_2():
+    """
+    Tests wether the trajectory set computed by compolongo_2007
+    and intermediate_ge_menendez_2014 are reasonably close in terms
+    of their aggregate distance.
+
+    """
+    n_inputs = 4
+    n_levels = 5
+    n_traj_sample = 30
+    n_traj = 5
 
     sample_traj_list = list()
     for traj in range(0, n_traj_sample):
@@ -185,14 +217,9 @@ def test_compare_camp_07_int_ge_men_14_1():
         )
         
     _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
-
     _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
 
-    assert_array_equal(np.array(select_list), np.array(select_list_2)), print("Oftentimes",
-    "the test works. Yet, since campolongo_2007 computes (hundret) thousands of",
-    "distances, they can be very close and sometimes its choices differ from"
-    "intermediate_ge_menendez_2007.")
+    dist_camp = aggregate_combi_distance(select_distance_matrix)
+    dist_gm = aggregate_combi_distance(select_distance_matrix_2)
 
-    assert_array_equal(select_distance_matrix, select_distance_matrix_2)
-
-def test_compare_camp_07_int_ge_men_14_2():
+    assert dist_camp - dist_gm < 0.01 * dist_camp

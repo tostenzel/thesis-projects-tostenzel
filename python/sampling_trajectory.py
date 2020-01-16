@@ -141,6 +141,20 @@ def combi_wrapper(iterable, r):
     list_list = [list(x) for x in tup_tup]
     return list_list
 
+def aggregate_combi_distance(distance_matrix):
+    """
+    Computes the aggregate distance of all pairs of trajectories
+    from a diagonal matrix of distances for trajectory pairs.
+    This function corresponds to Equation (10) in Ge/Menendez (2014),
+    see IMPORTANT REMARK in `select_trajectories`.
+    Therefore, it can potentially be used in another version of
+    `select_trajectories` along with `distance_matrix`.
+    
+    """
+    agg_distance = np.sqrt(sum(sum(np.tril(distance_matrix**2))))
+
+    return agg_distance
+
 
 def select_trajectories(traj_dist_matrix, n_traj):
     """
@@ -158,10 +172,13 @@ def select_trajectories(traj_dist_matrix, n_traj):
     combi_distance[row, n_traj] += (
         traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
             )
-    Perhaps, following Ge/Menendez(2014), the speed can be improved,
-    by using their formula, thereby applying the distance matrix on each
-    non-pair combination.
     ```
+    Perhaps, following Ge/Menendez(2014), the speed can be improved,
+    by using their equation(10), thereby applying the distance matrix on each
+    non-pair combination. However, this function reuses the original
+    distance_matrix and each new computation of `distance_matrix` also
+    involves for loops.
+
 
     IMPORTANT REMARK 2: This selection function yields precise results
     because each aggregate distance for each possible combination of
@@ -278,6 +295,7 @@ def campolongo_2007(sample_traj_list, n_traj):
     """
     WARNING: Slow for large (len(sample_traj_list) - n_traj),
     see `select_trajectories`.
+
     Takes a list of Morris trajectories and selects the n_traj trajectories
     with the largest distance between them.
     Returns the selection as array with n_inputs at the verical and n_traj at the
@@ -300,7 +318,7 @@ def campolongo_2007(sample_traj_list, n_traj):
 def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     """
     WARNING: Oftentimes this function leads to diffent combinations than
-    `select_trajectories`. However, their aggregate distance if very close
+    `select_trajectories`. However, their aggregate distance is very close
     to the optimal solution, see `select_trajectories_wrapper_iteration`.
 
     This function implements the first part of the sampling improvement in
@@ -349,8 +367,11 @@ _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_tra
 
 _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
 
-np.sqrt(sum(sum(np.tril(select_distance_matrix**2))))
-np.sqrt(sum(sum(np.tril(select_distance_matrix_2**2))))
+
+# closer to Ge/Menendez equation(10) than the loop used in seleted trajectories.
+
+test_base = aggregate_combi_distance(select_distance_matrix)
+test_intermediate_ge_menendez_2004 = aggregate_combi_distance(select_distance_matrix_2)
 
 """Compute aggregate distance and compare the result for a test."""
 traj_dist_matrix = distance_matrix(sample_traj_list)
