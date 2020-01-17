@@ -435,6 +435,7 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
 
 
 def final_ge_menendez_2014(sample_traj_list, n_traj):
+    n_traj_sample = len(sample_traj_list)
     """Step 1: outside function"""
     traj_dist_matrix = distance_matrix(sample_traj_list)
     
@@ -478,11 +479,11 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
 
     return input_par_array.T, select_trajs, select_dist_matrix
 
-
+"""
 n_inputs = 4
 n_levels = 5
-n_traj_sample = 6
-n_traj = 3
+n_traj_sample = 30
+n_traj = 5
 
 
 sample_traj_list = list()
@@ -497,4 +498,5 @@ traj_array, traj_list, diagonal_dist_matrix = final_ge_menendez_2014(sample_traj
 
 
 
-test_array, test_list, test_diagonal_dist_matrix = final_ge_menendez_2014(sample_traj_list, n_traj)
+test_array, test_list, test_diagonal_dist_matrix = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
+"""

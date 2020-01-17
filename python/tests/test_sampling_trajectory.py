@@ -92,6 +92,7 @@ def test_select_trajectories_1():
     assert test_indices == expected_dist_indices
     assert_array_almost_equal(test_select[3, :], expected_fourth_row, 0.00000001)
 
+
 def test_select_trajectories_2():
     dist_matrix = np.array([
         [0, 4, 5, 6],
@@ -111,6 +112,7 @@ def test_select_trajectories_2():
 
     assert_array_equal(exp_max_dist_indices, max_dist_indices)
     assert_array_equal(exp_combi_distance, combi_distance)
+
 
 def test_select_trajectories_3():
     dist_matrix = np.array([
@@ -134,6 +136,7 @@ def test_select_trajectories_3():
     assert_array_equal(exp_max_dist_indices, max_dist_indices)
     assert_array_equal(exp_combi_distance, combi_distance)
 
+
 def test_select_trajectories_iteration_1():
     dist_matrix = np.array([
         [0, 4, 5, 6],
@@ -154,6 +157,7 @@ def test_select_trajectories_iteration_1():
     assert_array_equal(exp_max_dist_indices, max_dist_indices)
     assert_array_equal(exp_combi_distance, combi_distance)
 
+
 def test_select_trajectories_iteration_2():
     test_traj_dist_matrix = np.array([
         [0, 1, 2, 4],
@@ -166,8 +170,10 @@ def test_select_trajectories_iteration_2():
 
     assert_array_equal(max_dist_indices, max_dist_indices_iter)
 
+
 @pytest.mark.skip(
-    reason="Oftentimes the test works. \
+    reason="The following behavior is expected by Ge/Menendez (2014). \
+    Oftentimes the test works. \
     However, due to numerical reasons, sometimes intermediate_ge_menendez_2014 \
     selects a different, slightly worse trajectory set\
     compared to campolongo_2007.")
@@ -198,6 +204,7 @@ def test_compare_camp_07_int_ge_men_14_1():
     assert_array_equal(np.array(select_list), np.array(select_list_2))
     assert_array_equal(select_distance_matrix, select_distance_matrix_2)
 
+
 def test_compare_camp_07_int_ge_men_14_2():
     """
     Tests wether the trajectory set computed by compolongo_2007
@@ -226,6 +233,7 @@ def test_compare_camp_07_int_ge_men_14_2():
 
     assert dist_camp - dist_gm < 0.01 * dist_camp
 
+
 def test_final_ge_menendez_2014():
     n_inputs = 4
     n_levels = 5
@@ -241,7 +249,7 @@ def test_final_ge_menendez_2014():
         )
 
     traj_array, traj_list, diagonal_dist_matrix = final_ge_menendez_2014(sample_traj_list, n_traj)
-    test_array, test_list, test_diagonal_dist_matrix = final_ge_menendez_2014(sample_traj_list, n_traj)
+    test_array, test_list, test_diagonal_dist_matrix = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
 
     assert_array_equal(traj_array, test_array)
     assert_array_equal(traj_list, test_list)
