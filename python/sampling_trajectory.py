@@ -142,9 +142,9 @@ def combi_wrapper(iterable, r):
     return list_list
 
 
-def aggregate_combi_distance(distance_matrix):
+def total_distance(distance_matrix):
     """
-    Computes the aggregate distance of all pairs of trajectories
+    Computes the total distance of all pairs of trajectories
     from a diagonal matrix of distances for trajectory pairs.
     This function corresponds to Equation (10) in Ge/Menendez (2014),
     see IMPORTANT REMARK in `select_trajectories`.
@@ -152,9 +152,9 @@ def aggregate_combi_distance(distance_matrix):
     `select_trajectories` along with `distance_matrix`.
     
     """
-    agg_distance = np.sqrt(sum(sum(np.tril(distance_matrix ** 2))))
+    total_distance = np.sqrt(sum(sum(np.tril(distance_matrix ** 2))))
 
-    return agg_distance
+    return total_distance
 
 
 def select_trajectories(traj_dist_matrix, n_traj):
@@ -163,14 +163,14 @@ def select_trajectories(traj_dist_matrix, n_traj):
     between np.binomial(len(traj_dist_matrix, n_traj) pairs of trajectories.
     - Example: np.biomial(30,15) = 155117520.
 
-    IMPORTANT REMARK 1: The aggregate distance is the same as
+    IMPORTANT REMARK 1: The total distance is the same as
     in Ge/Menendez (2014). In equation (10) they effectively loop over
     each line and column in the distance_matrix. Since the matrix is symmetric.
     they multiply it by 0.5. This function, however, effectively, only
     loops over a lower triangular distance matrix because it inserts each
     combination only one time:
     ```
-    combi_distance[row, n_traj] += (
+    combi_total_distance[row, n_traj] += (
         traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
             )
     ```
@@ -182,17 +182,17 @@ def select_trajectories(traj_dist_matrix, n_traj):
 
 
     IMPORTANT REMARK 2: This selection function yields precise results
-    because each aggregate distance for each possible combination of
+    because each total distance for each possible combination of
     trajectories is computed directly. The faster, iterative methods
-    can yield different results that are, however, close in the aggregate
-    distance. The aggregate distances tend to differentiate clearly.
+    can yield different results that are, however, close in the total
+    distance. The total distances tend to differentiate clearly.
     Therefore, the optimal combination is precisely determined.
     
     Converts symmetric matrix of distances with 0 diagonal for each
     trajectory pair to matrix with rows for each combination of
-    n_traj combination of pairs. The returned matrix is `combi_distance`.
+    n_traj combination of pairs. The returned matrix is `combi_total_distance`.
     The index-based combinations given traj_dist_matrix are in [row,:n_traj]
-    and the aggregate distance of the pair combinations, their
+    and the total distance of the pair combinations, their
     rooted square sum is in [row,n_traj+1]
     Also returns list of indices for traj_dist list to select the optimal
     trajsectories.
@@ -204,31 +204,31 @@ def select_trajectories(traj_dist_matrix, n_traj):
     # Get all possible combinations of input parameters by their indices.
     combi = combi_wrapper(list(np.arange(0, np.size(traj_dist_matrix, 1))), n_traj)
     assert len(combi) == binom(np.size(traj_dist_matrix, 1), n_traj)
-    # leave last column open for aggregate distance
-    combi_distance = np.ones([len(combi), n_traj + 1]) * np.nan
-    combi_distance[:, 0:n_traj] = np.array(combi)
+    # leave last column open for total distance
+    combi_total_distance = np.ones([len(combi), n_traj + 1]) * np.nan
+    combi_total_distance[:, 0:n_traj] = np.array(combi)
 
     # This loop needs to be parallelized.
     for row in range(0, len(combi)):
         # Assign last column
-        combi_distance[row, n_traj] = 0
+        combi_total_distance[row, n_traj] = 0
         pair_combi = combi_wrapper(combi[row], 2)
         for pair in pair_combi:
-            # Aggreate the pair distance to the aggregate distance of the
+            # Aggreate the pair distance to the total distance of the
             # trajectory combination.
             # There is no * 0.5 in contrary to Ge/Menendez (2014) because
             # this only uses half of the matrix.
-            combi_distance[row, n_traj] += (
+            combi_total_distance[row, n_traj] += (
                 traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
             )
-    combi_distance[:, n_traj] = np.sqrt(combi_distance[:, n_traj])
-    # Select indices of combination that yields highest aggregate distance.
-    max_dist_indices_row = combi_distance[:, n_traj].argsort()[-1:][::-1].tolist()
-    max_dist_indices = combi_distance[max_dist_indices_row, 0:n_traj]
+    combi_total_distance[:, n_traj] = np.sqrt(combi_total_distance[:, n_traj])
+    # Select indices of combination that yields highest total distance.
+    max_dist_indices_row = combi_total_distance[:, n_traj].argsort()[-1:][::-1].tolist()
+    max_dist_indices = combi_total_distance[max_dist_indices_row, 0:n_traj]
     # Convert list of float indices to list of ints.
     max_dist_indices = [int(i) for i in max_dist_indices.tolist()[0]]
 
-    return max_dist_indices, combi_distance
+    return max_dist_indices, combi_total_distance
 
 
 def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
@@ -236,8 +236,8 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
     WARNING: Oftentimes this function leads to diffent combinations than
     `select_trajectories`. The reason seems to be that this function
     deviates from the optimal path due to numerical reasons as different
-    combinations may be very close.
-    However, the aggregate sum of the returned combinations are close.
+    combinations may be very close (see Ge/Menendez (2014)).
+    However, the total sum of the returned combinations are close.
     Therefore, the quality loss is negligible compared to the speed gain
     for large numbers of trajectory combinations.
 
@@ -248,7 +248,7 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
     for i in range(1,n_traj_sample - n_traj):
         intermediate_result = select_trajectories(, n_traj_sample - i)
     ```
-    Therefore, `combi_distance` differs from the one in `select_trajectories`
+    Therefore, `combi_total_distance` differs from the one in `select_trajectories`
     because it only contains the combination indices from the last iteration.
     
     """
@@ -259,7 +259,7 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
         indices = np.arange(0, np.size(traj_dist_matrix, 0)).tolist()
         # get list of all indices
         # get list of surviving indices
-        max_dist_indices, combi_distance = select_trajectories(
+        max_dist_indices, combi_total_distance = select_trajectories(
             traj_dist_matrix, np.size(traj_dist_matrix, 0) - 1
         )
         # lost index
@@ -270,7 +270,7 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
         traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=1)
         tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)
 
-    return tracker_keep_indices.tolist(), combi_distance
+    return tracker_keep_indices.tolist(), combi_total_distance
 
 
 def simple_stairs(n_inputs, n_levels, n_traj):
@@ -307,7 +307,7 @@ def campolongo_2007(sample_traj_list, n_traj):
 
     """
     pair_matrix = distance_matrix(sample_traj_list)
-    select_indices, combi_distance = select_trajectories(pair_matrix, n_traj)
+    select_indices, combi_total_distance = select_trajectories(pair_matrix, n_traj)
 
     select_trajs = [sample_traj_list[idx] for idx in select_indices]
     # Rows are parameters, cols is number of drawn parameter vectors.
@@ -320,12 +320,12 @@ def campolongo_2007(sample_traj_list, n_traj):
 def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     """
     WARNING: Oftentimes this function leads to diffent combinations than
-    `select_trajectories`. However, their aggregate distance is very close
+    `select_trajectories`. However, their total distance is very close
     to the optimal solution, see `select_trajectories_wrapper_iteration`.
 
     This function implements the first part of the sampling improvement in
     terms of computation time by Ge/Menendez(2014). It is the iterative
-    selection of the optimal trajectories given an aggregate distance
+    selection of the optimal trajectories given an total distance
     in `select_trajectories_wrapper_iteration`.
     The next step is to compute the distances by using those from the last
     instead of computing them anew in each iteration.
@@ -334,7 +334,7 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     """
     pair_matrix = distance_matrix(sample_traj_list)
     # this function is the difference to campolongo
-    select_indices, combi_distance = select_trajectories_wrapper_iteration(
+    select_indices, combi_total_distance = select_trajectories_wrapper_iteration(
         pair_matrix, n_traj
     )
 
@@ -346,12 +346,76 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     return input_par_array.T, select_trajs, select_dist_matrix
 
 
+"""Need to update combi_total_distance"""
+# Get new combinations without worst trajectory
+def next_combi_total_distance_gm14(
+    old_combi_total_distance, old_traj_dist_matrix, lost_index
+):
+    # Want to select all trajectories but one which is given by the length of
+    # the dist_matrix
+    n_traj = np.size(old_traj_dist_matrix, 0) - 1
+    # Get all n_traj combintaions from the indices above.
+    combi_next = combi_wrapper(list(np.arange(0, np.size(traj_dist_matrix, 0))), n_traj)
+    # The  + 1 to n_traj is for the total distance.
+    combi_total_distance_next = np.ones([len(combi_next), n_traj + 1]) * np.nan
+    combi_total_distance_next[:, 0:n_traj] = np.array(combi_next).astype(int)
+
+    # Compute the sum of squared pair distances
+    # that each trajectory in new combination has with the lost trajectory.
+    for row in range(0, np.size(combi_total_distance_next, 0)):
+        sum_dist_squared = 0
+        # - 1 is to no spare the total ditance column.
+        for col in range(0, np.size(combi_total_distance_next, 1) - 1):
+            # Get the distance between lost index trajectory and present ones in row.
+            sum_dist_squared += (
+                old_traj_dist_matrix[
+                    int(combi_total_distance_next[row, col]), lost_index
+                ]
+            ) ** 2
+
+            # Map old total distance to total distance for new combination of trajectories.
+            for row_old in range(0, np.size(combi_total_distance, 0)):
+                # Construct the specific indices of each combi
+                # in the old combi_total_distance matrix from the new combi and the lost traj.
+                indices_in_old_combi_dist = [
+                    float(idx_new_trajs)
+                    for idx_new_trajs in combi_total_distance_next[
+                        row, 0 : n_traj_sample - 2
+                    ].tolist()
+                ]
+                indices_in_old_combi_dist.append(float(lost_index))
+                # Obtain total distances of new combinations by subtracting the respective sum of old squared distances
+                if set(indices_in_old_combi_dist) == set(
+                    old_combi_total_distance[row_old, 0 : n_traj_sample - 1]
+                ):
+                    combi_total_distance_next[row, n_traj_sample - 2] = np.sqrt(
+                        old_combi_total_distance[row_old, n_traj_sample - 1] ** 2
+                        - sum_dist_squared
+                    )
+                else:
+                    pass
+
+    # Select indices of combination that yields highest total distance.
+    max_dist_indices_next_row = (
+        combi_total_distance_next[:, np.size(combi_total_distance, 0) - 2]
+        .argsort()[-1:][::-1]
+        .tolist()
+    )
+    max_dist_indices_next = combi_total_distance_next[
+        max_dist_indices_next_row, 0 : np.size(combi_total_distance, 0) - 2
+    ]
+    # Convert list of float indices to list of ints.
+    max_dist_indices_next = [int(i) for i in max_dist_indices_next.tolist()[0]]
+
+    return max_dist_indices_next, combi_total_distance_next
+
+
 """Work on completion of Ge/Menendez (2014) sampling."""
 
 n_inputs = 4
 n_levels = 5
 n_traj_sample = 6
-n_traj = 5
+n_traj = 4
 
 
 sample_traj_list = list()
@@ -365,93 +429,107 @@ for traj in range(0, n_traj_sample):
 
 """Step 1: outside function"""
 traj_dist_matrix = distance_matrix(sample_traj_list)
-test_indices, test_combi_distance = select_trajectories_wrapper_iteration(
-    traj_dist_matrix, n_traj - 1
+
+"""TEST COMPARISON"""
+test_indices, test_combi_total_distance = select_trajectories_wrapper_iteration(
+    traj_dist_matrix, n_traj
 )
 
 
 """Begin function here, parallel to function select_trajectories"""
-"""Step 2: Compute aggregate distances for combinations and identify worst trajectory"""
-max_dist_indices, combi_distance = select_trajectories(
-    traj_dist_matrix, np.size(traj_dist_matrix, 0) - 1
+"""Step 2: Compute total distances for combinations and identify worst trajectory"""
+max_dist_indices, combi_total_distance = select_trajectories(
+    traj_dist_matrix, len(sample_traj_list) - 1
 )
-# Get index of worst trajectory
-indices = np.arange(0, np.size(traj_dist_matrix, 0)).tolist()
-lost_traj_index = [item for item in indices if item not in max_dist_indices][0]
-tracker_keep_indices = np.arange(0, np.size(traj_dist_matrix, 0))
 
-"""Need to update combi_distance"""
-# Get new combinations without worst trajectory
-def next_combi_distance_gm14(combi_distance, max_dist_indices):
-
-    max_dist_indices_row = (
-        combi_distance[:, len(max_dist_indices)].argsort()[-1:][::-1].tolist()
-    )
-    max_dist_indices_next = combi_distance[
-        max_dist_indices_row, 0 : len(max_dist_indices)
-    ]
-    # Convert list of float indices to list of ints.
-    max_dist_indices_next = [int(i) for i in max_dist_indices_next.tolist()[0]]
-
-    # lost index
-    lost_traj_index = [item for item in indices if item not in max_dist_indices][0]
-
-    combi_next = combi_wrapper(max_dist_indices, len(max_dist_indices) - 1)
-    combi_distance_next = np.ones([len(combi_next), len(combi_next)]) * np.nan
-    combi_distance_next[:, 0 : len(combi_next) - 1] = np.array(combi_next).astype(int)
-
-    # Compute the sum of squared pair distances
-    # that each trajectory in new combination has with the lost trajectory.
-    for row in range(0, np.size(combi_distance_next, 0)):
-        sum_dist_squared = 0
-        for col in range(0, np.size(combi_distance_next, 1) - 1):
-            # Get the distance between lost index trajectory and present ones in row.
-            sum_dist_squared += (
-                traj_dist_matrix[int(combi_distance_next[row, col]), lost_traj_index]
-            ) ** 2
-
-            # Map old aggregate distance to aggregate distance for new combination of trajectories.
-            for row_old in range(0, np.size(combi_distance, 0)):
-                # Construct the specific indices of each combi
-                # in the old combi_distance matrix from the new combi and the lost traj.
-                indices_in_old_combi_dist = [
-                    float(idx_new_trajs)
-                    for idx_new_trajs in combi_distance_next[
-                        row, 0 : n_traj_sample - 2
-                    ].tolist()
-                ]
-                indices_in_old_combi_dist.append(float(lost_traj_index))
-                # Obtain aggregate distances of new combinations by subtracting the respective sum of old squared distances
-                if set(indices_in_old_combi_dist) == set(
-                    combi_distance[row_old, 0 : n_traj_sample - 1]
-                ):
-                    combi_distance_next[row, n_traj_sample - 2] = np.sqrt(
-                        combi_distance[row_old, n_traj_sample - 1] ** 2
-                        - sum_dist_squared
-                    )
-                else:
-                    pass
-
-    # Select indices of combination that yields highest aggregate distance.
-    max_dist_indices_next_row = (
-        combi_distance_next[:, len(max_dist_indices) - 1].argsort()[-1:][::-1].tolist()
-    )
-    max_dist_indices_next = combi_distance_next[
-        max_dist_indices_next_row, 0 : len(max_dist_indices) - 1
-    ]
-    # Convert list of float indices to list of ints.
-    max_dist_indices_next = [int(i) for i in max_dist_indices_next.tolist()[0]]
-
-    # lost index
-    lost_traj_index = [
-        item for item in max_dist_indices if item not in max_dist_indices_next
-    ][0]
-
-    return max_dist_indices_next, combi_distance_next
-
+# Get lost index from first intitial selection (to get previous combi_total_distance).
+# This index is used to access the pair distance with the lost trajectory in the
+# old pair distance matrix. They are subtracted from the aggregate in the old combi_total distance.
+indices = np.arange(0, len(traj_dist_matrix)).tolist()
+lost_index = [item for item in indices if item not in max_dist_indices][0]
+# Init index tracker and delete first index.
+tracker_keep_indices = np.arange(0, len(traj_dist_matrix)).tolist()
+tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)
+#  to (n_traj_sample - n_traj - 1), the mins one is because this is already Step 2.
+# for i in range(0, n_traj_sample - n_traj - 1):
 
 # use shrink trick for largest loop
+# max_dist_indices_next, combi_total_distance_next = next_combi_total_distance_gm14(
+#    combi_total_distance, traj_dist_matrix, lost_index
+# )
 
-next_indices, next_combi_distance = next_combi_distance_gm14(
-    combi_distance, max_dist_indices
+
+old_traj_dist_matrix = traj_dist_matrix
+old_combi_total_distance = combi_total_distance
+# Want to select all trajectories but one which is given by the length of
+# the dist_matrix
+n_traj_sample = np.size(old_traj_dist_matrix, 0) - 1  # - 1 because its the old matrix
+n_traj = np.size(old_traj_dist_matrix, 0) - 2  # # - 2 because its the old matrix
+remained_indices = np.arange(0, n_traj_sample + 1).tolist()
+remained_indices.remove(lost_index)
+# Get all n_traj combintaions from the indices above.
+combi_next = combi_wrapper(remained_indices, n_traj)
+# The  + 1 to n_traj is for the total distance.
+combi_total_distance_next = np.ones([len(combi_next), n_traj + 1]) * np.nan
+combi_total_distance_next[:, 0:n_traj] = np.array(combi_next).astype(int)
+
+# Compute the sum of squared pair distances
+# that each trajectory in new combination has with the lost trajectory.
+for row in range(0, np.size(combi_total_distance_next, 0)):
+    sum_dist_squared = 0
+    # - 1 is to no spare the total ditance column.
+    for col in range(0, np.size(combi_total_distance_next, 1) - 1):
+        # Get the distance between lost index trajectory and present ones in row.
+        sum_dist_squared += (
+            old_traj_dist_matrix[int(combi_total_distance_next[row, col]), lost_index]
+        ) ** 2
+
+        # Map old total distance to total distance for new combination of trajectories.
+        for row_old in range(0, np.size(combi_total_distance, 0)):
+            # Construct the specific indices of each combi
+            # in the old combi_total_distance matrix from the new combi and the lost traj.
+            indices_in_old_combi_dist = [
+                float(idx_new_trajs)
+                for idx_new_trajs in combi_total_distance_next[
+                    row, 0 : n_traj_sample - 1  # correct
+                ].tolist()
+            ]
+            indices_in_old_combi_dist.append(float(lost_index))
+            # Obtain total distances of new combinations by subtracting the respective sum of old squared distances
+            if set(indices_in_old_combi_dist) == set(
+                old_combi_total_distance[row_old, 0:n_traj_sample]  #
+            ):
+                # + 1 because the total distance columns must be changed.
+                # - one because its the new matrix?
+                combi_total_distance_next[row, n_traj_sample - 1] = np.sqrt(
+                    old_combi_total_distance[row_old, n_traj_sample] ** 2
+                    - sum_dist_squared
+                )
+            else:
+                pass
+
+# Select indices of combination that yields highest total distance.
+max_dist_indices_next_row = (
+    combi_total_distance_next[:, np.size(combi_total_distance, 0) - 2]
+    .argsort()[-1:][::-1]
+    .tolist()
 )
+max_dist_indices_next = combi_total_distance_next[
+    max_dist_indices_next_row, 0 : np.size(combi_total_distance, 0) - 2
+]
+# Convert list of float indices to list of ints.
+max_dist_indices_next = [int(i) for i in max_dist_indices_next.tolist()[0]]
+
+
+# lost index
+# lost_index = [
+#    item for item in indices if item not in max_dist_indices_next
+# ][0]
+
+# delete pairs with dropped trajectory from distance matrix
+# traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=0)
+# traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=1)
+# tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)
+
+
+"""Then drop rows and cols from traj_dist_matrix and also shrink original indices."""
