@@ -20,7 +20,9 @@ from sampling_trajectory import select_trajectories
 from sampling_trajectory import campolongo_2007
 from sampling_trajectory import intermediate_ge_menendez_2014
 from sampling_trajectory import select_trajectories_wrapper_iteration
-from sampling_trajectory import aggregate_combi_distance
+from sampling_trajectory import total_distance
+from sampling_trajectory import final_ge_menendez_2014
+
 
 def test_morris_trajectories():
     """
@@ -173,7 +175,7 @@ def test_compare_camp_07_int_ge_men_14_1():
     """
     A share of times, the test failes because the path of combinations
     in the iteration in intermediate_ge_menendez_2014 slightly deviates from
-    the optimal one. Yet, the aggregate distance of the given combinations
+    the optimal one. Yet, the total distance of the given combinations
     are relative close.
 
     """
@@ -200,7 +202,7 @@ def test_compare_camp_07_int_ge_men_14_2():
     """
     Tests wether the trajectory set computed by compolongo_2007
     and intermediate_ge_menendez_2014 are reasonably close in terms
-    of their aggregate distance.
+    of their total distance.
 
     """
     n_inputs = 4
@@ -219,7 +221,28 @@ def test_compare_camp_07_int_ge_men_14_2():
     _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
     _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
 
-    dist_camp = aggregate_combi_distance(select_distance_matrix)
-    dist_gm = aggregate_combi_distance(select_distance_matrix_2)
+    dist_camp = total_distance(select_distance_matrix)
+    dist_gm = total_distance(select_distance_matrix_2)
 
     assert dist_camp - dist_gm < 0.01 * dist_camp
+
+def test_final_ge_menendez_2014():
+    n_inputs = 4
+    n_levels = 5
+    n_traj_sample = 30
+    n_traj = 5
+
+    sample_traj_list = list()
+    for traj in range(0, n_traj_sample):
+        seed = 123 + traj
+
+        sample_traj_list.append(
+            morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
+        )
+
+    traj_array, traj_list, diagonal_dist_matrix = final_ge_menendez_2014(sample_traj_list, n_traj)
+    test_array, test_list, test_diagonal_dist_matrix = final_ge_menendez_2014(sample_traj_list, n_traj)
+
+    assert_array_equal(traj_array, test_array)
+    assert_array_equal(traj_list, test_list)
+    assert_array_equal(diagonal_dist_matrix, test_diagonal_dist_matrix)

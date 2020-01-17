@@ -346,52 +346,8 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     return input_par_array.T, select_trajs, select_dist_matrix
 
 
-
-
-
-"""Work on completion of Ge/Menendez (2014) sampling."""
-
-n_inputs = 4
-n_levels = 5
-n_traj_sample = 6
-n_traj = 4
-
-
-sample_traj_list = list()
-for traj in range(0, n_traj_sample):
-    seed = 123 + traj
-
-    sample_traj_list.append(
-        morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
-    )
-
-
-"""Step 1: outside function"""
-traj_dist_matrix = distance_matrix(sample_traj_list)
-
-"""TEST COMPARISON"""
-test_indices, test_combi_total_distance = select_trajectories_wrapper_iteration(
-    traj_dist_matrix, n_traj
-)
-
-
-"""Begin function here, parallel to function select_trajectories"""
-"""Step 2: Compute total distances for combinations and identify worst trajectory"""
-max_dist_indices, combi_total_distance = select_trajectories(
-    traj_dist_matrix, len(sample_traj_list) - 1
-)
-
-# Get lost index from first intitial selection (to get previous combi_total_distance).
-# This index is used to access the pair distance with the lost trajectory in the
-# old pair distance matrix. They are subtracted from the aggregate in the old combi_total distance.
-indices = np.arange(0, len(traj_dist_matrix)).tolist()
-lost_index = [item for item in indices if item not in max_dist_indices][0]
-# Init index tracker and delete first index.
-tracker_keep_indices = np.arange(0, len(traj_dist_matrix)).tolist()
-tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)
-
-
 def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_index):
+    
     old_combi_total_distance = combi_total_distance
     old_traj_dist_matrix = traj_dist_matrix
     # Want to select all trajectories but one which is given by the length of
@@ -477,16 +433,68 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
 
     return combi_total_distance_next, traj_dist_matrix_next, lost_index_next
 
-#  to (n_traj_sample - n_traj - 1), the mins one is because this is already Step 2.
-for i in range(0, n_traj_sample - n_traj - 1):
 
-    # use shrink trick for largest loop
-    combi_total_distance, traj_dist_matrix, lost_index = next_combi_total_distance_gm14(
-       combi_total_distance, traj_dist_matrix, lost_index
+def final_ge_menendez_2014(sample_traj_list, n_traj):
+    """Step 1: outside function"""
+    traj_dist_matrix = distance_matrix(sample_traj_list)
+    
+    """TEST COMPARISON"""
+    test_indices, test_combi_total_distance = select_trajectories_wrapper_iteration(
+        traj_dist_matrix, n_traj
     )
     
     
+    """Begin function here, parallel to function select_trajectories"""
+    """Step 2: Compute total distances for combinations and identify worst trajectory"""
+    max_dist_indices, combi_total_distance = select_trajectories(
+        traj_dist_matrix, len(sample_traj_list) - 1
+    )
+    
+    # Get lost index from first intitial selection (to get previous combi_total_distance).
+    # This index is used to access the pair distance with the lost trajectory in the
+    # old pair distance matrix. They are subtracted from the aggregate in the old combi_total distance.
+    indices = np.arange(0, len(traj_dist_matrix)).tolist()
+    lost_index = [item for item in indices if item not in max_dist_indices][0]
+    # Init index tracker and delete first index.
+    tracker_keep_indices = np.arange(0, len(traj_dist_matrix)).tolist()
     tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)
+    
+    
+    #  to (n_traj_sample - n_traj - 1), the mins one is because this is already Step 2.
+    for i in range(0, n_traj_sample - n_traj - 1):
+    
+        # use shrink trick for largest loop
+        combi_total_distance, traj_dist_matrix, lost_index = next_combi_total_distance_gm14(
+           combi_total_distance, traj_dist_matrix, lost_index
+        )
+        
+        
+        tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)
+
+    select_trajs = [sample_traj_list[idx] for idx in tracker_keep_indices]
+    # Rows are parameters, cols is number of drawn parameter vectors.
+    input_par_array = np.vstack(select_trajs)
+    select_dist_matrix = distance_matrix(select_trajs)
+
+    return input_par_array.T, select_trajs, select_dist_matrix
 
 
-"""Then drop rows and cols from traj_dist_matrix and also shrink original indices."""
+n_inputs = 4
+n_levels = 5
+n_traj_sample = 6
+n_traj = 3
+
+
+sample_traj_list = list()
+for traj in range(0, n_traj_sample):
+    seed = 123 + traj
+
+    sample_traj_list.append(
+        morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
+    )
+
+traj_array, traj_list, diagonal_dist_matrix = final_ge_menendez_2014(sample_traj_list, n_traj)
+
+
+
+test_array, test_list, test_diagonal_dist_matrix = final_ge_menendez_2014(sample_traj_list, n_traj)
