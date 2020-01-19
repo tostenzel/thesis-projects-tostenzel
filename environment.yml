@@ -21,6 +21,7 @@ dependencies:
 - doc8
 - restructuredtext_lint
 - respy
+- numba
 - pip:
   - chaospy
   - pre-commit

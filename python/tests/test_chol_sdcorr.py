@@ -2,6 +2,7 @@
 import sys
 
 import numpy as np
+import pytest
 import respy as rp
 
 # Define parent folder as relative path.
@@ -10,15 +11,14 @@ from numpy.testing import assert_array_almost_equal
 from jac_estimation_chol import chol_reindex_params
 
 
+@pytest.mark.skip(
+    reason="This test takes some minutes due to the simulation of 10000 agents \
+    by `respy.get_example_model`."
+)
 def test_loglikelihood_chol_equals_sdcorr():
     """
     Tests wether the loglikelihood function is equal at equal parameter vectors
     specified by Cholesky factors and Sd-Corr matrix for utility shocks.
-
-    Note
-    ----
-    This test takes some minutes due to the simulation of 10000 agents
-    by `respy.get_example_model`.
 
     """
     # Init default non-variation parameters and the indices in respy Df format.

@@ -39,6 +39,7 @@ def test_morris_trajectories():
 
 
 def lin_portfolio(q1, q2, c1=2, c2=1, *args):
+    """Simple function with analytic EE solution to support testing."""
     return c1 * q1 + c2 * q2
 
 
@@ -78,11 +79,10 @@ def test_combi_wrapper():
 
 
 def test_select_trajectories_1():
-    test_traj_dist_matrix = np.array([
-        [0, 1, 2, 4],
-        [1, 0, 3, 100],
-        [2, 3, 0, 200],
-        [4, 100, 200, 0]])
+    """The difference between sample and selection size is not large enough for high trust."""
+    test_traj_dist_matrix = np.array(
+        [[0, 1, 2, 4], [1, 0, 3, 100], [2, 3, 0, 200], [4, 100, 200, 0]]
+    )
 
     test_indices, test_select = select_trajectories(test_traj_dist_matrix, 3)
 
@@ -94,19 +94,19 @@ def test_select_trajectories_1():
 
 
 def test_select_trajectories_2():
-    dist_matrix = np.array([
-        [0, 4, 5, 6],
-        [4, 0, 7, 8],
-        [5, 7, 0, 9],
-        [6, 8, 9, 0]])
+    """The difference between sample and selection size is not large enough for high trust."""
+    dist_matrix = np.array([[0, 4, 5, 6], [4, 0, 7, 8], [5, 7, 0, 9], [6, 8, 9, 0]])
 
     exp_max_dist_indices = [1, 2, 3]
 
-    exp_combi_distance = np.array([
-        [0, 1, 2, np.sqrt(4**2 + 5**2 + 7**2)],
-        [0, 1, 3, np.sqrt(4**2 + 6**2 + 8**2)],
-        [0, 2, 3, np.sqrt(5**2 + 6**2 + 9**2)],
-        [1, 2, 3, np.sqrt(7**2 + 8**2 + 9**2)]])
+    exp_combi_distance = np.array(
+        [
+            [0, 1, 2, np.sqrt(4 ** 2 + 5 ** 2 + 7 ** 2)],
+            [0, 1, 3, np.sqrt(4 ** 2 + 6 ** 2 + 8 ** 2)],
+            [0, 2, 3, np.sqrt(5 ** 2 + 6 ** 2 + 9 ** 2)],
+            [1, 2, 3, np.sqrt(7 ** 2 + 8 ** 2 + 9 ** 2)],
+        ]
+    )
 
     max_dist_indices, combi_distance = select_trajectories(dist_matrix, 3)
 
@@ -115,21 +115,21 @@ def test_select_trajectories_2():
 
 
 def test_select_trajectories_3():
-    dist_matrix = np.array([
-        [0, 4, 5, 6],
-        [4, 0, 7, 8],
-        [5, 7, 0, 9],
-        [6, 8, 9, 0]])
+    """The difference between sample and selection size is not large enough for high trust."""
+    dist_matrix = np.array([[0, 4, 5, 6], [4, 0, 7, 8], [5, 7, 0, 9], [6, 8, 9, 0]])
 
     exp_max_dist_indices = [2, 3]
 
-    exp_combi_distance = np.array([
-        [0, 1, np.sqrt(4**2)],
-        [0, 2, np.sqrt(5**2)],
-        [0, 3, np.sqrt(6**2)],
-        [1, 2, np.sqrt(7**2)],
-        [1, 3, np.sqrt(8**2)],
-        [2, 3, np.sqrt(9**2)]])
+    exp_combi_distance = np.array(
+        [
+            [0, 1, np.sqrt(4 ** 2)],
+            [0, 2, np.sqrt(5 ** 2)],
+            [0, 3, np.sqrt(6 ** 2)],
+            [1, 2, np.sqrt(7 ** 2)],
+            [1, 3, np.sqrt(8 ** 2)],
+            [2, 3, np.sqrt(9 ** 2)],
+        ]
+    )
 
     max_dist_indices, combi_distance = select_trajectories(dist_matrix, 2)
 
@@ -138,35 +138,34 @@ def test_select_trajectories_3():
 
 
 def test_select_trajectories_iteration_1():
-    dist_matrix = np.array([
-        [0, 4, 5, 6],
-        [4, 0, 7, 8],
-        [5, 7, 0, 9],
-        [6, 8, 9, 0]])
+    """The difference between sample and selection size is not large enough for high trust."""
+    dist_matrix = np.array([[0, 4, 5, 6], [4, 0, 7, 8], [5, 7, 0, 9], [6, 8, 9, 0]])
 
     exp_max_dist_indices = [2, 3]
 
     # indices in the array below do not match the original dist_matrix.
-    exp_combi_distance = np.array([
-        [0, 1, np.sqrt(7**2)],
-        [0, 2, np.sqrt(8**2)],
-        [1, 2, np.sqrt(9**2)]])
+    exp_combi_distance = np.array(
+        [[0, 1, np.sqrt(7 ** 2)], [0, 2, np.sqrt(8 ** 2)], [1, 2, np.sqrt(9 ** 2)]]
+    )
 
-    max_dist_indices, combi_distance = select_trajectories_wrapper_iteration(dist_matrix, 2)
+    max_dist_indices, combi_distance = select_trajectories_wrapper_iteration(
+        dist_matrix, 2
+    )
 
     assert_array_equal(exp_max_dist_indices, max_dist_indices)
     assert_array_equal(exp_combi_distance, combi_distance)
 
 
 def test_select_trajectories_iteration_2():
-    test_traj_dist_matrix = np.array([
-        [0, 1, 2, 4],
-        [1, 0, 3, 100],
-        [2, 3, 0, 200],
-        [4, 100, 200, 0]])
+    """The difference between sample and selection size is not large enough for high trust."""
+    test_traj_dist_matrix = np.array(
+        [[0, 1, 2, 4], [1, 0, 3, 100], [2, 3, 0, 200], [4, 100, 200, 0]]
+    )
 
-    max_dist_indices, _= select_trajectories(test_traj_dist_matrix, 2)
-    max_dist_indices_iter, _ = select_trajectories_wrapper_iteration(test_traj_dist_matrix, 2)
+    max_dist_indices, _ = select_trajectories(test_traj_dist_matrix, 2)
+    max_dist_indices_iter, _ = select_trajectories_wrapper_iteration(
+        test_traj_dist_matrix, 2
+    )
 
     assert_array_equal(max_dist_indices, max_dist_indices_iter)
 
@@ -176,7 +175,8 @@ def test_select_trajectories_iteration_2():
     Oftentimes the test works. \
     However, due to numerical reasons, sometimes intermediate_ge_menendez_2014 \
     selects a different, slightly worse trajectory set\
-    compared to campolongo_2007.")
+    compared to campolongo_2007."
+)
 def test_compare_camp_07_int_ge_men_14_1():
     """
     A share of times, the test failes because the path of combinations
@@ -197,9 +197,11 @@ def test_compare_camp_07_int_ge_men_14_1():
         sample_traj_list.append(
             morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
         )
-        
+
     _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
-    _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
+    _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(
+        sample_traj_list, n_traj
+    )
 
     assert_array_equal(np.array(select_list), np.array(select_list_2))
     assert_array_equal(select_distance_matrix, select_distance_matrix_2)
@@ -224,9 +226,11 @@ def test_compare_camp_07_int_ge_men_14_2():
         sample_traj_list.append(
             morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
         )
-        
+
     _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
-    _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
+    _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(
+        sample_traj_list, n_traj
+    )
 
     dist_camp = total_distance(select_distance_matrix)
     dist_gm = total_distance(select_distance_matrix_2)
@@ -248,8 +252,12 @@ def test_final_ge_menendez_2014():
             morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
         )
 
-    traj_array, traj_list, diagonal_dist_matrix = final_ge_menendez_2014(sample_traj_list, n_traj)
-    test_array, test_list, test_diagonal_dist_matrix = intermediate_ge_menendez_2014(sample_traj_list, n_traj)
+    traj_array, traj_list, diagonal_dist_matrix = final_ge_menendez_2014(
+        sample_traj_list, n_traj
+    )
+    test_array, test_list, test_diagonal_dist_matrix = intermediate_ge_menendez_2014(
+        sample_traj_list, n_traj
+    )
 
     assert_array_equal(traj_array, test_array)
     assert_array_equal(traj_list, test_list)
