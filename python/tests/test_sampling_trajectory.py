@@ -1,7 +1,7 @@
 """Test sampling_trajectory.py"""
-# Define parent folder as relative path.
 import sys
 
+# Define parent folder as relative path.
 sys.path.append("..")
 
 import numpy as np
