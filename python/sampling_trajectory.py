@@ -245,8 +245,9 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
     of distances, the function is applied iteratively as follows:
 
     `for _i in range(1,n_traj_sample - n_traj):
-         intermediate_result = select_trajectories(
-         traj_dist_matrix, n_traj_sample - i)`
+        intermediate_result = select_trajectories(
+        traj_dist_matrix, n_traj_sample - i
+        )`.
 
     Therefore, `combi_total_distance` differs from the one in `select_trajectories`
     because it only contains the combination indices from the last iteration.
@@ -333,7 +334,7 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
 
     """
     pair_matrix = distance_matrix(sample_traj_list)
-    # this function is the difference to campolongo
+    # This function is the difference to Campolongo.
     select_indices, combi_total_distance = select_trajectories_wrapper_iteration(
         pair_matrix, n_traj
     )
@@ -347,7 +348,27 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
 
 
 def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_index):
-    """TODO: Write Docstring."""
+    """
+    Warning: This function, is in fact much slower than
+    `select_trajectories_wrapper_iteration` because it uses more for loops to get
+    the pair distances from the right combinations that must be subtracted from the
+    total distances.
+
+    The function `final_ge_menendez_2014` selects n_traj trajectories from
+    n_traj_sample trajectories by iteratively selecting
+    n_traj_sample - i for i = 1,...,n_traj_sample - n-traj.
+    For this purpose, this function computes the total distance of each trajectory
+    combination by using the total distance of each combination in the previous step
+    and subtracting each pair distance with the dropped trajectory, that yielded
+    the lowest total distance combinations in the previous step.
+
+    It takes the array of trajectory combinations and their total distances,
+    the pair distance matrix for these trajectories and the index of the
+    trajectory that is not part of the best combination of n_sample_traj - 1
+    trjactories.
+    It returns the same object for the next period.
+
+    """
     old_combi_total_distance = combi_total_distance
     old_traj_dist_matrix = traj_dist_matrix
     # Want to select all trajectories but one which is given by the length of
@@ -356,10 +377,8 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
     n_traj_sample = np.size(old_traj_dist_matrix, 0) - 1
     n_traj = np.size(old_traj_dist_matrix, 0) - 2
     remained_indices = np.arange(0, n_traj_sample_old).tolist()
-    """
-    This step shows that the indices in combi_total_distance_next mapp
-    to the indices in the old version. The index of the worst traj is missing.
-    """
+    # This step shows that the indices in combi_total_distance_next mapp
+    # to the indices in the old version. The index of the worst traj is missing.
     remained_indices.remove(lost_index)
     # Get all n_traj_sample combintaions from the indices above.
     combi_next = combi_wrapper(remained_indices, n_traj)
@@ -402,7 +421,7 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
                 # the respective sum of old squared distances
                 if set(indices_in_old_combi_dist) == set(
                     old_combi_total_distance[row_old, 0: n_traj_sample_old - 1]
-                    ):
+                ):
                     # + 1 because the total distance columns must be changed.
                     # - one because its the new matrix?
                     combi_total_distance_next[row, n_traj_sample - 1] = np.sqrt(
@@ -411,15 +430,14 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
                     )
                 else:
                     pass
-    """
-    Dissolving the mapping from old to new combi_total_distance by decreasing the
-    index that are larger than lost_index by 1.
-    """
-    combi_total_distance_next[:, 0:n_traj] = np.where(
-        combi_total_distance_next[:, 0:n_traj] > lost_index,
-        combi_total_distance_next[:, 0:n_traj] - 1,
-        combi_total_distance_next[:, 0:n_traj],
-    )
+
+        # Dissolving the mapping from old to new combi_total_distance by decreasing the
+        # indices that are larger than lost_index by 1.
+        combi_total_distance_next[:, 0:n_traj] = np.where(
+            combi_total_distance_next[:, 0:n_traj] > lost_index,
+            combi_total_distance_next[:, 0:n_traj] - 1,
+            combi_total_distance_next[:, 0:n_traj],
+        )
 
     # Select indices of combination that yields highest total distance.
     max_dist_indices_next_row = (
@@ -433,7 +451,7 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
 
     traj_dist_matrix_next = np.delete(old_traj_dist_matrix, lost_index, axis=0)
     traj_dist_matrix_next = np.delete(traj_dist_matrix_next, lost_index, axis=1)
-    """correct???"""
+
     lost_index_next = [
         item
         for item in list(np.arange(0, n_traj + 1))
@@ -444,18 +462,31 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
 
 
 def final_ge_menendez_2014(sample_traj_list, n_traj):
-    """TO DO: Write docstring."""
+    """
+    Warning: This function, is in fact much slower than
+    `intermediate_ge_menendez_2014` because it uses more for loops to get
+    the pair distances from the right combinations that must be subtracted from the
+    total distances.
+
+    This function selects n_traj trajectories from
+    n_traj_sample trajectories by iteratively selecting
+    n_traj_sample - i for i = 1,...,n_traj_sample - n-traj.
+    For this purpose, `next_combi_total_distance_gm14` computes the total distance
+    of each trajectory combination by using the total distance of each combination
+    in the previous step and subtracting each pair distance with the dropped
+    trajectory, that yielded the lowest total distance combinations in the previous
+    step.
+
+    Parameters and returned objects are the same as in the other main sampling
+    functions.
+
+    """
     n_traj_sample = len(sample_traj_list)
-    """Step 1: outside function"""
+    # Step 1: Compute pair distance and total distances for the trajectory
+    # combinations.
     traj_dist_matrix = distance_matrix(sample_traj_list)
 
-    """TEST COMPARISON"""
-    test_indices, test_combi_total_distance = select_trajectories_wrapper_iteration(
-        traj_dist_matrix, n_traj
-    )
-
-    """Begin function here, parallel to function select_trajectories"""
-    """Step 2: Compute total distances for combinations and identify worst trajectory"""
+    # Step 2: Compute total distances for combinations and identify worst trajectory.
     max_dist_indices, combi_total_distance = select_trajectories(
         traj_dist_matrix, len(sample_traj_list) - 1
     )
@@ -470,10 +501,11 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
     tracker_keep_indices = np.arange(0, len(traj_dist_matrix)).tolist()
     tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)
 
-    #  to (n_traj_sample - n_traj - 1), the mins one is because this is already Step 2.
+    #  ... to (n_traj_sample - n_traj - 1), the minus one is because
+    # this is already Step 2.
     for _i in range(0, n_traj_sample - n_traj - 1):
 
-        # use shrink trick for largest loop
+        # Use shrink trick for largest loop.
         combi_total_distance, traj_dist_matrix, lost_index = next_combi_total_distance_gm14(
             combi_total_distance, traj_dist_matrix, lost_index
         )

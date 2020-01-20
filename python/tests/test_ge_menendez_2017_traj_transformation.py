@@ -10,7 +10,7 @@ from numpy.testing import assert_array_equal
 from numpy.testing import assert_array_almost_equal
 
 from ge_menendez_2017_decorrelation import transformation_one
-from ge_menendez_2017_decorrelation import transformation_three
+from ge_menendez_2017_decorrelation import rev_transformation_one
 
 
 def test_transformations():
@@ -23,7 +23,7 @@ def test_transformations():
 
     assert_array_equal(
         traj,
-        transformation_three(
+        rev_transformation_one(
             transformation_one(traj, p_i_plus_one=True), p_i_plus_one=True
         ),
     )
@@ -35,7 +35,7 @@ def test_transformations():
 
     assert_array_equal(
         traj,
-        transformation_three(
+        rev_transformation_one(
             transformation_one(traj, p_i_plus_one=False), p_i_plus_one=False
         ),
     )
