@@ -195,5 +195,5 @@ def chol_reindex_params(params_sdcorr):
     return params_chol
 
 
-# Call function in travis_runner.py
-jac_estimation_chol(save=True)
+if __name__ == '__main__':
+    jac_estimation_chol(save=True)

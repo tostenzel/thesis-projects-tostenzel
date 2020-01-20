@@ -9,8 +9,8 @@ import numpy as np
 from numpy.testing import assert_array_equal
 from numpy.testing import assert_array_almost_equal
 
-from ge_menendez_2017 import transformation_one
-from ge_menendez_2017 import transformation_three
+from ge_menendez_2017_decorrelation import transformation_one
+from ge_menendez_2017_decorrelation import transformation_three
 
 
 def test_transformations():
