@@ -2,7 +2,7 @@
 import sys
 
 # Define parent folder as relative path.
-sys.path.append("..")
+sys.path.append("python")
 
 import numpy as np
 
