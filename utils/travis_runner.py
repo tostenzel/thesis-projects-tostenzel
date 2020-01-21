@@ -4,6 +4,7 @@ import glob
 import subprocess as sp
 
 if __name__ == "__main__":
+	sp.check_call("pip install python/ERADistNataf_Python/.", shell=True)
     sp.check_call("pytest python/tests", shell=True)
     # Commented out to save travis around 5 minutes.
     # sp.check_call("python python/jac_estimation_chol.py", shell=True)
