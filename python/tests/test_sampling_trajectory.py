@@ -299,4 +299,4 @@ def test_compare_camp_07_final_ge_men_14_2():
     dist_camp = total_distance(select_distance_matrix)
     dist_gm = total_distance(select_distance_matrix_2)
 
-    assert dist_camp - dist_gm < 0.02 * dist_camp
+    assert dist_camp - dist_gm < 0.05 * dist_camp
