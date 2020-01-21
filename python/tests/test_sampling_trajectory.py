@@ -245,7 +245,7 @@ def test_compare_camp_07_int_ge_men_14_2():
     selects a different, slightly worse trajectory set\
     compared to campolongo_2007."
 )
-def test_final_ge_menendez_2014():
+def test_compare_camp_07_final_ge_men_14_1():
     n_inputs = 4
     n_levels = 5
     n_traj_sample = 30
@@ -299,4 +299,4 @@ def test_compare_camp_07_final_ge_men_14_2():
     dist_camp = total_distance(select_distance_matrix)
     dist_gm = total_distance(select_distance_matrix_2)
 
-    assert dist_camp - dist_gm < 0.01 * dist_camp
+    assert dist_camp - dist_gm < 0.02 * dist_camp
