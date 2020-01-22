@@ -3,7 +3,6 @@ import random
 
 import numpy as np
 import scipy.linalg as linalg
-
 from sampling_trajectory import morris_trajectory
 from scipy.stats import norm
 
@@ -103,10 +102,14 @@ def correlate_normalize_row(row_traj_reordered, cov, sample_Z_c):
 
 def james_e_gentle_2005(row_traj_reordered, cov):
     """
-    Remark: This method does the same as steps 1 to steps 5 in Ge/Menendez
+    Remark 1: This method does the same as steps 1 to steps 5 in Ge/Menendez
     but simpler. It does it without the computation of a large normally
     distributed sample and the inverse of the upper triangular Cholesky
-    matrix of it.
+    matrix of it. This method is equivalent to the Rosenblatt and also
+    the Nataf Transformation.
+    Remark 2: Correlation and Covariance are equal when the variance is
+    normalized to one. Therefore it does not matter which matrix to decompose
+    (compare Rosenblatt and Nataf Transformation).
 
     Method to sample from multivariate normal (with mean zero)
     on page 197 in Gentle (1943).
@@ -142,8 +145,3 @@ row_approx = np.array([0.1, 0.1, 0.2, 0.8, 0.5])
 check = james_e_gentle_2005(row_approx, cov)
 
 gm17 = correlate_normalize_row(row_approx, cov, sample_Z_c)
-
-
-
-
-
