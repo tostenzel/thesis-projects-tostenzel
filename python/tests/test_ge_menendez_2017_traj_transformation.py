@@ -6,15 +6,17 @@ sys.path.append("python")
 
 import numpy as np
 
+from scipy.stats import norm
 from numpy.testing import assert_array_equal
 from numpy.testing import assert_array_almost_equal
 
 from ge_menendez_2017_traj_transformation import reorder_trajectory
 from ge_menendez_2017_traj_transformation import reverse_reorder_trajectory
 from ge_menendez_2017_traj_transformation import sample_stnormal_paramters
-from ge_menendez_2017_traj_transformation import sample_stnormal_paramters
 from ge_menendez_2017_traj_transformation import correlate_normalize_row
 from ge_menendez_2017_traj_transformation import james_e_gentle_2005
+from ERANataf import ERANataf
+from ERADist import ERADist
 
 def test_transformations():
     traj = np.array([[0, 0, 0], [1, 0, 0], [2, 3, 0], [4, 5, 6]])
@@ -61,3 +63,33 @@ def test_correlate_normalize_row():
     expected = james_e_gentle_2005(row_approx, cov)
     gm17 = correlate_normalize_row(row_approx, cov, sample_Z_c)
     assert_array_almost_equal(gm17, expected, 0.01)
+
+def test_Nataf_transformation_standard_normal():
+    row_approx = np.array([0.1, 0.1, 0.2, 0.8, 0.5])
+    cov = np.array([
+        [1,0,0,0.2,0.5],
+        [0,1,0.4,0.15,0],
+        [0,0.4,1,0.05,0],
+        [0.2,0.15,0.05,1,0],
+        [0.5,0,0,0,1]])
+
+    expected = james_e_gentle_2005(row_approx, cov)
+
+    M = list()
+    M.append(ERADist('normal', 'PAR', [0, 1]))
+    M.append(ERADist('normal', 'PAR', [0, 1]))
+    M.append(ERADist('normal', 'PAR', [0, 1]))
+    M.append(ERADist('normal', 'PAR', [0, 1]))
+    M.append(ERADist('normal', 'PAR', [0, 1]))
+
+    z = norm.ppf(row_approx) 
+    # The second argument must be the correlation matrix.
+    # In the case of a standard normal distribution, this
+    # is the covariance matrix.
+    T_Nataf = ERANataf(M, cov)
+
+    X = T_Nataf.U2X(z)
+
+    assert_array_almost_equal(X, expected.reshape(5,1), 0.01)
+
+
