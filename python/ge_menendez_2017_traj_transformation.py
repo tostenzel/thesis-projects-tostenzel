@@ -145,3 +145,12 @@ row_approx = np.array([0.1, 0.1, 0.2, 0.8, 0.5])
 check = james_e_gentle_2005(row_approx, cov)
 
 gm17 = correlate_normalize_row(row_approx, cov, sample_Z_c)
+
+z = norm.ppf(row_approx) 
+    
+# In contrary, Gentle uses the lower matrix from the Choleksy decomposition.
+M_prime = linalg.cholesky(cov, lower=True)
+
+M = linalg.cholesky(cov, lower=False)
+
+#z_c = np.dot(M_prime,z)
