@@ -14,7 +14,7 @@ from ge_menendez_2017_traj_transformation import reorder_trajectory
 from ge_menendez_2017_traj_transformation import reverse_reorder_trajectory
 from ge_menendez_2017_traj_transformation import sample_stnormal_paramters
 from ge_menendez_2017_traj_transformation import correlate_normalize_row
-from ge_menendez_2017_traj_transformation import james_e_gentle_2005
+from ge_menendez_2017_traj_transformation import james_e_gentle_2006
 from ERANataf import ERANataf
 from ERADist import ERADist
 
@@ -60,7 +60,7 @@ def test_correlate_normalize_row():
 
     sample_Z_c = sample_stnormal_paramters(5, 100_000)
 
-    expected = james_e_gentle_2005(row_approx, cov)
+    expected = james_e_gentle_2006(row_approx, cov)
     gm17 = correlate_normalize_row(row_approx, cov, sample_Z_c)
     assert_array_almost_equal(gm17, expected, 0.01)
 
@@ -73,7 +73,7 @@ def test_Nataf_transformation_standard_normal():
         [0.2,0.15,0.05,1,0],
         [0.5,0,0,0,1]])
 
-    expected = james_e_gentle_2005(row_approx, cov)
+    expected = james_e_gentle_2006(row_approx, cov)
 
     M = list()
     M.append(ERADist('normal', 'PAR', [0, 1]))
@@ -91,5 +91,3 @@ def test_Nataf_transformation_standard_normal():
     X = T_Nataf.U2X(z)
 
     assert_array_almost_equal(X, expected.reshape(5,1), 0.01)
-
-

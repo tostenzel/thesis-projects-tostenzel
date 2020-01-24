@@ -100,32 +100,36 @@ def correlate_normalize_row(row_traj_reordered, cov, sample_Z_c):
     return z_c
 
 
-def james_e_gentle_2005(row_traj_reordered, cov):
+def james_e_gentle_2006(row_traj_reordered, cov, expecation=0):
     """
     Remark 1: This method does the same as steps 1 to steps 5 in Ge/Menendez
     but simpler. It does it without the computation of a large normally
     distributed sample and the inverse of the upper triangular Cholesky
     matrix of it. This method is equivalent to the Rosenblatt and also
-    the Nataf Transformation.
+    the Nataf Transformation in case of the normal distribution.
+
     Remark 2: Correlation and Covariance are equal when the variance is
     normalized to one. Therefore it does not matter which matrix to decompose
-    (compare Rosenblatt and Nataf Transformation).
+    (compare Rosenblatt and Nataf Transformation). However, this approach does
+    also work for non-standard normal distributions with the covariance matrix
+    by adding the expecation.
 
-    Method to sample from multivariate normal (with mean zero)
-    on page 197 in Gentle (1943).
+    Method to sample from multivariate normal on page 197 in Gentle (2006).
     
     """
     # Need to replace ones, because norm.ppf(1) = inf and zeros because norm.ppf(0) = -inf
     row_approx = np.where(row_traj_reordered == 1, 0.999, row_traj_reordered)
     row_approx = np.where(row_approx == 0, 0.001, row_approx)
 
-    # Step 1: Inverse cdf of standard normal distribution (N(0, 5)).
+    # Step 1: Inverse cdf of standard normal distribution (N(0, 1)).
     z = norm.ppf(row_approx) 
     
     # In contrary, Gentle uses the lower matrix from the Choleksy decomposition.
+    # (Therefore, he also reverses the order of the matrix multiplication
+    # compared to Ge/Menendez(2017). Therefore, its equivalent.)
     M_prime = linalg.cholesky(cov, lower=True)
     
-    z_c = np.dot(M_prime,z)
+    z_c = np.dot(M_prime,z) + expecation
     
     return z_c
 
@@ -142,7 +146,7 @@ sample_Z_c = sample_stnormal_paramters(5, 100_000)
 row_approx = np.array([0.1, 0.1, 0.2, 0.8, 0.5])
 
 """check"""
-check = james_e_gentle_2005(row_approx, cov)
+check = james_e_gentle_2006(row_approx, cov)
 
 gm17 = correlate_normalize_row(row_approx, cov, sample_Z_c)
 
