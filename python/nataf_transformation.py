@@ -2,7 +2,7 @@
 import numpy as np
 from scipy import optimize, special, stats, linalg
 
-from ERADist import ERADist
+from distributions import distributions
 
 '''
 ---------------------------------------------------------------------------
@@ -34,7 +34,7 @@ Version 2017-10:
 * It is possible to generate random numbers according to their Nataf
 joint pdf and to evaluate this pdf.
 * The inverse Nataf transformation is also defined as a function.
-* It requires the use of Objects of the class ERADist which is also
+* It requires the use of Objects of the class distributions which is also
 published on the homepage of the ERA Group of TUM.
 ---------------------------------------------------------------------------
 References:
@@ -44,7 +44,7 @@ Probabilistic Engineering Mechanics 1(2), 105-112
 ---------------------------------------------------------------------------
 '''
 
-class ERANataf(object):
+class nataf_transformation(object):
     def __init__(self, M, Correlation):
         self.Marginals = np.array(M, ndmin=1)
         self.Rho_X = Correlation

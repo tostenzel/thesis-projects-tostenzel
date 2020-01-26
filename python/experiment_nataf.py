@@ -1,8 +1,8 @@
 """Experiment with Nataf transformation."""
 import numpy as np
 import scipy.linalg as linalg
-from ERADist import ERADist
-from ERANataf import ERANataf
+from distributions import distributions
+from nataf_transformation import nataf_transformation
 from ge_menendez_2017_traj_transformation import james_e_gentle_2006
 from scipy.stats import norm
 
@@ -14,11 +14,11 @@ row_approx = np.array([0.1, 0.1, 0.2, 0.8, 0.5])
 z = norm.ppf(row_approx) 
 
 M = list()
-M.append(ERADist('normal', 'PAR', [0, 1]))
-M.append(ERADist('normal', 'PAR', [0, 1]))
-M.append(ERADist('normal', 'PAR', [0, 1]))
-M.append(ERADist('normal', 'PAR', [0, 1]))
-M.append(ERADist('normal', 'PAR', [0, 1]))
+M.append(distributions('normal', 'PAR', [0, 1]))
+M.append(distributions('normal', 'PAR', [0, 1]))
+M.append(distributions('normal', 'PAR', [0, 1]))
+M.append(distributions('normal', 'PAR', [0, 1]))
+M.append(distributions('normal', 'PAR', [0, 1]))
 
 
 cov = np.array([
@@ -33,7 +33,7 @@ cov = np.array([
 Rho = cov
 
 # Applying Nataf transformation
-T_Nataf = ERANataf(M, Rho)
+T_Nataf = nataf_transformation(M, Rho)
 
 
 # Transform sample from INDEPENDENT standard normal to DEPENDENT actual/physical space.
@@ -74,7 +74,7 @@ rev_z = norm.ppf(rev_row_approx)
 rev_Rho = rev_cov
 
 # Applying Nataf transformation
-T_Nataf = ERANataf(M, rev_Rho)
+T_Nataf = nataf_transformation(M, rev_Rho)
 
 
 # Transform sample from INDEPENDENT standard normal to DEPENDENT actual/physical space.

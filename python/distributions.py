@@ -36,54 +36,54 @@ moment or by data, given as a vector.
 ---------------------------------------------------------------------------
 '''
 
-class ERADist(object):
+class distributions(object):
     """
     Generation of distribution objects
-      construct distribution object with Obj = ERADist(name,opt,val) with
+      construct distribution object with Obj = distributions(name,opt,val) with
       opt = "PAR", if you want to specify the distibution by its parameters:
-      Binomial:                   Obj = ERADist('binomial','PAR',[n,p])
-      Geometric:                  Obj = ERADist('geometric','PAR',[p])
-      Negative binomial:          Obj = ERADist('negativebinomial','PAR',[k,p])
-      Poisson:                    Obj = ERADist('poisson','PAR',[lambda,t])
-      Uniform:                    Obj = ERADist('uniform','PAR',[lower,upper])
-      Normal:                     Obj = ERADist('normal','PAR',[mean,std])
-      Standard normal:            Obj = ERADist('standardnormal','PAR',[])
-      Log-normal:                 Obj = ERADist('lognormal','PAR',[mu_lnx,sig_lnx])
-      Exponential:                Obj = ERADist('exponential','PAR',[lambda])
-      Gamma:                      Obj = ERADist('gamma','PAR',[lambda,k])
-      Beta:                       Obj = ERADist('beta','PAR',[r,s,lower,upper])
-      Gumbel (to model minima):   Obj = ERADist('gumbelMin','PAR',[a_n,b_n])
-      Gumbel (to model maxima):   Obj = ERADist('gumbel','PAR',[a_n,b_n])
-      Fréchet:                    Obj = ERADist('frechet','PAR',[a_n,k])
-      Weibull:                    Obj = ERADist('weibull','PAR',[a_n,k])
-      GEV (to model maxima):      Obj = ERADist('GEV','PAR',[beta,alpha,epsilon])
-      GEV (to model minima):      Obj = ERADist('GEVMin','PAR',[beta,alpha,epsilon])
-      Pareto:                     Obj = ERADist('pareto','PAR',[x_m,alpha])
-      Rayleigh:                   Obj = ERADist('rayleigh','PAR',[alpha])
-      Chi-squared:                Obj = ERADist('chisquare','PAR',[k])
+      Binomial:                   Obj = distributions('binomial','PAR',[n,p])
+      Geometric:                  Obj = distributions('geometric','PAR',[p])
+      Negative binomial:          Obj = distributions('negativebinomial','PAR',[k,p])
+      Poisson:                    Obj = distributions('poisson','PAR',[lambda,t])
+      Uniform:                    Obj = distributions('uniform','PAR',[lower,upper])
+      Normal:                     Obj = distributions('normal','PAR',[mean,std])
+      Standard normal:            Obj = distributions('standardnormal','PAR',[])
+      Log-normal:                 Obj = distributions('lognormal','PAR',[mu_lnx,sig_lnx])
+      Exponential:                Obj = distributions('exponential','PAR',[lambda])
+      Gamma:                      Obj = distributions('gamma','PAR',[lambda,k])
+      Beta:                       Obj = distributions('beta','PAR',[r,s,lower,upper])
+      Gumbel (to model minima):   Obj = distributions('gumbelMin','PAR',[a_n,b_n])
+      Gumbel (to model maxima):   Obj = distributions('gumbel','PAR',[a_n,b_n])
+      Fréchet:                    Obj = distributions('frechet','PAR',[a_n,k])
+      Weibull:                    Obj = distributions('weibull','PAR',[a_n,k])
+      GEV (to model maxima):      Obj = distributions('GEV','PAR',[beta,alpha,epsilon])
+      GEV (to model minima):      Obj = distributions('GEVMin','PAR',[beta,alpha,epsilon])
+      Pareto:                     Obj = distributions('pareto','PAR',[x_m,alpha])
+      Rayleigh:                   Obj = distributions('rayleigh','PAR',[alpha])
+      Chi-squared:                Obj = distributions('chisquare','PAR',[k])
       
       
       opt = "MOM", if you want to specify the distibution by its moments:
-      Binomial:                   Obj = ERADist('binomial','MOM',[mean,std])
-      Geometric:                  Obj = ERADist('geometric','MOM',[mean])
-      Negative binomial:          Obj = ERADist('negativebinomial','MOM',[mean,std])
-      Poisson:                    Obj = ERADist('poisson','MOM',[mean])
-      Uniform:                    Obj = ERADist('uniform','MOM',[mean,std])
-      Normal:                     Obj = ERADist('normal','MOM',[mean,std])
-      Standard normal:            Obj = ERADist('standardnormal','MOM',[])
-      Log-normal:                 Obj = ERADist('lognormal','MOM',[mean,std])
-      Exponential:                Obj = ERADist('exponential','MOM',[mean])
-      Gamma:                      Obj = ERADist('gamma','MOM',[mean,std])
-      Beta:                       Obj = ERADist('beta','MOM',[mean,std,lower,upper])
-      Gumbel (to model minima):   Obj = ERADist('gumbel','MOM',[mean,std])
-      Gumbel (to model maxima):   Obj = ERADist('gumbelMax','MOM',[mean,std])
-      Fréchet:                    Obj = ERADist('frechet','MOM',[mean,std])
-      Weibull:                    Obj = ERADist('weibull','MOM',[mean,std])
-      GEV (to model minima):      Obj = ERADist('GEVMin','MOM',[mean,std,epsilon])
-      GEV (to model maxima):      Obj = ERADist('GEV','MOM',[mean,std,epsilon])
-      Pareto:                     Obj = ERADist('pareto','MOM',[mean,std])
-      Rayleigh:                   Obj = ERADist('rayleigh','MOM',[mean])
-      Chi-squared:                Obj = ERADist('chisquare','MOM',[mean])
+      Binomial:                   Obj = distributions('binomial','MOM',[mean,std])
+      Geometric:                  Obj = distributions('geometric','MOM',[mean])
+      Negative binomial:          Obj = distributions('negativebinomial','MOM',[mean,std])
+      Poisson:                    Obj = distributions('poisson','MOM',[mean])
+      Uniform:                    Obj = distributions('uniform','MOM',[mean,std])
+      Normal:                     Obj = distributions('normal','MOM',[mean,std])
+      Standard normal:            Obj = distributions('standardnormal','MOM',[])
+      Log-normal:                 Obj = distributions('lognormal','MOM',[mean,std])
+      Exponential:                Obj = distributions('exponential','MOM',[mean])
+      Gamma:                      Obj = distributions('gamma','MOM',[mean,std])
+      Beta:                       Obj = distributions('beta','MOM',[mean,std,lower,upper])
+      Gumbel (to model minima):   Obj = distributions('gumbel','MOM',[mean,std])
+      Gumbel (to model maxima):   Obj = distributions('gumbelMax','MOM',[mean,std])
+      Fréchet:                    Obj = distributions('frechet','MOM',[mean,std])
+      Weibull:                    Obj = distributions('weibull','MOM',[mean,std])
+      GEV (to model minima):      Obj = distributions('GEVMin','MOM',[mean,std,epsilon])
+      GEV (to model maxima):      Obj = distributions('GEV','MOM',[mean,std,epsilon])
+      Pareto:                     Obj = distributions('pareto','MOM',[mean,std])
+      Rayleigh:                   Obj = distributions('rayleigh','MOM',[mean])
+      Chi-squared:                Obj = distributions('chisquare','MOM',[mean])
     """
     def __init__(self, name, opt, val=[0,1]):
         # constructor
@@ -708,7 +708,7 @@ class ERADist(object):
         elif (self.Name == 'beta'):
             '''
             I believe there is a mistake in the matlab implementation of
-            ERADist since the pdf value in the center is the same no matter
+            distributions since the pdf value in the center is the same no matter
             if the support is [0, 1] or [0, 2]
             '''
             return (self.Dist.pdf((x - self.Par[2])
@@ -737,7 +737,7 @@ class ERADist(object):
 
     # %% ----------------------------------------------------------------------------
     def random(self, size=None):
-        # Matlab ERADist returns mxm samples if n isnt given, is this behaviour wanted?
+        # Matlab distributions returns mxm samples if n isnt given, is this behaviour wanted?
         # Yes, this is the Matlab style for generating arrays/matrices, however python/numpy uses an list/tuple for the dimensions so let's stay consistent
         if (self.Name == 'binomial'):
             samples = sp.stats.binom.rvs(int(self.Par[0]),
