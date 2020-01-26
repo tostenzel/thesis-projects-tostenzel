@@ -40,6 +40,7 @@ def scaled_elementary_effect_i(
 
     return ee_i * (sd_i / sd_model)
 
+
 def lin_portfolio(q1, q2, c1=2, c2=1, *args):
     """Simple function with analytic EE solution to support testing."""
     return c1 * q1 + c2 * q2
