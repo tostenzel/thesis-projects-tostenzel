@@ -12,7 +12,6 @@ from numpy.testing import assert_array_almost_equal
 
 from sampling_trajectory import stepsize
 from sampling_trajectory import morris_trajectory
-from not_sampling_functions import elementary_effect_i
 from sampling_trajectory import compute_trajectory_distance
 from sampling_trajectory import distance_matrix
 from sampling_trajectory import combi_wrapper
@@ -35,21 +34,6 @@ def test_morris_trajectories():
         morris_trajectory(
             n_inputs=2, n_levels=4, step_function=stepsize, seed=123, test=True
         ),
-    )
-
-
-def lin_portfolio(q1, q2, c1=2, c2=1, *args):
-    """Simple function with analytic EE solution to support testing."""
-    return c1 * q1 + c2 * q2
-
-
-def test_elemtary_effect_i():
-    assert 2 == round(
-        elementary_effect_i(lin_portfolio, 0, [0.5, 1], stepsize=2 / 3), 10
-    )
-
-    assert 1 == round(
-        elementary_effect_i(lin_portfolio, 1, [0.5, 1], stepsize=2 / 3), 10
     )
 
 
