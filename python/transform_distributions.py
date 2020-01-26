@@ -122,7 +122,10 @@ cov = np.array([
 row_approx = np.array([0.1, 0.1, 0.2, 0.8, 0.5])
 z = transform_uniform_stnormal_uncorr(row_approx)
 
+import sys
 
+# Define parent folder as relative path.
+sys.path.append("tests")
 from distributions import distributions
 from nataf_transformation import nataf_transformation
 

@@ -1,4 +1,4 @@
-"""Test ge_menendez_2017.py"""
+"""Test transform_distributions.py"""
 import sys
 
 # Define parent folder as relative path.
@@ -34,7 +34,7 @@ def test_covariance_to_correlation():
 
     assert_array_almost_equal(corr, expected, 0.001)
 
-#Define shared objects for the next two tests.
+# Define shared objects for the next two tests.
 # Expectation values.
 mu = np.array([10, 10, 10, 10, 10])
 
@@ -48,7 +48,7 @@ cov = np.array([
 
 # Draws from U(0,1).
 row = np.array([0.1, 0.1, 0.2, 0.8, 0.5])
-# Transform draws to uncorrelated N(0,1)
+# Transform draws to uncorrelated N(0,1).
 z = transform_uniform_stnormal_uncorr(row)
 
 # Create Nataf transformation from class for many distribution types.
@@ -62,6 +62,7 @@ M.append(distributions('normal', 'PAR', [mu[4], np.sqrt(cov[4 ,4])]))
 Rho = covariance_to_correlation(cov)
 
 T_Nataf = nataf_transformation(M, Rho)
+
 
 def test_transform_stnormal_normal_corr_lemaire09():
     x_lemaire09 = transform_stnormal_normal_corr_lemaire09(z, cov, mu)
