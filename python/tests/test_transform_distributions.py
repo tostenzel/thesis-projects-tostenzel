@@ -15,8 +15,6 @@ from transform_distributions import transform_uniform_stnormal_uncorr
 from transform_distributions import covariance_to_correlation
 from transform_distributions import transform_stnormal_normal_corr_lemaire09
 from transform_distributions import transform_stnormal_normal_corr_gm17
-
-sys.path.append("tests")
 from nataf_transformation import nataf_transformation
 from distributions import distributions
 
