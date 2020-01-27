@@ -1,4 +1,4 @@
-"""Sandbox."""
+"""Functions to compute the elementary effects in Ge/Menendez (2017)."""
 
 import numpy as np
 
@@ -19,8 +19,7 @@ from transform_distributions import transform_stnormal_normal_corr_lemaire09
 from numpy.testing import assert_array_equal
 
 
-
-def sample_ee_ind_trajectories(sample_traj_list, mu, cov):
+def ee_ind_trajectories(sample_traj_list, mu, cov):
     """
     Sample two lists of transformed trajectories for the computation
     of the independent Elementary Effects. As explained in Ge/Menendez (2017),
