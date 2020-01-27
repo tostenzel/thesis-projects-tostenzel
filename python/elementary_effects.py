@@ -93,7 +93,7 @@ for traj in range(0, n_traj_sample):
 
     sample_traj_list.append(morris_trajectory(n_inputs=5, n_levels=6, seed=seed))
 
-trans_zero, trans_one = sample_ee_ind_trajectories(
+trans_zero, trans_one = ee_ind_trajectories(
         sample_traj_list, mu, cov)
 
 for traj in range(0, len(trans_zero)):
