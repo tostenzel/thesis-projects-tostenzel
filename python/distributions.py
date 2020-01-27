@@ -36,7 +36,7 @@ moment or by data, given as a vector.
 ---------------------------------------------------------------------------
 '''
 
-class distributions(object):
+class distributions(object): # pragma: no cover
     """
     Generation of distribution objects
       construct distribution object with Obj = distributions(name,opt,val) with

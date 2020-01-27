@@ -44,7 +44,7 @@ Probabilistic Engineering Mechanics 1(2), 105-112
 ---------------------------------------------------------------------------
 '''
 
-class nataf_transformation(object):
+class nataf_transformation(object): # pragma: no cover
     def __init__(self, M, Correlation):
         self.Marginals = np.array(M, ndmin=1)
         self.Rho_X = Correlation

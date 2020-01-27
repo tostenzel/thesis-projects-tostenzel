@@ -10,7 +10,7 @@ from scipy.stats import norm
 from numpy.testing import assert_array_equal
 from numpy.testing import assert_array_almost_equal
 
-from transform_distributions import sample_stnormal_paramters
+from transform_distributions import sample_stnormal_parameters
 from transform_distributions import transform_uniform_stnormal_uncorr
 from transform_distributions import covariance_to_correlation
 from transform_distributions import transform_stnormal_normal_corr_lemaire09
@@ -78,7 +78,7 @@ def test_transform_stnormal_normal_corr_lemaire09():
 def test_transform_stnormal_normal_corr_gm17():
     # Draw huge random sample from N(0,1)
     # (to potentially construct small differences in same formerly equal values?)
-    sample_Z_c = sample_stnormal_paramters(5, 100_000)
+    sample_Z_c = sample_stnormal_parameters(5, 100_000)
 
     x_gm17 = transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu)
     X = T_Nataf.U2X(z)

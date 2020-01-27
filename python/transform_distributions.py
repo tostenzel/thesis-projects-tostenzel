@@ -2,7 +2,7 @@
 Ge/Menendez (2017)
 
 REMARK: All one-dimensional arrays are taken as row vectors by numpy
-except of that they are no transposed correctly but just mirrored.
+although they are no transposed correctly but mirrored.
 
 """
 import random
@@ -21,7 +21,7 @@ def covariance_to_correlation(cov):
     return corr
 
 
-def sample_stnormal_paramters(n_par, n_draws=100_000, seed=123):
+def sample_stnormal_parameters(n_par, n_draws=100_000, seed=123):
     random.seed(seed)
     sample_stnormal_paramters = np.random.normal(0, 1, n_par * n_draws).reshape(
         n_par, n_draws
@@ -84,7 +84,7 @@ def transform_stnormal_normal_corr_lemaire09(z, cov, mu=None):
     Inverse Rosenblatt/Nataf transformation (from standard normal)
     to multivariate normal space with given correlations.
     Step 2) Compute correlation matrix.
-    Step 3) Introduce dependenciec to standard normal sample.
+    Step 3) Introduce dependencies to standard normal sample.
     Step 4) De-standardize sample to normal space.
     
     """
