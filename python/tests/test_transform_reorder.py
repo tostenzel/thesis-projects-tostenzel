@@ -18,7 +18,6 @@ from transform_reorder import inverse_reorder_mu
 from transform_reorder import inverse_reorder_cov
 
 
-
 def test_ee_ind_reorder_trajectory():
     traj = np.array([[0, 0, 0], [1, 0, 0], [2, 3, 0], [4, 5, 6]])
 

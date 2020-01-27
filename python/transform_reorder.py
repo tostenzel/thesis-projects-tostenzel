@@ -90,6 +90,7 @@ def reorder_cov(cov):
 
     return cov_new
 
+
 def inverse_reorder_mu(mu):
     """
     Inverse function of `reorder_mu`
@@ -106,10 +107,10 @@ def inverse_reorder_cov(cov):
     `inverse_ee_full_reorder_trajectory(traj, p_i_plus_one=True)`
     """
     cov_old = np.ones(cov.shape) * np.nan
-    cov_old[1 : len(cov) , 1 : len(cov)] = cov[0 : len(cov) - 1, 0 : len(cov) - 1]
+    cov_old[1 : len(cov), 1 : len(cov)] = cov[0 : len(cov) - 1, 0 : len(cov) - 1]
     cov_old[0, 0] = cov[len(cov) - 1, len(cov) - 1]
-    
+
     cov_old[0, 1 : len(cov)] = cov[len(cov) - 1, 0 : len(cov) - 1]
     cov_old[1 : len(cov), 0] = cov[0 : len(cov) - 1, len(cov) - 1]
-    
+
     return cov_old
