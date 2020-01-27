@@ -1,7 +1,5 @@
 """Re-ordering transformations"""
-
 import numpy as np
-
 from sampling_trajectory import morris_trajectory
 
 
@@ -38,14 +36,12 @@ for traj in range(0, n_traj_sample):
     sample_traj_list.append(morris_trajectory(n_inputs=5, n_levels=6))
 
 
-
-
 traj = reorder_trajectory(sample_traj_list[0])
 
-row_traj_reordered = traj[0,:]
-#traj_trans_one = reorder_trajectory(traj)
-#traj_trans_one_compare = reorder_trajectory(traj, p_i_plus_one=True)
-#traj_trans_rev = reverse_reorder_trajectory(traj_trans_one)
-#traj_trans_rev_compare = reverse_reorder_trajectory(
+row_traj_reordered = traj[0, :]
+# traj_trans_one = reorder_trajectory(traj)
+# traj_trans_one_compare = reorder_trajectory(traj, p_i_plus_one=True)
+# traj_trans_rev = reverse_reorder_trajectory(traj_trans_one)
+# traj_trans_rev_compare = reverse_reorder_trajectory(
 #    traj_trans_one_compare, p_i_plus_one=True
-#)
+# )

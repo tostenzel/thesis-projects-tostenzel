@@ -420,7 +420,7 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
                 # Obtain total distances of new combinations by subtracting
                 # the respective sum of old squared distances
                 if set(indices_in_old_combi_dist) == set(
-                    old_combi_total_distance[row_old, 0: n_traj_sample_old - 1]
+                    old_combi_total_distance[row_old, 0 : n_traj_sample_old - 1]
                 ):
                     # + 1 because the total distance columns must be changed.
                     # - one because its the new matrix?
@@ -506,7 +506,11 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
     for _i in range(0, n_traj_sample - n_traj - 1):
 
         # Use shrink trick for largest loop.
-        combi_total_distance, traj_dist_matrix, lost_index = next_combi_total_distance_gm14(
+        (
+            combi_total_distance,
+            traj_dist_matrix,
+            lost_index,
+        ) = next_combi_total_distance_gm14(
             combi_total_distance, traj_dist_matrix, lost_index
         )
 

@@ -2,20 +2,25 @@ exclude: >
         thesis-projects-tostenzel/.ipynb_checkpoints
 repos:
 -   repo: https://github.com/asottile/reorder_python_imports
-    rev: v1.4.0
+    rev: v1.9.0
     hooks:
     -   id: reorder-python-imports
         types: [python]
 
 -   repo: https://github.com/python/black
-    rev: 19.3b0
+    rev: 19.10b0
     hooks:
     -   id: black
         types: [python]
+        exclude: >
+            (?x)^(
+                python/distributions.py|
+                python/nataf_transformation.py
+            )$
 
 
 -   repo: https://gitlab.com/pycqa/flake8
-    rev: 3.7.7
+    rev: 3.7.9
     hooks:
     -   id: flake8
         args: ['--max-line-length=88', '--extend-ignore=C408,D100,D205,D401,D400,E203,E402,E501,N803,N806,N816,T001,RST299'
@@ -32,5 +37,8 @@ repos:
                 utils/travis_runner.py|
                 python/tests/test_sampling_trajectory.py|
                 python/tests/test_ge_menendez_2017_traj_transformation.py|
-                python/tests/test_chol_sdcorr
+                python/tests/test_chol_sdcorr.py|
+                python/tests/test_transform_distributions.py|
+                python/distributions.py|
+                python/nataf_transformation.py
             )$

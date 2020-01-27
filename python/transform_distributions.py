@@ -1,5 +1,7 @@
 """
-Ge/Menendez (2017)
+Implementation of the inverse Rosenblatt / inverse Nataf transformation in
+Ge/Menendez (2017), page  2017 from unit cube to multivariate normal space
+with given correlations.
 
 REMARK: All one-dimensional arrays are taken as row vectors by numpy
 although they are no transposed correctly but mirrored.
@@ -17,11 +19,12 @@ def covariance_to_correlation(cov):
     # Standard deviations of each variable.
     sd = np.sqrt(np.diag(cov)).reshape(1, len(cov))
     corr = cov / sd.T / sd
-    
+
     return corr
 
 
 def sample_stnormal_parameters(n_par, n_draws=100_000, seed=123):
+    """Draw standard normally distributed deviates."""
     random.seed(seed)
     sample_stnormal_paramters = np.random.normal(0, 1, n_par * n_draws).reshape(
         n_par, n_draws
@@ -30,6 +33,11 @@ def sample_stnormal_parameters(n_par, n_draws=100_000, seed=123):
 
 
 def transform_uniform_stnormal_uncorr(row_traj_reordered):
+    """
+    Convert sample from uniform distribution to standard normal space
+    without any correlations.
+
+    """
     # Need to replace ones, because norm.ppf(1) = inf and zeros because norm.ppf(0) = -inf
     row_approx = np.where(row_traj_reordered == 1, 0.999, row_traj_reordered)
     row_approx = np.where(row_approx == 0, 0.001, row_approx)
@@ -42,10 +50,10 @@ def transform_uniform_stnormal_uncorr(row_traj_reordered):
 
 def transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu=None):
     """
-    Takes sample from unit cube and transforms it to standard normally
-    distributed sample with correlation structure that is implied by the
-    provided covariance matrix.
-    
+    Overcomplex procedure (for this case) to transform standard normal sample
+    to multivariate normal space with given correlations. It is outlined in
+    Ge/Menendez (2017), page 38.
+
     REMARK: The part that involves the upper matrix Q from the Cholesky
     decomposition of the correlation matrix of sample_Z_c seems unnecessary.
     It effectively does nothing because it is approx. an identity matrix.
@@ -86,18 +94,22 @@ def transform_stnormal_normal_corr_lemaire09(z, cov, mu=None):
     Step 2) Compute correlation matrix.
     Step 3) Introduce dependencies to standard normal sample.
     Step 4) De-standardize sample to normal space.
-    
+
+    REMARK: This is equivalent to Gentle (2006), page 197.
+
     """
     if mu is None:
         mu = np.zeros(len(cov))
     else:
         pass
     # Convert covariance matrix to correlation matrix
-    C = covariance_to_correlation(cov) 
+    C = covariance_to_correlation(cov)
     Q_prime = linalg.cholesky(C, lower=True)
-    
+
     z_corr_stnorm = np.dot(Q_prime, z.reshape(len(cov), 1))
-    
-    x_norm = z_corr_stnorm * np.sqrt(np.diag(cov)).reshape(len(cov), 1) + mu.reshape(len(cov), 1)
+
+    x_norm = z_corr_stnorm * np.sqrt(np.diag(cov)).reshape(len(cov), 1) + mu.reshape(
+        len(cov), 1
+    )
 
     return x_norm.T

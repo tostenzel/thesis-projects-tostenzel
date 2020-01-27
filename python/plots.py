@@ -238,7 +238,7 @@ def convergence_plot(sample, expected, qoi_name, absolute_deviation=False, save=
         file_str = "level"
         legend_loc = "lower right"
 
-        conv_plot, = ax.plot(
+        (conv_plot,) = ax.plot(
             df.index + 1,
             df["mean_iteration"],
             color="#1245A8",
@@ -251,7 +251,7 @@ def convergence_plot(sample, expected, qoi_name, absolute_deviation=False, save=
         file_str = "abs_dev"
         legend_loc = "upper right"
 
-        conv_plot, = ax.plot(
+        (conv_plot,) = ax.plot(
             df.index + 1,
             abs(df["mean_iteration"] - expected),
             color="#1245A8",

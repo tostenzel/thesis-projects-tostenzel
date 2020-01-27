@@ -195,5 +195,5 @@ def chol_reindex_params(params_sdcorr):
     return params_chol
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     jac_estimation_chol(save=True)

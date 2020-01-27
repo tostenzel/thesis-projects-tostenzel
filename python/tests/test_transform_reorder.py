@@ -38,4 +38,3 @@ def test_transformations():
             reorder_trajectory(traj, p_i_plus_one=False), p_i_plus_one=False
         ),
     )
-
