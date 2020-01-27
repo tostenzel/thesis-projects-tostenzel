@@ -39,6 +39,7 @@ repos:
                 python/tests/test_ge_menendez_2017_traj_transformation.py|
                 python/tests/test_chol_sdcorr.py|
                 python/tests/test_transform_distributions.py|
+                python/tests/test_transform_reorder.py|
                 python/distributions.py|
                 python/nataf_transformation.py
             )$
