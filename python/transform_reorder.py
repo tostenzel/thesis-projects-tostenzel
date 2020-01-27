@@ -1,4 +1,11 @@
-"""Re-ordering transformations"""
+"""
+Re-ordering transformations
+
+IMPORTANT REMARK: ee_ind_reorder_trajectory(traj, p_i_plus_one=True)
+is equivalent to ee_full_reorder_trajectory(traj, p_i_plus_one=False).
+The same holds true for the two respective inverse functions.
+
+"""
 import numpy as np
 
 
@@ -82,3 +89,27 @@ def reorder_cov(cov):
     cov_new[0 : len(cov) - 1, len(cov) - 1] = cov[0, 1 : len(cov)]
 
     return cov_new
+
+def inverse_reorder_mu(mu):
+    """
+    Inverse function of `reorder_mu`
+    Used to intialize the loop for
+    `inverse_ee_full_reorder_trajectory(traj, p_i_plus_one=True)`
+    """
+    return np.roll(mu, +1)
+
+
+def inverse_reorder_cov(cov):
+    """
+    Inverse function of `reorder_cov`
+    Used to intialize the loop for
+    `inverse_ee_full_reorder_trajectory(traj, p_i_plus_one=True)`
+    """
+    cov_old = np.ones(cov.shape) * np.nan
+    cov_old[1 : len(cov) , 1 : len(cov)] = cov[0 : len(cov) - 1, 0 : len(cov) - 1]
+    cov_old[0, 0] = cov[len(cov) - 1, len(cov) - 1]
+    
+    cov_old[0, 1 : len(cov)] = cov[len(cov) - 1, 0 : len(cov) - 1]
+    cov_old[1 : len(cov), 0] = cov[0 : len(cov) - 1, len(cov) - 1]
+    
+    return cov_old

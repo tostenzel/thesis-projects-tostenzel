@@ -14,6 +14,9 @@ from transform_reorder import ee_ind_reorder_trajectory
 from transform_reorder import inverse_ee_ind_reorder_trajectory
 from transform_reorder import reorder_mu
 from transform_reorder import reorder_cov
+from transform_reorder import inverse_reorder_mu
+from transform_reorder import inverse_reorder_cov
+
 
 
 def test_ee_ind_reorder_trajectory():
@@ -92,3 +95,31 @@ def test_reorder_cov():
         ]
     )
     assert_array_equal(expected, reorder_cov(cov))
+
+
+def test_inverse_reorder_mu():
+    mu = np.arange(10)
+    expected = np.array([9, 0, 1, 2, 3, 4, 5, 6, 7, 8])
+    assert_array_equal(expected, inverse_reorder_mu(mu))
+
+
+def test_inverse_reorder_cov():
+    cov = np.array(
+        [
+            [10, 2, 3, 4, 5],
+            [2, 20, 6, 7, 8],
+            [3, 6, 30, 9, 10],
+            [4, 7, 9, 40, 11],
+            [5, 8, 10, 11, 50],
+        ]
+    )
+    expected = np.array(
+        [
+            [50, 5, 8, 10, 11],
+            [5, 10, 2, 3, 4],
+            [8, 2, 20, 6, 7],
+            [10, 3, 6, 30, 9],
+            [11, 4, 7, 9, 40],
+        ]
+    )
+    assert_array_equal(expected, inverse_reorder_cov(cov))
