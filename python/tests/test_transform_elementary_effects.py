@@ -1,5 +1,4 @@
 """Tests elementary_effects.py"""
-
 import sys
 
 # Define parent folder as relative path.
@@ -19,9 +18,8 @@ def test_trans_ee_ind_trajectories():
     T(p_{i+1}, i) are the same except of the ith element.
 
     """
-    
     mu = np.array([10, 11, 12, 13, 14])
-    
+
     cov = np.array(
         [
             [10, 0, 0, 2, 0.5],
@@ -31,17 +29,16 @@ def test_trans_ee_ind_trajectories():
             [0.5, 0, 0, 0, 50],
         ]
     )
-    
+
     n_traj_sample = 10
     sample_traj_list = list()
     for traj in range(0, n_traj_sample):
         seed = 123 + traj
-    
+
         sample_traj_list.append(morris_trajectory(n_inputs=5, n_levels=6, seed=seed))
 
-    trans_zero, trans_one = trans_ee_ind_trajectories(
-            sample_traj_list, mu, cov)
-    
+    trans_zero, trans_one = trans_ee_ind_trajectories(sample_traj_list, mu, cov)
+
     for traj in range(0, len(trans_zero)):
         for row in range(0, np.size(trans_zero[0], 0) - 1):
             zero = np.delete(trans_zero[traj][row, :], row)
