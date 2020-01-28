@@ -18,8 +18,12 @@ def ee_ind_reorder_trajectory(traj, p_i_plus_one=True):
     traj_trans_one = np.ones([np.size(traj, 0), np.size(traj, 1)]) * np.nan
     for i in range(0, np.size(traj, 0)):
         if p_i_plus_one is False:
+            # In the first row, put the first element to the back.
+            # In the second, the first two etc.
             traj_trans_one[i, :] = np.roll(traj[i, :], -(i + 1))
         if p_i_plus_one is True:
+            # In the first row, put 0 elements to the back.
+            # IN the second, put the first element to the back etc.
             traj_trans_one[i, :] = np.roll(traj[i, :], -(i))
     return traj_trans_one
 
@@ -48,8 +52,11 @@ def ee_full_reorder_trajectory(traj, p_i_plus_one=True):
     traj_trans_one = np.ones([np.size(traj, 0), np.size(traj, 1)]) * np.nan
     for i in range(0, np.size(traj, 0)):
         if p_i_plus_one is False:
+            # Same as ee_ind_reorder_trajectory(traj, p_i_plus_one=True).
             traj_trans_one[i, :] = np.roll(traj[i, :], -(i))
         if p_i_plus_one is True:
+            # In the first row, put the first two elements to the back.
+            # In the second row, put the first three element to the back etc.
             traj_trans_one[i, :] = np.roll(traj[i, :], -(i - 1))
     return traj_trans_one
 

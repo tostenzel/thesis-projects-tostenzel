@@ -10,10 +10,10 @@ import numpy as np
 from numpy.testing import assert_array_equal
 
 from sampling_trajectory import morris_trajectory
-from elementary_effects import ee_ind_trajectories
+from transform_elementary_effects import trans_ee_ind_trajectories
 
 
-def test_ee_ind_trajectories():
+def test_trans_ee_ind_trajectories():
     """
     As written in Ge/Menendez (2017), page 34: The elements in vectors T(p_{i}, i) and
     T(p_{i+1}, i) are the same except of the ith element.
@@ -39,7 +39,7 @@ def test_ee_ind_trajectories():
     
         sample_traj_list.append(morris_trajectory(n_inputs=5, n_levels=6, seed=seed))
 
-    trans_zero, trans_one = ee_ind_trajectories(
+    trans_zero, trans_one = trans_ee_ind_trajectories(
             sample_traj_list, mu, cov)
     
     for traj in range(0, len(trans_zero)):
