@@ -21,3 +21,4 @@ script:
    # please go ahead and edit the file to meet your 
    # needs.
    - travis_wait python utils/travis_runner.py
+   - bash <(curl -s https://codecov.io/bash) -t 84a50a1b-09f7-48fb-8173-36ef09062cfb
