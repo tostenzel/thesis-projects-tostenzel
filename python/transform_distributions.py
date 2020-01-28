@@ -39,8 +39,10 @@ def transform_uniform_stnormal_uncorr(row_traj_reordered):
 
     """
     # Need to replace ones, because norm.ppf(1) = inf and zeros because norm.ppf(0) = -inf
-    row_approx = np.where(row_traj_reordered == 1, 0.999, row_traj_reordered)
-    row_approx = np.where(row_approx == 0, 0.001, row_approx)
+    # Numerical Parameters taken from crappy MATLAB code by Ge/Menendez (2017).
+    # Highly influential on the EE scale.
+    row_approx = np.where(row_traj_reordered == 1, 0.999999, row_traj_reordered)
+    row_approx = np.where(row_approx == 0, 0.000001, row_approx)
 
     # Step 1: Inverse cdf of standard normal distribution (N(0, 1)).
     z = norm.ppf(row_approx)

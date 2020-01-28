@@ -19,7 +19,7 @@ from transform_traj_elementary_effects import trans_ee_full_trajectories
 n_levels = 10
 n_inputs=3
 
-n_traj_sample = 100000
+n_traj_sample = 10000
 sample_traj_list = list()
 for traj in range(0, n_traj_sample):
     seed = 123 + traj
@@ -35,7 +35,8 @@ with open("results/test_opt_traj_list_gm17.txt", "wb") as fp:   #Pickling
 
 with open("results/test_opt_traj_list_gm17.txt", "rb") as fp:   # Unpickling
     opt_traj_list = pickle.load(fp)
-"""   
+""" 
+  
 cov = np.array(
     [
         [1.0, 0.9, 0.4],
@@ -43,10 +44,20 @@ cov = np.array(
         [0.4, 0.01, 1.0],
     ]
 )
+"""
+cov = np.array(
+    [
+        [1.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0],
+        [0.0, 0.0, 1.0],
+    ]
+)
+"""
+
 
 opt_traj_list = sample_traj_list
 #n_trajs = 9
-n_trajs = 100000
+n_trajs = 10000
 
 opt_traj_list = opt_traj_list[0:n_trajs]
 
