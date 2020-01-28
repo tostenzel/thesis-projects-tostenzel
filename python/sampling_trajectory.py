@@ -41,6 +41,8 @@ def morris_trajectory(
     specific testcase.
 
     """
+    assert float(n_levels/2).is_integer(),\
+        "n_levels must be an even number for reasons in Morris (1991), page 164."
     np.random.seed(seed)
     step = step_function(n_levels)
     #  B is (p+1)*p strictily lower triangular matrix of ones.
@@ -56,7 +58,7 @@ def morris_trajectory(
         value_grid = [0, 1 - step]
         idx = 1
         while idx / (n_levels - 1) < 1 - step:
-            value_grid.append(idx / idx / (n_levels - 1))
+            value_grid.append(idx / (n_levels - 1))
             idx = idx + 1
         # The below arrays are random and therefore influenced by the seed.
         # Choose a random vector from the parameter grid to as first level.
@@ -64,7 +66,7 @@ def morris_trajectory(
         # P_star defines the element in the above vector where that
         # takes the first step in the second trajectory column.
         P_star_rand = np.identity(n_inputs)
-        # Unsure: Take step up or down?
+        # Unsure: Take step up or down? --> We want to have both! See last #.
         D_star_rand = np.zeros([n_inputs, n_inputs])
         np.fill_diagonal(D_star_rand, random.choices([-1, 1], k=n_inputs))
         if stairs is False:
@@ -82,6 +84,8 @@ def morris_trajectory(
         + (step / 2) * (np.dot((2 * B - J), D_star_rand) + J),
         P_star_rand,
     )
+    # B_star_rand = J * base_value_vector_rand + step * B would be only
+    # upwards steps. Would be bad for computing EEs.
 
     return B_star_rand
 

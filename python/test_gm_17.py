@@ -15,12 +15,15 @@ from transform_traj_elementary_effects import trans_ee_full_trajectories
 
 
 
-"""
+
+n_levels = 10
+
+
 n_traj_sample = 300
 sample_traj_list = list()
 for traj in range(0, n_traj_sample):
     seed = 123 + traj
-    sample_traj_list.append(morris_trajectory(n_inputs=3, n_levels=11, seed=seed))
+    sample_traj_list.append(morris_trajectory(n_inputs=3, n_levels=10, seed=seed))
 
 _, opt_traj_list, _ =  intermediate_ge_menendez_2014(sample_traj_list, 150)
 
@@ -28,7 +31,7 @@ _, opt_traj_list, _ =  intermediate_ge_menendez_2014(sample_traj_list, 150)
 # Convert into string representation and save it as pickled .txt
 with open("results/test_opt_traj_list_gm17.txt", "wb") as fp:   #Pickling
     pickle.dump(opt_traj_list, fp)
-"""
+
 
 with open("results/test_opt_traj_list_gm17.txt", "rb") as fp:   # Unpickling
     opt_traj_list = pickle.load(fp)
@@ -41,7 +44,7 @@ cov = np.array(
     ]
 )
 
-n_trajs = 6
+n_trajs = 9
 #n_trajs = 150
 
 opt_traj_list = opt_traj_list[0:n_trajs]

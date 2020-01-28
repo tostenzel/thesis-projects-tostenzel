@@ -1,6 +1,7 @@
 """Functions to compute the elementary effects in Ge/Menendez (2017)."""
 import numpy as np
 from sampling_trajectory import morris_trajectory
+from transform_distributions import transform_uniform_stnormal_uncorr
 from transform_distributions import transform_stnormal_normal_corr_lemaire09
 from transform_reorder import ee_full_reorder_trajectory
 from transform_reorder import ee_ind_reorder_trajectory
@@ -39,12 +40,14 @@ def trans_ee_ind_trajectories(sample_traj_list, cov, mu=None):
     zero_idx_diff = []
     one_idx_diff = []
 
-    # Transformation 1.
+    # Transformation 1 including taking the cdf from Transformation 2.
     for traj in range(0, n_traj_sample):
+        z_zero = transform_uniform_stnormal_uncorr(sample_traj_list[traj])
         zero_idx_diff.append(
-            ee_ind_reorder_trajectory(sample_traj_list[traj], p_i_plus_one=False)
+            ee_ind_reorder_trajectory(z_zero, p_i_plus_one=False)
         )
-        one_idx_diff.append(ee_ind_reorder_trajectory(sample_traj_list[traj]))
+        z_one = transform_uniform_stnormal_uncorr(sample_traj_list[traj])
+        one_idx_diff.append(ee_ind_reorder_trajectory(z_one))
 
     # Transformation 2 for p_i
     # Need to reorder mu and covariance according to the zero index difference.
@@ -103,9 +106,10 @@ def trans_ee_full_trajectories(sample_traj_list, cov, mu=None):
     n_rows = np.size(sample_traj_list[0], 0)
     two_idx_diff = []
 
-    # Transformation 1 for p_{i+1}.
+    # Transformation 1 for p_{i+1} including taking the cdf from Transformation 2.
     for traj in range(0, n_traj_sample):
-        two_idx_diff.append(ee_full_reorder_trajectory(sample_traj_list[traj]))
+        z_two = transform_uniform_stnormal_uncorr(sample_traj_list[traj])
+        two_idx_diff.append(ee_full_reorder_trajectory(z_two))
 
     # Transformation 2 for p_{i+1}.
     # Need to reorder mu and covariance according to the two index difference.
