@@ -22,3 +22,7 @@ script:
    # needs.
    - travis_wait python utils/travis_runner.py
    - bash <(curl -s https://codecov.io/bash) -t 84a50a1b-09f7-48fb-8173-36ef09062cfb
+
+# Push the results back to codecov
+after_success:
+  - codecov
