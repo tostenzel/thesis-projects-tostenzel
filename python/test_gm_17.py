@@ -17,14 +17,14 @@ from transform_traj_elementary_effects import trans_ee_full_trajectories
 
 
 n_levels = 10
+n_inputs=3
 
-
-n_traj_sample = 300
+n_traj_sample = 100000
 sample_traj_list = list()
 for traj in range(0, n_traj_sample):
     seed = 123 + traj
-    sample_traj_list.append(morris_trajectory(n_inputs=3, n_levels=10, seed=seed))
-
+    sample_traj_list.append(morris_trajectory(n_inputs, n_levels, seed=seed))
+"""
 _, opt_traj_list, _ =  intermediate_ge_menendez_2014(sample_traj_list, 150)
 
 
@@ -35,7 +35,7 @@ with open("results/test_opt_traj_list_gm17.txt", "wb") as fp:   #Pickling
 
 with open("results/test_opt_traj_list_gm17.txt", "rb") as fp:   # Unpickling
     opt_traj_list = pickle.load(fp)
-    
+"""   
 cov = np.array(
     [
         [1.0, 0.9, 0.4],
@@ -44,8 +44,9 @@ cov = np.array(
     ]
 )
 
-n_trajs = 9
-#n_trajs = 150
+opt_traj_list = sample_traj_list
+#n_trajs = 9
+n_trajs = 100000
 
 opt_traj_list = opt_traj_list[0:n_trajs]
 
@@ -54,8 +55,6 @@ trans_pi_i_list, trans_piplusone_i_list = trans_ee_ind_trajectories(opt_traj_lis
 #trans_piplusone_iminusone_list = trans_ee_full_trajectories(opt_traj_list, cov)
 
 
-n_inputs = 3
-n_levels = 11
 n_rows = np.size(opt_traj_list[0], 0)
 
 def linear_function(a, b, c, *args):

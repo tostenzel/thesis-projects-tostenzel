@@ -170,7 +170,7 @@ def test_compare_camp_07_int_ge_men_14_1():
 
     """
     n_inputs = 4
-    n_levels = 11
+    n_levels = 1
     n_traj_sample = 50
     n_traj = 5
 
@@ -199,7 +199,7 @@ def test_compare_camp_07_int_ge_men_14_2():
 
     """
     n_inputs = 4
-    n_levels = 5
+    n_levels = 10
     n_traj_sample = 30
     n_traj = 5
 
@@ -231,7 +231,7 @@ def test_compare_camp_07_int_ge_men_14_2():
 )
 def test_compare_camp_07_final_ge_men_14_1():
     n_inputs = 4
-    n_levels = 5
+    n_levels = 10
     n_traj_sample = 30
     n_traj = 5
 
@@ -263,7 +263,7 @@ def test_compare_camp_07_final_ge_men_14_2():
 
     """
     n_inputs = 4
-    n_levels = 5
+    n_levels = 10
     n_traj_sample = 30
     n_traj = 5
 
