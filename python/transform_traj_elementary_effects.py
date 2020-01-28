@@ -12,7 +12,7 @@ from transform_reorder import reorder_cov
 from transform_reorder import reorder_mu
 
 
-def trans_ee_ind_trajectories(sample_traj_list, mu, cov):
+def trans_ee_ind_trajectories(sample_traj_list, cov, mu=None):
     """
     Transforms list of trajectories to two lists of transformed trajectories
     for the computation of the independent Elementary Effects. As explained in
@@ -27,6 +27,11 @@ def trans_ee_ind_trajectories(sample_traj_list, mu, cov):
     with the respective row one below in `trans_piplusone_i`.
 
     """
+    if mu is None:
+        mu = np.zeros(len(cov))
+    else:
+        pass
+
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
 
     n_traj_sample = len(sample_traj_list)
@@ -78,14 +83,20 @@ def trans_ee_ind_trajectories(sample_traj_list, mu, cov):
     return trans_pi_i, trans_piplusone_i
 
 
-def trans_ee_full_trajectories(sample_traj_list, mu, cov):
+def trans_ee_full_trajectories(sample_traj_list, cov, mu=None):
     """Transforms a list of trajectories such that their rows correspond to
     T(p_{i+1}, i-1). To create T(p_{i}, i-1) is not needed as this is done by
     `trans_ee_ind_trajectories`.
+
     REMARK: It is important that from the rows `trans_piplusone_iminusone`
     one subtracts one row above in `trans_piplusone_i`.
 
     """
+    if mu is None:
+        mu = np.zeros(len(cov))
+    else:
+        pass
+
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
 
     n_traj_sample = len(sample_traj_list)
@@ -116,30 +127,3 @@ def trans_ee_full_trajectories(sample_traj_list, mu, cov):
         )
 
     return trans_piplusone_iminusone
-
-
-"""As written in Ge/Menendez (2017), page 34: The elements in vectors T(p_{i}, i) and
-T(p_{i+1}, i) are the same except of the ith element."""
-
-mu = np.array([10, 11, 12, 13, 14])
-
-cov = np.array(
-    [
-        [10, 0, 0, 2, 0.5],
-        [0, 20, 0.4, 0.15, 0],
-        [0, 0.4, 30, 0.05, 0],
-        [2, 0.15, 0.05, 40, 0],
-        [0.5, 0, 0, 0, 50],
-    ]
-)
-
-n_traj_sample = 100
-sample_traj_list = list()
-for traj in range(0, n_traj_sample):
-    seed = 123 + traj
-
-    sample_traj_list.append(morris_trajectory(n_inputs=5, n_levels=6, seed=seed))
-
-trans_zero, trans_one = trans_ee_ind_trajectories(sample_traj_list, mu, cov)
-
-trans_two = trans_ee_full_trajectories(sample_traj_list, mu, cov)

@@ -9,7 +9,7 @@ import numpy as np
 from numpy.testing import assert_array_equal
 
 from sampling_trajectory import morris_trajectory
-from transform_elementary_effects import trans_ee_ind_trajectories
+from transform_traj_elementary_effects import trans_ee_ind_trajectories
 
 
 def test_trans_ee_ind_trajectories():
@@ -37,7 +37,7 @@ def test_trans_ee_ind_trajectories():
 
         sample_traj_list.append(morris_trajectory(n_inputs=5, n_levels=6, seed=seed))
 
-    trans_zero, trans_one = trans_ee_ind_trajectories(sample_traj_list, mu, cov)
+    trans_zero, trans_one = trans_ee_ind_trajectories(sample_traj_list, cov, mu)
 
     for traj in range(0, len(trans_zero)):
         for row in range(0, np.size(trans_zero[0], 0) - 1):
