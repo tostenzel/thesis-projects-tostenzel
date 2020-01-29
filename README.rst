@@ -14,6 +14,7 @@ Uncertainty Quantification for an Eckstein-Keane-Wolpin model
 .. image:: https://img.shields.io/badge/License-MIT-blue.svg
      :target: https://github.com/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/LICENSE
 
+|
 
 This repository hosts the Master's Thesis and its replication files written by
 
