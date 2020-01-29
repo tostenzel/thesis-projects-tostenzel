@@ -25,3 +25,4 @@ dependencies:
   - chaospy
   - pre-commit
   - codecov
+  - pytest pytest-cov

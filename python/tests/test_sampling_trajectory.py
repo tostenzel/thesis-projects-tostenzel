@@ -23,7 +23,7 @@ from sampling_trajectory import total_distance
 from sampling_trajectory import final_ge_menendez_2014
 
 
-def test_morris_trajectories():
+def test_morris_trajectory():
     """
     Can not account for proplems with the fixed random matrices/vectors/scalers.
 
@@ -35,6 +35,23 @@ def test_morris_trajectories():
             n_inputs=2, n_levels=4, step_function=stepsize, seed=123, test=True
         ),
     )
+
+def test_morris_trajectory_value_grid():
+    n_levels = 10
+    # Many inputs for high probability to catch all grid points in trajectory.
+    n_inputs=100
+
+    step = stepsize(n_levels)
+    traj = morris_trajectory(n_inputs, n_levels, seed=123)
+       
+    # Round the elements in both sets.
+    grid_flat_list = [round(item, 6) for sublist in traj.tolist() for item in sublist]
+    grid = set(grid_flat_list)
+
+    expected = np.around((np.linspace(0,9,10)/(n_levels - 1)),6)
+    expected = set(expected.tolist())
+
+    assert grid == expected
 
 
 def test_compute_trajectory_distance():

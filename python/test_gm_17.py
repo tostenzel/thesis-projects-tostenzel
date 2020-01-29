@@ -44,6 +44,8 @@ cov = np.array(
         [0.4, 0.01, 1.0],
     ]
 )
+
+mu = np.array([0, 0, 0])
 """
 cov = np.array(
     [
@@ -61,7 +63,7 @@ n_trajs = 10000
 
 opt_traj_list = opt_traj_list[0:n_trajs]
 
-trans_pi_i_list, trans_piplusone_i_list = trans_ee_ind_trajectories(opt_traj_list, cov)
+trans_pi_i_list, trans_piplusone_i_list = trans_ee_ind_trajectories(opt_traj_list, cov, mu)
 
 #trans_piplusone_iminusone_list = trans_ee_full_trajectories(opt_traj_list, cov)
 
@@ -69,7 +71,7 @@ trans_pi_i_list, trans_piplusone_i_list = trans_ee_ind_trajectories(opt_traj_lis
 n_rows = np.size(opt_traj_list[0], 0)
 
 def linear_function(a, b, c, *args):
-    return a + b + c
+    return 2*a + b + c
 
 function_evals_pi_i = np.ones([n_rows, n_trajs]) * np.nan
 function_evals_piplusone_i = np.ones([n_rows, n_trajs]) * np.nan

@@ -3,6 +3,10 @@ Winding stairs sampling
 + Morris (1991) improvement + Campolongo (2007) improvement
 + Ge/Menendez (2014) improvement.
 
+A list of trajectories from morris_trajectories potentially
+post-selected with `intermediate_ge_menendez_2014` will
+most of the time be the best solution.
+
 """
 import random
 from itertools import combinations
@@ -15,13 +19,16 @@ def stepsize(n_levels):
     """
     Book recommendation:
     W/o post-selection the trajectory sample, this leads to equiprobable
-    sampling from the input grid. This is, because the stepsize is not the
-    distance between the grid points. Therefore, a step from one grid point to
-    another one can not "land" on another grid point.
-    The grid points are HALFWAY EQUISPACED. The steps may create grid points
-    that are closer to a selection of original grid points.
+    sampling from the input grid if n_levels is even.
+    The reason is the following: Without the random mixing of elements,
+    the first row in a trajectory produced by `morris_trajectory` are the
+    smaller half of the points. Then stepsize is added on each point.
+    This creates the upper half of the desired grid points.
+    This does only work if the number of grid points `n_levels` is even.
 
     """
+    assert float(n_levels/2).is_integer(),\
+    "n_levels must be an even number see function docstring."
     return n_levels / (2 * (n_levels - 1))
 
 
@@ -41,8 +48,6 @@ def morris_trajectory(
     specific testcase.
 
     """
-    assert float(n_levels/2).is_integer(),\
-        "n_levels must be an even number for reasons in Morris (1991), page 164."
     np.random.seed(seed)
     step = step_function(n_levels)
     #  B is (p+1)*p strictily lower triangular matrix of ones.
