@@ -28,6 +28,7 @@ I demonstrate the computations of the results in the jupyter notebooks below.
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
      :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/note_transformations.ipynb
 ----------------------------------------------------------------------------------------
+
 .. image:: https://codecov.io/gh/HumanCapitalAnalysis/thesis-projects-tostenzel/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/HumanCapitalAnalysis/thesis-projects-tostenzel
 
