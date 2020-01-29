@@ -65,10 +65,10 @@ def trans_ee_ind_trajectories(sample_traj_list, cov, mu=None):
     # No re-arrangement needed as the first transformation for p_{i+1}
     # is using the original order of mu and cov.
     for traj in range(0, n_traj_sample):
+        # Needs to be set up again for each traj because otherwise it'd be one too much.
+        mu_one = mu
+        cov_one = cov
         for row in range(0, n_rows):
-            # Needs to be set up again for each traj because otherwise it'd be one too much.
-            mu_one = mu
-            cov_one = cov
             one_idx_diff[traj][row, :] = transform_stnormal_normal_corr_lemaire09(
                 one_idx_diff[traj][row, :], cov_one, mu_one
             )
