@@ -44,16 +44,16 @@ def trans_ee_ind_trajectories(sample_traj_list, cov, mu=None):
 
     # Transformation 1 including taking the cdf from Transformation 2.
     for traj in range(0, n_traj_sample):
-        z_zero = transform_uniform_stnormal_uncorr(sample_traj_list[traj])
-        zero_idx_diff.append(ee_ind_reorder_trajectory(z_zero, p_i_plus_one=False))
-        z_one = transform_uniform_stnormal_uncorr(sample_traj_list[traj])
-        one_idx_diff.append(ee_ind_reorder_trajectory(z_one))
+        z = transform_uniform_stnormal_uncorr(sample_traj_list[traj])
+        zero_idx_diff.append(ee_ind_reorder_trajectory(z, p_i_plus_one=False))
+        one_idx_diff.append(ee_ind_reorder_trajectory(z))
 
     # Transformation 2 for p_i.
     # Need to reorder mu and covariance according to the zero index difference.
-    mu_zero = reorder_mu(mu)
-    cov_zero = reorder_cov(cov)
     for traj in range(0, n_traj_sample):
+        # Needs to be set up again for each traj because otherwise it'd be one too much.
+        mu_zero = reorder_mu(mu)
+        cov_zero = reorder_cov(cov)
         for row in range(0, n_rows):
             zero_idx_diff[traj][row, :] = transform_stnormal_normal_corr_lemaire09(
                 zero_idx_diff[traj][row, :], cov_zero, mu_zero
@@ -64,10 +64,11 @@ def trans_ee_ind_trajectories(sample_traj_list, cov, mu=None):
     # Transformation 2 for p_{i+1}.
     # No re-arrangement needed as the first transformation for p_{i+1}
     # is using the original order of mu and cov.
-    mu_one = mu
-    cov_one = cov
     for traj in range(0, n_traj_sample):
         for row in range(0, n_rows):
+            # Needs to be set up again for each traj because otherwise it'd be one too much.
+            mu_one = mu
+            cov_one = cov
             one_idx_diff[traj][row, :] = transform_stnormal_normal_corr_lemaire09(
                 one_idx_diff[traj][row, :], cov_one, mu_one
             )
@@ -112,15 +113,16 @@ def trans_ee_full_trajectories(sample_traj_list, cov, mu=None):
 
     # Transformation 1 for p_{i+1} including taking the cdf from Transformation 2.
     for traj in range(0, n_traj_sample):
-        z_two = transform_uniform_stnormal_uncorr(sample_traj_list[traj])
-        two_idx_diff.append(ee_full_reorder_trajectory(z_two))
+        z = transform_uniform_stnormal_uncorr(sample_traj_list[traj])
+        two_idx_diff.append(ee_full_reorder_trajectory(z))
 
     # Transformation 2 for p_{i+1}.
     # Need to reorder mu and covariance according to the two index difference by
     # using the invese function as for p_i in `the function for the independent EEs.
-    mu_two = inverse_reorder_mu(mu)
-    cov_two = inverse_reorder_cov(cov)
     for traj in range(0, n_traj_sample):
+        # Needs to be set up again for each traj because otherwise it'd be one too much.
+        mu_two = inverse_reorder_mu(mu)
+        cov_two = inverse_reorder_cov(cov)
         for row in range(0, n_rows):
             two_idx_diff[traj][row, :] = transform_stnormal_normal_corr_lemaire09(
                 two_idx_diff[traj][row, :], cov_two, mu_two
