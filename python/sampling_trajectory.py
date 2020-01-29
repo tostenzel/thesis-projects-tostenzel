@@ -27,14 +27,15 @@ def stepsize(n_levels):
     This does only work if the number of grid points `n_levels` is even.
 
     """
-    assert float(n_levels/2).is_integer(),\
-    "n_levels must be an even number see function docstring."
+    assert float(
+        n_levels / 2
+    ).is_integer(), "n_levels must be an even number see function docstring."
     return n_levels / (2 * (n_levels - 1))
 
 
 def morris_trajectory(
     n_inputs, n_levels, step_function=stepsize, stairs=True, seed=123, test=False
-):
+    ):
     """
     Returns n parameter vectors, Dim n x Theta.
     n is also Theta+1.
