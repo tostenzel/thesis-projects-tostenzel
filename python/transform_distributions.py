@@ -50,7 +50,7 @@ def transform_uniform_stnormal_uncorr(row_traj_reordered):
     return z
 
 
-def transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu=None):
+def transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu):
     """
     Overcomplex procedure (for this case) to transform standard normal sample
     to multivariate normal space with given correlations. It is outlined in
@@ -60,11 +60,6 @@ def transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu=None):
     decomposition of the correlation matrix of sample_Z_c seems unnecessary.
     It effectively does nothing because it is approx. an identity matrix.
     """
-    if mu is None:
-        mu = np.zeros(len(cov))
-    else:
-        pass
-
     # Step 2. Skipped transformation of correlation matrix for normally distributed paramters.
     R_z = covariance_to_correlation(cov)
 
@@ -89,7 +84,7 @@ def transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu=None):
     return x
 
 
-def transform_stnormal_normal_corr_lemaire09(z, cov, mu=None):
+def transform_stnormal_normal_corr_lemaire09(z, cov, mu):
     """
     Inverse Rosenblatt/Nataf transformation (from standard normal)
     to multivariate normal space with given correlations.
@@ -100,10 +95,6 @@ def transform_stnormal_normal_corr_lemaire09(z, cov, mu=None):
     REMARK: This is equivalent to Gentle (2006), page 197.
 
     """
-    if mu is None:
-        mu = np.zeros(len(cov))
-    else:
-        pass
     # Convert covariance matrix to correlation matrix
     C = covariance_to_correlation(cov)
     Q_prime = linalg.cholesky(C, lower=True)

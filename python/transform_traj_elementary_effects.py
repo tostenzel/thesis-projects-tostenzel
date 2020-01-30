@@ -12,7 +12,7 @@ from transform_reorder import reorder_cov
 from transform_reorder import reorder_mu
 
 
-def trans_ee_ind_trajectories(sample_traj_list, cov, mu=None):
+def trans_ee_ind_trajectories(sample_traj_list, cov, mu):
     """
     Transforms list of trajectories to two lists of transformed trajectories
     for the computation of the independent Elementary Effects. As explained in
@@ -30,11 +30,6 @@ def trans_ee_ind_trajectories(sample_traj_list, cov, mu=None):
     with the respective row one below in `trans_piplusone_i`.
 
     """
-    if mu is None:
-        mu = np.zeros(len(cov))
-    else:
-        pass
-
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
 
     n_traj_sample = len(sample_traj_list)
@@ -87,7 +82,7 @@ def trans_ee_ind_trajectories(sample_traj_list, cov, mu=None):
     return trans_pi_i, trans_piplusone_i
 
 
-def trans_ee_full_trajectories(sample_traj_list, cov, mu=None):
+def trans_ee_full_trajectories(sample_traj_list, cov, mu):
     """
     Transforms a list of trajectories such that their rows correspond to
     T(p_{i+1}, i-1). To create T(p_{i}, i-1) is not needed as this is done by
@@ -100,11 +95,6 @@ def trans_ee_full_trajectories(sample_traj_list, cov, mu=None):
     in `trans_piplusone_i`.
 
     """
-    if mu is None:
-        mu = np.zeros(len(cov))
-    else:
-        pass
-
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
 
     n_traj_sample = len(sample_traj_list)
