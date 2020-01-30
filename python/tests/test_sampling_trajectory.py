@@ -237,7 +237,7 @@ def test_compare_camp_07_int_ge_men_14_2():
     dist_camp = total_distance(select_distance_matrix)
     dist_gm = total_distance(select_distance_matrix_2)
 
-    assert dist_camp - dist_gm < 0.01 * dist_camp
+    assert dist_camp - dist_gm < 0.03 * dist_camp
 
 
 @pytest.mark.skip(
