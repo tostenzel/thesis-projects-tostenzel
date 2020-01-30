@@ -9,7 +9,7 @@ from transform_traj_elementary_effects import trans_ee_full_trajectories
 from transform_traj_elementary_effects import trans_ee_ind_trajectories
 
 
-def screening_measures_gm_2017(function, traj_list, cov, n_levels, mu):
+def screening_measures_gm_2017(function, traj_list, cov, n_levels, mu, numeric_zero=0.01):
     """
     The full measures are computed on correlated and the independent
     measures are computed on decorrelated measures.
@@ -20,10 +20,10 @@ def screening_measures_gm_2017(function, traj_list, cov, n_levels, mu):
     n_inputs = np.size(traj_list[0], 1)
 
     trans_pi_i_list, trans_piplusone_i_list = trans_ee_ind_trajectories(
-        traj_list, cov, mu
+        traj_list, cov, mu, numeric_zero
     )
     trans_piplusone_iminusone_list = trans_ee_full_trajectories(
-        traj_list, cov, mu)
+        traj_list, cov, mu, numeric_zero)
 
     function_evals_pi_i = np.ones([n_rows, n_trajs]) * np.nan
     function_evals_piplusone_i = np.ones([n_rows, n_trajs]) * np.nan

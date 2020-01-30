@@ -12,7 +12,7 @@ from transform_reorder import reorder_cov
 from transform_reorder import reorder_mu
 
 
-def trans_ee_ind_trajectories(sample_traj_list, cov, mu):
+def trans_ee_ind_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01):
     """
     Transforms list of trajectories to two lists of transformed trajectories
     for the computation of the independent Elementary Effects. As explained in
@@ -39,7 +39,7 @@ def trans_ee_ind_trajectories(sample_traj_list, cov, mu):
 
     # Transformation 1 including taking the cdf from Transformation 2.
     for traj in range(0, n_traj_sample):
-        z = transform_uniform_stnormal_uncorr(sample_traj_list[traj])
+        z = transform_uniform_stnormal_uncorr(sample_traj_list[traj], numeric_zero)
         zero_idx_diff.append(ee_ind_reorder_trajectory(z, p_i_plus_one=False))
         one_idx_diff.append(ee_ind_reorder_trajectory(z))
 
@@ -82,7 +82,7 @@ def trans_ee_ind_trajectories(sample_traj_list, cov, mu):
     return trans_pi_i, trans_piplusone_i
 
 
-def trans_ee_full_trajectories(sample_traj_list, cov, mu):
+def trans_ee_full_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01):
     """
     Transforms a list of trajectories such that their rows correspond to
     T(p_{i+1}, i-1). To create T(p_{i}, i-1) is not needed as this is done by
@@ -103,7 +103,7 @@ def trans_ee_full_trajectories(sample_traj_list, cov, mu):
 
     # Transformation 1 for p_{i+1} including taking the cdf from Transformation 2.
     for traj in range(0, n_traj_sample):
-        z = transform_uniform_stnormal_uncorr(sample_traj_list[traj])
+        z = transform_uniform_stnormal_uncorr(sample_traj_list[traj], numeric_zero)
         two_idx_diff.append(ee_full_reorder_trajectory(z))
 
     # Transformation 2 for p_{i+1}.
