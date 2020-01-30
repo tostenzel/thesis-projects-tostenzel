@@ -41,3 +41,5 @@ I demonstrate the computations of the results in the jupyter notebooks below.
      :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/note_sampling.ipynb
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
      :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/note_transformations.ipynb
+.. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
+     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/note_validation.ipynb
