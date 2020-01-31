@@ -23,11 +23,12 @@ def screening_measures_gm_2017(function, traj_list, n_levels, cov, mu, numeric_z
     trans_pi_i_list, trans_piplusone_i_list = trans_ee_ind_trajectories(
         traj_list, cov, mu, numeric_zero, normal=normal
     )
-    trans_piplusone_iminusone_list = trans_ee_full_trajectories(
+    trans_piplusone_iminusone_list, original_trans_piplusone_i_list = trans_ee_full_trajectories(
         traj_list, cov, mu, numeric_zero, normal=normal)
 
     function_evals_pi_i = np.ones([n_rows, n_trajs]) * np.nan
     function_evals_piplusone_i = np.ones([n_rows, n_trajs]) * np.nan
+    function_evals_original_piplusone_i = np.ones([n_rows, n_trajs]) * np.nan
     function_evals_piplusone_iminusone = np.ones([n_rows, n_trajs]) * np.nan
 
     for traj in range(0, n_trajs):
@@ -36,6 +37,8 @@ def screening_measures_gm_2017(function, traj_list, n_levels, cov, mu, numeric_z
             function_evals_piplusone_i[row, traj] = function(
                 *trans_piplusone_i_list[traj][row, :]
             )
+            function_evals_original_piplusone_i[row,traj] = function(
+                    *original_trans_piplusone_i_list[traj][row,:])
             function_evals_piplusone_iminusone[row,traj] = function(
                     *trans_piplusone_iminusone_list[traj][row,:])
     
@@ -60,7 +63,7 @@ def screening_measures_gm_2017(function, traj_list, n_levels, cov, mu, numeric_z
         # Full Elementary Effects
         ee_full_i[:, traj] = (
                 function_evals_piplusone_iminusone[1 : n_inputs + 1, traj]
-                - function_evals_piplusone_i[0:n_inputs, traj]
+                - function_evals_original_piplusone_i[0: n_inputs, traj]
                 ) /step
 
     ee_ind[:, 0] = np.mean(ee_ind_i, axis=1)

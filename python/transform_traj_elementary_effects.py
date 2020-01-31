@@ -69,7 +69,7 @@ def trans_ee_ind_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01, norm
         cov_one = cov
         for row in range(0, n_rows):
             one_idx_diff[traj][row, :], Q_prime = transform_stnormal_normal_corr_lemaire09(
-                one_idx_diff[traj][row, :], cov_one, mu_one
+                one_idx_diff[traj][row, :], cov_one, mu_one, normal=normal
             )
             mu_one = reorder_mu(mu_one)
             cov_one = reorder_cov(cov_one)
@@ -103,6 +103,7 @@ def trans_ee_full_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01, nor
 
     n_traj_sample = len(sample_traj_list)
     n_rows = np.size(sample_traj_list[0], 0)
+    one_idx_diff = []
     two_idx_diff = []
 
     # Transformation 1 for p_{i+1} including taking the cdf from Transformation 2.
@@ -112,6 +113,7 @@ def trans_ee_full_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01, nor
         else:
             z = transform_uniform_stnormal_uncorr(sample_traj_list[traj], numeric_zero)
         two_idx_diff.append(ee_full_reorder_trajectory(z))
+        one_idx_diff.append(ee_ind_reorder_trajectory(z))
 
     # Transformation 2 for p_{i+1}.
     # Need to reorder mu and covariance according to the two index difference by
@@ -127,11 +129,27 @@ def trans_ee_full_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01, nor
             mu_two = reorder_mu(mu_two)
             cov_two = reorder_cov(cov_two)
 
-    # Transformation 3 for p_{i+1}.
-    trans_piplusone_iminusone = []
+    # Transformation 2 for p_{i} = T2 for p_{i+1} in function above.
+    # No re-arrangement needed as the first transformation for p_{i+1}
+    # is using the original order of mu and cov.
     for traj in range(0, n_traj_sample):
+        # Needs to be set up again for each traj because otherwise it'd be one too much.
+        mu_one = mu
+        cov_one = cov
+        for row in range(0, n_rows):
+            one_idx_diff[traj][row, :], Q_prime = transform_stnormal_normal_corr_lemaire09(
+                one_idx_diff[traj][row, :], cov_one, mu_one, normal=normal
+            )
+            mu_one = reorder_mu(mu_one)
+            cov_one = reorder_cov(cov_one)
+    # Transformation 3 for p_i and p_{i+1}.
+    trans_piplusone_iminusone = []
+    trans_piplusone_i = []
+    for traj in range(0, n_traj_sample):
+        trans_piplusone_i.append(
+            inverse_ee_ind_reorder_trajectory(one_idx_diff[traj]))
         trans_piplusone_iminusone.append(
             inverse_ee_full_reorder_trajectory(two_idx_diff[traj])
         )
 
-    return trans_piplusone_iminusone
+    return trans_piplusone_iminusone, trans_piplusone_i
