@@ -29,13 +29,16 @@ def test_trans_ee_ind_trajectories():
             [0.5, 0, 0, 0, 50],
         ]
     )
-
+    
+    n_inputs = 5
+    n_levels = 10
     n_traj_sample = 10
     sample_traj_list = list()
     for traj in range(0, n_traj_sample):
         seed = 123 + traj
 
-        sample_traj_list.append(morris_trajectory(n_inputs=5, n_levels=6, seed=seed))
+        m_traj, _ = morris_trajectory(n_inputs, n_levels, seed=seed)
+        sample_traj_list.append(m_traj)
 
     trans_zero, trans_one = trans_ee_ind_trajectories(sample_traj_list, cov, mu)
 

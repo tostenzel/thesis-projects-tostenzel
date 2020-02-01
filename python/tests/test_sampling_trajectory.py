@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from numpy.testing import assert_array_equal
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_allclose
 
 from sampling_trajectory import stepsize
 from sampling_trajectory import morris_trajectory
@@ -28,7 +28,7 @@ def test_morris_trajectory_value_grid():
     # Many inputs for high probability to catch all grid points in trajectory.
     n_inputs = 100
 
-    traj = morris_trajectory(n_inputs, n_levels, seed=123)
+    traj, _ = morris_trajectory(n_inputs, n_levels, seed=123)
 
     # Round the elements in both sets.
     grid_flat_list = [round(item, 6) for sublist in traj.tolist() for item in sublist]
@@ -77,7 +77,7 @@ def test_select_trajectories_1():
     expected_fourth_row = [1, 2, 3, np.sqrt(3 ** 2 + 100 ** 2 + 200 ** 2)]
 
     assert test_indices == expected_dist_indices
-    assert_array_almost_equal(test_select[3, :], expected_fourth_row, 0.00000001)
+    assert_allclose(test_select[3, :], expected_fourth_row, atol=0.00001)
 
 
 def test_select_trajectories_2():
@@ -181,9 +181,8 @@ def test_compare_camp_07_int_ge_men_14_1():
     for traj in range(0, n_traj_sample):
         seed = 123 + traj
 
-        sample_traj_list.append(
-            morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
-        )
+        m_traj = morris_trajectory(n_inputs, n_levels, seed=seed)
+        sample_traj_list.append(m_traj)
 
     _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
     _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(
@@ -210,9 +209,8 @@ def test_compare_camp_07_int_ge_men_14_2():
     for traj in range(0, n_traj_sample):
         seed = 123 + traj
 
-        sample_traj_list.append(
-            morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
-        )
+        m_traj, _ = morris_trajectory(n_inputs, n_levels, seed=seed)
+        sample_traj_list.append(m_traj)
 
     _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
     _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(
@@ -242,9 +240,8 @@ def test_compare_camp_07_final_ge_men_14_1():
     for traj in range(0, n_traj_sample):
         seed = 123 + traj
 
-        sample_traj_list.append(
-            morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
-        )
+        m_traj, _ = morris_trajectory(n_inputs, n_levels, seed=seed)
+        sample_traj_list.append(m_traj)
 
     traj_array, traj_list, diagonal_dist_matrix = final_ge_menendez_2014(
         sample_traj_list, n_traj
@@ -274,9 +271,8 @@ def test_compare_camp_07_final_ge_men_14_2():
     for traj in range(0, n_traj_sample):
         seed = 123 + traj
 
-        sample_traj_list.append(
-            morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
-        )
+        m_traj, _ = morris_trajectory(n_inputs, n_levels, seed=seed)
+        sample_traj_list.append(m_traj)
 
     _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
     _, select_list_2, select_distance_matrix_2 = final_ge_menendez_2014(

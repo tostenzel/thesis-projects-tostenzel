@@ -307,9 +307,8 @@ def simple_stairs(n_inputs, n_levels, n_traj):
     for traj in range(0, n_traj):
         seed = 123 + traj
 
-        sample_traj_list.append(
-            morris_trajectory(n_inputs, n_levels, step_function=stepsize, seed=seed)
-        )
+        m_traj, _ = morris_trajectory(n_inputs, n_levels, seed=seed)
+        sample_traj_list.append(m_traj)
 
     # Rows are parameters, cols is number of drawn parameter vectors.
     input_par_array = np.vstack(sample_traj_list)

@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import respy as rp
 
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_allclose
 from jac_estimation_chol import chol_reindex_params
 
 
@@ -108,8 +108,8 @@ def test_loglikelihood_chol_equals_sdcorr():
     params_sdcorr_test.at[("shocks_sdcorr", "corr_home_b"), "value"] = corr[3, 1]
     params_sdcorr_test.at[("shocks_sdcorr", "corr_home_edu"), "value"] = corr[3, 2]
 
-    assert_array_almost_equal(
+    assert_allclose(
         log_likelihood_sdcorr(params_sdcorr_test),
         log_likelihood_chol(params_chol_test),
-        0.0001,
+        atol=0.0001,
     )
