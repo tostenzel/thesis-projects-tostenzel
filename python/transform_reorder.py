@@ -43,7 +43,7 @@ def inverse_ee_ind_reorder_trajectory(traj, p_i_plus_one=True):
     return traj_trans_three
 
 
-def ee_full_reorder_trajectory(traj, p_i_plus_one=True):
+def ee_full_reorder_trajectory(traj):
     """
     Transformation 1 for the full Elementary Effect.
     Move the first i-1 elements to the back of the ith row.
@@ -51,17 +51,13 @@ def ee_full_reorder_trajectory(traj, p_i_plus_one=True):
     """
     traj_trans_one = np.ones([np.size(traj, 0), np.size(traj, 1)]) * np.nan
     for i in range(0, np.size(traj, 0)):
-        if p_i_plus_one is False:
-            # Same as ee_ind_reorder_trajectory(traj, p_i_plus_one=True).
-            traj_trans_one[i, :] = np.roll(traj[i, :], -(i))
-        if p_i_plus_one is True:
-            # In the first row, put the first two elements to the back.
-            # In the second row, put the first three element to the back etc.
-            traj_trans_one[i, :] = np.roll(traj[i, :], -(i - 1))
+        # Same as ee_ind_reorder_trajectory(traj, p_i_plus_one=True).
+        traj_trans_one[i, :] = np.roll(traj[i, :], -(i))
+
     return traj_trans_one
 
 
-def inverse_ee_full_reorder_trajectory(traj, p_i_plus_one=True):
+def inverse_ee_full_reorder_trajectory(traj):
     """
     Transformation 3 for the full Elementary Effect.
     Inverse of Transformation 1.
@@ -69,10 +65,8 @@ def inverse_ee_full_reorder_trajectory(traj, p_i_plus_one=True):
     """
     traj_trans_three = np.ones([np.size(traj, 0), np.size(traj, 1)]) * np.nan
     for i in range(0, np.size(traj, 0)):
-        if p_i_plus_one is False:
-            traj_trans_three[i, :] = np.roll(traj[i, :], -(np.size(traj, 1) - (i)))
-        if p_i_plus_one is True:
-            traj_trans_three[i, :] = np.roll(traj[i, :], -(np.size(traj, 1) - (i - 1)))
+        traj_trans_three[i, :] = np.roll(traj[i, :], -(np.size(traj, 1) - (i)))
+
     return traj_trans_three
 
 

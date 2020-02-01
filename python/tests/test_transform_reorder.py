@@ -55,18 +55,6 @@ def test_ee_full_reorder_trajectory():
         traj, inverse_ee_full_reorder_trajectory(ee_full_reorder_trajectory(traj))
     )
 
-    assert_array_equal(
-        ee_full_reorder_trajectory(traj, p_i_plus_one=False),
-        np.array([[0, 0, 0], [0, 0, 1], [0, 2, 3], [4, 5, 6]]),
-    )
-
-    assert_array_equal(
-        traj,
-        inverse_ee_full_reorder_trajectory(
-            ee_full_reorder_trajectory(traj, p_i_plus_one=False), p_i_plus_one=False
-        ),
-    )
-
 
 def test_reorder_mu():
     mu = np.arange(10)
