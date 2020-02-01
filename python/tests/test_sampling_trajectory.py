@@ -2,7 +2,7 @@
 import sys
 
 # Define parent folder as relative path.
-sys.path.append("python")
+sys.path.append("..")
 
 import numpy as np
 import pytest
@@ -23,26 +23,11 @@ from sampling_trajectory import total_distance
 from sampling_trajectory import final_ge_menendez_2014
 
 
-def test_morris_trajectory():
-    """
-    Can not account for proplems with the fixed random matrices/vectors/scalers.
-
-    """
-    expected = np.array([[1 / 3, 1], [1, 1], [1, 1 / 3]])
-    assert_array_equal(
-        expected,
-        morris_trajectory(
-            n_inputs=2, n_levels=4, step_function=stepsize, seed=123, test=True
-        ),
-    )
-
-
 def test_morris_trajectory_value_grid():
     n_levels = 10
     # Many inputs for high probability to catch all grid points in trajectory.
     n_inputs = 100
 
-    step = stepsize(n_levels)
     traj = morris_trajectory(n_inputs, n_levels, seed=123)
 
     # Round the elements in both sets.

@@ -6,7 +6,7 @@ sys.path.append("python")
 
 import numpy as np
 
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_allclose
 
 from transform_distributions import covariance_to_correlation
 from transform_distributions import transform_uniform_stnormal_uncorr
@@ -22,7 +22,7 @@ def test_covariance_to_correlation():
     expected = np.array([[1, 0.01, 0.0223], [0.01, 1, 0], [0.0223, 0, 1]])
     corr = covariance_to_correlation(cov)
 
-    assert_array_almost_equal(corr, expected, 0.001)
+    assert_allclose(corr, expected, atol=0.0001)
 
 
 # Define shared objects for the next two tests.
@@ -65,10 +65,10 @@ def test_transform_stnormal_normal_corr_lemaire09():
     deviates.
 
     """
-    x_lemaire09 = transform_stnormal_normal_corr_lemaire09(z, cov, mu)
+    x_lemaire09, _ = transform_stnormal_normal_corr_lemaire09(z, cov, mu)
     X = T_Nataf.U2X(z)
 
-    assert_array_almost_equal(x_lemaire09, X.T, 0.0001)
+    assert_allclose(x_lemaire09, X.T, atol=0.01)
 
 
 def test_transform_stnormal_normal_corr_gm17():
@@ -79,4 +79,4 @@ def test_transform_stnormal_normal_corr_gm17():
     x_gm17 = transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu)
     X = T_Nataf.U2X(z)
 
-    assert_array_almost_equal(x_gm17, X.T, 0.05)
+    assert_allclose(x_gm17, X.T, 0.05)
