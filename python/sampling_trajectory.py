@@ -70,15 +70,6 @@ def morris_trajectory(
     # Choose a random vector from the parameter grid to as first level.
     # Here, I eed to take care of the dimensions in case of normal is True.
     base_value_vector_rand = np.array(random.choices(value_grid, k=n_inputs)).reshape(1, n_inputs)
-    # For standard normally distributed draws.
-    if normal is True:
-        assert len(cov) == len(mu) == n_inputs
-        base_value_vector_rand = transform_uniform_stnormal_uncorr(base_value_vector_rand, numeric_zero)
-        """ Scale by SD here: Do I want to correlate/decorrelate delta or not"""
-        base_value_vector_rand = base_value_vector_rand * np.sqrt(np.diag(cov)).reshape(1, n_inputs) + mu.reshape(
-                1, n_inputs)
-    else:
-        pass
     # P_star defines the element in the above vector where that
     # takes the first step in the second trajectory column.
     P_star_rand = np.identity(n_inputs)
@@ -97,10 +88,25 @@ def morris_trajectory(
         + (step / 2) * (np.dot((2 * B - J), D_star_rand) + J),
         P_star_rand,
     )
-    # B_star_rand = J * base_value_vector_rand + step * B would be only
-    # upwards steps. Would be bad for computing EEs.
+    def scale(row):
+        row = row.reshape(1, n_inputs) * np.sqrt(np.diag(cov)).reshape(1, n_inputs) + mu.reshape(
+                1, n_inputs)
+        return np.squeeze(row)
+    # For standard normally distributed draws.
+    if normal is True:
+        assert len(cov) == len(mu) == n_inputs
+        # Be aware that the numeric_zero drastically influences the stepsize due to shape of ppt function.
+        B_star_rand = np.apply_along_axis(transform_uniform_stnormal_uncorr, 1, B_star_rand, numeric_zero)
+        """ Scale by SD here: Do I want to correlate/decorrelate delta or not"""
+        B_star_rand = np.apply_along_axis(scale, 1, B_star_rand)
+    else:
+        pass
+    # Need delta because it can be positive or negative.
+    # If normal is true, delta is scaled non-linearily by ppt*sigma
+    trans_steps = np.array([1, n_inputs])
+    trans_steps = B_star_rand[-1,:] - B_star_rand[0,:]
 
-    return B_star_rand
+    return B_star_rand, trans_steps
 
 
 def compute_trajectory_distance(traj_0, traj_1):
