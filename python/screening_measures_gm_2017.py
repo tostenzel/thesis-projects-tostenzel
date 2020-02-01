@@ -14,7 +14,7 @@ def screening_measures_gm_2017(
     """
     The full measures are computed on correlated and the independent
     measures are computed on decorrelated measures.
-    
+
     """
     n_trajs = len(traj_list)
     n_rows = np.size(traj_list[0], 0)

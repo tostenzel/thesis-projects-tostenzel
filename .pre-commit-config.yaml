@@ -40,6 +40,6 @@ repos:
                 python/tests/test_chol_sdcorr.py|
                 python/tests/test_transform_distributions.py|
                 python/tests/test_transform_reorder.py|
-                python/distributions.py|
-                python/nataf_transformation.py
+                python/tests/resources/test_transform_distributions/distributions.py|
+                python/tests/resources/test_transform_distributions/nataf_transformation.py
             )$

@@ -1,6 +1,5 @@
 """Functions to compute the elementary effects in Ge/Menendez (2017)."""
 import numpy as np
-from sampling_trajectory import stepsize
 from transform_distributions import transform_stnormal_normal_corr_lemaire09
 from transform_distributions import transform_uniform_stnormal_uncorr
 from transform_reorder import ee_full_reorder_trajectory

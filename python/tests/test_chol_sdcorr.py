@@ -112,5 +112,5 @@ def test_loglikelihood_chol_equals_sdcorr():
     assert_allclose(
         log_likelihood_sdcorr(params_sdcorr_test),
         log_likelihood_chol(params_chol_test),
-        atol=0.001
+        atol=0.001,
     )

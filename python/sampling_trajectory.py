@@ -13,7 +13,6 @@ from itertools import combinations
 
 import numpy as np
 from scipy.special import binom
-from scipy.stats import norm
 from transform_distributions import transform_uniform_stnormal_uncorr
 
 
