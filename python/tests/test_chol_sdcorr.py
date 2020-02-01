@@ -9,12 +9,13 @@ import pytest
 import respy as rp
 
 from numpy.testing import assert_allclose
+
 from jac_estimation_chol import chol_reindex_params
 
 
 @pytest.mark.skip(
-    reason="This test takes some minutes due to the simulation of 10000 agents \
-    by `respy.get_example_model`."
+    reason="Speed up Travic CI.This test takes some time due to \
+    the simulation of 10000 agents by `respy.get_example_model`."
 )
 def test_loglikelihood_chol_equals_sdcorr():
     """
@@ -72,7 +73,7 @@ def test_loglikelihood_chol_equals_sdcorr():
             corr[i, j] = cov[i, j] / (sd[i] * sd[j])
 
     assert np.array_equal(corr, corr.T), "corr matrix must be symmetric"
-    assert_array_almost_equal(np.diag(corr), np.ones(4))
+    assert_allclose(np.diag(corr), np.ones(4), 1e-15)
 
     # Replace Cholesky matrix in Df.
     params_chol_test = params_chol_default.copy(deep=True)
@@ -111,5 +112,5 @@ def test_loglikelihood_chol_equals_sdcorr():
     assert_allclose(
         log_likelihood_sdcorr(params_sdcorr_test),
         log_likelihood_chol(params_chol_test),
-        atol=0.0001,
+        atol=0.001
     )

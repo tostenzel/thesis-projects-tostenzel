@@ -41,7 +41,7 @@ def transform_uniform_stnormal_uncorr(row_traj_reordered, numeric_zero=0.01):
     # Need to replace ones, because norm.ppf(1) = inf and zeros because norm.ppf(0) = -inf
     # Numerical Parameters taken from crappy MATLAB code by Ge/Menendez (2017).
     # Highly influential on the EE scale.
-    row_approx = np.where(row_traj_reordered == 1, 1-numeric_zero, row_traj_reordered)
+    row_approx = np.where(row_traj_reordered == 1, 1 - numeric_zero, row_traj_reordered)
     row_approx = np.where(row_approx == 0, numeric_zero, row_approx)
 
     # Step 1: Inverse cdf of standard normal distribution (N(0, 1)).
@@ -102,10 +102,10 @@ def transform_stnormal_normal_corr_lemaire09(z, cov, mu, normal=False):
     z_corr_stnorm = np.dot(Q_prime, z.reshape(len(cov), 1))
 
     if normal is True:
-    	x_norm = z_corr_stnorm
+        x_norm = z_corr_stnorm
     else:
-        x_norm = z_corr_stnorm * np.sqrt(np.diag(cov)).reshape(len(cov), 1) + mu.reshape(
+        x_norm = z_corr_stnorm * np.sqrt(np.diag(cov)).reshape(
             len(cov), 1
-        )
+        ) + mu.reshape(len(cov), 1)
 
     return x_norm.T, Q_prime

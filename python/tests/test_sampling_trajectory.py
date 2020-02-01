@@ -77,7 +77,7 @@ def test_select_trajectories_1():
     expected_fourth_row = [1, 2, 3, np.sqrt(3 ** 2 + 100 ** 2 + 200 ** 2)]
 
     assert test_indices == expected_dist_indices
-    assert_allclose(test_select[3, :], expected_fourth_row, atol=0.00001)
+    assert_array_equal(test_select[3, :], expected_fourth_row)
 
 
 def test_select_trajectories_2():

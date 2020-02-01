@@ -5,14 +5,16 @@ import sys
 sys.path.append("python")
 
 import numpy as np
-
 from numpy.testing import assert_allclose
+from numpy.testing import assert_array_equal
 
 from transform_distributions import covariance_to_correlation
 from transform_distributions import transform_uniform_stnormal_uncorr
 from transform_distributions import sample_stnormal_parameters
 from transform_distributions import transform_stnormal_normal_corr_lemaire09
 from transform_distributions import transform_stnormal_normal_corr_gm17
+
+sys.path.append("python/tests/resources/test_transform_distributions")
 from nataf_transformation import nataf_transformation
 from distributions import distributions
 
@@ -68,7 +70,7 @@ def test_transform_stnormal_normal_corr_lemaire09():
     x_lemaire09, _ = transform_stnormal_normal_corr_lemaire09(z, cov, mu)
     X = T_Nataf.U2X(z)
 
-    assert_allclose(x_lemaire09, X.T, atol=0.01)
+    assert_allclose(x_lemaire09, X.T, atol=1.0e-14)
 
 
 def test_transform_stnormal_normal_corr_gm17():
@@ -79,4 +81,4 @@ def test_transform_stnormal_normal_corr_gm17():
     x_gm17 = transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu)
     X = T_Nataf.U2X(z)
 
-    assert_allclose(x_gm17, X.T, 0.05)
+    assert_allclose(x_gm17, X.T, rtol=0.02)

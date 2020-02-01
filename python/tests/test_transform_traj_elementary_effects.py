@@ -29,7 +29,7 @@ def test_trans_ee_ind_trajectories():
             [0.5, 0, 0, 0, 50],
         ]
     )
-    
+
     n_inputs = 5
     n_levels = 10
     n_traj_sample = 10

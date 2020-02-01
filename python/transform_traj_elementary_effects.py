@@ -1,5 +1,6 @@
 """Functions to compute the elementary effects in Ge/Menendez (2017)."""
 import numpy as np
+from sampling_trajectory import stepsize
 from transform_distributions import transform_stnormal_normal_corr_lemaire09
 from transform_distributions import transform_uniform_stnormal_uncorr
 from transform_reorder import ee_full_reorder_trajectory
@@ -10,10 +11,11 @@ from transform_reorder import inverse_reorder_cov
 from transform_reorder import inverse_reorder_mu
 from transform_reorder import reorder_cov
 from transform_reorder import reorder_mu
-from sampling_trajectory import stepsize
 
 
-def trans_ee_ind_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01, normal=True):
+def trans_ee_ind_trajectories(
+    sample_traj_list, cov, mu, numeric_zero=0.01, normal=True
+):
     """
     Transforms list of trajectories to two lists of transformed trajectories
     for the computation of the independent Elementary Effects. As explained in
@@ -68,7 +70,10 @@ def trans_ee_ind_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01, norm
         mu_one = mu
         cov_one = cov
         for row in range(0, n_rows):
-            one_idx_diff[traj][row, :], Q_prime = transform_stnormal_normal_corr_lemaire09(
+            (
+                one_idx_diff[traj][row, :],
+                Q_prime,
+            ) = transform_stnormal_normal_corr_lemaire09(
                 one_idx_diff[traj][row, :], cov_one, mu_one, normal=normal
             )
             mu_one = reorder_mu(mu_one)
@@ -86,7 +91,9 @@ def trans_ee_ind_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01, norm
     return trans_pi_i, trans_piplusone_i
 
 
-def trans_ee_full_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01, normal=True):
+def trans_ee_full_trajectories(
+    sample_traj_list, cov, mu, numeric_zero=0.01, normal=True
+):
     """
     Transforms a list of trajectories such that their rows correspond to
     T(p_{i+1}, i-1). To create T(p_{i}, i-1) is not needed as this is done by
@@ -137,7 +144,10 @@ def trans_ee_full_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01, nor
         mu_one = mu
         cov_one = cov
         for row in range(0, n_rows):
-            one_idx_diff[traj][row, :], Q_prime = transform_stnormal_normal_corr_lemaire09(
+            (
+                one_idx_diff[traj][row, :],
+                Q_prime,
+            ) = transform_stnormal_normal_corr_lemaire09(
                 one_idx_diff[traj][row, :], cov_one, mu_one, normal=normal
             )
             mu_one = reorder_mu(mu_one)
@@ -146,8 +156,7 @@ def trans_ee_full_trajectories(sample_traj_list, cov, mu, numeric_zero=0.01, nor
     trans_piplusone_iminusone = []
     trans_piplusone_i = []
     for traj in range(0, n_traj_sample):
-        trans_piplusone_i.append(
-            inverse_ee_ind_reorder_trajectory(one_idx_diff[traj]))
+        trans_piplusone_i.append(inverse_ee_ind_reorder_trajectory(one_idx_diff[traj]))
         trans_piplusone_iminusone.append(
             inverse_ee_full_reorder_trajectory(two_idx_diff[traj])
         )
