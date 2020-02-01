@@ -5,12 +5,12 @@ Ge/Menendez (2017).
 """
 import numpy as np
 
-from sampling_trajectory import stepsize
+
 from transform_traj_elementary_effects import trans_ee_full_trajectories
 from transform_traj_elementary_effects import trans_ee_ind_trajectories
 
 
-def screening_measures_gm_2017(function, traj_list, n_levels, cov, mu, numeric_zero=0.01, normal=True):
+def screening_measures_gm_2017(function, traj_list, step_list, n_levels, cov, mu, numeric_zero=0.01, normal=True):
     """
     The full measures are computed on correlated and the independent
     measures are computed on decorrelated measures.
@@ -41,8 +41,6 @@ def screening_measures_gm_2017(function, traj_list, n_levels, cov, mu, numeric_z
                     *original_trans_piplusone_i_list[traj][row,:])
             function_evals_piplusone_iminusone[row,traj] = function(
                     *trans_piplusone_iminusone_list[traj][row,:])
-    
-    step = stepsize(n_levels)
 
     # Init for independent effects
     ee_ind_i = np.ones([n_inputs, n_trajs]) * np.nan
@@ -59,12 +57,12 @@ def screening_measures_gm_2017(function, traj_list, n_levels, cov, mu, numeric_z
         ee_ind_i[:, traj] = (
             function_evals_piplusone_i[1 : n_inputs + 1, traj]
             - function_evals_pi_i[0:n_inputs, traj]
-            ) / step
+            ) / step_list[traj][:]
         # Full Elementary Effects
         ee_full_i[:, traj] = (
                 function_evals_piplusone_iminusone[1 : n_inputs + 1, traj]
                 - function_evals_original_piplusone_i[0: n_inputs, traj]
-                ) /step
+                ) / step_list[traj][:]
 
     ee_ind[:, 0] = np.mean(ee_ind_i, axis=1)
     abs_ee_ind[:, 0] = np.mean(abs(ee_ind_i), axis=1)
