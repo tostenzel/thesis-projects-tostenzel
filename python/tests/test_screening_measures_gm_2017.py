@@ -60,8 +60,8 @@ def test_screening_measures_uncorrelated_deviates():
         normal=True,
     )
     
-    exp_ee = np.array([2,1]).T
-    exp_sd = np.array([0,0]).T
+    exp_ee = np.array([2,1]).reshape(n_inputs, 1)
+    exp_sd = np.array([0,0]).reshape(n_inputs, 1)
     
     assert_array_equal(exp_ee, ee_ind)
     assert_array_equal(exp_ee, abs_ee_ind)
