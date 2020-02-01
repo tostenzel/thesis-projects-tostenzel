@@ -32,6 +32,7 @@ cov = np.array([
         [1, 0],
         [0, 9]])
 
+# mu does not matter because the function is linear.
 mu = np.array([0, 0])
 
 seed = 2020
@@ -48,6 +49,7 @@ for traj in range(0, n_traj_sample):
 ee_ind, ee_full, abs_ee_ind, abs_ee_full, sd_ee_ind, sd_ee_full = screening_measures_gm_2017(
         lin_portfolio,
         sample_traj_list,
+        n_levels,
         cov, mu,
         numeric_zero=0.01,
         normal=True
