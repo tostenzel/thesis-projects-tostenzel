@@ -64,10 +64,13 @@ def trans_ee_ind_trajectories(
     # Transformation 2 for p_{i+1}.
     # No re-arrangement needed as the first transformation for p_{i+1}
     # is using the original order of mu and cov.
+    coeff_step = []
     for traj in range(0, n_traj_sample):
         # Needs to be set up again for each traj because otherwise it'd be one too much.
         mu_one = mu
         cov_one = cov
+        # We do not need the coefficient of the first row as it is not used
+        c_step = np.ones([n_rows-1, 1]) * np.nan
         for row in range(0, n_rows):
             (
                 one_idx_diff[traj][row, :],
@@ -75,8 +78,13 @@ def trans_ee_ind_trajectories(
             ) = transform_stnormal_normal_corr_lemaire09(
                 one_idx_diff[traj][row, :], cov_one, mu_one, normal=normal
             )
+            if row > 0:
+                c_step[row - 1, 0] = Q_prime[-1, -1]
+            else:
+                pass
             mu_one = reorder_mu(mu_one)
             cov_one = reorder_cov(cov_one)
+        coeff_step.append(c_step)
 
     # Transformation 3.
     trans_pi_i = []
@@ -87,7 +95,7 @@ def trans_ee_ind_trajectories(
         )
         trans_piplusone_i.append(inverse_ee_ind_reorder_trajectory(one_idx_diff[traj]))
 
-    return trans_pi_i, trans_piplusone_i
+    return trans_pi_i, trans_piplusone_i, coeff_step
 
 
 def trans_ee_full_trajectories(

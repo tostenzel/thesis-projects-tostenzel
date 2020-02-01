@@ -20,7 +20,7 @@ def screening_measures_gm_2017(
     n_rows = np.size(traj_list[0], 0)
     n_inputs = np.size(traj_list[0], 1)
 
-    trans_pi_i_list, trans_piplusone_i_list = trans_ee_ind_trajectories(
+    trans_pi_i_list, trans_piplusone_i_list, coeff_step = trans_ee_ind_trajectories(
         traj_list, cov, mu, numeric_zero, normal=normal
     )
     (
@@ -61,7 +61,7 @@ def screening_measures_gm_2017(
         ee_ind_i[:, traj] = (
             function_evals_piplusone_i[1 : n_inputs + 1, traj]
             - function_evals_pi_i[0:n_inputs, traj]
-        ) / step_list[traj][:]
+        ) / (step_list[traj][:] * np.squeeze(coeff_step[traj][:]))
         # Full Elementary Effects
         ee_full_i[:, traj] = (
             function_evals_piplusone_iminusone[1 : n_inputs + 1, traj]

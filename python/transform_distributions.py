@@ -59,6 +59,7 @@ def transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu):
     REMARK: The part that involves the upper matrix Q from the Cholesky
     decomposition of the correlation matrix of sample_Z_c seems unnecessary.
     It effectively does nothing because it is approx. an identity matrix.
+
     """
     # Step 2. Skipped transformation of correlation matrix for normally distributed paramters.
     R_z = covariance_to_correlation(cov)
