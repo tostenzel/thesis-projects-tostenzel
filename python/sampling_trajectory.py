@@ -97,8 +97,9 @@ def morris_trajectory(
         + (step / 2) * (np.dot((2 * B - J), D_star_rand) + J),
         P_star_rand,
     )
-
+    # The way the stepsize is computed, the effects must be scaled by SD before, otherwise it is distorted.
     def scale(row):
+        """scale by standard deviation, no addition of mu."""
         row = row.reshape(1, n_inputs) * np.sqrt(np.diag(cov)).reshape(
             1, n_inputs
         )
@@ -112,7 +113,6 @@ def morris_trajectory(
             transform_uniform_stnormal_uncorr, 1, B_star_rand, numeric_zero
         )
         """ Scale by SD here: Do I want to correlate/decorrelate delta or not"""
-        """+mu probably to early, check with mu unequal zero and nonlinear fct."""
         B_star_rand = np.apply_along_axis(scale, 1, B_star_rand)
     else:
         pass
