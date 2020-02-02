@@ -70,7 +70,7 @@ def trans_ee_ind_trajectories(
         mu_one = mu
         cov_one = cov
         # We do not need the coefficient of the first row as it is not used
-        c_step = np.ones([n_rows-1, 1]) * np.nan
+        c_step = np.ones([n_rows - 1, 1]) * np.nan
         for row in range(0, n_rows):
             (
                 one_idx_diff[traj][row, :],

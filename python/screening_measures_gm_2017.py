@@ -61,14 +61,18 @@ def screening_measures_gm_2017(
         ee_ind_i[:, traj] = (
             function_evals_piplusone_i[1 : n_inputs + 1, traj]
             - function_evals_pi_i[0:n_inputs, traj]
-        ) / (step_list[traj] * np.squeeze(coeff_step[traj]) * np.squeeze(np.sqrt(np.diag(cov))))
+        ) / (
+            step_list[traj]
+            * np.squeeze(coeff_step[traj])
+            * np.squeeze(np.sqrt(np.diag(cov)))
+        )
         # Above, need to account for the decorrelation and the Effects scaling by SD.
         # Full Elementary Effects
         ee_full_i[:, traj] = (
             function_evals_piplusone_iminusone[1 : n_inputs + 1, traj]
             - function_evals_original_piplusone_i[0:n_inputs, traj]
         ) / (step_list[traj] * np.squeeze(np.sqrt(np.diag(cov))))
-         # Above, need to account for Effects scaling by SD.
+        # Above, need to account for Effects scaling by SD.
 
     ee_ind[:, 0] = np.mean(ee_ind_i, axis=1)
     abs_ee_ind[:, 0] = np.mean(abs(ee_ind_i), axis=1)

@@ -102,8 +102,8 @@ def transform_stnormal_normal_corr_lemaire09(z, cov, mu):
 
     z_corr_stnorm = np.dot(Q_prime, z.reshape(len(cov), 1))
 
-    x_norm = z_corr_stnorm * np.sqrt(np.diag(cov)).reshape(
+    x_norm = z_corr_stnorm * np.sqrt(np.diag(cov)).reshape(len(cov), 1) + mu.reshape(
         len(cov), 1
-    ) + mu.reshape(len(cov), 1)
+    )
 
     return x_norm.T, Q_prime
