@@ -56,7 +56,7 @@ def trans_ee_ind_trajectories(
         cov_zero = reorder_cov(cov)
         for row in range(0, n_rows):
             zero_idx_diff[traj][row, :], _ = transform_stnormal_normal_corr_lemaire09(
-                zero_idx_diff[traj][row, :], cov_zero, mu_zero, normal=normal
+                zero_idx_diff[traj][row, :], cov_zero, mu_zero
             )
             mu_zero = reorder_mu(mu_zero)
             cov_zero = reorder_cov(cov_zero)
@@ -76,7 +76,7 @@ def trans_ee_ind_trajectories(
                 one_idx_diff[traj][row, :],
                 Q_prime,
             ) = transform_stnormal_normal_corr_lemaire09(
-                one_idx_diff[traj][row, :], cov_one, mu_one, normal=normal
+                one_idx_diff[traj][row, :], cov_one, mu_one
             )
             if row > 0:
                 c_step[row - 1, 0] = Q_prime[-1, -1]
@@ -138,7 +138,7 @@ def trans_ee_full_trajectories(
         cov_two = inverse_reorder_cov(cov)
         for row in range(0, n_rows):
             two_idx_diff[traj][row, :], _ = transform_stnormal_normal_corr_lemaire09(
-                two_idx_diff[traj][row, :], cov_two, mu_two, normal=normal
+                two_idx_diff[traj][row, :], cov_two, mu_two
             )
             mu_two = reorder_mu(mu_two)
             cov_two = reorder_cov(cov_two)
@@ -155,7 +155,7 @@ def trans_ee_full_trajectories(
                 one_idx_diff[traj][row, :],
                 Q_prime,
             ) = transform_stnormal_normal_corr_lemaire09(
-                one_idx_diff[traj][row, :], cov_one, mu_one, normal=normal
+                one_idx_diff[traj][row, :], cov_one, mu_one
             )
             mu_one = reorder_mu(mu_one)
             cov_one = reorder_cov(cov_one)

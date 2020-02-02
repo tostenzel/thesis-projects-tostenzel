@@ -85,7 +85,7 @@ def transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu):
     return x
 
 
-def transform_stnormal_normal_corr_lemaire09(z, cov, mu, normal=False):
+def transform_stnormal_normal_corr_lemaire09(z, cov, mu):
     """
     Inverse Rosenblatt/Nataf transformation (from standard normal)
     to multivariate normal space with given correlations.
@@ -102,12 +102,8 @@ def transform_stnormal_normal_corr_lemaire09(z, cov, mu, normal=False):
 
     z_corr_stnorm = np.dot(Q_prime, z.reshape(len(cov), 1))
 
-    if normal is True:
-        "added mu here and deleted it in morris traj."
-        x_norm = z_corr_stnorm + mu.reshape(len(cov), 1)
-    else:
-        x_norm = z_corr_stnorm * np.sqrt(np.diag(cov)).reshape(
-            len(cov), 1
-        ) + mu.reshape(len(cov), 1)
+    x_norm = z_corr_stnorm * np.sqrt(np.diag(cov)).reshape(
+        len(cov), 1
+    ) + mu.reshape(len(cov), 1)
 
     return x_norm.T, Q_prime
