@@ -103,7 +103,8 @@ def transform_stnormal_normal_corr_lemaire09(z, cov, mu, normal=False):
     z_corr_stnorm = np.dot(Q_prime, z.reshape(len(cov), 1))
 
     if normal is True:
-        x_norm = z_corr_stnorm
+        "added mu here and deleted it in morris traj."
+        x_norm = z_corr_stnorm + mu.reshape(len(cov), 1)
     else:
         x_norm = z_corr_stnorm * np.sqrt(np.diag(cov)).reshape(
             len(cov), 1

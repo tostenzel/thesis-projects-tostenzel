@@ -40,7 +40,6 @@ def morris_trajectory(
     seed=123,
     normal=False,
     cov=None,
-    mu=None,
     numeric_zero=0.01,
     step_function=stepsize,
     stairs=True,
@@ -102,17 +101,18 @@ def morris_trajectory(
     def scale(row):
         row = row.reshape(1, n_inputs) * np.sqrt(np.diag(cov)).reshape(
             1, n_inputs
-        ) + mu.reshape(1, n_inputs)
+        )
         return np.squeeze(row)
 
     # For standard normally distributed draws.
     if normal is True:
-        assert len(cov) == len(mu) == n_inputs
+        assert len(cov) == n_inputs
         # Be aware that the numeric_zero drastically influences the stepsize due to shape of ppt function.
         B_star_rand = np.apply_along_axis(
             transform_uniform_stnormal_uncorr, 1, B_star_rand, numeric_zero
         )
         """ Scale by SD here: Do I want to correlate/decorrelate delta or not"""
+        """+mu probably to early, check with mu unequal zero and nonlinear fct."""
         B_star_rand = np.apply_along_axis(scale, 1, B_star_rand)
     else:
         pass

@@ -36,7 +36,7 @@ def test_screening_measures_uncorrelated_deviates():
     for traj in range(0, n_traj_sample):
         seed = seed + traj
         m_traj, step = morris_trajectory(
-            n_inputs, n_levels, seed, True, cov, mu, numeric_zero
+            n_inputs, n_levels, seed, True, cov, numeric_zero
         )
         traj_list.append(m_traj)
         step_list.append(step)
