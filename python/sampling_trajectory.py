@@ -21,6 +21,11 @@ def stepsize(n_levels):
     This creates the upper half of the desired grid points.
     This does only work if the number of grid points `n_levels` is even.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     assert float(
         n_levels / 2
@@ -48,6 +53,11 @@ def morris_trajectory(
     The respective function argument is `stairs`.
     - Containts a test option to fix the initial random matrices to check one
     specific testcase.
+
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     np.random.seed(seed)

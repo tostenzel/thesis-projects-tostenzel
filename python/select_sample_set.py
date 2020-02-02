@@ -16,6 +16,11 @@ def compute_trajectory_distance(traj_0, traj_1):
     Trajectories are np.Arrays with step iterations as rows
     and parameters as columns.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     distance = 0
     assert np.size(traj_0, 0) == np.size(traj_0, 1) + 1
@@ -35,6 +40,11 @@ def distance_matrix(trajectory_list):
     """
     Computes distance between each pair of trajectories.
     Return symmetric matrix.
+
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     distance_matrix = np.nan * np.ones(
@@ -59,6 +69,11 @@ def combi_wrapper(iterable, r):
     [[0, 1], [0,2], [0,3], [1,2], [1,3], [2,3]].
     - This wrapper returns a list of lists instead of a tuple of tuples.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     tup_tup = combinations(iterable, r)
     list_list = [list(x) for x in tup_tup]
@@ -73,6 +88,11 @@ def total_distance(distance_matrix):
     see IMPORTANT REMARK in `select_trajectories`.
     Therefore, it can potentially be used in another version of
     `select_trajectories` along with `distance_matrix`.
+
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     total_distance = np.sqrt(sum(sum(np.tril(distance_matrix ** 2))))
@@ -120,6 +140,11 @@ def select_trajectories(traj_dist_matrix, n_traj):
     trajsectories.
     The indices in the matrix of the optimal trajectory (pairs) are returned
     in the list `max_dist_indices`.
+
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     assert np.all(np.abs(traj_dist_matrix - traj_dist_matrix.T) < 1e-8)
@@ -175,6 +200,11 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
     Therefore, `combi_total_distance` differs from the one in `select_trajectories`
     because it only contains the combination indices from the last iteration.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     n_traj_sample = np.size(traj_dist_matrix, 0)
     tracker_keep_indices = np.arange(0, np.size(traj_dist_matrix, 0))
@@ -202,6 +232,11 @@ def simple_stairs(n_inputs, n_levels, n_traj):
     Returns array and list of Morris trajectories without further
     post-selection.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     sample_traj_list = list()
     for traj in range(0, n_traj):
@@ -228,6 +263,11 @@ def campolongo_2007(sample_traj_list, n_traj):
     It also returns the diagonal matrix that contains the pair distance
     between each trajectory pair.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     pair_matrix = distance_matrix(sample_traj_list)
     select_indices, combi_total_distance = select_trajectories(pair_matrix, n_traj)
@@ -253,6 +293,10 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     The next step is to compute the distances by using those from the last
     instead of computing them anew in each iteration.
 
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     pair_matrix = distance_matrix(sample_traj_list)
@@ -289,6 +333,11 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
     trajectory that is not part of the best combination of n_sample_traj - 1
     trjactories.
     It returns the same object for the next period.
+
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     old_combi_total_distance = combi_total_distance
@@ -401,6 +450,11 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
 
     Parameters and returned objects are the same as in the other main sampling
     functions.
+
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     n_traj_sample = len(sample_traj_list)

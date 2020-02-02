@@ -23,6 +23,11 @@ def cone_plot_choice_shares(save=True):
     of a sample of agents from the input paramter distribution to plot
     confidence intervals for these shares around their means.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     tuition_subsidies = [0, 500]
 

@@ -17,6 +17,11 @@ def heatmap_corr_chol(corr_df, save=False):
     Creates the heatmap for the correlations between important
     input parameters.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     # Mask to select the important parameters.
     select = corr_df.iloc[[0, 1, 7, 13, 16, 19, 20], [0, 1, 7, 13, 16, 19, 20]]

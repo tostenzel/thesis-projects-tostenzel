@@ -15,7 +15,13 @@ from scipy.stats import norm
 
 
 def covariance_to_correlation(cov):
-    """Converts covariance matrix to correlation matrix."""
+    """Converts covariance matrix to correlation matrix.
+
+    Parameters
+    ----------
+    Returns
+    -------
+    """
     # Standard deviations of each variable.
     sd = np.sqrt(np.diag(cov)).reshape(1, len(cov))
     corr = cov / sd.T / sd
@@ -24,7 +30,13 @@ def covariance_to_correlation(cov):
 
 
 def sample_stnormal_parameters(n_par, n_draws=100_000, seed=123):
-    """Draw standard normally distributed deviates."""
+    """Draw standard normally distributed deviates.
+
+    Parameters
+    ----------
+    Returns
+    -------
+    """
     random.seed(seed)
     sample_stnormal_paramters = np.random.normal(0, 1, n_par * n_draws).reshape(
         n_par, n_draws
@@ -36,6 +48,11 @@ def transform_uniform_stnormal_uncorr(row_traj_reordered, numeric_zero=0.01):
     """
     Convert sample from uniform distribution to standard normal space
     without any correlations.
+
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     # Need to replace ones, because norm.ppf(1) = inf and zeros because norm.ppf(0) = -inf
@@ -59,6 +76,11 @@ def transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu):
     REMARK: The part that involves the upper matrix Q from the Cholesky
     decomposition of the correlation matrix of sample_Z_c seems unnecessary.
     It effectively does nothing because it is approx. an identity matrix.
+
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     # Step 2. Skipped transformation of correlation matrix for normally distributed paramters.
@@ -94,6 +116,11 @@ def transform_stnormal_normal_corr_lemaire09(z, cov, mu):
     Step 4) De-standardize sample to normal space.
 
     REMARK: This is equivalent to Gentle (2006), page 197.
+
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     # Convert covariance matrix to correlation matrix

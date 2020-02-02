@@ -27,7 +27,14 @@ from multi_quantities_of_interest import get_quantity_of_interest
 
 
 def propagate_mean_estimates():
-    """Evaluates the QoI at the mean estimates"""
+    """Evaluates the QoI at the mean estimates
+
+    Parameters
+    ----------
+    Returns
+    -------
+
+    """
     # Init base_options because its part of the model wrapper argument
     _, base_options = rp.get_example_model("kw_94_one", with_data=False)
 
@@ -64,6 +71,11 @@ def run(args):
     Function that protects the "entry point" of new programs to not produce endlessly
     many entries. See:
     https://docs.python.org/3/library/multiprocessing.html#multiprocessing-programming
+
+    Parameters
+    ----------
+    Returns
+    -------
     """
     # Call function.
     _, _, _ = propagate_mean_estimates()

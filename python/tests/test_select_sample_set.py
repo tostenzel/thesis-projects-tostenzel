@@ -12,15 +12,16 @@ from numpy.testing import assert_array_equal
 from numpy.testing import assert_allclose
 
 from sampling_trajectory import morris_trajectory
-from select_sample_sets import compute_trajectory_distance
-from select_sample_sets import distance_matrix
-from select_sample_sets import combi_wrapper
-from select_sample_sets import select_trajectories
-from select_sample_sets import campolongo_2007
-from select_sample_sets import intermediate_ge_menendez_2014
-from select_sample_sets import select_trajectories_wrapper_iteration
-from select_sample_sets import total_distance
-from select_sample_sets import final_ge_menendez_2014
+from select_sample_set import compute_trajectory_distance
+from select_sample_set import distance_matrix
+from select_sample_set import combi_wrapper
+from select_sample_set import select_trajectories
+from select_sample_set import campolongo_2007
+from select_sample_set import intermediate_ge_menendez_2014
+from select_sample_set import select_trajectories_wrapper_iteration
+from select_sample_set import total_distance
+from select_sample_set import final_ge_menendez_2014
+
 
 def test_compute_trajectory_distance():
     traj_0 = np.ones((3, 2))

@@ -14,6 +14,11 @@ def ee_ind_reorder_trajectory(traj, p_i_plus_one=True):
     Transformation 1 for the independent Elementary Effect.
     Move the first i elements to the back of the ith row.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     traj_trans_one = np.ones([np.size(traj, 0), np.size(traj, 1)]) * np.nan
     for i in range(0, np.size(traj, 0)):
@@ -33,6 +38,11 @@ def inverse_ee_ind_reorder_trajectory(traj, p_i_plus_one=True):
     Transformation 3 for the independent Elementary Effect.
     Inverse of Transformation 1.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     traj_trans_three = np.ones([np.size(traj, 0), np.size(traj, 1)]) * np.nan
     for i in range(0, np.size(traj, 0)):
@@ -48,6 +58,11 @@ def ee_full_reorder_trajectory(traj):
     Transformation 1 for the full Elementary Effect.
     Move the first i-1 elements to the back of the ith row.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     traj_trans_one = np.ones([np.size(traj, 0), np.size(traj, 1)]) * np.nan
     for i in range(0, np.size(traj, 0)):
@@ -62,6 +77,11 @@ def inverse_ee_full_reorder_trajectory(traj):
     Transformation 3 for the full Elementary Effect.
     Inverse of Transformation 1.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     traj_trans_three = np.ones([np.size(traj, 0), np.size(traj, 1)]) * np.nan
     for i in range(0, np.size(traj, 0)):
@@ -70,13 +90,25 @@ def inverse_ee_full_reorder_trajectory(traj):
 
 
 def reorder_mu(mu):
-    """Put the first element of the expectation vector to the end."""
+    """Put the first element of the expectation vector to the end.
+
+    Parameters
+    ----------
+    Returns
+    -------
+
+    """
     return np.roll(mu, -1)
 
 
 def reorder_cov(cov):
     """Arrange covariance matrix according to the expectation vector when
     the first element is moved to the end.
+
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     cov_new = np.ones(cov.shape) * np.nan
@@ -96,6 +128,12 @@ def inverse_reorder_mu(mu):
     Inverse function of `reorder_mu`.
     Used to intialize the loop for
     `inverse_ee_full_reorder_trajectory(traj, p_i_plus_one=True)`.
+
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     return np.roll(mu, +1)
 
@@ -105,6 +143,12 @@ def inverse_reorder_cov(cov):
     Inverse function of `reorder_cov`.
     Used to intialize the loop for
     `inverse_ee_full_reorder_trajectory(traj, p_i_plus_one=True)`.
+
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     cov_old = np.ones(cov.shape) * np.nan
     cov_old[1 : len(cov), 1 : len(cov)] = cov[0 : len(cov) - 1, 0 : len(cov) - 1]

@@ -15,6 +15,10 @@ def figure_choice_shares_over_time(save=False):
     """
     Create figures of shares of occupation choices over time for a
     sample of 1000 agents in KW94.
+    Parameters
+    ----------
+    Returns
+    -------
     """
     # Build simulate function. As only parameters change, it can be reused.
     params, options, _ = rp.get_example_model("kw_94_one")

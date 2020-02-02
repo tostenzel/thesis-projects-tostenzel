@@ -31,6 +31,11 @@ def trans_ee_ind_trajectories(
     Therefore one needs to compare each row in a traj from `trans_pi_i`
     with the respective row one below in `trans_piplusone_i`.
 
+    Parameters
+    ----------
+    Returns
+    -------
+
     """
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
 
@@ -111,6 +116,11 @@ def trans_ee_full_trajectories(
     This implies that one does not need the first row of each
     trajectory in `trans_piplusone_iminusone` as there is no counter-part available
     in `trans_piplusone_i`.
+
+    Parameters
+    ----------
+    Returns
+    -------
 
     """
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
