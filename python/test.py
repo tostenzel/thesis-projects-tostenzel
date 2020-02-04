@@ -168,7 +168,7 @@ def sobol_model_four(f, c, d, e, b, a, *args):
     return y
 
 
-steps_four = np.array([-2 / 3, -2 / 3, -2 / 3, -2 / 3, 2 / 3, -2 / 3])[idx_four]
+steps_four = np.array([-2 / 3, +2 / 3, -2 / 3, -2 / 3, 2 / 3, 2 / 3])[idx_four]
 
 
 (
