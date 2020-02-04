@@ -50,8 +50,6 @@ def test_screening_measures_uncorrelated_g_function():
     # This is not the expectation for x \in U[0,1]. Yet, prevents transformation.
     mu = np.array([0, 0, 0, 0, 0, 0])
     
-    n_levels = 4
-    
     # Data: Four trajectories.
     # The columns are randomly shuffled in contrary to what this program assumes
     traj_one = np.array(
@@ -139,19 +137,19 @@ def test_screening_measures_uncorrelated_g_function():
     # Compute the independent Elementary Effects.
     # Since there is no correlation, they equal their abolute versions.
     one_ee_ind, _ , _, _, _, _ = screening_measures_gm_2017(
-        wrapper_one, [traj_one], [steps_one], n_levels, cov, mu, numeric_zero=0.0,
+        wrapper_one, [traj_one], [steps_one], cov, mu
         )
     
     two_ee_ind, _, _, _, _, _= screening_measures_gm_2017(
-        wrapper_two, [traj_two], [steps_two], n_levels, cov, mu, numeric_zero=0.0,
+        wrapper_two, [traj_two], [steps_two], cov, mu
         )
     
     three_ee_ind, _, _, _, _, _ = screening_measures_gm_2017(
-        wrapper_three, [traj_three], [steps_three],n_levels, cov, mu, numeric_zero=0.0,
+        wrapper_three, [traj_three], [steps_three], cov, mu
         )
     
     four_ee_ind, _, _, _, _, _ = screening_measures_gm_2017(
-        wrapper_four, [traj_four], [steps_four], n_levels, cov, mu, numeric_zero=0.00,
+        wrapper_four, [traj_four], [steps_four], cov, mu
         )
     
     # `argsort` inverses the transformation that induced the stairs shape to the trajectories.
@@ -176,8 +174,6 @@ def test_screening_measures_uncorrelated_g_function():
     assert_array_equal(np.round(ee, 3), np.round(expected_ee, 3))
     assert_allclose(np.round(abs_ee, 3), np.round(expected_abs_ee, 3), atol=0.01)
     assert_array_equal(np.round(sd_ee, 3), np.round(expected_sd_ee, 3))
-
-
 
 
 def lin_portfolio(q1, q2, c1=2, c2=1, *args):
@@ -217,10 +213,8 @@ def test_screening_measures_uncorrelated_linear_function():
         lin_portfolio,
         traj_list,
         step_list,
-        n_levels,
         cov,
-        mu,
-        numeric_zero=0.01,
+        mu
     )
 
     exp_ee = np.array([2, 1]).reshape(n_inputs, 1)

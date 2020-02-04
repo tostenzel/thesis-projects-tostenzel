@@ -13,7 +13,7 @@ from transform_reorder import reorder_mu
 
 
 def trans_ee_ind_trajectories(
-    sample_traj_list, cov, mu, numeric_zero=0.01
+    sample_traj_list, cov, mu
 ):
     """
     Transforms list of trajectories to two lists of transformed trajectories
@@ -101,7 +101,7 @@ def trans_ee_ind_trajectories(
 
 
 def trans_ee_full_trajectories(
-    sample_traj_list, cov, mu, numeric_zero=0.01
+    sample_traj_list, cov, mu
 ):
     """
     Transforms a list of trajectories such that their rows correspond to

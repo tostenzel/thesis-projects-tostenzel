@@ -17420,7 +17420,7 @@
   note   = {URL: https://github.com/OpenSourceEconomics/estimagic},
 }
 
-@Article{morris1991factorial,
+@Article{Morris.1991,
   author    = {Morris, Max D},
   title     = {Factorial sampling plans for preliminary computational experiments},
   journal   = {Technometrics},
