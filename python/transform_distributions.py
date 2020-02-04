@@ -29,44 +29,6 @@ def covariance_to_correlation(cov):
     return corr
 
 
-def sample_stnormal_parameters(n_par, n_draws=100_000, seed=123):
-    """Draw standard normally distributed deviates.
-
-    Parameters
-    ----------
-    Returns
-    -------
-    """
-    random.seed(seed)
-    sample_stnormal_paramters = np.random.normal(0, 1, n_par * n_draws).reshape(
-        n_par, n_draws
-    )
-    return sample_stnormal_paramters
-
-
-def transform_uniform_stnormal_uncorr(row_traj_reordered, numeric_zero=0.01):
-    """
-    Convert sample from uniform distribution to standard normal space
-    without any correlations.
-
-    Parameters
-    ----------
-    Returns
-    -------
-
-    """
-    # Need to replace ones, because norm.ppf(1) = inf and zeros because norm.ppf(0) = -inf
-    # Numerical Parameters taken from crappy MATLAB code by Ge/Menendez (2017).
-    # Highly influential on the EE scale.
-    row_approx = np.where(row_traj_reordered == 1, 1 - numeric_zero, row_traj_reordered)
-    row_approx = np.where(row_approx == 0, numeric_zero, row_approx)
-
-    # Step 1: Inverse cdf of standard normal distribution (N(0, 1)).
-    z = norm.ppf(row_approx)
-
-    return z
-
-
 def transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu):
     """
     Overcomplex procedure (for this case) to transform standard normal sample

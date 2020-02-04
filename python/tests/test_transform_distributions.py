@@ -71,14 +71,3 @@ def test_transform_stnormal_normal_corr_lemaire09():
     X = T_Nataf.U2X(z)
 
     assert_allclose(x_lemaire09, X.T, atol=1.0e-14)
-
-
-def test_transform_stnormal_normal_corr_gm17():
-    # Draw huge random sample from N(0,1)
-    # (to potentially construct small differences in same formerly equal values?)
-    sample_Z_c = sample_stnormal_parameters(5, 100_000)
-
-    x_gm17 = transform_stnormal_normal_corr_gm17(z, cov, sample_Z_c, mu)
-    X = T_Nataf.U2X(z)
-
-    assert_allclose(x_gm17, X.T, rtol=0.02)
