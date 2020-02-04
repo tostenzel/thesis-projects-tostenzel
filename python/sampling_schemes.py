@@ -127,7 +127,7 @@ def morris_trajectory(
     """
     np.random.seed(seed)
 
-    step = step_function(n_levels)
+    step = stepsize(n_levels)
 
     #  Assisting matrices to induce stairs shape; Lower triangular matrix of ones.
     B = np.tril(np.ones([n_inputs + 1, n_inputs]), -1)
