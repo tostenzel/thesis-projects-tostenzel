@@ -13,7 +13,7 @@ from sampling_schemes import morris_trajectory
 from screening_measures_gm_2017 import screening_measures_gm_2017
 
 
-def sobol_model(a, b, c, d, e, f, *args):
+def sobol_model(a, b, c, d, e, f, coeffs, *args):
     """
     Tested by comparing graphs for 3 specifications to book.
     Arguments are lists. Strongly nonlinear, nonmonotonic, and nonzero interactions.
@@ -21,241 +21,161 @@ def sobol_model(a, b, c, d, e, f, *args):
 
     """
     input_pars = np.array([a, b, c, d, e, f])
+
+    def g_i(input_pars, coeffs):
+        return (abs(4 * input_pars - 2) + coeffs) / (1 + coeffs)
+
+    y = 1
+    for i in range(0, len(input_pars)):
+        y *= g_i(input_pars[i], coeffs[i])
+
+    return y
+
+
+def test_screening_measures_uncorrelated_g_function():
+    """Tests the screening measures for six uncorrelated parameters.
+
+    Data and results taken from pages 123 - 127 in [1]
+    
+    References
+    ----------
+    Saltelli, A., M. Ratto, T. Andres, F. Campolongo, J. Cariboni, D. Gatelli, M. Saisana,
+    and S. Tarantola (2008). Global Sensitivity Analysis: The Primer. John Wiley & Sons.
+
+    """
+    # Covariance matrix
+    cov = np.zeros(36).reshape(6, 6)
+    np.fill_diagonal(cov, np.ones(5))
+    
+    # This is not the expectation for x \in U[0,1]. Yet, prevents transformation.
+    mu = np.array([0, 0, 0, 0, 0, 0])
+    
+    n_levels = 4
+    
+    # Data: Four trajectories.
+    # The columns are randomly shuffled in contrary to what this program assumes
+    traj_one = np.array(
+        [
+            [0, 2 / 3, 1, 0, 0, 1 / 3],
+            [0, 2 / 3, 1, 0, 0, 1],
+            [0, 0, 1, 0, 0, 1],
+            [2 / 3, 0, 1, 0, 0, 1],
+            [2 / 3, 0, 1, 2 / 3, 0, 1],
+            [2 / 3, 0, 1 / 3, 2 / 3, 0, 1],
+            [2 / 3, 0, 1 / 3, 2 / 3, 2 / 3, 1],
+        ]
+    )
+    traj_two = np.array(
+        [
+            [0, 1 / 3, 1 / 3, 1, 1, 2 / 3],
+            [0, 1, 1 / 3, 1, 1, 2 / 3],
+            [0, 1, 1, 1, 1, 2 / 3],
+            [2 / 3, 1, 1, 1, 1, 2 / 3],
+            [2 / 3, 1, 1, 1, 1, 0],
+            [2 / 3, 1, 1, 1, 1 / 3, 0],
+            [2 / 3, 1, 1, 1 / 3, 1 / 3, 0],
+        ]
+    )
+    traj_three = np.array(
+        [
+            [1, 2 / 3, 0, 2 / 3, 1, 0],
+            [1, 2 / 3, 0, 0, 1, 0],
+            [1 / 3, 2 / 3, 0, 0, 1, 0],
+            [1 / 3, 2 / 3, 0, 0, 1 / 3, 0],
+            [1 / 3, 0, 0, 0, 1 / 3, 0],
+            [1 / 3, 0, 2 / 3, 0, 1 / 3, 0],
+            [1 / 3, 0, 2 / 3, 0, 1 / 3, 2 / 3],
+        ]
+    )
+    traj_four = np.array(
+        [
+            [1, 1 / 3, 2 / 3, 1, 0, 1 / 3],
+            [1, 1 / 3, 2 / 3, 1, 0, 1],
+            [1, 1 / 3, 0, 1, 0, 1],
+            [1, 1 / 3, 0, 1 / 3, 0, 1],
+            [1, 1 / 3, 0, 1 / 3, 2 / 3, 1],
+            [1, 1, 0, 1 / 3, 2 / 3, 1],
+            [1 / 3, 1, 0, 1 / 3, 2 / 3, 1],
+        ]
+    )
+    # The indices show the order of columns to which the step is added.
+    idx_one = [5, 1, 0, 3, 2, 4]
+    idx_two = [1, 2, 0, 5, 4, 3]
+    idx_three = [3, 0, 4, 1, 2, 5]
+    idx_four = [5, 2, 3, 4, 1, 0]
+    
+    # Create stairs shape:
+    # Transform trajectories so that the the step is first added to the frist columns etc.
+    traj_one = traj_one[:, idx_one]
+    traj_two = traj_two[:, idx_two]
+    traj_three = traj_three[:, idx_three]
+    traj_four = traj_four[:, idx_four]
+    
     coeffs = np.array([78, 12, 0.5, 2, 97, 33])
-
-    def g_i(input_pars, coeffs):
-        return (abs(4 * input_pars - 2) + coeffs) / (1 + coeffs)
-
-    y = 1
-    for i in range(0, len(input_pars)):
-        y *= g_i(input_pars[i], coeffs[i])
-
-    return y
-
-
-
-
-def sobol_model_one(f, b, a, d, c, e, *args):
-    """Reordered because trajectory in primer shuffled the trajectory columns"""
-    input_pars = np.array([f, b, a, d, c, e])
-    coeffs = np.array([33, 12, 78, 2, 0.5, 97])
-
-    def g_i(input_pars, coeffs):
-        return (abs(4 * input_pars - 2) + coeffs) / (1 + coeffs)
-
-    y = 1
-    for i in range(0, len(input_pars)):
-        y *= g_i(input_pars[i], coeffs[i])
-
-    return y
-
-steps_one = np.array([2/3, -2/3, -2/3, 2/3, 2/3, 2/3])
-
-
-def sobol_model_two(b, c, a, f, e, d, *args):
-    """Reordered because trajectory in primer shuffled the trajectory columns"""
-    input_pars = np.array([b, c, a, f, e, d])
-    coeffs = np.array([12, 0.5, 78, 33, 97, 2])
-
-    def g_i(input_pars, coeffs):
-        return (abs(4 * input_pars - 2) + coeffs) / (1 + coeffs)
-
-    y = 1
-    for i in range(0, len(input_pars)):
-        y *= g_i(input_pars[i], coeffs[i])
-
-    return y
-
-steps_two = np.array([2/3, 2/3, 2/3, -2/3, -2/3, -2/3])
-
-
-
-
-def sobol_model_three(d, a, e, b, c, f, *args):
-    """Reordered because trajectory in primer shuffled the trajectory columns"""
-    input_pars = np.array([d, a, e, b, c, f])
-    coeffs = np.array([2, 78, 97, 12, 0.4, 33])
-
-    def g_i(input_pars, coeffs):
-        return (abs(4 * input_pars - 2) + coeffs) / (1 + coeffs)
-
-    y = 1
-    for i in range(0, len(input_pars)):
-        y *= g_i(input_pars[i], coeffs[i])
-
-    return y
-
-steps_three = np.array([-2/3, -2/3, 2/3, -2/3, -2/3, +2/3])
-
-def sobol_model_four(f, c, d, e, b, a, *args):
-    """Reordered because trajectory in primer shuffled the trajectory columns"""
-    input_pars = np.array([f, c, d, e, b, a])
-    coeffs = np.array([33, 0.5, 2, 97, 12, 78])
-
-    def g_i(input_pars, coeffs):
-        return (abs(4 * input_pars - 2) + coeffs) / (1 + coeffs)
-
-    y = 1
-    for i in range(0, len(input_pars)):
-        y *= g_i(input_pars[i], coeffs[i])
-
-    return y
-
-steps_four = np.array([-2/3, -2/3, -2/3, -2/3, 2/3, -2/3])
-
-
-
-cov = np.zeros(36).reshape(6, 6)
-np.fill_diagonal(cov, np.ones(5))
-
-# Not the expectation for x \in U[0,1]. Yet, prevents transformation.
-mu = np.array([0, 0, 0, 0, 0, 0])
-
-numeric_zero = 0.00001
-seed = 2020
-n_levels = 4
-n_inputs = 6
-
-
-traj_one = np.array([[0, 2/3, 1, 0, 0, 1/3],
-                     [0, 2/3, 1, 0, 0, 1],
-                     [0, 0, 1, 0, 0, 1],
-                     [2/3, 0, 1, 0, 0, 1],
-                     [2/3, 0, 1, 2/3, 0, 1],
-                     [2/3, 0, 1/3, 2/3, 0, 1],
-                     [2/3, 0, 1/3, 2/3, 2/3, 1]])
-    
-idx = [5,1,0,3,2,4]
-traj_one = traj_one[:, idx]
-
-traj_two = np.array([[0, 1/3, 1/3, 1, 1, 2/3],
-                    [0, 1, 1/3, 1, 1, 2/3],
-                    [0, 1, 1, 1, 1, 2/3],
-                    [2/3, 1, 1, 1, 1, 2/3],
-                    [2/3, 1, 1, 1, 1, 0],
-                    [2/3, 1, 1, 1, 1/3, 0],
-                    [2/3, 1, 1, 1/3, 1/3, 0]])
-
-idx = [1,2,0,5,4,3]
-traj_two = traj_one[:, idx]    
     
     
+    # Define wrappers around `sobol_model` to account for different coeffient order
+    # due to the column shuffling. Argument order changes.
+    def wrapper_one(a, b, c, d, e, f, coeffs=coeffs[idx_one]):
+        return sobol_model(f, b, a, d, c, e, coeffs[idx_one])
     
-traj_three = np.array([[1, 2/3, 0, 2/3, 1, 0],
-                    [1, 2/3, 0, 0, 1, 0],
-                    [1/3, 2/3, 0, 0, 1, 0],
-                    [1/3, 2/3, 0, 0, 1/3, 0],
-                    [1/3, 0, 0, 0, 1/3, 0],
-                    [1/3, 0, 2/3, 0, 1/3, 0],
-                    [1/3, 0, 2/3, 0, 1/3, 2/3]])
-
-idx = [3,0,4,1,2,5]
-traj_three = traj_three[:, idx]    
+    def wrapper_two(a, b, c, d, e, f, coeffs=coeffs[idx_two]):
+        return sobol_model(b, c, a, f, e, d, coeffs[idx_two])
     
+    def wrapper_three(a, b, c, d, e, f, coeffs=coeffs[idx_three]):
+        return sobol_model(d, a, e, b, c, f, coeffs[idx_three])
     
-traj_four = np.array([[1, 1/3, 2/3, 1, 0, 1/3],
-                    [1, 1/3, 2/3, 1, 0, 1],
-                    [1, 1/3, 0, 1, 0, 1],
-                    [1, 1/3, 0, 1/3, 0, 1],
-                    [1, 1/3, 0, 1/3, 2/3, 1],
-                    [1, 1, 0, 1/3, 2/3, 1],
-                    [1/3, 1, 0, 1/3, 2/3, 1]])
-
-
-idx = [5,2,3,4,1,0]
-traj_three = traj_three[:, idx]   
-
-(
-    one_ee_ind,
-    one_ee_full,
-    one_abs_ee_ind,
-    one_abs_ee_full,
-    one_sd_ee_ind,
-    one_sd_ee_full,
-) = screening_measures_gm_2017(
-    sobol_model_one,
-    [traj_one],
-    [steps_one],
-    n_levels,
-    cov,
-    mu,
-    numeric_zero=0.00,
-)
-
-
-
-(
-    two_ee_ind,
-    two_ee_full,
-    two_abs_ee_ind,
-    two_abs_ee_full,
-    two_sd_ee_ind,
-    two_sd_ee_full,
-) = screening_measures_gm_2017(
-    sobol_model_two,
-    [traj_two],
-    [steps_two],
-    n_levels,
-    cov,
-    mu,
-    numeric_zero=0.00,
-)
-
-
-(
-    three_ee_ind,
-    three_ee_full,
-    three_abs_ee_ind,
-    three_abs_ee_full,
-    three_sd_ee_ind,
-    three_sd_ee_full,
-) = screening_measures_gm_2017(
-    sobol_model_three,
-    [traj_three],
-    [steps_three],
-    n_levels,
-    cov,
-    mu,
-    numeric_zero=0.00,
-)
-
-(
-    four_ee_ind,
-    four_ee_full,
-    four_abs_ee_ind,
-    four_abs_ee_full,
-    four_sd_ee_ind,
-    four_sd_ee_full,
-) = screening_measures_gm_2017(
-    sobol_model_four,
-    [traj_four],
-    [steps_four],
-    n_levels,
-    cov,
-    mu,
-    numeric_zero=0.00,
-)
-
-
-ee_one = np.array([one_ee_ind[5], one_ee_ind[1], one_ee_ind[0], one_ee_ind[3], one_ee_ind[2], one_ee_ind[4]]).reshape(6,1)
-
-ee_two = np.array([two_ee_ind[1], two_ee_ind[2], two_ee_ind[0], two_ee_ind[5], two_ee_ind[4], two_ee_ind[3]]).reshape(6,1)
-
-ee_three = np.array([three_ee_ind[1], three_ee_ind[3], three_ee_ind[4], three_ee_ind[0], three_ee_ind[2], three_ee_ind[5]]).reshape(6,1)
-
-ee_four = np.array([four_ee_ind[5], four_ee_ind[4], four_ee_ind[1], four_ee_ind[2], four_ee_ind[3], four_ee_ind[0]]).reshape(6,1)
-
-ee_i = np.concatenate((ee_one, ee_two, ee_three, ee_four), axis=1)
-
-
-
-ee = np.ones(6).reshape(6, 1) * np.nan
-
-ee = np.mean(ee_i, axis=1).reshape(6,1)
-
-ee_abs = np.mean(abs(ee_i), axis=1).reshape(6,1)
-
-ee_sd = np.sqrt(np.var(ee_i, axis=1)).reshape(6,1)
+    def wrapper_four(a, b, c, d, e, f, coeffs=coeffs[idx_four]):
+        return sobol_model(f, c, d, e, b, a, coeffs[idx_four])
+    
+    # Compute step sizes because rows are also randomly shuffeled.
+    # The indices account for the column order for stairs.
+    positive_steps = np.array([2 / 3, 2 / 3, 2 / 3, 2 / 3, 2 / 3, 2 / 3])
+    steps_one = positive_steps * np.array([1, -1, -1, 1, 1, 1])[idx_one]
+    steps_two = positive_steps * np.array([1, 1, 1, -1, -1, -1])[idx_two]
+    steps_three = positive_steps * np.array([-1, -1, 1, -1, -1, +1])[idx_three]
+    steps_four = positive_steps * np.array([-1, +1, -1, -1, 1, 1])[idx_four]
+    
+    # Compute the independent Elementary Effects.
+    # Since there is no correlation, they equal their abolute versions.
+    one_ee_ind, _ , _, _, _, _ = screening_measures_gm_2017(
+        wrapper_one, [traj_one], [steps_one], n_levels, cov, mu, numeric_zero=0.0,
+        )
+    
+    two_ee_ind, _, _, _, _, _= screening_measures_gm_2017(
+        wrapper_two, [traj_two], [steps_two], n_levels, cov, mu, numeric_zero=0.0,
+        )
+    
+    three_ee_ind, _, _, _, _, _ = screening_measures_gm_2017(
+        wrapper_three, [traj_three], [steps_three],n_levels, cov, mu, numeric_zero=0.0,
+        )
+    
+    four_ee_ind, _, _, _, _, _ = screening_measures_gm_2017(
+        wrapper_four, [traj_four], [steps_four], n_levels, cov, mu, numeric_zero=0.00,
+        )
+    
+    # `argsort` inverses the transformation that induced the stairs shape to the trajectories.
+    ee_one = np.array(one_ee_ind).reshape(6, 1)[np.argsort(idx_one)]
+    ee_two = np.array(two_ee_ind).reshape(6, 1)[np.argsort(idx_two)]
+    ee_three = np.array(three_ee_ind).reshape(6, 1)[np.argsort(idx_three)]
+    ee_four = np.array(four_ee_ind).reshape(6, 1)[np.argsort(idx_four)]
+    
+    ee_i = np.concatenate((ee_one, ee_two, ee_three, ee_four), axis=1)
+    
+    # Compute summary measures "by hand" because `screening_measures_gm_2017`
+    # takes only a list of one trajectory because the argument order is different.
+    ee = np.mean(ee_i, axis=1).reshape(6, 1)
+    abs_ee = np.mean(abs(ee_i), axis=1).reshape(6, 1)
+    # `np.var` does not work because it scales by 1/n instead of 1/(n - 1).
+    sd_ee = np.sqrt((1 / (4 - 1)) * (np.sum((ee_i - ee) ** 2, axis=1).reshape(6, 1)))
+    
+    expected_ee = np.array([-0.006, -0.078, -0.130, -0.004, 0.012, -0.004]).reshape(6, 1)
+    expected_abs_ee = np.array([0.056, 0.277, 1.760, 1.185, 0.034, 0.099]).reshape(6, 1)
+    expected_sd_ee = np.array([0.064, 0.321, 2.049, 1.370, 0.041, 0.122]).reshape(6, 1)
+    
+    assert_array_equal(np.round(ee, 3), np.round(expected_ee, 3))
+    assert_allclose(np.round(abs_ee, 3), np.round(expected_abs_ee, 3), atol=0.01)
+    assert_array_equal(np.round(sd_ee, 3), np.round(expected_sd_ee, 3))
 
 
 
@@ -265,7 +185,7 @@ def lin_portfolio(q1, q2, c1=2, c2=1, *args):
     return c1 * q1 + c2 * q2
 
 
-def test_screening_measures_uncorrelated_deviates():
+def test_screening_measures_uncorrelated_linear_function():
     """Taken from Ralph C. Smith (2014): Uncertainty Quantification, page 335."""
     cov = np.array([[1, 0], [0, 9]])
 
