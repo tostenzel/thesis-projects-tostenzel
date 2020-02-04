@@ -6,8 +6,8 @@ sys.path.append("..")
 
 import numpy as np
 
-from sampling_trajectory import stepsize
-from sampling_trajectory import morris_trajectory
+from sampling_schemes import stepsize
+from sampling_schemes import morris_trajectory
 
 
 def test_morris_trajectory_value_grid():

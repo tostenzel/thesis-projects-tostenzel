@@ -8,7 +8,7 @@ import numpy as np
 
 from numpy.testing import assert_array_equal
 
-from sampling_trajectory import morris_trajectory
+from sampling_schemes import morris_trajectory
 from transform_traj_elementary_effects import trans_ee_ind_trajectories
 
 

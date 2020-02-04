@@ -11,7 +11,7 @@ import pytest
 from numpy.testing import assert_array_equal
 from numpy.testing import assert_allclose
 
-from sampling_trajectory import morris_trajectory
+from sampling_schemes import morris_trajectory
 from select_sample_set import compute_trajectory_distance
 from select_sample_set import distance_matrix
 from select_sample_set import combi_wrapper

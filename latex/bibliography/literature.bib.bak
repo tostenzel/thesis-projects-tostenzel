@@ -17131,7 +17131,7 @@
 
 @Article{Ziehn.2009,
   author    = {Ziehn, T and Tomlin, Alison S},
-  title     = {GUI-HDMR - A software tool for global sensitivity analysis of complex models},
+  title     = {{GUI-HDMR - A software tool for global sensitivity analysis of complex models}},
   journal   = {Environmental Modelling \& Software},
   year      = {2009},
   volume    = {24},
@@ -17418,6 +17418,17 @@
   year   = {2019},
   author = {Janos Gabler},
   note   = {URL: https://github.com/OpenSourceEconomics/estimagic},
+}
+
+@Article{morris1991factorial,
+  author    = {Morris, Max D},
+  title     = {Factorial sampling plans for preliminary computational experiments},
+  journal   = {Technometrics},
+  year      = {1991},
+  volume    = {33},
+  number    = {2},
+  pages     = {161--174},
+  publisher = {Taylor \& Francis Group},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}
