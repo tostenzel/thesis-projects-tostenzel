@@ -3,8 +3,6 @@ import numpy as np
 from screening_measures_gm_2017 import screening_measures_gm_2017
 
 
-
-
 cov = np.zeros(36).reshape(6, 6)
 np.fill_diagonal(cov, np.ones(5))
 
@@ -17,54 +15,68 @@ n_levels = 4
 n_inputs = 6
 
 
-traj_one = np.array([[0, 2/3, 1, 0, 0, 1/3],
-                     [0, 2/3, 1, 0, 0, 1],
-                     [0, 0, 1, 0, 0, 1],
-                     [2/3, 0, 1, 0, 0, 1],
-                     [2/3, 0, 1, 2/3, 0, 1],
-                     [2/3, 0, 1/3, 2/3, 0, 1],
-                     [2/3, 0, 1/3, 2/3, 2/3, 1]])
-    
-idx_one = [5,1,0,3,2,4]
+traj_one = np.array(
+    [
+        [0, 2 / 3, 1, 0, 0, 1 / 3],
+        [0, 2 / 3, 1, 0, 0, 1],
+        [0, 0, 1, 0, 0, 1],
+        [2 / 3, 0, 1, 0, 0, 1],
+        [2 / 3, 0, 1, 2 / 3, 0, 1],
+        [2 / 3, 0, 1 / 3, 2 / 3, 0, 1],
+        [2 / 3, 0, 1 / 3, 2 / 3, 2 / 3, 1],
+    ]
+)
+
+idx_one = [5, 1, 0, 3, 2, 4]
 traj_one = traj_one[:, idx_one]
 
-traj_two = np.array([[0, 1/3, 1/3, 1, 1, 2/3],
-                    [0, 1, 1/3, 1, 1, 2/3],
-                    [0, 1, 1, 1, 1, 2/3],
-                    [2/3, 1, 1, 1, 1, 2/3],
-                    [2/3, 1, 1, 1, 1, 0],
-                    [2/3, 1, 1, 1, 1/3, 0],
-                    [2/3, 1, 1, 1/3, 1/3, 0]])
+traj_two = np.array(
+    [
+        [0, 1 / 3, 1 / 3, 1, 1, 2 / 3],
+        [0, 1, 1 / 3, 1, 1, 2 / 3],
+        [0, 1, 1, 1, 1, 2 / 3],
+        [2 / 3, 1, 1, 1, 1, 2 / 3],
+        [2 / 3, 1, 1, 1, 1, 0],
+        [2 / 3, 1, 1, 1, 1 / 3, 0],
+        [2 / 3, 1, 1, 1 / 3, 1 / 3, 0],
+    ]
+)
 
-idx_two = [1,2,0,5,4,3]
-traj_two = traj_two[:, idx_two]    
-    
-    
-    
-traj_three = np.array([[1, 2/3, 0, 2/3, 1, 0],
-                    [1, 2/3, 0, 0, 1, 0],
-                    [1/3, 2/3, 0, 0, 1, 0],
-                    [1/3, 2/3, 0, 0, 1/3, 0],
-                    [1/3, 0, 0, 0, 1/3, 0],
-                    [1/3, 0, 2/3, 0, 1/3, 0],
-                    [1/3, 0, 2/3, 0, 1/3, 2/3]])
-
-idx_three = [3,0,4,1,2,5]
-traj_three = traj_three[:, idx_three]    
-    
-    
-traj_four = np.array([[1, 1/3, 2/3, 1, 0, 1/3],
-                    [1, 1/3, 2/3, 1, 0, 1],
-                    [1, 1/3, 0, 1, 0, 1],
-                    [1, 1/3, 0, 1/3, 0, 1],
-                    [1, 1/3, 0, 1/3, 2/3, 1],
-                    [1, 1, 0, 1/3, 2/3, 1],
-                    [1/3, 1, 0, 1/3, 2/3, 1]])
+idx_two = [1, 2, 0, 5, 4, 3]
+traj_two = traj_two[:, idx_two]
 
 
-idx_four = [5,2,3,4,1,0]
-traj_four = traj_four[:, idx_four]   
+traj_three = np.array(
+    [
+        [1, 2 / 3, 0, 2 / 3, 1, 0],
+        [1, 2 / 3, 0, 0, 1, 0],
+        [1 / 3, 2 / 3, 0, 0, 1, 0],
+        [1 / 3, 2 / 3, 0, 0, 1 / 3, 0],
+        [1 / 3, 0, 0, 0, 1 / 3, 0],
+        [1 / 3, 0, 2 / 3, 0, 1 / 3, 0],
+        [1 / 3, 0, 2 / 3, 0, 1 / 3, 2 / 3],
+    ]
+)
 
+idx_three = [3, 0, 4, 1, 2, 5]
+traj_three = traj_three[:, idx_three]
+
+
+traj_four = np.array(
+    [
+        [1, 1 / 3, 2 / 3, 1, 0, 1 / 3],
+        [1, 1 / 3, 2 / 3, 1, 0, 1],
+        [1, 1 / 3, 0, 1, 0, 1],
+        [1, 1 / 3, 0, 1 / 3, 0, 1],
+        [1, 1 / 3, 0, 1 / 3, 2 / 3, 1],
+        [1, 1, 0, 1 / 3, 2 / 3, 1],
+        [1 / 3, 1, 0, 1 / 3, 2 / 3, 1],
+    ]
+)
+
+
+idx_four = [5, 2, 3, 4, 1, 0]
+traj_four = traj_four[:, idx_four]
 
 
 def sobol_model(a, b, c, d, e, f, *args):
@@ -87,7 +99,6 @@ def sobol_model(a, b, c, d, e, f, *args):
     return y
 
 
-
 def sobol_model_one(f, b, a, d, c, e, *args):
     """Reordered because trajectory in primer shuffled the trajectory columns"""
     input_pars = np.array([f, b, a, d, c, e])
@@ -102,7 +113,8 @@ def sobol_model_one(f, b, a, d, c, e, *args):
 
     return y
 
-steps_one = np.array([2/3, -2/3, -2/3, 2/3, 2/3, 2/3])[idx_one]
+
+steps_one = np.array([2 / 3, -2 / 3, -2 / 3, 2 / 3, 2 / 3, 2 / 3])[idx_one]
 
 
 def sobol_model_two(b, c, a, f, e, d, *args):
@@ -119,9 +131,8 @@ def sobol_model_two(b, c, a, f, e, d, *args):
 
     return y
 
-steps_two = np.array([2/3, 2/3, 2/3, -2/3, -2/3, -2/3])[idx_two]
 
-
+steps_two = np.array([2 / 3, 2 / 3, 2 / 3, -2 / 3, -2 / 3, -2 / 3])[idx_two]
 
 
 def sobol_model_three(d, a, e, b, c, f, *args):
@@ -138,7 +149,9 @@ def sobol_model_three(d, a, e, b, c, f, *args):
 
     return y
 
-steps_three = np.array([-2/3, -2/3, 2/3, -2/3, -2/3, +2/3])[idx_three]
+
+steps_three = np.array([-2 / 3, -2 / 3, 2 / 3, -2 / 3, -2 / 3, +2 / 3])[idx_three]
+
 
 def sobol_model_four(f, c, d, e, b, a, *args):
     """Reordered because trajectory in primer shuffled the trajectory columns"""
@@ -154,12 +167,8 @@ def sobol_model_four(f, c, d, e, b, a, *args):
 
     return y
 
-steps_four = np.array([-2/3, -2/3, -2/3, -2/3, 2/3, -2/3])[idx_four]
 
-
-
-
-
+steps_four = np.array([-2 / 3, -2 / 3, -2 / 3, -2 / 3, 2 / 3, -2 / 3])[idx_four]
 
 
 (
@@ -170,15 +179,8 @@ steps_four = np.array([-2/3, -2/3, -2/3, -2/3, 2/3, -2/3])[idx_four]
     one_sd_ee_ind,
     one_sd_ee_full,
 ) = screening_measures_gm_2017(
-    sobol_model_one,
-    [traj_one],
-    [steps_one],
-    n_levels,
-    cov,
-    mu,
-    numeric_zero=0.00,
+    sobol_model_one, [traj_one], [steps_one], n_levels, cov, mu, numeric_zero=0.00,
 )
-
 
 
 (
@@ -189,13 +191,7 @@ steps_four = np.array([-2/3, -2/3, -2/3, -2/3, 2/3, -2/3])[idx_four]
     two_sd_ee_ind,
     two_sd_ee_full,
 ) = screening_measures_gm_2017(
-    sobol_model_two,
-    [traj_two],
-    [steps_two],
-    n_levels,
-    cov,
-    mu,
-    numeric_zero=0.00,
+    sobol_model_two, [traj_two], [steps_two], n_levels, cov, mu, numeric_zero=0.00,
 )
 
 
@@ -224,49 +220,43 @@ steps_four = np.array([-2/3, -2/3, -2/3, -2/3, 2/3, -2/3])[idx_four]
     four_sd_ee_ind,
     four_sd_ee_full,
 ) = screening_measures_gm_2017(
-    sobol_model_four,
-    [traj_four],
-    [steps_four],
-    n_levels,
-    cov,
-    mu,
-    numeric_zero=0.00,
+    sobol_model_four, [traj_four], [steps_four], n_levels, cov, mu, numeric_zero=0.00,
 )
 
 
-ee_one = np.array(one_ee_ind).reshape(6,1)[np.argsort(idx_one)]
+ee_one = np.array(one_ee_ind).reshape(6, 1)[np.argsort(idx_one)]
 
 
-ee_two = np.array(two_ee_ind).reshape(6,1)[np.argsort(idx_two)]
+ee_two = np.array(two_ee_ind).reshape(6, 1)[np.argsort(idx_two)]
 
-ee_three = np.array(three_ee_ind).reshape(6,1)[np.argsort(idx_three)]
-ee_four = np.array(four_ee_ind).reshape(6,1)[np.argsort(idx_four)]
+ee_three = np.array(three_ee_ind).reshape(6, 1)[np.argsort(idx_three)]
+ee_four = np.array(four_ee_ind).reshape(6, 1)[np.argsort(idx_four)]
 
 ee_i = np.concatenate((ee_one, ee_two, ee_three, ee_four), axis=1)
 
 
-
 ee = np.ones(6).reshape(6, 1) * np.nan
 
-ee = np.mean(ee_i, axis=1).reshape(6,1)
+ee = np.mean(ee_i, axis=1).reshape(6, 1)
 
-ee_abs = np.mean(abs(ee_i), axis=1).reshape(6,1)
+ee_abs = np.mean(abs(ee_i), axis=1).reshape(6, 1)
 
-ee_sd = np.sqrt(np.var(ee_i, axis=1)).reshape(6,1)
-
-
-
-for i in range(0,7):
-    print(sobol_model_two(*traj_two[i, :]))
+ee_sd = np.sqrt((1 / (4 - 1)) * (np.sum((ee_i - ee) ** 2, axis=1).reshape(6, 1)))
 
 
+for i in range(0, 7):
+    print(sobol_model_four(*traj_four[i, :]))
 
 
-#coeffs_one = np.array([33, 12, 78, 2, 0.5, 97])
-#coeffs_two = coeffs[idx_two]
+# coeffs_one = np.array([33, 12, 78, 2, 0.5, 97])
+# coeffs_two = coeffs[idx_two]
 
 
-
-idx_one[::-1]
-
-idx_one
+for i in range(0, 6):
+    print(
+        (
+            sobol_model_three(*traj_three[i + 1, :])
+            - sobol_model_three(*traj_three[i, :])
+        )
+        / steps_three[i]
+    )
