@@ -13,7 +13,7 @@ from transform_reorder import reorder_mu
 
 
 def trans_ee_ind_trajectories(
-    sample_traj_list, cov, mu, numeric_zero=0.01, normal=True
+    sample_traj_list, cov, mu, numeric_zero=0.01
 ):
     """
     Transforms list of trajectories to two lists of transformed trajectories
@@ -46,10 +46,7 @@ def trans_ee_ind_trajectories(
 
     # Transformation 1 including taking the cdf from Transformation 2.
     for traj in range(0, n_traj_sample):
-        if normal is True:
-            z = sample_traj_list[traj]
-        else:
-            z = transform_uniform_stnormal_uncorr(sample_traj_list[traj], numeric_zero)
+        z = sample_traj_list[traj]
         zero_idx_diff.append(ee_ind_reorder_trajectory(z, p_i_plus_one=False))
         one_idx_diff.append(ee_ind_reorder_trajectory(z))
 
@@ -104,7 +101,7 @@ def trans_ee_ind_trajectories(
 
 
 def trans_ee_full_trajectories(
-    sample_traj_list, cov, mu, numeric_zero=0.01, normal=True
+    sample_traj_list, cov, mu, numeric_zero=0.01
 ):
     """
     Transforms a list of trajectories such that their rows correspond to
@@ -132,10 +129,7 @@ def trans_ee_full_trajectories(
 
     # Transformation 1 for p_{i+1} including taking the cdf from Transformation 2.
     for traj in range(0, n_traj_sample):
-        if normal is True:
-            z = sample_traj_list[traj]
-        else:
-            z = transform_uniform_stnormal_uncorr(sample_traj_list[traj], numeric_zero)
+        z = sample_traj_list[traj]
         two_idx_diff.append(ee_full_reorder_trajectory(z))
         one_idx_diff.append(ee_ind_reorder_trajectory(z))
 

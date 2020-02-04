@@ -20,6 +20,8 @@ def compute_trajectory_distance(traj_0, traj_1):
     ----------
     Returns
     -------
+    Raises
+    ------
 
     """
     distance = 0

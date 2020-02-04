@@ -54,7 +54,6 @@ def test_screening_measures_uncorrelated_deviates():
         cov,
         mu,
         numeric_zero=0.01,
-        normal=True,
     )
 
     exp_ee = np.array([2, 1]).reshape(n_inputs, 1)
