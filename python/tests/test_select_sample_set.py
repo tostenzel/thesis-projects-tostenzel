@@ -1,5 +1,4 @@
 """Tests select_sample_sets.py."""
-
 import sys
 
 # Define parent folder as relative path.

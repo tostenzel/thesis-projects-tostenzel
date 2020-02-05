@@ -1,7 +1,4 @@
-"""
-Functions that create random samples of the trajectory and the radial design.
-
-"""
+"""Functions that create random samples of the trajectory and the radial design."""
 import random
 
 import numpy as np
@@ -11,7 +8,7 @@ from transform_distributions import transform_uniform_stnormal_uncorr
 def stepsize(n_levels):
     """
     Computes stepsize to create equiprobable sample points for the trajectory design.
-    
+
     Parameters
     ----------
     n_levels : int

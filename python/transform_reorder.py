@@ -75,9 +75,13 @@ def reverse_ee_uncorr_reorder_trajectory(traj_reordered, row_plus_one=True):
     traj = np.ones([np.size(traj_reordered, 0), np.size(traj_reordered, 1)]) * np.nan
     for i in range(0, np.size(traj_reordered, 0)):
         if row_plus_one is False:
-            traj[i, :] = np.roll(traj_reordered[i, :], -(np.size(traj_reordered, 1) - (i + 1)))
+            traj[i, :] = np.roll(
+                traj_reordered[i, :], -(np.size(traj_reordered, 1) - (i + 1))
+            )
         if row_plus_one is True:
-            traj[i, :] = np.roll(traj_reordered[i, :], -(np.size(traj_reordered, 1) - (i)))
+            traj[i, :] = np.roll(
+                traj_reordered[i, :], -(np.size(traj_reordered, 1) - (i))
+            )
 
     return traj
 
@@ -130,7 +134,9 @@ def reverse_ee_corr_reorder_trajectory(traj_reordered):
     """
     traj = np.ones([np.size(traj_reordered, 0), np.size(traj_reordered, 1)]) * np.nan
     for i in range(0, np.size(traj, 0)):
-        traj[i, :] = np.roll(traj_reordered[i, :], -(np.size(traj_reordered, 1) - (i - 1)))
+        traj[i, :] = np.roll(
+            traj_reordered[i, :], -(np.size(traj_reordered, 1) - (i - 1))
+        )
 
     return traj
 
@@ -217,10 +223,16 @@ def reverse_reorder_cov(cov_reordered):
 
     """
     cov = np.ones(cov_reordered.shape) * np.nan
-    cov[1 : len(cov_reordered), 1 : len(cov_reordered)] = cov_reordered[0 : len(cov_reordered) - 1, 0 : len(cov_reordered) - 1]
+    cov[1 : len(cov_reordered), 1 : len(cov_reordered)] = cov_reordered[
+        0 : len(cov_reordered) - 1, 0 : len(cov_reordered) - 1
+    ]
     cov[0, 0] = cov_reordered[len(cov_reordered) - 1, len(cov_reordered) - 1]
 
-    cov[0, 1 : len(cov_reordered)] = cov_reordered[len(cov_reordered) - 1, 0 : len(cov_reordered) - 1]
-    cov[1 : len(cov_reordered), 0] = cov_reordered[0 : len(cov_reordered) - 1, len(cov_reordered) - 1]
+    cov[0, 1 : len(cov_reordered)] = cov_reordered[
+        len(cov_reordered) - 1, 0 : len(cov_reordered) - 1
+    ]
+    cov[1 : len(cov_reordered), 0] = cov_reordered[
+        0 : len(cov_reordered) - 1, len(cov_reordered) - 1
+    ]
 
     return cov

@@ -40,7 +40,7 @@ def test_trans_ee_uncorr_trajectories():
         m_traj, _ = morris_trajectory(n_inputs, n_levels, seed=seed)
         sample_traj_list.append(m_traj)
 
-    trans_zero, trans_one, _ = trans_ee_uncorr_trajectories(sample_traj_list, cov, mu)
+    trans_one, trans_zero, _ = trans_ee_uncorr_trajectories(sample_traj_list, cov, mu)
 
     for traj in range(0, len(trans_zero)):
         for row in range(0, np.size(trans_zero[0], 0) - 1):

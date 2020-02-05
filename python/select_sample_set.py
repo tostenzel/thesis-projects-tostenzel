@@ -9,6 +9,7 @@ from itertools import combinations
 import numpy as np
 from scipy.special import binom
 
+
 def compute_trajectory_distance(traj_0, traj_1):
     """
     Computes the sum of the root of the square distance between each

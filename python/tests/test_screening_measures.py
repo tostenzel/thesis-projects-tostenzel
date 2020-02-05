@@ -46,10 +46,10 @@ def test_screening_measures_uncorrelated_g_function():
     # Covariance matrix
     cov = np.zeros(36).reshape(6, 6)
     np.fill_diagonal(cov, np.ones(5))
-    
+
     # This is not the expectation for x \in U[0,1]. Yet, prevents transformation.
     mu = np.array([0, 0, 0, 0, 0, 0])
-    
+
     # Data: Four trajectories.
     # The columns are randomly shuffled in contrary to what this program assumes
     traj_one = np.array(
@@ -101,31 +101,30 @@ def test_screening_measures_uncorrelated_g_function():
     idx_two = [1, 2, 0, 5, 4, 3]
     idx_three = [3, 0, 4, 1, 2, 5]
     idx_four = [5, 2, 3, 4, 1, 0]
-    
+
     # Create stairs shape:
     # Transform trajectories so that the the step is first added to the frist columns etc.
     traj_one = traj_one[:, idx_one]
     traj_two = traj_two[:, idx_two]
     traj_three = traj_three[:, idx_three]
     traj_four = traj_four[:, idx_four]
-    
+
     coeffs = np.array([78, 12, 0.5, 2, 97, 33])
-    
-    
+
     # Define wrappers around `sobol_model` to account for different coeffient order
     # due to the column shuffling. Argument order changes.
     def wrapper_one(a, b, c, d, e, f, coeffs=coeffs[idx_one]):
         return sobol_model(f, b, a, d, c, e, coeffs[idx_one])
-    
+
     def wrapper_two(a, b, c, d, e, f, coeffs=coeffs[idx_two]):
         return sobol_model(b, c, a, f, e, d, coeffs[idx_two])
-    
+
     def wrapper_three(a, b, c, d, e, f, coeffs=coeffs[idx_three]):
         return sobol_model(d, a, e, b, c, f, coeffs[idx_three])
-    
+
     def wrapper_four(a, b, c, d, e, f, coeffs=coeffs[idx_four]):
         return sobol_model(f, c, d, e, b, a, coeffs[idx_four])
-    
+
     # Compute step sizes because rows are also randomly shuffeled.
     # The uncorrices account for the column order for stairs.
     positive_steps = np.array([2 / 3, 2 / 3, 2 / 3, 2 / 3, 2 / 3, 2 / 3])
@@ -133,44 +132,46 @@ def test_screening_measures_uncorrelated_g_function():
     steps_two = positive_steps * np.array([1, 1, 1, -1, -1, -1])[idx_two]
     steps_three = positive_steps * np.array([-1, -1, 1, -1, -1, +1])[idx_three]
     steps_four = positive_steps * np.array([-1, +1, -1, -1, 1, 1])[idx_four]
-    
+
     # Compute the uncorrependent Elementary Effects.
     # Since there is no correlation, they equal their abolute versions.
-    one_ee_uncorr, _ , _, _, _, _ = screening_measures(
+    one_ee_uncorr, _, _, _, _, _ = screening_measures(
         wrapper_one, [traj_one], [steps_one], cov, mu
-        )
-    
-    two_ee_uncorr, _, _, _, _, _= screening_measures(
+    )
+
+    two_ee_uncorr, _, _, _, _, _ = screening_measures(
         wrapper_two, [traj_two], [steps_two], cov, mu
-        )
-    
+    )
+
     three_ee_uncorr, _, _, _, _, _ = screening_measures(
         wrapper_three, [traj_three], [steps_three], cov, mu
-        )
-    
+    )
+
     four_ee_uncorr, _, _, _, _, _ = screening_measures(
         wrapper_four, [traj_four], [steps_four], cov, mu
-        )
-    
+    )
+
     # `argsort` inverses the transformation that uncorruced the stairs shape to the trajectories.
     ee_one = np.array(one_ee_uncorr).reshape(6, 1)[np.argsort(idx_one)]
     ee_two = np.array(two_ee_uncorr).reshape(6, 1)[np.argsort(idx_two)]
     ee_three = np.array(three_ee_uncorr).reshape(6, 1)[np.argsort(idx_three)]
     ee_four = np.array(four_ee_uncorr).reshape(6, 1)[np.argsort(idx_four)]
-    
+
     ee_i = np.concatenate((ee_one, ee_two, ee_three, ee_four), axis=1)
-    
+
     # Compute summary measures "by hand" because `screening_measures`
     # takes only a list of one trajectory because the argument order is different.
     ee = np.mean(ee_i, axis=1).reshape(6, 1)
     abs_ee = np.mean(abs(ee_i), axis=1).reshape(6, 1)
     # `np.var` does not work because it scales by 1/n instead of 1/(n - 1).
     sd_ee = np.sqrt((1 / (4 - 1)) * (np.sum((ee_i - ee) ** 2, axis=1).reshape(6, 1)))
-    
-    expected_ee = np.array([-0.006, -0.078, -0.130, -0.004, 0.012, -0.004]).reshape(6, 1)
+
+    expected_ee = np.array([-0.006, -0.078, -0.130, -0.004, 0.012, -0.004]).reshape(
+        6, 1
+    )
     expected_abs_ee = np.array([0.056, 0.277, 1.760, 1.185, 0.034, 0.099]).reshape(6, 1)
     expected_sd_ee = np.array([0.064, 0.321, 2.049, 1.370, 0.041, 0.122]).reshape(6, 1)
-    
+
     assert_array_equal(np.round(ee, 3), np.round(expected_ee, 3))
     assert_allclose(np.round(abs_ee, 3), np.round(expected_abs_ee, 3), atol=0.01)
     assert_array_equal(np.round(sd_ee, 3), np.round(expected_sd_ee, 3))
@@ -209,13 +210,7 @@ def test_screening_measures_uncorrelated_linear_function():
         abs_ee_corr,
         sd_ee_uncorr,
         sd_ee_corr,
-    ) = screening_measures(
-        lin_portfolio,
-        traj_list,
-        step_list,
-        cov,
-        mu
-    )
+    ) = screening_measures(lin_portfolio, traj_list, step_list, cov, mu)
 
     exp_ee = np.array([2, 1]).reshape(n_inputs, 1)
     exp_sd = np.array([0, 0]).reshape(n_inputs, 1)
