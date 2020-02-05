@@ -25,7 +25,7 @@ def stepsize(n_levels):
     Raises
     ------
     AssertionError
-        if the number of levels is not an even integer.
+        If the number of levels is not an even integer.
 
     Notes
     -----

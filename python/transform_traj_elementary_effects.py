@@ -1,6 +1,6 @@
 """Functions to compute the elementary effects in Ge/Menendez (2017)."""
 import numpy as np
-from transform_distributions import transform_stnormal_normal_corr_lemaire09
+from transform_distributions import transform_stnormal_normal_corr
 from transform_distributions import transform_uniform_stnormal_uncorr
 from transform_reorder import ee_full_reorder_trajectory
 from transform_reorder import ee_ind_reorder_trajectory
@@ -57,7 +57,7 @@ def trans_ee_ind_trajectories(
         mu_zero = reorder_mu(mu)
         cov_zero = reorder_cov(cov)
         for row in range(0, n_rows):
-            zero_idx_diff[traj][row, :], _ = transform_stnormal_normal_corr_lemaire09(
+            zero_idx_diff[traj][row, :], _ = transform_stnormal_normal_corr(
                 zero_idx_diff[traj][row, :], cov_zero, mu_zero
             )
             mu_zero = reorder_mu(mu_zero)
@@ -76,12 +76,12 @@ def trans_ee_ind_trajectories(
         for row in range(0, n_rows):
             (
                 one_idx_diff[traj][row, :],
-                Q_prime,
-            ) = transform_stnormal_normal_corr_lemaire09(
+                correlate_step,
+            ) = transform_stnormal_normal_corr(
                 one_idx_diff[traj][row, :], cov_one, mu_one
             )
             if row > 0:
-                c_step[row - 1, 0] = Q_prime[-1, -1]
+                c_step[row - 1, 0] = correlate_step
             else:
                 pass
             mu_one = reorder_mu(mu_one)
@@ -141,7 +141,7 @@ def trans_ee_full_trajectories(
         mu_two = inverse_reorder_mu(mu)
         cov_two = inverse_reorder_cov(cov)
         for row in range(0, n_rows):
-            two_idx_diff[traj][row, :], _ = transform_stnormal_normal_corr_lemaire09(
+            two_idx_diff[traj][row, :], _ = transform_stnormal_normal_corr(
                 two_idx_diff[traj][row, :], cov_two, mu_two
             )
             mu_two = reorder_mu(mu_two)
@@ -157,8 +157,8 @@ def trans_ee_full_trajectories(
         for row in range(0, n_rows):
             (
                 one_idx_diff[traj][row, :],
-                Q_prime,
-            ) = transform_stnormal_normal_corr_lemaire09(
+                correlate_step,
+            ) = transform_stnormal_normal_corr(
                 one_idx_diff[traj][row, :], cov_one, mu_one
             )
             mu_one = reorder_mu(mu_one)

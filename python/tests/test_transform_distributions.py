@@ -10,7 +10,7 @@ from numpy.testing import assert_array_equal
 
 from transform_distributions import covariance_to_correlation
 from transform_distributions import transform_uniform_stnormal_uncorr
-from transform_distributions import transform_stnormal_normal_corr_lemaire09
+from transform_distributions import transform_stnormal_normal_corr
 
 sys.path.append("python/tests/resources/test_transform_distributions")
 from nataf_transformation import nataf_transformation
@@ -58,14 +58,14 @@ Rho = covariance_to_correlation(cov)
 T_Nataf = nataf_transformation(M, Rho)
 
 
-def test_transform_stnormal_normal_corr_lemaire09():
+def test_transform_stnormal_normal_corr():
     """
     The implementation derived from Lemaire(2009) is more
     precise than the approach in Ge/Menendez for normally distributed
     deviates.
 
     """
-    x_lemaire09, _ = transform_stnormal_normal_corr_lemaire09(z, cov, mu)
+    x_lemaire09, _ = transform_stnormal_normal_corr(z, cov, mu)
     X = T_Nataf.U2X(z)
 
     assert_allclose(x_lemaire09, X.T, atol=1.0e-14)
