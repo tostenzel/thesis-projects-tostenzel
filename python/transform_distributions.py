@@ -17,6 +17,7 @@ def covariance_to_correlation(cov):
     ----------
     cov : ndarray
         Covariance matrix.
+
     Returns
     -------
     corr : ndarray
@@ -54,13 +55,14 @@ def transform_uniform_stnormal_uncorr(uniform_deviates, numeric_zero=0.01):
 
     Notes
     -----
-    - Optionally, this transformation is already applied in `morris_trajectory`.
+    - This transformation is already applied as option in `morris_trajectory`.
     The reason is that `scipy.stats.norm` transforms the random draws from the
     unit cube non-linearily including the addition of the step. To obtain
-    non-distorted screening measures, it is important to account also account
-    for this transformation of delta in the denumerator to not violate
-    the definition of the function derivation.
-    - The parameter `numeric_zero` can be highly influential.
+    non-distorted screening measures, it is important to also account for this
+    transformation of delta in the denumerator to not violate the definition of
+    the function derivation.
+    - The parameter `numeric_zero` can be highly influential. I prefer it to be
+    relatively large to put more proportional, i.e. less weight on the extremes.
 
     """
     # Need to replace ones, because norm.ppf(1) = Inf and zeros because norm.ppf(0) = -Inf
@@ -98,6 +100,7 @@ def transform_stnormal_normal_corr(z_row, cov, mu):
         Row of correlated normal deviates.
     correlate_step : float
         Lower right corner element of the lower Cholesky matrix.
+
     Notes
     -----
     - Importantly, the step in the numerator of the uncorrelated Elementary Effect
