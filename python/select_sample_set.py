@@ -85,7 +85,7 @@ def distance_matrix(sample_list):
     )
     for i in range(0, len(sample_list)):
         for j in range(0, len(sample_list)):
-            distance_matrix[i, j] = compute_sample_distance(
+            distance_matrix[i, j] = compute_pair_distance(
                 sample_list[i], sample_list[j]
             )
     return distance_matrix
@@ -181,7 +181,7 @@ def select_trajectories(traj_dist_matrix, n_traj):
     -----
     -This function can be very slow because it computes distances
     between np.binomial(len(traj_dist_matrix, n_traj) pairs of trajectories.
-    Example: np.biomial(30,15) = 155117520.
+    Example: `np.biomial(30,15)` = 155117520.
     -This selection function yields precise results
     because each total distance for each possible combination of
     trajectories is computed directly. The faster, iterative methods
@@ -362,7 +362,7 @@ def campolongo_2007(sample_traj_list, n_traj):
 
 def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     """
-    Implements the the essential of the two "improvements" from [2] to [1].
+    Implements the the essential of the two "improvements" in[2] vis-a-vis [1].
 
     This is basically a wrapper around `select_trajectories_wrapper_iteration`.
 
@@ -546,9 +546,8 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
 
 
 def final_ge_menendez_2014(sample_traj_list, n_traj):
-	"""
-    Implements both "improvements" from [2] to [1].
-
+    """
+    Implements both "improvements" in [2] vis-a-vis [1].
 
     Parameters
     ----------
@@ -572,22 +571,15 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
 
     Notes
     ----
-    Warning: This function, is in fact much slower than
-    `intermediate_ge_menendez_2014` because it uses more for loops to get
-    the pair distances from the right combinations that must be subtracted from the
-    total distances.
-
-    This function selects n_traj trajectories from
-    n_traj_sample trajectories by iteratively selecting
-    n_traj_sample - i for i = 1,...,n_traj_sample - n-traj.
+    -This function, is in fact much slower than `intermediate_ge_menendez_2014`
+    because it uses more for loops to get the pair distances from the right
+    combinations that must be subtracted from the total distances.
+    -This function selects n_traj trajectories from n_traj_sample trajectories by
+    iteratively selecting n_traj_sample - i for i = 1,...,n_traj_sample - n-traj.
     For this purpose, `next_combi_total_distance_gm14` computes the total distance
     of each trajectory combination by using the total distance of each combination
-    in the previous step and subtracting each pair distance with the dropped
-    trajectory, that yielded the lowest total distance combinations in the previous
-    step.
-
-    Parameters and returned objects are the same as in the other main sampling
-    functions.
+    in the previous step and subtracting each pair distance with the dropped trajectory,
+    that yielded the lowest total distance combinations in the previous step.
 
     """
     n_traj_sample = len(sample_traj_list)
@@ -606,6 +598,7 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
     # They are subtracted from the total in the old combi_total distance.
     indices = np.arange(0, len(traj_dist_matrix)).tolist()
     lost_index = [item for item in indices if item not in max_dist_indices][0]
+
     # Init index tracker and delete first index.
     tracker_keep_indices = np.arange(0, len(traj_dist_matrix)).tolist()
     tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)
@@ -626,6 +619,7 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
         tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)
 
     select_trajs = [sample_traj_list[idx] for idx in tracker_keep_indices]
+
     # Rows are parameters, cols is number of drawn parameter vectors.
     input_par_array = np.vstack(select_trajs).T
     select_dist_matrix = distance_matrix(select_trajs)

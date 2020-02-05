@@ -22,19 +22,22 @@ from select_sample_set import total_distance
 from select_sample_set import final_ge_menendez_2014
 
 
-def test_compute_sample_distance():
+def test_compute_pair_distance():
+    """Unit test for function `compute_pair_distance`"""
     traj_0 = np.ones((3, 2))
     traj_1 = np.zeros((3, 2))
     assert 4 * np.sqrt(3) == compute_pair_distance(traj_0, traj_1)
 
 
 def test_distance_matrix():
+    """Unit test for function `distance_matrix`"""
     traj_list = [np.ones((3, 2)), np.zeros((3, 2))]
     expected = np.array([[0, 4 * np.sqrt(3)], [4 * np.sqrt(3), 0]])
     assert_array_equal(expected, distance_matrix(traj_list))
 
 
 def test_combi_wrapper():
+    """Unit test for function `combi_wrapper`"""
     expected_0 = [[0]]
     expected_1 = [[0], [1]]
     expected_2 = [[0, 1]]
@@ -48,7 +51,11 @@ def test_combi_wrapper():
 
 
 def test_select_trajectories_1():
-    """The difference between sample and selection size is not large enough for high trust."""
+    """
+    Small unit test for `select_trajectories` by reducing the sample set by
+    one sample. Tests only the combination that yields the maximal `total_distance`.
+
+    """
     test_traj_dist_matrix = np.array(
         [[0, 1, 2, 4], [1, 0, 3, 100], [2, 3, 0, 200], [4, 100, 200, 0]]
     )
@@ -62,10 +69,14 @@ def test_select_trajectories_1():
     assert_array_equal(test_select[3, :], expected_fourth_row)
 
 
-def test_select_trajectories_2():
-    """The difference between sample and selection size is not large enough for high trust."""
+@pytest.fixture
+def dist_matrix():
     dist_matrix = np.array([[0, 4, 5, 6], [4, 0, 7, 8], [5, 7, 0, 9], [6, 8, 9, 0]])
+    return dist_matrix
 
+
+def test_select_trajectories_2(dist_matrix):
+    """The difference between sample and selection size is not large enough for high trust."""
     exp_max_dist_indices = [1, 2, 3]
 
     exp_combi_distance = np.array(
@@ -83,10 +94,8 @@ def test_select_trajectories_2():
     assert_array_equal(exp_combi_distance, combi_distance)
 
 
-def test_select_trajectories_3():
+def test_select_trajectories_3(dist_matrix):
     """The difference between sample and selection size is not large enough for high trust."""
-    dist_matrix = np.array([[0, 4, 5, 6], [4, 0, 7, 8], [5, 7, 0, 9], [6, 8, 9, 0]])
-
     exp_max_dist_indices = [2, 3]
 
     exp_combi_distance = np.array(
@@ -107,7 +116,11 @@ def test_select_trajectories_3():
 
 
 def test_select_trajectories_iteration_1():
-    """The difference between sample and selection size is not large enough for high trust."""
+    """
+    Small unit test for `select_trajectories_wrapper_iteration` by reducing
+    the sample set by one sample.
+
+    """
     dist_matrix = np.array([[0, 4, 5, 6], [4, 0, 7, 8], [5, 7, 0, 9], [6, 8, 9, 0]])
 
     exp_max_dist_indices = [2, 3]
@@ -126,7 +139,11 @@ def test_select_trajectories_iteration_1():
 
 
 def test_select_trajectories_iteration_2():
-    """The difference between sample and selection size is not large enough for high trust."""
+    """
+    Small unit test for `select_trajectories_wrapper_iteration` by reducing
+    the sample set by one sample.
+
+    """
     test_traj_dist_matrix = np.array(
         [[0, 1, 2, 4], [1, 0, 3, 100], [2, 3, 0, 200], [4, 100, 200, 0]]
     )
@@ -139,6 +156,35 @@ def test_select_trajectories_iteration_2():
     assert_array_equal(max_dist_indices, max_dist_indices_iter)
 
 
+@pytest.fixture
+def numbers():
+    n_inputs = 4
+    n_levels = 10
+    n_traj_sample = 30
+    n_traj = 5
+
+    return [n_inputs, n_levels, n_traj_sample, n_traj]
+
+
+@pytest.fixture
+def sample_traj_list(numbers):
+    sample_traj_list = list()
+    for traj in range(0, numbers[2]):
+
+        seed = 123 + traj
+        m_traj, _ = morris_trajectory(numbers[0], numbers[1], seed=seed)
+        sample_traj_list.append(m_traj)
+
+    return sample_traj_list
+
+
+@pytest.fixture
+def traj_selection(sample_traj_list, numbers):
+    _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, numbers[3])
+
+    return [select_list, select_distance_matrix]
+
+
 @pytest.mark.skip(
     reason="The following behavior is expected by Ge/Menendez (2014). \
     Oftentimes the test works. \
@@ -146,7 +192,7 @@ def test_select_trajectories_iteration_2():
     selects a different, slightly worse trajectory set\
     compared to campolongo_2007."
 )
-def test_compare_camp_07_int_ge_men_14_1():
+def test_compare_camp_07_int_ge_men_14_1(numbers, sample_traj_list, traj_selection):
     """
     A share of times, the test failes because the path of combinations
     in the iteration in intermediate_ge_menendez_2014 slightly deviates from
@@ -154,52 +200,27 @@ def test_compare_camp_07_int_ge_men_14_1():
     are relative close.
 
     """
-    n_inputs = 4
-    n_levels = 1
-    n_traj_sample = 50
-    n_traj = 5
-
-    sample_traj_list = list()
-    for traj in range(0, n_traj_sample):
-        seed = 123 + traj
-
-        m_traj = morris_trajectory(n_inputs, n_levels, seed=seed)
-        sample_traj_list.append(m_traj)
-
-    _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
     _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(
-        sample_traj_list, n_traj
+        sample_traj_list, numbers[3]
     )
+    selection = traj_selection
+    assert_array_equal(np.array(selection[0]), np.array(select_list_2))
+    assert_array_equal(traj_selection[1], select_distance_matrix_2)
 
-    assert_array_equal(np.array(select_list), np.array(select_list_2))
-    assert_array_equal(select_distance_matrix, select_distance_matrix_2)
 
-
-def test_compare_camp_07_int_ge_men_14_2():
+def test_compare_camp_07_int_ge_men_14_2(numbers, sample_traj_list, traj_selection):
     """
     Tests wether the trajectory set computed by compolongo_2007
     and intermediate_ge_menendez_2014 are reasonably close in terms
     of their total distance.
 
     """
-    n_inputs = 4
-    n_levels = 10
-    n_traj_sample = 30
-    n_traj = 5
-
-    sample_traj_list = list()
-    for traj in range(0, n_traj_sample):
-        seed = 123 + traj
-
-        m_traj, _ = morris_trajectory(n_inputs, n_levels, seed=seed)
-        sample_traj_list.append(m_traj)
-
-    _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
     _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(
-        sample_traj_list, n_traj
+        sample_traj_list, numbers[3]
     )
 
-    dist_camp = total_distance(select_distance_matrix)
+    selection = traj_selection
+    dist_camp = total_distance(selection[1])
     dist_gm = total_distance(select_distance_matrix_2)
 
     assert dist_camp - dist_gm < 0.03 * dist_camp
@@ -212,24 +233,13 @@ def test_compare_camp_07_int_ge_men_14_2():
     selects a different, slightly worse trajectory set\
     compared to campolongo_2007."
 )
-def test_compare_camp_07_final_ge_men_14_1():
-    n_inputs = 4
-    n_levels = 10
-    n_traj_sample = 30
-    n_traj = 5
-
-    sample_traj_list = list()
-    for traj in range(0, n_traj_sample):
-        seed = 123 + traj
-
-        m_traj, _ = morris_trajectory(n_inputs, n_levels, seed=seed)
-        sample_traj_list.append(m_traj)
+def test_compare_camp_07_final_ge_men_14_1(numbers, sample_traj_list, traj_selection):
 
     traj_array, traj_list, diagonal_dist_matrix = final_ge_menendez_2014(
-        sample_traj_list, n_traj
+        sample_traj_list, numbers[3]
     )
     test_array, test_list, test_diagonal_dist_matrix = intermediate_ge_menendez_2014(
-        sample_traj_list, n_traj
+        sample_traj_list, numbers[3]
     )
 
     assert_array_equal(traj_array, test_array)
@@ -237,31 +247,23 @@ def test_compare_camp_07_final_ge_men_14_1():
     assert_array_equal(diagonal_dist_matrix, test_diagonal_dist_matrix)
 
 
-def test_compare_camp_07_final_ge_men_14_2():
+def test_compare_camp_07_final_ge_men_14_2(numbers, sample_traj_list, traj_selection):
     """
     Tests wether the trajectory set computed by compolongo_2007
     and final_ge_menendez_2014 are reasonably close in terms
     of their total distance.
 
+    Notes
+    -----
+    Very few times, the difference gets relatively large, see `assert`.
+
     """
-    n_inputs = 4
-    n_levels = 10
-    n_traj_sample = 30
-    n_traj = 5
-
-    sample_traj_list = list()
-    for traj in range(0, n_traj_sample):
-        seed = 123 + traj
-
-        m_traj, _ = morris_trajectory(n_inputs, n_levels, seed=seed)
-        sample_traj_list.append(m_traj)
-
-    _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, n_traj)
     _, select_list_2, select_distance_matrix_2 = final_ge_menendez_2014(
-        sample_traj_list, n_traj
+        sample_traj_list, numbers[3]
     )
 
-    dist_camp = total_distance(select_distance_matrix)
+    selection = traj_selection
+    dist_camp = total_distance(selection[1])
     dist_gm = total_distance(select_distance_matrix_2)
 
     assert dist_camp - dist_gm < 0.4 * dist_camp
