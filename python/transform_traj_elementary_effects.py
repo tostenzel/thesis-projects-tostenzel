@@ -2,22 +2,22 @@
 import numpy as np
 from transform_distributions import transform_stnormal_normal_corr
 from transform_distributions import transform_uniform_stnormal_uncorr
-from transform_reorder import ee_full_reorder_trajectory
-from transform_reorder import ee_ind_reorder_trajectory
-from transform_reorder import inverse_ee_full_reorder_trajectory
-from transform_reorder import inverse_ee_ind_reorder_trajectory
-from transform_reorder import inverse_reorder_cov
-from transform_reorder import inverse_reorder_mu
+from transform_reorder import ee_corr_reorder_trajectory
+from transform_reorder import ee_uncorr_reorder_trajectory
+from transform_reorder import reverse_ee_corr_reorder_trajectory
+from transform_reorder import reverse_ee_uncorr_reorder_trajectory
+from transform_reorder import reverse_reorder_cov
+from transform_reorder import reverse_reorder_mu
 from transform_reorder import reorder_cov
 from transform_reorder import reorder_mu
 
 
-def trans_ee_ind_trajectories(
+def trans_ee_uncorr_trajectories(
     sample_traj_list, cov, mu
 ):
     """
     Transforms list of trajectories to two lists of transformed trajectories
-    for the computation of the independent Elementary Effects. As explained in
+    for the computation of the uncorrependent Elementary Effects. As explained in
     Ge/Menendez (2017), pages 33 and 34, the rows in the two different transformed
     trajectories equal to T(p_{i}, i) and T(p_{i+1}, i), respectively.
     Understanding the transformations requires to write up the first transformation
@@ -47,11 +47,11 @@ def trans_ee_ind_trajectories(
     # Transformation 1 including taking the cdf from Transformation 2.
     for traj in range(0, n_traj_sample):
         z = sample_traj_list[traj]
-        zero_idx_diff.append(ee_ind_reorder_trajectory(z, p_i_plus_one=False))
-        one_idx_diff.append(ee_ind_reorder_trajectory(z))
+        zero_idx_diff.append(ee_uncorr_reorder_trajectory(z, row_plus_one=False))
+        one_idx_diff.append(ee_uncorr_reorder_trajectory(z))
 
     # Transformation 2 for p_i.
-    # Need to reorder mu and covariance according to the zero index difference.
+    # Need to reorder mu and covariance according to the zero uncorrex difference.
     for traj in range(0, n_traj_sample):
         # Needs to be set up again for each traj because otherwise it'd be one too much.
         mu_zero = reorder_mu(mu)
@@ -93,20 +93,20 @@ def trans_ee_ind_trajectories(
     trans_piplusone_i = []
     for traj in range(0, n_traj_sample):
         trans_pi_i.append(
-            inverse_ee_ind_reorder_trajectory(zero_idx_diff[traj], p_i_plus_one=False)
+            reverse_ee_uncorr_reorder_trajectory(zero_idx_diff[traj], row_plus_one=False)
         )
-        trans_piplusone_i.append(inverse_ee_ind_reorder_trajectory(one_idx_diff[traj]))
+        trans_piplusone_i.append(reverse_ee_uncorr_reorder_trajectory(one_idx_diff[traj]))
 
     return trans_pi_i, trans_piplusone_i, coeff_step
 
 
-def trans_ee_full_trajectories(
+def trans_ee_corr_trajectories(
     sample_traj_list, cov, mu
 ):
     """
     Transforms a list of trajectories such that their rows correspond to
     T(p_{i+1}, i-1). To create T(p_{i}, i-1) is not needed as this is done by
-    `trans_ee_ind_trajectories`.
+    `trans_ee_uncorr_trajectories`.
 
     REMARK: It is important that from the rows `trans_piplusone_iminusone`
     one subtracts one row above in `trans_piplusone_i`.
@@ -130,16 +130,16 @@ def trans_ee_full_trajectories(
     # Transformation 1 for p_{i+1} including taking the cdf from Transformation 2.
     for traj in range(0, n_traj_sample):
         z = sample_traj_list[traj]
-        two_idx_diff.append(ee_full_reorder_trajectory(z))
-        one_idx_diff.append(ee_ind_reorder_trajectory(z))
+        two_idx_diff.append(ee_corr_reorder_trajectory(z))
+        one_idx_diff.append(ee_uncorr_reorder_trajectory(z))
 
     # Transformation 2 for p_{i+1}.
-    # Need to reorder mu and covariance according to the two index difference by
-    # using the invese function as for p_i in `the function for the independent EEs.
+    # Need to reorder mu and covariance according to the two uncorrex difference by
+    # using the invese function as for p_i in `the function for the uncorrependent EEs.
     for traj in range(0, n_traj_sample):
         # Needs to be set up again for each traj because otherwise it'd be one too much.
-        mu_two = inverse_reorder_mu(mu)
-        cov_two = inverse_reorder_cov(cov)
+        mu_two = reverse_reorder_mu(mu)
+        cov_two = reverse_reorder_cov(cov)
         for row in range(0, n_rows):
             two_idx_diff[traj][row, :], _ = transform_stnormal_normal_corr(
                 two_idx_diff[traj][row, :], cov_two, mu_two
@@ -167,9 +167,9 @@ def trans_ee_full_trajectories(
     trans_piplusone_iminusone = []
     trans_piplusone_i = []
     for traj in range(0, n_traj_sample):
-        trans_piplusone_i.append(inverse_ee_ind_reorder_trajectory(one_idx_diff[traj]))
+        trans_piplusone_i.append(reverse_ee_uncorr_reorder_trajectory(one_idx_diff[traj]))
         trans_piplusone_iminusone.append(
-            inverse_ee_full_reorder_trajectory(two_idx_diff[traj])
+            reverse_ee_corr_reorder_trajectory(two_idx_diff[traj])
         )
 
     return trans_piplusone_iminusone, trans_piplusone_i

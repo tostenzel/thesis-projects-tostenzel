@@ -8,51 +8,51 @@ import numpy as np
 
 from numpy.testing import assert_array_equal
 
-from transform_reorder import ee_full_reorder_trajectory
-from transform_reorder import inverse_ee_full_reorder_trajectory
-from transform_reorder import ee_ind_reorder_trajectory
-from transform_reorder import inverse_ee_ind_reorder_trajectory
+from transform_reorder import ee_corr_reorder_trajectory
+from transform_reorder import reverse_ee_corr_reorder_trajectory
+from transform_reorder import ee_uncorr_reorder_trajectory
+from transform_reorder import reverse_ee_uncorr_reorder_trajectory
 from transform_reorder import reorder_mu
 from transform_reorder import reorder_cov
-from transform_reorder import inverse_reorder_mu
-from transform_reorder import inverse_reorder_cov
+from transform_reorder import reverse_reorder_mu
+from transform_reorder import reverse_reorder_cov
 
 
-def test_ee_ind_reorder_trajectory():
+def test_ee_uncorr_reorder_trajectory():
     traj = np.array([[0, 0, 0], [1, 0, 0], [2, 3, 0], [4, 5, 6]])
 
     assert_array_equal(
-        ee_ind_reorder_trajectory(traj),
+        ee_uncorr_reorder_trajectory(traj),
         np.array([[0, 0, 0], [0, 0, 1], [0, 2, 3], [4, 5, 6]]),
     )
 
     assert_array_equal(
-        traj, inverse_ee_ind_reorder_trajectory(ee_ind_reorder_trajectory(traj))
+        traj, reverse_ee_uncorr_reorder_trajectory(ee_uncorr_reorder_trajectory(traj))
     )
 
     assert_array_equal(
-        ee_ind_reorder_trajectory(traj, p_i_plus_one=False),
+        ee_uncorr_reorder_trajectory(traj, row_plus_one=False),
         np.array([[0, 0, 0], [0, 1, 0], [2, 3, 0], [5, 6, 4]]),
     )
 
     assert_array_equal(
         traj,
-        inverse_ee_ind_reorder_trajectory(
-            ee_ind_reorder_trajectory(traj, p_i_plus_one=False), p_i_plus_one=False
+        reverse_ee_uncorr_reorder_trajectory(
+            ee_uncorr_reorder_trajectory(traj, row_plus_one=False), row_plus_one=False
         ),
     )
 
 
-def test_ee_full_reorder_trajectory():
+def test_ee_corr_reorder_trajectory():
     traj = np.array([[0, 0, 0], [1, 0, 0], [2, 3, 0], [4, 5, 6]])
 
     assert_array_equal(
-        ee_full_reorder_trajectory(traj),
+        ee_corr_reorder_trajectory(traj),
         np.array([[0, 0, 0], [1, 0, 0], [3, 0, 2], [6, 4, 5]]),
     )
 
     assert_array_equal(
-        traj, inverse_ee_full_reorder_trajectory(ee_full_reorder_trajectory(traj))
+        traj, reverse_ee_corr_reorder_trajectory(ee_corr_reorder_trajectory(traj))
     )
 
 
@@ -84,13 +84,13 @@ def test_reorder_cov():
     assert_array_equal(expected, reorder_cov(cov))
 
 
-def test_inverse_reorder_mu():
+def test_reverse_reorder_mu():
     mu = np.arange(10)
     expected = np.array([9, 0, 1, 2, 3, 4, 5, 6, 7, 8])
-    assert_array_equal(expected, inverse_reorder_mu(mu))
+    assert_array_equal(expected, reverse_reorder_mu(mu))
 
 
-def test_inverse_reorder_cov():
+def test_reverse_reorder_cov():
     cov = np.array(
         [
             [10, 2, 3, 4, 5],
@@ -109,4 +109,4 @@ def test_inverse_reorder_cov():
             [11, 4, 7, 9, 40],
         ]
     )
-    assert_array_equal(expected, inverse_reorder_cov(cov))
+    assert_array_equal(expected, reverse_reorder_cov(cov))

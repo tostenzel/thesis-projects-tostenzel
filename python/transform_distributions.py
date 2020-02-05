@@ -111,6 +111,8 @@ def transform_stnormal_normal_corr(z_row, cov, mu):
     of the covariance matrix directly. This saves the scaling by SD and expectation.
     - This method is simpler and slightly more precise than the one in [3], page 33, for
     normally distributed paramters.
+    - [1] explains how Rosenblatt and Nataf transformation are equal for normally distributed
+    deviates.
 
     References
     ----------
@@ -125,6 +127,7 @@ def transform_stnormal_normal_corr(z_row, cov, mu):
     # Convert covariance matrix to correlation matrix
     corr = covariance_to_correlation(cov)
 
+    # Compute lower Cholesky matrix from `corr`.
     chol_low = linalg.cholesky(corr, lower=True)
     correlate_step = chol_low[-1, -1]
 

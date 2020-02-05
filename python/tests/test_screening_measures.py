@@ -1,4 +1,4 @@
-"""Tests for `screening_measures_gm_2017`."""
+"""Tests for `screening_measures`."""
 import sys
 
 # Define parent folder as relative path.
@@ -10,7 +10,7 @@ from numpy.testing import assert_array_equal
 from numpy.testing import assert_allclose
 
 from sampling_schemes import morris_trajectory
-from screening_measures_gm_2017 import screening_measures_gm_2017
+from screening_measures import screening_measures
 
 
 def sobol_model(a, b, c, d, e, f, coeffs, *args):
@@ -39,7 +39,7 @@ def test_screening_measures_uncorrelated_g_function():
     
     References
     ----------
-    Saltelli, A., M. Ratto, T. Andres, F. Campolongo, J. Cariboni, D. Gatelli, M. Saisana,
+    [1] Saltelli, A., M. Ratto, T. Andres, F. Campolongo, J. Cariboni, D. Gatelli, M. Saisana,
     and S. Tarantola (2008). Global Sensitivity Analysis: The Primer. John Wiley & Sons.
 
     """
@@ -96,7 +96,7 @@ def test_screening_measures_uncorrelated_g_function():
             [1 / 3, 1, 0, 1 / 3, 2 / 3, 1],
         ]
     )
-    # The indices show the order of columns to which the step is added.
+    # The uncorrices show the order of columns to which the step is added.
     idx_one = [5, 1, 0, 3, 2, 4]
     idx_two = [1, 2, 0, 5, 4, 3]
     idx_three = [3, 0, 4, 1, 2, 5]
@@ -127,40 +127,40 @@ def test_screening_measures_uncorrelated_g_function():
         return sobol_model(f, c, d, e, b, a, coeffs[idx_four])
     
     # Compute step sizes because rows are also randomly shuffeled.
-    # The indices account for the column order for stairs.
+    # The uncorrices account for the column order for stairs.
     positive_steps = np.array([2 / 3, 2 / 3, 2 / 3, 2 / 3, 2 / 3, 2 / 3])
     steps_one = positive_steps * np.array([1, -1, -1, 1, 1, 1])[idx_one]
     steps_two = positive_steps * np.array([1, 1, 1, -1, -1, -1])[idx_two]
     steps_three = positive_steps * np.array([-1, -1, 1, -1, -1, +1])[idx_three]
     steps_four = positive_steps * np.array([-1, +1, -1, -1, 1, 1])[idx_four]
     
-    # Compute the independent Elementary Effects.
+    # Compute the uncorrependent Elementary Effects.
     # Since there is no correlation, they equal their abolute versions.
-    one_ee_ind, _ , _, _, _, _ = screening_measures_gm_2017(
+    one_ee_uncorr, _ , _, _, _, _ = screening_measures(
         wrapper_one, [traj_one], [steps_one], cov, mu
         )
     
-    two_ee_ind, _, _, _, _, _= screening_measures_gm_2017(
+    two_ee_uncorr, _, _, _, _, _= screening_measures(
         wrapper_two, [traj_two], [steps_two], cov, mu
         )
     
-    three_ee_ind, _, _, _, _, _ = screening_measures_gm_2017(
+    three_ee_uncorr, _, _, _, _, _ = screening_measures(
         wrapper_three, [traj_three], [steps_three], cov, mu
         )
     
-    four_ee_ind, _, _, _, _, _ = screening_measures_gm_2017(
+    four_ee_uncorr, _, _, _, _, _ = screening_measures(
         wrapper_four, [traj_four], [steps_four], cov, mu
         )
     
-    # `argsort` inverses the transformation that induced the stairs shape to the trajectories.
-    ee_one = np.array(one_ee_ind).reshape(6, 1)[np.argsort(idx_one)]
-    ee_two = np.array(two_ee_ind).reshape(6, 1)[np.argsort(idx_two)]
-    ee_three = np.array(three_ee_ind).reshape(6, 1)[np.argsort(idx_three)]
-    ee_four = np.array(four_ee_ind).reshape(6, 1)[np.argsort(idx_four)]
+    # `argsort` inverses the transformation that uncorruced the stairs shape to the trajectories.
+    ee_one = np.array(one_ee_uncorr).reshape(6, 1)[np.argsort(idx_one)]
+    ee_two = np.array(two_ee_uncorr).reshape(6, 1)[np.argsort(idx_two)]
+    ee_three = np.array(three_ee_uncorr).reshape(6, 1)[np.argsort(idx_three)]
+    ee_four = np.array(four_ee_uncorr).reshape(6, 1)[np.argsort(idx_four)]
     
     ee_i = np.concatenate((ee_one, ee_two, ee_three, ee_four), axis=1)
     
-    # Compute summary measures "by hand" because `screening_measures_gm_2017`
+    # Compute summary measures "by hand" because `screening_measures`
     # takes only a list of one trajectory because the argument order is different.
     ee = np.mean(ee_i, axis=1).reshape(6, 1)
     abs_ee = np.mean(abs(ee_i), axis=1).reshape(6, 1)
@@ -177,7 +177,7 @@ def test_screening_measures_uncorrelated_g_function():
 
 
 def lin_portfolio(q1, q2, c1=2, c2=1, *args):
-    """Simple function with analytic EE solution to support testing."""
+    """Simple linear function with analytic EE solution."""
     return c1 * q1 + c2 * q2
 
 
@@ -203,13 +203,13 @@ def test_screening_measures_uncorrelated_linear_function():
         step_list.append(step)
 
     (
-        ee_ind,
-        ee_full,
-        abs_ee_ind,
-        abs_ee_full,
-        sd_ee_ind,
-        sd_ee_full,
-    ) = screening_measures_gm_2017(
+        ee_uncorr,
+        ee_corr,
+        abs_ee_uncorr,
+        abs_ee_corr,
+        sd_ee_uncorr,
+        sd_ee_corr,
+    ) = screening_measures(
         lin_portfolio,
         traj_list,
         step_list,
@@ -220,9 +220,9 @@ def test_screening_measures_uncorrelated_linear_function():
     exp_ee = np.array([2, 1]).reshape(n_inputs, 1)
     exp_sd = np.array([0, 0]).reshape(n_inputs, 1)
 
-    assert_array_equal(exp_ee, ee_ind)
-    assert_array_equal(exp_ee, abs_ee_ind)
-    assert_array_equal(exp_ee, ee_full)
-    assert_array_equal(exp_ee, abs_ee_full)
-    assert_allclose(exp_sd, sd_ee_full, atol=1.0e-15)
-    assert_allclose(exp_sd, sd_ee_full, atol=1.0e-15)
+    assert_array_equal(exp_ee, ee_uncorr)
+    assert_array_equal(exp_ee, abs_ee_uncorr)
+    assert_array_equal(exp_ee, ee_corr)
+    assert_array_equal(exp_ee, abs_ee_corr)
+    assert_allclose(exp_sd, sd_ee_corr, atol=1.0e-15)
+    assert_allclose(exp_sd, sd_ee_corr, atol=1.0e-15)
