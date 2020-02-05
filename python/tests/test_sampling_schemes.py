@@ -11,6 +11,17 @@ from sampling_schemes import morris_trajectory
 
 
 def test_morris_trajectory_value_grid():
+    """
+    Tests wether the point grid is composed of the rights values.
+
+    Notes
+    -----
+    `morris_trajectory` is hard to test because there are many random
+    objects involved. A good check is to have a look at a large number
+    of trajectories as the conditions that they should meet are easy
+    to recognize.
+
+    """
     n_levels = 10
     # Many inputs for high probability to catch all grid points in trajectory.
     n_inputs = 100

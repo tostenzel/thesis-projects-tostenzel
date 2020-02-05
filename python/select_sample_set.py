@@ -9,8 +9,8 @@ References
 [1] Campolongo, F., J. Cariboni, and A. Saltelli (2007). An effective screening design for
 sensitivity analysis of large models. Environmental modelling & software 22 (10), 1509–
 1518.
-[2] Ge, Q. and M. Menendez (2014). An efficient sensitivity analysis approach for computationally
-expensive microscopic traffic simulation models. International Journal of
+[2] Ge, Q. and M. Menendez (2014). An efficient sensitivity analysis approach for
+computationally expensive microscopic traffic simulation models. International Journal of
 Transportation 2 (2), 49–64.
 
 """

@@ -1,10 +1,11 @@
-"""Test transform_reorder.py"""
+"""Unit tests for transform_reorder.py"""
 import sys
 
 # Define parent folder as relative path.
 sys.path.append("python")
 
 import numpy as np
+import pytest
 
 from numpy.testing import assert_array_equal
 
@@ -18,9 +19,18 @@ from transform_reorder import reverse_reorder_mu
 from transform_reorder import reverse_reorder_cov
 
 
-def test_ee_uncorr_reorder_trajectory():
+@pytest.fixture
+def traj():
+    """Fix sample for next two tests."""
     traj = np.array([[0, 0, 0], [1, 0, 0], [2, 3, 0], [4, 5, 6]])
+    return traj
 
+def test_ee_uncorr_reorder_trajectory(traj):
+    """
+    Unit tests for `ee_uncorr_reorder_trajectory` and 
+    `reverse_ee_uncorr_reorder_trajectory`.
+
+    """
     assert_array_equal(
         ee_uncorr_reorder_trajectory(traj),
         np.array([[0, 0, 0], [0, 0, 1], [0, 2, 3], [4, 5, 6]]),
@@ -43,9 +53,12 @@ def test_ee_uncorr_reorder_trajectory():
     )
 
 
-def test_ee_corr_reorder_trajectory():
-    traj = np.array([[0, 0, 0], [1, 0, 0], [2, 3, 0], [4, 5, 6]])
+def test_ee_corr_reorder_trajectory(traj):
+    """
+    Unit tests for `ee_corr_reorder_trajectory` and 
+    `reverse_ee_corr_reorder_trajectory`.
 
+    """
     assert_array_equal(
         ee_corr_reorder_trajectory(traj),
         np.array([[0, 0, 0], [1, 0, 0], [3, 0, 2], [6, 4, 5]]),
@@ -56,13 +69,27 @@ def test_ee_corr_reorder_trajectory():
     )
 
 
-def test_reorder_mu():
+@pytest.fixture
+def mu():
+    """Fix expectation values for next test."""
     mu = np.arange(10)
+    return mu
+
+
+def test_reorder_mu(mu):
+    """Unit tests for `reorder_mu` and `reverse_reorder_mu`."""
     expected = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 0])
     assert_array_equal(expected, reorder_mu(mu))
+    
+    expected = np.array([9, 0, 1, 2, 3, 4, 5, 6, 7, 8])
+    assert_array_equal(expected, reverse_reorder_mu(mu))
+
+    assert_array_equal(mu, reverse_reorder_mu(reorder_mu(mu)))
 
 
-def test_reorder_cov():
+@pytest.fixture
+def cov():
+    """Fix covariance matrix for next test."""
     cov = np.array(
         [
             [10, 2, 3, 4, 5],
@@ -72,6 +99,11 @@ def test_reorder_cov():
             [5, 8, 10, 11, 50],
         ]
     )
+    return cov
+
+
+def test_reorder_cov(cov):
+    """Unit tests for `reorder_cov` and `reverse_reorder_mu`."""
     expected = np.array(
         [
             [20, 6, 7, 8, 2],
@@ -82,24 +114,6 @@ def test_reorder_cov():
         ]
     )
     assert_array_equal(expected, reorder_cov(cov))
-
-
-def test_reverse_reorder_mu():
-    mu = np.arange(10)
-    expected = np.array([9, 0, 1, 2, 3, 4, 5, 6, 7, 8])
-    assert_array_equal(expected, reverse_reorder_mu(mu))
-
-
-def test_reverse_reorder_cov():
-    cov = np.array(
-        [
-            [10, 2, 3, 4, 5],
-            [2, 20, 6, 7, 8],
-            [3, 6, 30, 9, 10],
-            [4, 7, 9, 40, 11],
-            [5, 8, 10, 11, 50],
-        ]
-    )
     expected = np.array(
         [
             [50, 5, 8, 10, 11],
@@ -110,3 +124,5 @@ def test_reverse_reorder_cov():
         ]
     )
     assert_array_equal(expected, reverse_reorder_cov(cov))
+
+    assert_array_equal(cov, reverse_reorder_cov(reorder_cov(cov)))

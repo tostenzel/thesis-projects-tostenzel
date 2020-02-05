@@ -1,4 +1,16 @@
-"""Tests select_sample_sets.py."""
+"""
+Tests select_sample_sets.py.
+
+References
+----------
+[1] Campolongo, F., J. Cariboni, and A. Saltelli (2007). An effective screening design for
+sensitivity analysis of large models. Environmental modelling & software 22 (10), 1509–
+1518.
+[2] Ge, Q. and M. Menendez (2014). An efficient sensitivity analysis approach for
+computationally expensive microscopic traffic simulation models. International Journal of
+Transportation 2 (2), 49–64.
+
+"""
 import sys
 
 # Define parent folder as relative path.
@@ -71,6 +83,7 @@ def test_select_trajectories_1():
 
 @pytest.fixture
 def dist_matrix():
+    """Fix dist_matrix for the next two tests."""
     dist_matrix = np.array([[0, 4, 5, 6], [4, 0, 7, 8], [5, 7, 0, 9], [6, 8, 9, 0]])
     return dist_matrix
 
@@ -158,6 +171,7 @@ def test_select_trajectories_iteration_2():
 
 @pytest.fixture
 def numbers():
+    """Fix numbers for the next four tests."""
     n_inputs = 4
     n_levels = 10
     n_traj_sample = 30
@@ -168,6 +182,7 @@ def numbers():
 
 @pytest.fixture
 def sample_traj_list(numbers):
+    """Fix sample set for the next four tests."""
     sample_traj_list = list()
     for traj in range(0, numbers[2]):
 
@@ -180,32 +195,10 @@ def sample_traj_list(numbers):
 
 @pytest.fixture
 def traj_selection(sample_traj_list, numbers):
+    """Fix sample set and distance matrix for the next four tests."""
     _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, numbers[3])
 
     return [select_list, select_distance_matrix]
-
-
-@pytest.mark.skip(
-    reason="The following behavior is expected by Ge/Menendez (2014). \
-    Oftentimes the test works. \
-    However, due to numerical reasons, sometimes intermediate_ge_menendez_2014 \
-    selects a different, slightly worse trajectory set\
-    compared to campolongo_2007."
-)
-def test_compare_camp_07_int_ge_men_14_1(numbers, sample_traj_list, traj_selection):
-    """
-    A share of times, the test failes because the path of combinations
-    in the iteration in intermediate_ge_menendez_2014 slightly deviates from
-    the optimal one. Yet, the total distance of the given combinations
-    are relative close.
-
-    """
-    _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(
-        sample_traj_list, numbers[3]
-    )
-    selection = traj_selection
-    assert_array_equal(np.array(selection[0]), np.array(select_list_2))
-    assert_array_equal(traj_selection[1], select_distance_matrix_2)
 
 
 def test_compare_camp_07_int_ge_men_14_2(numbers, sample_traj_list, traj_selection):
@@ -226,27 +219,6 @@ def test_compare_camp_07_int_ge_men_14_2(numbers, sample_traj_list, traj_selecti
     assert dist_camp - dist_gm < 0.03 * dist_camp
 
 
-@pytest.mark.skip(
-    reason="The following behavior is expected by Ge/Menendez (2014). \
-    Oftentimes the test works. \
-    However, due to numerical reasons, sometimes intermediate_ge_menendez_2014 \
-    selects a different, slightly worse trajectory set\
-    compared to campolongo_2007."
-)
-def test_compare_camp_07_final_ge_men_14_1(numbers, sample_traj_list, traj_selection):
-
-    traj_array, traj_list, diagonal_dist_matrix = final_ge_menendez_2014(
-        sample_traj_list, numbers[3]
-    )
-    test_array, test_list, test_diagonal_dist_matrix = intermediate_ge_menendez_2014(
-        sample_traj_list, numbers[3]
-    )
-
-    assert_array_equal(traj_array, test_array)
-    assert_array_equal(traj_list, test_list)
-    assert_array_equal(diagonal_dist_matrix, test_diagonal_dist_matrix)
-
-
 def test_compare_camp_07_final_ge_men_14_2(numbers, sample_traj_list, traj_selection):
     """
     Tests wether the trajectory set computed by compolongo_2007
@@ -255,7 +227,7 @@ def test_compare_camp_07_final_ge_men_14_2(numbers, sample_traj_list, traj_selec
 
     Notes
     -----
-    Very few times, the difference gets relatively large, see `assert`.
+    Very few times, the difference gets relatively large, see assert statement.
 
     """
     _, select_list_2, select_distance_matrix_2 = final_ge_menendez_2014(
@@ -267,3 +239,49 @@ def test_compare_camp_07_final_ge_men_14_2(numbers, sample_traj_list, traj_selec
     dist_gm = total_distance(select_distance_matrix_2)
 
     assert dist_camp - dist_gm < 0.4 * dist_camp
+
+
+@pytest.mark.skip(
+    reason="The following behavior is expected by Ge/Menendez (2014). \
+    Oftentimes the test works. \
+    However, due to numerical reasons, sometimes intermediate_ge_menendez_2014 \
+    selects a different, slightly worse trajectory set\
+    compared to campolongo_2007."
+)
+def test_compare_camp_07_int_ge_men_14_1(numbers, sample_traj_list, traj_selection):
+    """
+    Tests wether the sample set and distance matrix of the [1] and the first part
+    of the improvment in [2] are identical.
+
+    """
+    _, select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(
+        sample_traj_list, numbers[3]
+    )
+    selection = traj_selection
+    assert_array_equal(np.array(selection[0]), np.array(select_list_2))
+    assert_array_equal(traj_selection[1], select_distance_matrix_2)
+
+
+@pytest.mark.skip(
+    reason="The following behavior is expected by Ge/Menendez (2014). \
+    Oftentimes the test works. \
+    However, due to numerical reasons, sometimes intermediate_ge_menendez_2014 \
+    selects a different, slightly worse trajectory set\
+    compared to campolongo_2007."
+)
+def test_compare_camp_07_final_ge_men_14_1(numbers, sample_traj_list, traj_selection):
+    """
+    Tests wether the sample set and distance matrix of the [1] and the both parts
+    of the improvment in [2] are identical.
+
+    """
+    traj_array, traj_list, diagonal_dist_matrix = final_ge_menendez_2014(
+        sample_traj_list, numbers[3]
+    )
+    test_array, test_list, test_diagonal_dist_matrix = intermediate_ge_menendez_2014(
+        sample_traj_list, numbers[3]
+    )
+
+    assert_array_equal(traj_array, test_array)
+    assert_array_equal(traj_list, test_list)
+    assert_array_equal(diagonal_dist_matrix, test_diagonal_dist_matrix)

@@ -15,8 +15,11 @@ from screening_measures import screening_measures
 
 def sobol_model(a, b, c, d, e, f, coeffs, *args):
     """
-    Tested by comparing graphs for 3 specifications to book.
-    Arguments are lists. Strongly nonlinear, nonmonotonic, and nonzero interactions.
+    Test function used in `test_screening_measures_uncorrelated_g_function`.
+
+    Notes
+    -----
+    Strongly nonlinear, nonmonotonic, and nonzero interactions.
     Analytic results for Sobol Indices.
 
     """
@@ -35,7 +38,23 @@ def sobol_model(a, b, c, d, e, f, coeffs, *args):
 def test_screening_measures_uncorrelated_g_function():
     """Tests the screening measures for six uncorrelated parameters.
 
-    Data and results taken from pages 123 - 127 in [1]
+    Data and results taken from pages 123 - 127 in [1]. The data is
+    four trajectories and the results are the Elementary Effects, the absolute
+    Elementary Effects and the SD of the Elementary Effects for six paramters.
+
+    Notes
+    -----
+    -Many intermediate results are given as well. `screening_measures` is able
+    to compute all of them precisely.
+    -The function uses a lot of reorderings. The reason is that `screening_measures`
+    assumes that the first columns has the first step addition etc. This facilitates
+    the necessary transformations to account for correlations. In this example
+    the order of the paramters to which the step is added is different for each
+    trajectory. To account for this discrepancy in trajectory format, the trajectories
+    and `sobol_model` have to be changed accordingly. Additionally, the effects have to
+    be recomputed for each trajectory because the the reordered trajectories with columns
+    in order of the step addition are still composed of columns that represent different
+    paramters.
     
     References
     ----------
@@ -172,18 +191,38 @@ def test_screening_measures_uncorrelated_g_function():
     expected_abs_ee = np.array([0.056, 0.277, 1.760, 1.185, 0.034, 0.099]).reshape(6, 1)
     expected_sd_ee = np.array([0.064, 0.321, 2.049, 1.370, 0.041, 0.122]).reshape(6, 1)
 
-    assert_array_equal(np.round(ee, 3), np.round(expected_ee, 3))
-    assert_allclose(np.round(abs_ee, 3), np.round(expected_abs_ee, 3), atol=0.01)
-    assert_array_equal(np.round(sd_ee, 3), np.round(expected_sd_ee, 3))
+    assert_array_equal(np.round(ee, 3), expected_ee, 3)
+    assert_allclose(np.round(abs_ee, 3), expected_abs_ee, 3, atol=0.01)
+    assert_array_equal(np.round(sd_ee, 3), expected_sd_ee, 3)
 
 
 def lin_portfolio(q1, q2, c1=2, c2=1, *args):
-    """Simple linear function with analytic EE solution."""
+    """Simple linear function with analytic EE solution for the next test."""
     return c1 * q1 + c2 * q2
 
 
 def test_screening_measures_uncorrelated_linear_function():
-    """Taken from Ralph C. Smith (2014): Uncertainty Quantification, page 335."""
+    """
+    Test for a linear function with two paramters. Non-unit variance and EEs are coefficients.
+    
+    Results data taken from [1], page 335.
+
+    Notes
+    -----
+    This test contains intuition for reasable results (including correlations) for the first
+    two testcases in [2] that also use a linear function. The corresponding EE
+    should be the coefficients plus the correlation times the coefficients of the correlated
+    parameters.
+
+    References
+    ----------
+    [1] Smith, R. C. (2014). Uncertainty Quantification: Theory, Implementation, and Applications.
+    Philadelphia: SIAM-Society for Industrial and Applied Mathematics.
+    [2] Ge, Q. and M. Menendez (2017). Extending morris method for qualitative global
+    sensitivityanalysis of models with dependent inputs. Reliability Engineering &
+    System Safety 100 (162), 28–39.
+
+    """
     cov = np.array([[1, 0], [0, 9]])
 
     # mu does not matter because the function is linear. You subtract what you add.
