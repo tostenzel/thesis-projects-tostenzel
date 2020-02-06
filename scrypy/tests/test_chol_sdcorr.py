@@ -2,7 +2,7 @@
 import sys
 
 # Define parent folder as relative path.
-sys.path.append("python")
+sys.path.append("scrypy")
 
 import numpy as np
 import pytest
