@@ -50,17 +50,18 @@ def trans_ee_uncorr_trajectories(sample_traj_list, cov, mu):
 
     Raises
     ------
-    AssertionError:
-        if the dimension of `mu`, `cov` and the elements in `sample_traj_list`
+    AssertionError
+        If the dimension of `mu`, `cov` and the elements in `sample_traj_list`
         do not fit together.
 
     Notes
     -----
-    -The rows in the two different transformed trajectories equal to T(p_{i+1}, i)
+    The rows in the two different transformed trajectories equal to T(p_{i+1}, i)
     and T(p_{i}, i). Understanding the transformations may require to write up the
     first transformation from p_i and p_{i+1} to T_1(p_{i}, i) and T_1(p_{i+1}, i).
     T_1 shifts the first i elements to the end for each row p_{i}.
-    -This function creates list of transformations of whole trajectories.
+
+    This function creates list of transformations of whole trajectories.
     The rows in the trajectories for T(p_{i}, i) that are to be subtracted from
     T(p_{i+1}, i), are still positioned one below compared to the trajectories for
     T(p_{i}, i). Therefore, importantly, one needs to compare each row in a traj from
@@ -158,8 +159,8 @@ def trans_ee_corr_trajectories(sample_traj_list, cov, mu):
 
     Raises
     ------
-    AssertionError:
-        if the dimension of `mu`, `cov` and the elements in `sample_traj_list`
+    AssertionError
+        If the dimension of `mu`, `cov` and the elements in `sample_traj_list`
         do not fit together.
 
     Notes
@@ -171,7 +172,7 @@ def trans_ee_corr_trajectories(sample_traj_list, cov, mu):
 
     See Also
     --------
-    `trans_ee_uncorr_trajectories`
+    trans_ee_uncorr_trajectories
 
     """
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)

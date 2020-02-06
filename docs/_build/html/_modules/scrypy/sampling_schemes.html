@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>scrypy.sampling_schemes &#8212; scrypy  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for scrypy.sampling_schemes</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Functions that create random samples of the trajectory and the radial design.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1"># Define parent folder as relative path.</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;../scrypy&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">transform_distributions</span> <span class="k">import</span> <span class="n">transform_uniform_stnormal_uncorr</span>
+
+
+<div class="viewcode-block" id="stepsize"><a class="viewcode-back" href="../../scrypy.html#scrypy.sampling_schemes.stepsize">[docs]</a><span class="k">def</span> <span class="nf">stepsize</span><span class="p">(</span><span class="n">n_levels</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes stepsize to create equiprobable sample points for the trajectory design.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_levels : int</span>
+<span class="sd">        Number of points in a trajectory sample.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    step : float</span>
+<span class="sd">        Step added to each lower half point of the point grid.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AssertionError</span>
+<span class="sd">        If the number of levels is not an even integer.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This function, published in [1], assumes that the number of sample points called</span>
+<span class="sd">    &quot;levels&quot; is an even integer. The first row in the trajectory is initialized with</span>
+<span class="sd">    the lower half of the desired equispaced points between 0 and 1. Given the below</span>
+<span class="sd">    formula, the step added to the lowest, second lowest, ..., highest point in the</span>
+<span class="sd">    lower half creates the lowest, second lowest, ..., highest point in the upper half</span>
+<span class="sd">    of the point grid.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    [1] Morris, M. D. (1991). Factorial sampling plans for preliminary computational experiments.</span>
+<span class="sd">    Technometrics 33 (2), 161–174.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">n_levels</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">is_integer</span><span class="p">(),</span> <span class="s2">&quot;n_levels must be an even number, see function docstring.&quot;</span>
+
+    <span class="n">step</span> <span class="o">=</span> <span class="n">n_levels</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_levels</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">step</span></div>
+
+
+<div class="viewcode-block" id="morris_trajectory"><a class="viewcode-back" href="../../scrypy.html#scrypy.sampling_schemes.morris_trajectory">[docs]</a><span class="k">def</span> <span class="nf">morris_trajectory</span><span class="p">(</span>
+    <span class="n">n_inputs</span><span class="p">,</span>
+    <span class="n">n_levels</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+    <span class="n">normal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">numeric_zero</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">step_function</span><span class="o">=</span><span class="n">stepsize</span><span class="p">,</span>
+    <span class="n">stairs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates random sample in trajectory design.</span>
+
+<span class="sd">    This function creates a random sample for a number of function parameters</span>
+<span class="sd">    (columns). The sample itself consists of the number plus one vectors of</span>
+<span class="sd">    parameter draws (rows).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_inputs : int</span>
+<span class="sd">        Number of input paramters / columns / rows - 1.</span>
+<span class="sd">    n_levels : int</span>
+<span class="sd">        Number of distict grid points.</span>
+<span class="sd">    seed : int</span>
+<span class="sd">        Random seed.</span>
+<span class="sd">    normal : bool</span>
+<span class="sd">        Indicates whether to transform points by `scipy.normal.ppt`</span>
+<span class="sd">    numeric_zero : float</span>
+<span class="sd">        `if normal is True`: Prevents `scipy.normal.ppt` to return `-Inf`</span>
+<span class="sd">        and `Inf` for 0 and 1.</span>
+<span class="sd">    step_function : function</span>
+<span class="sd">        Constant step as function of `n_levels` added to lower half of point grid.</span>
+<span class="sd">    stairs : bool</span>
+<span class="sd">        if False: Randomly shuffle columns, dissolves stairs shape.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    B_random : ndarray</span>
+<span class="sd">        Random sample in trajectory design.</span>
+<span class="sd">        Dimension `n_inputs` x `n_inputs + 1`.</span>
+<span class="sd">    trans_steps : ndarray</span>
+<span class="sd">        Column vector of steps added to base value point. Sorted by</span>
+<span class="sd">        parameter/column. Dimension `n_inputs` x `1`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    stepsize : See parameter `step_function`.</span>
+<span class="sd">    transform_uniform_stnormal_uncorr : See parameter `numeric_zero`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The method is described in [1]. This function follows the notation therein.</span>
+<span class="sd">    The idea is tailored to compute a random sample of function arguments to</span>
+<span class="sd">    compute local derivates. First, a random row of paramters is drawn. Then, one</span>
+<span class="sd">    parameter is changed by a fixed step in each row. The local derivatives can be</span>
+<span class="sd">    computed by subtracting the function evaluations of each row from its upper row,</span>
+<span class="sd">    thereby obtaining one local derivative for each parameter. The order of rows and</span>
+<span class="sd">    columns may be shuffled. Shuffling rows creates a negative stepsize. By default,</span>
+<span class="sd">    the shuffling of columns is turned off to facilitate post-processing.</span>
+
+<span class="sd">    Importantly, an additional option is to evaluate the points by the inverse</span>
+<span class="sd">    normal cdf to account for normally distributed input paramters vice versa</span>
+<span class="sd">    uniformly distributed ones. For this purpose, zeros and ones are slighly shifted</span>
+<span class="sd">    towards the centre of [0,1], so that no infinite values arise. Given the shape</span>
+<span class="sd">    of the inverse cdf, the specific transformation choice has large influences</span>
+<span class="sd">    on the stepsize and therefore the Elementary Effects.</span>
+<span class="sd">    To account for transformations, the step is recomputed for each parameter by</span>
+<span class="sd">    subtracting the last first row from the last row.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    [1] Morris, M. D. (1991). Factorial sampling plans for preliminary computational</span>
+<span class="sd">    experiments. Technometrics 33 (2), 161–174.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+    <span class="n">step</span> <span class="o">=</span> <span class="n">stepsize</span><span class="p">(</span><span class="n">n_levels</span><span class="p">)</span>
+
+    <span class="c1">#  Assisting matrices to induce stairs shape; Lower triangular matrix of ones.</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_inputs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_inputs</span><span class="p">]),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_inputs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_inputs</span><span class="p">])</span>
+
+    <span class="c1"># Lower half values of point grid.</span>
+    <span class="n">value_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">((</span><span class="n">n_levels</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_levels</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">n_levels</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Shuffle the lower half of the point grid to obtain the first row.</span>
+    <span class="n">base_value_vector_rand</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">value_grid</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">n_inputs</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+        <span class="mi">1</span><span class="p">,</span> <span class="n">n_inputs</span>
+    <span class="p">)</span>
+
+    <span class="c1"># P_random implies the order in which the step is added to the lower half value</span>
+    <span class="c1"># of a column. Random shuffling may dissolve the stairs shape.</span>
+    <span class="n">P_random</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">n_inputs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">stairs</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">P_random</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Randomly flips columns to induce negative steps.</span>
+    <span class="n">D_random</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_inputs</span><span class="p">,</span> <span class="n">n_inputs</span><span class="p">])</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">D_random</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="n">n_inputs</span><span class="p">))</span>
+
+    <span class="n">B_random</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span>
+        <span class="n">J</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">base_value_vector_rand</span><span class="p">)</span>
+        <span class="o">+</span> <span class="p">(</span><span class="n">step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">B</span> <span class="o">-</span> <span class="n">J</span><span class="p">),</span> <span class="n">D_random</span><span class="p">)</span> <span class="o">+</span> <span class="n">J</span><span class="p">),</span>
+        <span class="n">P_random</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># For standard normally distributed draws.</span>
+    <span class="k">if</span> <span class="n">normal</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">B_random</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span>
+            <span class="n">transform_uniform_stnormal_uncorr</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">B_random</span><span class="p">,</span> <span class="n">numeric_zero</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Recompute step for each point because it may have been transformed by `(-1)` or</span>
+    <span class="c1"># or by `transform_uniform_stnormal_uncorr`.</span>
+    <span class="n">trans_steps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_inputs</span><span class="p">])</span>
+    <span class="n">trans_steps</span> <span class="o">=</span> <span class="n">B_random</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">B_random</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="k">return</span> <span class="n">B_random</span><span class="p">,</span> <span class="n">trans_steps</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">scrypy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scrypy.html">scrypy package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Tobias Stenzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

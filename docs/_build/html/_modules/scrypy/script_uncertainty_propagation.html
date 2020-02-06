@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>scrypy.script_uncertainty_propagation &#8212; scrypy  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for scrypy.script_uncertainty_propagation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Script for Uncertainty Propagation.</span>
+<span class="sd">The structure is adapted to parallel computing.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># Define the script path relative to the location from where the script is called.</span>
+<span class="n">abs_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+
+<span class="c1"># Use multiprocessing for parallel computing. Needs to be set up at the beginning.</span>
+<span class="c1"># Restrict number of threads to one for each library.</span>
+<span class="n">update</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;NUMBA_NUM_THREADS&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OMP_NUM_THREADS&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OPENBLAS_NUM_THREADS&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NUMEXPR_NUM_THREADS&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MKL_NUM_THREADS&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">update</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">chaospy</span> <span class="k">as</span> <span class="nn">cp</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">respy</span> <span class="k">as</span> <span class="nn">rp</span>
+
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Pool</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+
+<span class="kn">from</span> <span class="nn">multi_quantities_of_interest</span> <span class="k">import</span> <span class="n">model_wrapper_kw_94</span>
+<span class="kn">from</span> <span class="nn">multi_quantities_of_interest</span> <span class="k">import</span> <span class="n">get_quantity_of_interest</span>
+
+
+<div class="viewcode-block" id="propagate_mean_estimates"><a class="viewcode-back" href="../../scrypy.html#scrypy.script_uncertainty_propagation.propagate_mean_estimates">[docs]</a><span class="k">def</span> <span class="nf">propagate_mean_estimates</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Evaluates the QoI at the mean estimates. Called in `run`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mean_edu_df : DataFrame</span>
+<span class="sd">        Difference in mean years of education between policy and base scenario.</span>
+<span class="sd">    base_occ_shares_df : DataFrame</span>
+<span class="sd">        Occupation shares over all ages for the policy scenario.</span>
+<span class="sd">    policy_occ_shares_df : DataFrame</span>
+<span class="sd">        Occupation shares over all ages for the base scenario.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Init base_options because its part of the model wrapper argument</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">base_options</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_example_model</span><span class="p">(</span><span class="s2">&quot;kw_94_one&quot;</span><span class="p">,</span> <span class="n">with_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Read correctly indexed estimation results in respy format.</span>
+    <span class="n">mean_params</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;input/est_rp_params_chol.pkl&quot;</span><span class="p">))</span>
+
+    <span class="n">policy_edu</span><span class="p">,</span> <span class="n">base_occ_shares_df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model_wrapper_kw_94</span><span class="p">(</span>
+        <span class="n">mean_params</span><span class="p">,</span> <span class="n">base_options</span><span class="p">,</span> <span class="mi">500</span>
+    <span class="p">)</span>
+    <span class="n">base_edu</span><span class="p">,</span> <span class="n">policy_occ_shares_df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model_wrapper_kw_94</span><span class="p">(</span>
+        <span class="n">mean_params</span><span class="p">,</span> <span class="n">base_options</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="p">)</span>
+    <span class="n">qoi_mean_params_edu</span> <span class="o">=</span> <span class="n">policy_edu</span> <span class="o">-</span> <span class="n">base_edu</span>
+
+    <span class="n">mean_edu_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">qoi_mean_params_edu</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;change_mean_schooling&quot;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="c1"># Store results.</span>
+    <span class="n">mean_edu_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;results/qoi_mean_params_change_mean_edu_df.pkl&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">base_occ_shares_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;results/qoi_mean_params_base_occ_shares_df.pkl&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">policy_occ_shares_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;results/qoi_mean_params_policy_occ_shares_df.pkl&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mean_edu_df</span><span class="p">,</span> <span class="n">base_occ_shares_df</span><span class="p">,</span> <span class="n">policy_occ_shares_df</span></div>
+
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../scrypy.html#scrypy.script_uncertainty_propagation.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates and saves the inputs and the outputs of the Uncertainty Propgation.</span>
+
+<span class="sd">    In context of parallel computing, this function also protects the &quot;entry point&quot;</span>
+<span class="sd">    of new programs to not produce endlessly many entries. See [1].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    number_draws : int</span>
+<span class="sd">        Number of draws of random input paramter vector from the respective distribution.</span>
+<span class="sd">    seed : int</span>
+<span class="sd">        Random seed.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AssertionError</span>
+<span class="sd">        If tempory output array `temp_array` contains NaNs, and +/- Infs.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    [1] https://docs.python.org/3/library/multiprocessing.html#multiprocessing-programming.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Call function.</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">propagate_mean_estimates</span><span class="p">()</span>
+
+    <span class="c1"># Global variables.</span>
+
+    <span class="c1"># Init estimates of parameters and their covariance matrix as nummpy arrays.</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;input/est_rand_params_chol.pkl&quot;</span><span class="p">))</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">cov</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;input/est_cov_chol.pkl&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+    <span class="c1"># Draw the sample of random input parameters.</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">distribution</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">MvNormal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">cov</span><span class="p">)</span>
+
+    <span class="n">mc_sample_input_parameters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">number_draws</span><span class="p">):</span>
+        <span class="n">mc_sample_input_parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distribution</span><span class="o">.</span><span class="n">sample</span><span class="p">())</span>
+    <span class="c1"># Check for errors.</span>
+    <span class="n">temp_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mc_sample_input_parameters</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">temp_array</span><span class="o">.</span><span class="n">any</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">temp_array</span><span class="o">.</span><span class="n">any</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span>
+
+    <span class="c1"># Parallelized: The default number of worker processes is the number of CPUs.</span>
+    <span class="c1"># Evaluate the QoI at the randomly drawn input paramter vectors.</span>
+    <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">mc_change_mean_edu</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">mc_policy_occ_shares</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">mc_base_occ_shares</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="c1"># Pool returns lists. Need Loop to handle these lists.</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">get_quantity_of_interest</span><span class="p">,</span> <span class="n">mc_sample_input_parameters</span><span class="p">):</span>
+        <span class="n">mc_change_mean_edu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">mc_policy_occ_shares</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="n">mc_base_occ_shares</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    <span class="c1"># Close worker processes.</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Wait until these are terminated.</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="c1"># Check for errors in main qoi.</span>
+    <span class="n">temp_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mc_change_mean_edu</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">temp_array</span><span class="o">.</span><span class="n">any</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">temp_array</span><span class="o">.</span><span class="n">any</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span>
+
+    <span class="c1"># Store the random parameters and the quantity of interest.</span>
+    <span class="c1"># Paramter x iteration</span>
+    <span class="n">tmp_idx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;input/est_rand_params_chol.pkl&quot;</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">mc_input_parameters_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">mc_sample_input_parameters</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">tmp_idx</span>
+    <span class="p">)</span>
+    <span class="c1"># The shares for each iteration are stacked along the vertical axis.</span>
+    <span class="c1"># Therefore, indices 16-65 are not unique. Dim.: (65-15)*n_iter x 4.</span>
+    <span class="n">mc_base_occ_shares_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">mc_base_occ_shares</span><span class="p">)</span>
+    <span class="n">mc_policy_occ_shares_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">mc_policy_occ_shares</span><span class="p">)</span>
+
+    <span class="c1"># Dim.: 1 x Iteration</span>
+    <span class="n">mc_change_mean_edu_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">mc_change_mean_edu</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;change_mean_schooling&quot;</span><span class="p">],</span>
+        <span class="n">index</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">number_draws</span><span class="p">),</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">mc_input_parameters_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;results/mc_input_parameters_df.pkl&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">mc_base_occ_shares_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;results/mc_base_occ_shares_df.pkl&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">mc_policy_occ_shares_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;results/mc_policy_occ_shares_df.pkl&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">mc_change_mean_edu_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;results/mc_change_mean_edu_df.pkl&quot;</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<span class="c1"># Avoid multiprocessing Runtime error.</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Create results for Uncertainty Propagation.&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--number_draws&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;number_draws&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set number of random input parameter draws&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--seed&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Set seed for the random input parameter draws&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">scrypy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scrypy.html">scrypy package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Tobias Stenzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

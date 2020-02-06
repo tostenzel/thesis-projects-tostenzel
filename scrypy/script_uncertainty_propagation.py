@@ -86,13 +86,13 @@ def run(args):
     ----------
     number_draws : int
         Number of draws of random input paramter vector from the respective distribution.
-    seed: int
+    seed : int
         Random seed.
 
     Raises
     ------
-    AssertionError:
-        if tempory output array `temp_array` contains NaNs, and +/- Infs.
+    AssertionError
+        If tempory output array `temp_array` contains NaNs, and +/- Infs.
 
     References
     ----------

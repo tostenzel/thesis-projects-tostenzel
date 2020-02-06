@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>scrypy.jac_estimation_chol &#8212; scrypy  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for scrypy.jac_estimation_chol</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Estimates covariance matrix for KW94 Dataset 1 with</span>
+<span class="sd">Simulated Max. Likelihood.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">respy</span> <span class="k">as</span> <span class="nn">rp</span>
+<span class="kn">from</span> <span class="nn">estimagic.differentiation.differentiation</span> <span class="k">import</span> <span class="n">jacobian</span>
+<span class="kn">from</span> <span class="nn">estimagic.inference.likelihood_covs</span> <span class="k">import</span> <span class="n">cov_jacobian</span>
+<span class="kn">from</span> <span class="nn">estimagic.optimization.optimize</span> <span class="k">import</span> <span class="n">maximize</span>
+
+
+<div class="viewcode-block" id="jac_estimation_chol"><a class="viewcode-back" href="../../scrypy.html#scrypy.jac_estimation_chol.jac_estimation_chol">[docs]</a><span class="k">def</span> <span class="nf">jac_estimation_chol</span><span class="p">(</span><span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimates covariance matrix for KW94 Dataset 1 with Simulated Max. Likelihood.</span>
+<span class="sd">    The Jacobian matrix is used instead of Hessian because it yields no inversion</span>
+<span class="sd">    error.</span>
+<span class="sd">    The parameters contain Cholesky factors instead of SD-Corr-Matrix because</span>
+<span class="sd">    these factors are unconstrained. Therefore, their distribution can be estimated</span>
+<span class="sd">    by an unconstrained normal distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    save : bool</span>
+<span class="sd">        Indicates wether to save data.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    par_estimates_chol_df : DataFrame</span>
+<span class="sd">        Contains the estimates parameters and the not estimates fixed parameters</span>
+<span class="sd">        in respy format.</span>
+<span class="sd">    rand_par_chol_df : DataFrame</span>
+<span class="sd">        Df containing variable parameters, SDs and lower and upper bound in</span>
+<span class="sd">        estimagic format. It can be post-processed with surface/topography plot.</span>
+<span class="sd">    cov_chol_df : DataFrame</span>
+<span class="sd">        Df containing the covariance matrix.</span>
+<span class="sd">    corr_chol_df : DataFrame</span>
+<span class="sd">        DF containing the correlation matrix.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Df is sample of 1000 agents in 40 periods.</span>
+    <span class="n">sim_params_sdcorr</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">df</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_example_model</span><span class="p">(</span><span class="s2">&quot;kw_94_one&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Write params in terms of Cholesky factors instead of SD-Corr-matrix.</span>
+    <span class="c1"># This transformation holds only true for the parametrization in KW94 Dataset 1.</span>
+    <span class="c1"># Simply change SD-Corr indices to cholesky indices.</span>
+    <span class="n">sim_params_chol</span> <span class="o">=</span> <span class="n">chol_reindex_params</span><span class="p">(</span><span class="n">sim_params_sdcorr</span><span class="p">)</span>
+
+    <span class="c1"># Estimate parameters.</span>
+    <span class="c1"># log_like = log_like_obs.mean(). Used for consistency with optimizers.</span>
+    <span class="c1"># Gives log-likelihood function for mean agent.</span>
+    <span class="n">crit_func</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_crit_func</span><span class="p">(</span><span class="n">sim_params_chol</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;log_like&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get constraint for parameter estimation</span>
+    <span class="n">constr</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_parameter_constraints</span><span class="p">(</span><span class="s2">&quot;kw_94_one&quot;</span><span class="p">)</span>
+    <span class="c1"># Kick out constraints for SD-Corr-Matrix. Cholesky factors are unconstrained.</span>
+    <span class="n">constr_chol</span> <span class="o">=</span> <span class="n">constr</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">par_estimates_chol_df</span> <span class="o">=</span> <span class="n">maximize</span><span class="p">(</span>
+        <span class="n">crit_func</span><span class="p">,</span>
+        <span class="n">sim_params_chol</span><span class="p">,</span>
+        <span class="s2">&quot;scipy_L-BFGS-B&quot;</span><span class="p">,</span>
+        <span class="n">db_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rollover&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">},</span>
+        <span class="n">algo_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;maxfun&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+        <span class="n">constraints</span><span class="o">=</span><span class="n">constr_chol</span><span class="p">,</span>
+        <span class="n">dashboard</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># df  will take lower and upper bounds after standard error esitmation</span>
+    <span class="c1"># so that cols fit topography plot requirements.</span>
+    <span class="n">rand_par_chol_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">par_estimates_chol_df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="mi">27</span><span class="p">],</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">par_estimates_chol_df</span><span class="p">[:</span><span class="mi">27</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="c1"># The rest of this function estimates the variation of the estimates.</span>
+    <span class="c1"># Log-likelihood function for sample of agents.</span>
+    <span class="n">log_like_obs_func</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_crit_func</span><span class="p">(</span>
+        <span class="n">par_estimates_chol_df</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;log_like_obs&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Jacobian matrix.</span>
+    <span class="n">jacobian_matrix</span> <span class="o">=</span> <span class="n">jacobian</span><span class="p">(</span>
+        <span class="n">log_like_obs_func</span><span class="p">,</span> <span class="n">par_estimates_chol_df</span><span class="p">,</span> <span class="n">extrapolation</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Drop zero lines to avoid multicollinearity for matrix inversion.</span>
+    <span class="n">jacobian_matrix</span> <span class="o">=</span> <span class="n">jacobian_matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="n">jacobian_matrix</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)]</span>
+
+    <span class="n">jacobian_cov_matrix</span> <span class="o">=</span> <span class="n">cov_jacobian</span><span class="p">(</span><span class="n">jacobian_matrix</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())</span>
+
+    <span class="n">jacobian_cov_matrix</span> <span class="o">=</span> <span class="n">cov_jacobian</span><span class="p">(</span><span class="n">jacobian_matrix</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())</span>
+
+    <span class="n">cov_chol_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">jacobian_cov_matrix</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">par_estimates_chol_df</span><span class="p">[:</span><span class="mi">27</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="n">par_estimates_chol_df</span><span class="p">[:</span><span class="mi">27</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">corr_chol_df</span> <span class="o">=</span> <span class="n">cov_chol_df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_chol_df</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_chol_df</span><span class="p">)):</span>
+            <span class="n">corr_chol_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cov_chol_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cov_chol_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">cov_chol_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+            <span class="p">)</span>
+
+    <span class="k">assert</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">corr_chol_df</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Corrs must be inside [-1,1]&quot;</span>
+
+    <span class="c1"># Estimate parameters.</span>
+    <span class="c1"># log_like = log_like_obs.mean(). Used for consistency with optimizers.</span>
+    <span class="c1"># Gives log-likelihood function for mean agent.</span>
+    <span class="n">crit_func</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_crit_func</span><span class="p">(</span><span class="n">par_estimates_chol_df</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;log_like&quot;</span><span class="p">)</span>
+
+    <span class="n">constr</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_parameter_constraints</span><span class="p">(</span><span class="s2">&quot;kw_94_one&quot;</span><span class="p">)</span>
+    <span class="c1"># Kick out constraints for SD-Corr-Matrix. Cholesky factors are unconstrained.</span>
+    <span class="n">constr_chol</span> <span class="o">=</span> <span class="n">constr</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+
+    <span class="c1"># Include upper and lower bounds to par_df for surface/topography plot.</span>
+    <span class="n">rand_par_chol_df</span><span class="p">[</span><span class="s2">&quot;sd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">jacobian_cov_matrix</span><span class="p">))</span>
+    <span class="n">rand_par_chol_df</span><span class="p">[</span><span class="s2">&quot;lower&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rand_par_chol_df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rand_par_chol_df</span><span class="p">[</span><span class="s2">&quot;sd&quot;</span><span class="p">]</span>
+    <span class="n">rand_par_chol_df</span><span class="p">[</span><span class="s2">&quot;upper&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rand_par_chol_df</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rand_par_chol_df</span><span class="p">[</span><span class="s2">&quot;sd&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Define the script path relative to the jupyter notebook that calls the script.</span>
+    <span class="n">abs_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">save</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Contains 3 fixed respy parameters.</span>
+        <span class="n">par_estimates_chol_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;input/est_rp_params_chol.pkl&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># Contains only flexible parametes. Can be used for surface/topography plot.</span>
+        <span class="n">rand_par_chol_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;input/est_rand_params_chol.pkl&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">cov_chol_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;input/est_cov_chol.pkl&quot;</span><span class="p">))</span>
+        <span class="n">corr_chol_df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;input/est_corr_chol.pkl&quot;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">par_estimates_chol_df</span><span class="p">,</span> <span class="n">rand_par_chol_df</span><span class="p">,</span> <span class="n">cov_chol_df</span><span class="p">,</span> <span class="n">corr_chol_df</span></div>
+
+
+<div class="viewcode-block" id="chol_reindex_params"><a class="viewcode-back" href="../../scrypy.html#scrypy.jac_estimation_chol.chol_reindex_params">[docs]</a><span class="k">def</span> <span class="nf">chol_reindex_params</span><span class="p">(</span><span class="n">params_sdcorr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the params Df with Cholesky factors and the right indices for</span>
+<span class="sd">    respy. This transformation holds only true for the parametrization</span>
+<span class="sd">    in KW94 Dataset 1.</span>
+<span class="sd">    Thus, this function simply changes SD-Corr indices to cholesky indices.</span>
+<span class="sd">    Without the slicing and merging, index (&#39;maximum_exp&#39;, &#39;edu&#39;) yields</span>
+<span class="sd">    an uniqueness error for the second index when (..., &#39;sd_edu&#39;) is set to</span>
+<span class="sd">    (..., &#39;edu&#39;). Yet, because we have double_indices the indices ARE unique.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    params_sdcorr : DataFrame</span>
+<span class="sd">        Parameters DataFrame in respy format with SD-Corr matrix elements</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    params_chol : DataFrame</span>
+<span class="sd">        Parameters DataFrame in respy format with matrix elements from Choleksy</span>
+<span class="sd">        decomposition of covariance matrix that underlies the SD-Corr matrix.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p_chol_slice</span> <span class="o">=</span> <span class="n">params_sdcorr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">17</span><span class="p">:</span><span class="mi">27</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="c1"># Remove unused inherited index levels.</span>
+    <span class="n">p_chol_slice</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">p_chol_slice</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">remove_unused_levels</span><span class="p">()</span>
+    <span class="c1"># Use the SPECIFIC property of Dataset 1 in KW94 where SD-Corr-Matrix</span>
+    <span class="c1"># equals Cholesky maxtrix.</span>
+    <span class="c1"># This mean we just need to, firstly, rename the first index.</span>
+    <span class="n">p_chol_slice</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">p_chol_slice</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">set_levels</span><span class="p">(</span>
+        <span class="n">p_chol_slice</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;shocks_sdcorr&quot;</span><span class="p">,</span> <span class="s2">&quot;shocks_chol&quot;</span><span class="p">),</span>
+        <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># And secondly we need to convert the second index to respy cholesky format.</span>
+    <span class="n">dic</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sd&quot;</span><span class="p">:</span> <span class="s2">&quot;chol&quot;</span><span class="p">,</span> <span class="s2">&quot;corr&quot;</span><span class="p">:</span> <span class="s2">&quot;chol&quot;</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">p_chol_slice</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">p_chol_slice</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">set_levels</span><span class="p">(</span>
+            <span class="n">p_chol_slice</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Insert params_chol with index in params_sdcorr by merging slices.</span>
+    <span class="n">part_1</span> <span class="o">=</span> <span class="n">params_sdcorr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">17</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">part_1</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">part_1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">remove_unused_levels</span><span class="p">()</span>
+    <span class="n">part_3</span> <span class="o">=</span> <span class="n">params_sdcorr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">27</span><span class="p">:</span><span class="mi">31</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">part_3</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">part_3</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">remove_unused_levels</span><span class="p">()</span>
+
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">part_1</span><span class="p">,</span> <span class="n">p_chol_slice</span><span class="p">,</span> <span class="n">part_3</span><span class="p">]</span>
+    <span class="n">params_chol</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">params_chol</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">jac_estimation_chol</span><span class="p">(</span><span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">scrypy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scrypy.html">scrypy package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Tobias Stenzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

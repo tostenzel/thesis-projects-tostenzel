@@ -1,0 +1,1439 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>scrypy package &#8212; scrypy  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to scrypy’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="scrypy-package">
+<h1>scrypy package<a class="headerlink" href="#scrypy-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-scrypy.figure_choice_shares_over_time">
+<span id="scrypy-figure-choice-shares-over-time-module"></span><h2>scrypy.figure_choice_shares_over_time module<a class="headerlink" href="#module-scrypy.figure_choice_shares_over_time" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="scrypy.figure_choice_shares_over_time.figure_choice_shares_over_time">
+<code class="sig-prename descclassname">scrypy.figure_choice_shares_over_time.</code><code class="sig-name descname">figure_choice_shares_over_time</code><span class="sig-paren">(</span><em class="sig-param">save=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/figure_choice_shares_over_time.html#figure_choice_shares_over_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.figure_choice_shares_over_time.figure_choice_shares_over_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create figures of shares of occupation choices over time for a
+sample of 1000 agents in KW94.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>save</strong><span class="classifier">bool</span></dt><dd><p>Indicates if the graph is saved as png-file.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>fig</strong><span class="classifier">matplotlib Figure</span></dt><dd></dd>
+<dt><strong>axs</strong><span class="classifier">matplotlib Axes</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-scrypy.figure_cone_plot_choice_shares">
+<span id="scrypy-figure-cone-plot-choice-shares-module"></span><h2>scrypy.figure_cone_plot_choice_shares module<a class="headerlink" href="#module-scrypy.figure_cone_plot_choice_shares" title="Permalink to this headline">¶</a></h2>
+<p>Cone Plot</p>
+<dl class="function">
+<dt id="scrypy.figure_cone_plot_choice_shares.cone_plot_choice_shares">
+<code class="sig-prename descclassname">scrypy.figure_cone_plot_choice_shares.</code><code class="sig-name descname">cone_plot_choice_shares</code><span class="sig-paren">(</span><em class="sig-param">save=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/figure_cone_plot_choice_shares.html#cone_plot_choice_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.figure_cone_plot_choice_shares.cone_plot_choice_shares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses sample of randomly drawn occupation choices shares over time
+of a sample of agents from the input paramter distribution to plot
+confidence intervals for these shares around their means.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>save</strong><span class="classifier">bool</span></dt><dd><p>Indicates if the graph is saved as png-file.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-scrypy.jac_estimation_chol">
+<span id="scrypy-jac-estimation-chol-module"></span><h2>scrypy.jac_estimation_chol module<a class="headerlink" href="#module-scrypy.jac_estimation_chol" title="Permalink to this headline">¶</a></h2>
+<p>Estimates covariance matrix for KW94 Dataset 1 with
+Simulated Max. Likelihood.</p>
+<dl class="function">
+<dt id="scrypy.jac_estimation_chol.chol_reindex_params">
+<code class="sig-prename descclassname">scrypy.jac_estimation_chol.</code><code class="sig-name descname">chol_reindex_params</code><span class="sig-paren">(</span><em class="sig-param">params_sdcorr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/jac_estimation_chol.html#chol_reindex_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.jac_estimation_chol.chol_reindex_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the params Df with Cholesky factors and the right indices for
+respy. This transformation holds only true for the parametrization
+in KW94 Dataset 1.
+Thus, this function simply changes SD-Corr indices to cholesky indices.
+Without the slicing and merging, index (‘maximum_exp’, ‘edu’) yields
+an uniqueness error for the second index when (…, ‘sd_edu’) is set to
+(…, ‘edu’). Yet, because we have double_indices the indices ARE unique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>params_sdcorr</strong><span class="classifier">DataFrame</span></dt><dd><p>Parameters DataFrame in respy format with SD-Corr matrix elements</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>params_chol</strong><span class="classifier">DataFrame</span></dt><dd><p>Parameters DataFrame in respy format with matrix elements from Choleksy
+decomposition of covariance matrix that underlies the SD-Corr matrix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.jac_estimation_chol.jac_estimation_chol">
+<code class="sig-prename descclassname">scrypy.jac_estimation_chol.</code><code class="sig-name descname">jac_estimation_chol</code><span class="sig-paren">(</span><em class="sig-param">save=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/jac_estimation_chol.html#jac_estimation_chol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.jac_estimation_chol.jac_estimation_chol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates covariance matrix for KW94 Dataset 1 with Simulated Max. Likelihood.
+The Jacobian matrix is used instead of Hessian because it yields no inversion
+error.
+The parameters contain Cholesky factors instead of SD-Corr-Matrix because
+these factors are unconstrained. Therefore, their distribution can be estimated
+by an unconstrained normal distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>save</strong><span class="classifier">bool</span></dt><dd><p>Indicates wether to save data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>par_estimates_chol_df</strong><span class="classifier">DataFrame</span></dt><dd><p>Contains the estimates parameters and the not estimates fixed parameters
+in respy format.</p>
+</dd>
+<dt><strong>rand_par_chol_df</strong><span class="classifier">DataFrame</span></dt><dd><p>Df containing variable parameters, SDs and lower and upper bound in
+estimagic format. It can be post-processed with surface/topography plot.</p>
+</dd>
+<dt><strong>cov_chol_df</strong><span class="classifier">DataFrame</span></dt><dd><p>Df containing the covariance matrix.</p>
+</dd>
+<dt><strong>corr_chol_df</strong><span class="classifier">DataFrame</span></dt><dd><p>DF containing the correlation matrix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-scrypy.multi_quantities_of_interest">
+<span id="scrypy-multi-quantities-of-interest-module"></span><h2>scrypy.multi_quantities_of_interest module<a class="headerlink" href="#module-scrypy.multi_quantities_of_interest" title="Permalink to this headline">¶</a></h2>
+<p>Besides the difference in mean age of education, this module also generates two
+Dataframes for a second QoI:
+The difference in education shares over time for a sample of agents.
+The second quantity is used to create the cone plot.</p>
+<dl class="function">
+<dt id="scrypy.multi_quantities_of_interest.get_quantity_of_interest">
+<code class="sig-prename descclassname">scrypy.multi_quantities_of_interest.</code><code class="sig-name descname">get_quantity_of_interest</code><span class="sig-paren">(</span><em class="sig-param">input_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/multi_quantities_of_interest.html#get_quantity_of_interest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.multi_quantities_of_interest.get_quantity_of_interest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Quantity of Interest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_params</strong><span class="classifier">ndarray</span></dt><dd><p>Unindexed input parameters.</p>
+</dd>
+<dt><strong>policy_occ_shares_df</strong><span class="classifier">DataFrame</span></dt><dd><p>Occupation shares over all ages for the policy scenario.</p>
+</dd>
+<dt><strong>base_occ_shares_df</strong><span class="classifier">DataFrame</span></dt><dd><p>Occupation shares over all ages for the base scenario.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>qoi</strong><span class="classifier">float</span></dt><dd><p>Quantity of Interest</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.multi_quantities_of_interest.model_wrapper_kw_94">
+<code class="sig-prename descclassname">scrypy.multi_quantities_of_interest.</code><code class="sig-name descname">model_wrapper_kw_94</code><span class="sig-paren">(</span><em class="sig-param">input_params</em>, <em class="sig-param">base_options</em>, <em class="sig-param">tuition_subsidy</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/multi_quantities_of_interest.html#model_wrapper_kw_94"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.multi_quantities_of_interest.model_wrapper_kw_94" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper around respy to compute the mean number of years in education.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_params</strong><span class="classifier">Dataframe</span></dt><dd><p>Contains the complete respy vector of input parameters with indices.</p>
+</dd>
+<dt><strong>base_options</strong><span class="classifier">dict</span></dt><dd><p>Contains the options for the sumulation of agents.</p>
+</dd>
+<dt><strong>tuition_subsidy</strong><span class="classifier">float</span></dt><dd><p>tuition subsidy that is added to the respective paramter.</p>
+</dd>
+<dt><strong>add_qoi_edu_choices</strong><span class="classifier">bool</span></dt><dd><p>Specifies whether to compute the addition QoIs, education choice shares
+in the sample over time, to depict a cone plot (confidence interval plot).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>edu</strong><span class="classifier">float</span></dt><dd><p>Mean number of years in education.</p>
+</dd>
+<dt><strong>occ_shares_df</strong><span class="classifier">DataFrame</span></dt><dd><p>Occupation shares over all ages.</p>
+</dd>
+<dt><strong>policy_df</strong><span class="classifier">Dataframe</span></dt><dd><p>Dataframe of occupation choices of sample of agents of time.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.multi_quantities_of_interest.transform_params_kw94_respy">
+<code class="sig-prename descclassname">scrypy.multi_quantities_of_interest.</code><code class="sig-name descname">transform_params_kw94_respy</code><span class="sig-paren">(</span><em class="sig-param">params_idx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/multi_quantities_of_interest.html#transform_params_kw94_respy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.multi_quantities_of_interest.transform_params_kw94_respy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts indexed Series of non-constant input paramters to a Dataframe
+and adds three constant factors to achieve respy format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>params_idx</strong><span class="classifier">Series</span></dt><dd><p>Non-constant input paramters with correct indices</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>rp_params_df</strong><span class="classifier">Dataframe</span></dt><dd><p>Input parameters in respy format.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>AssertionError</dt><dd><p>If the lenght of the paramter vector is incorrect.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-scrypy.plots">
+<span id="scrypy-plots-module"></span><h2>scrypy.plots module<a class="headerlink" href="#module-scrypy.plots" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="scrypy.plots.convergence_plot">
+<code class="sig-prename descclassname">scrypy.plots.</code><code class="sig-name descname">convergence_plot</code><span class="sig-paren">(</span><em class="sig-param">sample</em>, <em class="sig-param">expected</em>, <em class="sig-param">qoi_name</em>, <em class="sig-param">absolute_deviation=False</em>, <em class="sig-param">save=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/plots.html#convergence_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.plots.convergence_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is a custom-made convergence plot for some Monte-Carlo
+sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample</strong><span class="classifier">Series, 1d-array, or list.</span></dt><dd><p>A vector of random observations.</p>
+</dd>
+<dt><strong>expected</strong><span class="classifier">float, int.</span></dt><dd><p>Expected value of sample mean.</p>
+</dd>
+<dt><strong>qoi_name</strong><span class="classifier">str</span></dt><dd><p>Label of y-axis.</p>
+</dd>
+<dt><strong>absolute_deviation</strong><span class="classifier">bool</span></dt><dd><p>Plots absolute deviation of means to zero expectation value.</p>
+</dd>
+<dt><strong>save</strong><span class="classifier">bool</span></dt><dd><p>Indicates whether to save the plot as png.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>dp</strong><span class="classifier">pyplot.figure</span></dt><dd></dd>
+<dt><strong>ax</strong><span class="classifier">pyplot.axes</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.plots.distplot">
+<code class="sig-prename descclassname">scrypy.plots.</code><code class="sig-name descname">distplot</code><span class="sig-paren">(</span><em class="sig-param">sample</em>, <em class="sig-param">qoi_name</em>, <em class="sig-param">save=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/plots.html#distplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.plots.distplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is a custom-made wrapper around seaborn.distplot for the QoI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample: Series, 1d-array, or list.</strong></dt><dd><p>A vector of random observations in vertical format.</p>
+</dd>
+<dt><strong>qoi_name</strong><span class="classifier">str</span></dt><dd><p>Name of Quantity of interest used for x label and png-file.</p>
+</dd>
+<dt><strong>save</strong><span class="classifier">bool</span></dt><dd><p>Indicate whether to save the plot as png.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>dp</strong><span class="classifier">matplotlib Axes</span></dt><dd></dd>
+<dt><strong>ax</strong><span class="classifier">matplotlib Axes</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.plots.heatmap_corr_chol">
+<code class="sig-prename descclassname">scrypy.plots.</code><code class="sig-name descname">heatmap_corr_chol</code><span class="sig-paren">(</span><em class="sig-param">corr_df</em>, <em class="sig-param">save=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/plots.html#heatmap_corr_chol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.plots.heatmap_corr_chol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the heatmap for the correlations between important
+input parameters of the KW94 model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>corr_df</strong><span class="classifier">Dataframe</span></dt><dd><p>Correlation matrix.</p>
+</dd>
+<dt><strong>save</strong><span class="classifier">bool</span></dt><dd><p>Indicates if the graph is saved as png-file.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>fig</strong><span class="classifier">matplotlib Figure</span></dt><dd></dd>
+<dt><strong>ax</strong><span class="classifier">matplotlib Axes</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-scrypy.sampling_schemes">
+<span id="scrypy-sampling-schemes-module"></span><h2>scrypy.sampling_schemes module<a class="headerlink" href="#module-scrypy.sampling_schemes" title="Permalink to this headline">¶</a></h2>
+<p>Functions that create random samples of the trajectory and the radial design.</p>
+<dl class="function">
+<dt id="scrypy.sampling_schemes.morris_trajectory">
+<code class="sig-prename descclassname">scrypy.sampling_schemes.</code><code class="sig-name descname">morris_trajectory</code><span class="sig-paren">(</span><em class="sig-param">n_inputs</em>, <em class="sig-param">n_levels</em>, <em class="sig-param">seed=123</em>, <em class="sig-param">normal=False</em>, <em class="sig-param">numeric_zero=0.01</em>, <em class="sig-param">step_function=&lt;function stepsize at 0x0000022AAE621A60&gt;</em>, <em class="sig-param">stairs=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/sampling_schemes.html#morris_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.sampling_schemes.morris_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates random sample in trajectory design.</p>
+<p>This function creates a random sample for a number of function parameters
+(columns). The sample itself consists of the number plus one vectors of
+parameter draws (rows).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>n_inputs</strong><span class="classifier">int</span></dt><dd><p>Number of input paramters / columns / rows - 1.</p>
+</dd>
+<dt><strong>n_levels</strong><span class="classifier">int</span></dt><dd><p>Number of distict grid points.</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">int</span></dt><dd><p>Random seed.</p>
+</dd>
+<dt><strong>normal</strong><span class="classifier">bool</span></dt><dd><p>Indicates whether to transform points by <cite>scipy.normal.ppt</cite></p>
+</dd>
+<dt><strong>numeric_zero</strong><span class="classifier">float</span></dt><dd><p><cite>if normal is True</cite>: Prevents <cite>scipy.normal.ppt</cite> to return <cite>-Inf</cite>
+and <cite>Inf</cite> for 0 and 1.</p>
+</dd>
+<dt><strong>step_function</strong><span class="classifier">function</span></dt><dd><p>Constant step as function of <cite>n_levels</cite> added to lower half of point grid.</p>
+</dd>
+<dt><strong>stairs</strong><span class="classifier">bool</span></dt><dd><p>if False: Randomly shuffle columns, dissolves stairs shape.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>B_random</strong><span class="classifier">ndarray</span></dt><dd><p>Random sample in trajectory design.
+Dimension <cite>n_inputs</cite> x <cite>n_inputs + 1</cite>.</p>
+</dd>
+<dt><strong>trans_steps</strong><span class="classifier">ndarray</span></dt><dd><p>Column vector of steps added to base value point. Sorted by
+parameter/column. Dimension <cite>n_inputs</cite> x <cite>1</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#scrypy.sampling_schemes.stepsize" title="scrypy.sampling_schemes.stepsize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stepsize</span></code></a></dt><dd><p>See parameter <cite>step_function</cite>.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform_uniform_stnormal_uncorr</span></code></dt><dd><p>See parameter <cite>numeric_zero</cite>.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>The method is described in [1]. This function follows the notation therein.
+The idea is tailored to compute a random sample of function arguments to
+compute local derivates. First, a random row of paramters is drawn. Then, one
+parameter is changed by a fixed step in each row. The local derivatives can be
+computed by subtracting the function evaluations of each row from its upper row,
+thereby obtaining one local derivative for each parameter. The order of rows and
+columns may be shuffled. Shuffling rows creates a negative stepsize. By default,
+the shuffling of columns is turned off to facilitate post-processing.</p>
+<p>Importantly, an additional option is to evaluate the points by the inverse
+normal cdf to account for normally distributed input paramters vice versa
+uniformly distributed ones. For this purpose, zeros and ones are slighly shifted
+towards the centre of [0,1], so that no infinite values arise. Given the shape
+of the inverse cdf, the specific transformation choice has large influences
+on the stepsize and therefore the Elementary Effects.
+To account for transformations, the step is recomputed for each parameter by
+subtracting the last first row from the last row.</p>
+<p class="rubric">References</p>
+<p>[1] Morris, M. D. (1991). Factorial sampling plans for preliminary computational
+experiments. Technometrics 33 (2), 161–174.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.sampling_schemes.stepsize">
+<code class="sig-prename descclassname">scrypy.sampling_schemes.</code><code class="sig-name descname">stepsize</code><span class="sig-paren">(</span><em class="sig-param">n_levels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/sampling_schemes.html#stepsize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.sampling_schemes.stepsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes stepsize to create equiprobable sample points for the trajectory design.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>n_levels</strong><span class="classifier">int</span></dt><dd><p>Number of points in a trajectory sample.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>step</strong><span class="classifier">float</span></dt><dd><p>Step added to each lower half point of the point grid.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>AssertionError</dt><dd><p>If the number of levels is not an even integer.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function, published in [1], assumes that the number of sample points called
+“levels” is an even integer. The first row in the trajectory is initialized with
+the lower half of the desired equispaced points between 0 and 1. Given the below
+formula, the step added to the lowest, second lowest, …, highest point in the
+lower half creates the lowest, second lowest, …, highest point in the upper half
+of the point grid.</p>
+<p class="rubric">References</p>
+<p>[1] Morris, M. D. (1991). Factorial sampling plans for preliminary computational experiments.
+Technometrics 33 (2), 161–174.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-scrypy.sandbox">
+<span id="scrypy-sandbox-module"></span><h2>scrypy.sandbox module<a class="headerlink" href="#module-scrypy.sandbox" title="Permalink to this headline">¶</a></h2>
+<p>empty.</p>
+</div>
+<div class="section" id="module-scrypy.screening_measures">
+<span id="scrypy-screening-measures-module"></span><h2>scrypy.screening_measures module<a class="headerlink" href="#module-scrypy.screening_measures" title="Permalink to this headline">¶</a></h2>
+<p>Computes the screening measures for correlated inputs that I improved upon
+[1] by adjusting the step in the denumeroter to the transformed step in the
+nominator in order to not violate the definition of the function derivative.</p>
+<div class="section" id="references">
+<h3>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h3>
+<p>[1] Ge, Q. and M. Menendez (2017). Extending morris method for qualitative global
+sensitivityanalysis of models with dependent inputs. Reliability Engineering &amp;
+System Safety 100 (162), 28–39.</p>
+<dl class="function">
+<dt id="scrypy.screening_measures.screening_measures">
+<code class="sig-prename descclassname">scrypy.screening_measures.</code><code class="sig-name descname">screening_measures</code><span class="sig-paren">(</span><em class="sig-param">function</em>, <em class="sig-param">traj_list</em>, <em class="sig-param">step_list</em>, <em class="sig-param">cov</em>, <em class="sig-param">mu</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/screening_measures.html#screening_measures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.screening_measures.screening_measures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes screening measures for a set of paramters.</p>
+<p>This works for correlated normally distributed and uncorrelated uniformly
+distributed paramters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>function</strong><span class="classifier">Function</span></dt><dd><p>Function or Model of which its parameters are subject to screening.</p>
+</dd>
+<dt><strong>traj_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>List of transformed trajectories according to [1].</p>
+</dd>
+<dt><strong>step_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>List of steps that each parameter takes in each trajectory.</p>
+</dd>
+<dt><strong>cov</strong><span class="classifier">ndarray</span></dt><dd><p>Covariance matrix of the input parameters.</p>
+</dd>
+<dt><strong>mu</strong><span class="classifier">ndarray</span></dt><dd><p>Expectation values of the input parameters.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>ee_uncorr</strong><span class="classifier">ndarray</span></dt><dd><p>Mean uncorrelated Elementary Effect for each parameter.</p>
+</dd>
+<dt><strong>ee_corr</strong><span class="classifier">ndarray</span></dt><dd><p>Mean correlated Elementary Effect for each parameter.</p>
+</dd>
+<dt><strong>abs_ee_uncorr</strong><span class="classifier">ndarray</span></dt><dd><p>Mean absolute uncorrelated Elementary Effect for each parameter.</p>
+</dd>
+<dt><strong>abs_ee_corr</strong><span class="classifier">ndarray</span></dt><dd><p>Mean absolute correlated Elementary Effect for each parameter.</p>
+</dd>
+<dt><strong>sd_ee_uncorr</strong><span class="classifier">ndarray</span></dt><dd><p>SD of individual uncorrelated Elementary Effects for each parameter.</p>
+</dd>
+<dt><strong>sd_ee_corr</strong><span class="classifier">ndarray</span></dt><dd><p>SD of individual correlated Elementary Effects for each parameter.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Unorrelated uniform paramters require different interpretion of <cite>mu</cite>
+as a scaling summand rather than the expectation value.</p>
+<p>It might be necessary to multiply the SDs by <cite>(n_trajs/(n_trajs - 1))</cite>
+for the precise formula. However, this leads to problems for the case
+of only one trajectory - which is used in
+<cite>test_screening_measures_uncorrelated_g_function</cite>.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-scrypy.script_uncertainty_propagation">
+<span id="scrypy-script-uncertainty-propagation-module"></span><h2>scrypy.script_uncertainty_propagation module<a class="headerlink" href="#module-scrypy.script_uncertainty_propagation" title="Permalink to this headline">¶</a></h2>
+<p>Script for Uncertainty Propagation.
+The structure is adapted to parallel computing.</p>
+<dl class="function">
+<dt id="scrypy.script_uncertainty_propagation.propagate_mean_estimates">
+<code class="sig-prename descclassname">scrypy.script_uncertainty_propagation.</code><code class="sig-name descname">propagate_mean_estimates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/script_uncertainty_propagation.html#propagate_mean_estimates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.script_uncertainty_propagation.propagate_mean_estimates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates the QoI at the mean estimates. Called in <cite>run</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mean_edu_df</strong><span class="classifier">DataFrame</span></dt><dd><p>Difference in mean years of education between policy and base scenario.</p>
+</dd>
+<dt><strong>base_occ_shares_df</strong><span class="classifier">DataFrame</span></dt><dd><p>Occupation shares over all ages for the policy scenario.</p>
+</dd>
+<dt><strong>policy_occ_shares_df</strong><span class="classifier">DataFrame</span></dt><dd><p>Occupation shares over all ages for the base scenario.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.script_uncertainty_propagation.run">
+<code class="sig-prename descclassname">scrypy.script_uncertainty_propagation.</code><code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/script_uncertainty_propagation.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.script_uncertainty_propagation.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates and saves the inputs and the outputs of the Uncertainty Propgation.</p>
+<p>In context of parallel computing, this function also protects the “entry point”
+of new programs to not produce endlessly many entries. See [1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>number_draws</strong><span class="classifier">int</span></dt><dd><p>Number of draws of random input paramter vector from the respective distribution.</p>
+</dd>
+<dt><strong>seed</strong><span class="classifier">int</span></dt><dd><p>Random seed.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><dl class="simple">
+<dt>AssertionError</dt><dd><p>If tempory output array <cite>temp_array</cite> contains NaNs, and +/- Infs.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<p>[1] <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing-programming">https://docs.python.org/3/library/multiprocessing.html#multiprocessing-programming</a>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-scrypy.select_sample_set">
+<span id="scrypy-select-sample-set-module"></span><h2>scrypy.select_sample_set module<a class="headerlink" href="#module-scrypy.select_sample_set" title="Permalink to this headline">¶</a></h2>
+<p>Functions that decrease a set of sample sets in order to increase its
+representativeness.
+The methods are taken from the effective screening design in [1] and the
+efficient screening design in [2]</p>
+<div class="section" id="id1">
+<h3>References<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>[1] Campolongo, F., J. Cariboni, and A. Saltelli (2007). An effective screening design for
+sensitivity analysis of large models. Environmental modelling &amp; software 22 (10), 1509–
+1518.
+[2] Ge, Q. and M. Menendez (2014). An efficient sensitivity analysis approach for
+computationally expensive microscopic traffic simulation models. International Journal of
+Transportation 2 (2), 49–64.</p>
+<dl class="function">
+<dt id="scrypy.select_sample_set.campolongo_2007">
+<code class="sig-prename descclassname">scrypy.select_sample_set.</code><code class="sig-name descname">campolongo_2007</code><span class="sig-paren">(</span><em class="sig-param">sample_traj_list</em>, <em class="sig-param">n_traj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/select_sample_set.html#campolongo_2007"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.select_sample_set.campolongo_2007" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements the post-selected sample set in [1].</p>
+<p>Takes a list of Morris trajectories and selects the <cite>n_traj</cite> trajectories
+with the largest distance between them.
+Returns the selection as array with n_inputs at the verical and n_traj at the
+horizontal axis and as a list.
+It also returns the diagonal matrix that contains the pair distance
+between each trajectory pair.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample_traj_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Set of samples.</p>
+</dd>
+<dt><strong>n_traj</strong><span class="classifier">int</span></dt><dd><p>Number of samples to choose from <cite>sample_traj_list</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>input_par_array</strong><span class="classifier">ndarray</span></dt><dd><p>Set of trajectories as vertical array.</p>
+</dd>
+<dt><strong>sample_traj_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Set of trajectories.</p>
+</dd>
+<dt><strong>select_dist_matrix</strong><span class="classifier">ndarray</span></dt><dd><p>Symmetric <cite>distance_matrix</cite> of selection.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.select_sample_set.combi_wrapper">
+<code class="sig-prename descclassname">scrypy.select_sample_set.</code><code class="sig-name descname">combi_wrapper</code><span class="sig-paren">(</span><em class="sig-param">iterable</em>, <em class="sig-param">r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/select_sample_set.html#combi_wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.select_sample_set.combi_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper around <cite>itertools.combinations</cite>, written in C, see [1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>iterable</strong><span class="classifier">iterable object</span></dt><dd><p>Hashable container like a list of distinct elements to combine.</p>
+</dd>
+<dt><strong>r</strong><span class="classifier">int</span></dt><dd><p>Number to draw from <cite>iterable</cite> with putting back and regarding the order.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>list_list</strong><span class="classifier">list of lists</span></dt><dd><p>All possible combinations in ascending order.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<p>[1] <a class="reference external" href="https://docs.python.org/2/library/itertools.html#itertools.combinations">https://docs.python.org/2/library/itertools.html#itertools.combinations</a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.select_sample_set.compute_pair_distance">
+<code class="sig-prename descclassname">scrypy.select_sample_set.</code><code class="sig-name descname">compute_pair_distance</code><span class="sig-paren">(</span><em class="sig-param">sample_0</em>, <em class="sig-param">sample_1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/select_sample_set.html#compute_pair_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.select_sample_set.compute_pair_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the distance measure between a pair of samples.</p>
+<p>The aggregate distance between sum of the root of the square distance between each
+parameter vector of one sample to each vector of the other sample.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample_0</strong><span class="classifier">ndarray</span></dt><dd><p>Sample with paramters in cols and draws as rows.</p>
+</dd>
+<dt><strong>sample_1</strong><span class="classifier">ndarray</span></dt><dd><p>Sample with paramters in cols and draws as rows.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>distance</strong><span class="classifier">float</span></dt><dd><p>Pair distance.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>AssertionError</dt><dd><p>If sample is not in sampleectory or radial design shape.</p>
+</dd>
+<dt>AssertionError</dt><dd><p>If the sample shapes differ.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The distance between two samples is sum of the root of the square distance between
+each parameter vector of one sample to each vector of the other sample.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.select_sample_set.distance_matrix">
+<code class="sig-prename descclassname">scrypy.select_sample_set.</code><code class="sig-name descname">distance_matrix</code><span class="sig-paren">(</span><em class="sig-param">sample_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/select_sample_set.html#distance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.select_sample_set.distance_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes symmetric matrix of pair distances for a list of samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Set of samples.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>distance_matrix</strong><span class="classifier">ndarry</span></dt><dd><p>Symmatric matrix of pair distances.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.select_sample_set.final_ge_menendez_2014">
+<code class="sig-prename descclassname">scrypy.select_sample_set.</code><code class="sig-name descname">final_ge_menendez_2014</code><span class="sig-paren">(</span><em class="sig-param">sample_traj_list</em>, <em class="sig-param">n_traj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/select_sample_set.html#final_ge_menendez_2014"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.select_sample_set.final_ge_menendez_2014" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements both “improvements” in [2] vis-a-vis [1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample_traj_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Set of samples.</p>
+</dd>
+<dt><strong>n_traj</strong><span class="classifier">int</span></dt><dd><p>Number of samples to choose from <cite>sample_traj_list</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>input_par_array</strong><span class="classifier">ndarray</span></dt><dd><p>Set of trajectories as vertical array.</p>
+</dd>
+<dt><strong>sample_traj_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Set of trajectories.</p>
+</dd>
+<dt><strong>select_dist_matrix</strong><span class="classifier">ndarray</span></dt><dd><p>Symmetric <cite>distance_matrix</cite> of selection.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#scrypy.select_sample_set.next_combi_total_distance_gm14" title="scrypy.select_sample_set.next_combi_total_distance_gm14"><code class="xref py py-obj docutils literal notranslate"><span class="pre">next_combi_total_distance_gm14</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>This function, is in fact much slower than <cite>intermediate_ge_menendez_2014</cite>
+because it uses more for loops to get the pair distances from the right
+combinations that must be subtracted from the total distances.</p>
+<p>This function selects n_traj trajectories from n_traj_sample trajectories by
+iteratively selecting n_traj_sample - i for i = 1,…,n_traj_sample - n-traj.
+For this purpose, next_combi_total_distance_gm14 computes the total distance
+of each trajectory combination by using the total distance of each combination
+in the previous step and subtracting each pair distance with the dropped trajectory,
+that yielded the lowest total distance combinations in the previous step.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.select_sample_set.intermediate_ge_menendez_2014">
+<code class="sig-prename descclassname">scrypy.select_sample_set.</code><code class="sig-name descname">intermediate_ge_menendez_2014</code><span class="sig-paren">(</span><em class="sig-param">sample_traj_list</em>, <em class="sig-param">n_traj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/select_sample_set.html#intermediate_ge_menendez_2014"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.select_sample_set.intermediate_ge_menendez_2014" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements the the essential of the two “improvements” in[2] vis-a-vis [1].</p>
+<p>This is basically a wrapper around <cite>select_trajectories_wrapper_iteration</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample_traj_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Set of samples.</p>
+</dd>
+<dt><strong>n_traj</strong><span class="classifier">int</span></dt><dd><p>Number of samples to choose from <cite>sample_traj_list</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>input_par_array</strong><span class="classifier">ndarray</span></dt><dd><p>Set of trajectories as vertical array.</p>
+</dd>
+<dt><strong>sample_traj_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Set of trajectories.</p>
+</dd>
+<dt><strong>select_dist_matrix</strong><span class="classifier">ndarray</span></dt><dd><p>Symmetric <cite>distance_matrix</cite> of selection.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#scrypy.select_sample_set.select_trajectories_wrapper_iteration" title="scrypy.select_sample_set.select_trajectories_wrapper_iteration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_trajectories_wrapper_iteration</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Oftentimes this function leads to diffent combinations than
+<cite>select_trajectories</cite>. However, their total distance is very close
+to the optimal solution.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.select_sample_set.next_combi_total_distance_gm14">
+<code class="sig-prename descclassname">scrypy.select_sample_set.</code><code class="sig-name descname">next_combi_total_distance_gm14</code><span class="sig-paren">(</span><em class="sig-param">combi_total_distance</em>, <em class="sig-param">traj_dist_matrix</em>, <em class="sig-param">lost_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/select_sample_set.html#next_combi_total_distance_gm14"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.select_sample_set.next_combi_total_distance_gm14" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects the set of samples minus one sample.</p>
+<p>Based on the algorithmic computation of the <cite>total_distance</cite> proposed by [2].
+I.e. by re-using and adjusting the first <cite>combi_total_distance</cite> matrix each iteration.
+Used for selecting iteratively rather than by brute force.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>combi_total_distance_next</strong><span class="classifier">ndarray</span></dt><dd><p>Matrix with n_traj + 1 rows. The first n_traj cols are filled with indices
+of samples and the last column is the <cite>total_distance</cite> of the combinations
+of samples marked by indices in the same row and the columns before.</p>
+</dd>
+<dt><strong>traj_dist_matrix</strong><span class="classifier">ndarray</span></dt><dd><p>Distance matrix of all combinations and their total_distance.</p>
+</dd>
+<dt><strong>lost_index</strong><span class="classifier">int</span></dt><dd><p>index of the sample that will be dropped from the samples in the above objects.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>combi_total_distance_next</strong><span class="classifier">ndarray</span></dt><dd><p><cite>combi_total_distance</cite> without the dropped sample.</p>
+</dd>
+<dt><strong>traj_dist_matrix_next</strong><span class="classifier">ndarray</span></dt><dd><p><cite>traj_dist_matrix</cite> without the dropped sample.</p>
+</dd>
+<dt><strong>lost_index</strong><span class="classifier">ndarray</span></dt><dd><p><cite>lost_index</cite> without the dropped sample one iteration before.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The function computes the total distance of each trajectory
+combination by using the total distance of each combination in the previous step
+and subtracting each pair distance with the dropped trajectory, that yielded
+the lowest total distance combinations in the previous step.</p>
+<p>This function, is in fact much slower than
+<cite>select_trajectories_wrapper_iteration</cite> because it uses more for loops to get
+the pair distances from the right combinations that must be subtracted from the
+total distances.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.select_sample_set.select_trajectories">
+<code class="sig-prename descclassname">scrypy.select_sample_set.</code><code class="sig-name descname">select_trajectories</code><span class="sig-paren">(</span><em class="sig-param">traj_dist_matrix</em>, <em class="sig-param">n_traj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/select_sample_set.html#select_trajectories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.select_sample_set.select_trajectories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes <cite>total distance</cite> for each <cite>n_traj</cite> combinations of a set of samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>traj_dist_matrix</strong><span class="classifier">ndarray</span></dt><dd><p><cite>distance_matrix</cite> for a sample set.</p>
+</dd>
+<dt><strong>n_traj</strong><span class="classifier">int</span></dt><dd><p>Number of sample combinations for which the <cite>total_distance</cite> is computed.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>max_dist_indices</strong><span class="classifier">list of ints</span></dt><dd><p>Indices of samples in <cite>traj_dist_matrix</cite> that are part of the combination
+with the largest <cite>total_distance</cite>.</p>
+</dd>
+<dt><strong>combi_total_distance</strong><span class="classifier">ndarray</span></dt><dd><p>Matrix with n_traj + 1 rows. The first n_traj cols are filled with indices
+of samples and the last column is the <cite>total_distance</cite> of the combinations
+of samples marked by indices in the same row and the columns before.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>AssertionError</dt><dd><p>If <cite>traj_dist_matrix</cite> is not symmetric.</p>
+</dd>
+<dt>AssertionError</dt><dd><p>If the number of combinations does not correspong to the combinations
+indicated by the size of <cite>traj_dist_matrix</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function can be very slow because it computes distances
+between np.binomial(len(traj_dist_matrix, n_traj) pairs of trajectories.
+Example: <cite>np.biomial(30,15)</cite> = 155117520.</p>
+<p>This selection function yields precise results
+because each total distance for each possible combination of
+trajectories is computed directly. The faster, iterative methods
+can yield different results that are, however, close in the total
+distance. The total distances tend to differentiate clearly.
+Therefore, the optimal combination is precisely determined.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.select_sample_set.select_trajectories_wrapper_iteration">
+<code class="sig-prename descclassname">scrypy.select_sample_set.</code><code class="sig-name descname">select_trajectories_wrapper_iteration</code><span class="sig-paren">(</span><em class="sig-param">traj_dist_matrix</em>, <em class="sig-param">n_traj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/select_sample_set.html#select_trajectories_wrapper_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.select_sample_set.select_trajectories_wrapper_iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects the set of samples minus one sample.</p>
+<p>Used for selecting iteratively rather than by brute force.
+Implements the main step of the essential of the two “improvements”
+from [2] to [1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>traj_dist_matrix</strong><span class="classifier">ndarray</span></dt><dd><p>Distance matrix of all combinations and their total_distance.</p>
+</dd>
+<dt><strong>n_traj</strong><span class="classifier">int</span></dt><dd><p>number of samples to choose from a set of samples based on their
+<cite>total_distance</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>tracker_keep_indices</strong><span class="classifier">list</span></dt><dd><p>Indices of samples part of the selection.</p>
+</dd>
+<dt><strong>combi_total_distance</strong><span class="classifier">ndarray</span></dt><dd><p>Matrix with n_traj + 1 rows. The first n_traj cols are filled with indices
+of samples and the last column is the <cite>total_distance</cite> of the combinations
+of samples marked by indices in the same row and the columns before.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#scrypy.select_sample_set.select_trajectories" title="scrypy.select_sample_set.select_trajectories"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_trajectories</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Oftentimes this function leads to diffent combinations than
+<cite>select_trajectories</cite>. The reason seems to be that this function
+deviates from the optimal path due to numerical reasons as different
+combinations may be very close (see [2]).
+However, the total sum of the returned combinations are close.
+Therefore, the <cite>total_distance</cite> loss is negligible compared to the speed gain
+for large numbers of trajectory combinations.</p>
+<p>This implies that, <cite>combi_total_distance</cite> always differs from the one in
+<cite>select_trajectories</cite> because it only contains the combination indices from
+the last iteration if n_traj is smaller than the sample set minus 1.</p>
+<p>The trick using <cite>tracker_keep_indices</cite> is an elegant solution.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.select_sample_set.simple_stairs">
+<code class="sig-prename descclassname">scrypy.select_sample_set.</code><code class="sig-name descname">simple_stairs</code><span class="sig-paren">(</span><em class="sig-param">n_inputs</em>, <em class="sig-param">n_levels</em>, <em class="sig-param">n_traj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/select_sample_set.html#simple_stairs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.select_sample_set.simple_stairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns array and list of Morris trajectories without further
+post-selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>n_inputs</strong><span class="classifier">int</span></dt><dd><p>Number if input paramters.</p>
+</dd>
+<dt><strong>n_levels</strong><span class="classifier">int</span></dt><dd><p>Number of different elements in value grid.</p>
+</dd>
+<dt><strong>n_traj</strong><span class="classifier">int</span></dt><dd><p>Number of samples to create.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>input_par_array</strong><span class="classifier">ndarray</span></dt><dd><p>Set of trajectories as vertical array.</p>
+</dd>
+<dt><strong>sample_traj_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Set of trajectories.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.select_sample_set.total_distance">
+<code class="sig-prename descclassname">scrypy.select_sample_set.</code><code class="sig-name descname">total_distance</code><span class="sig-paren">(</span><em class="sig-param">distance_matrix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/select_sample_set.html#total_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.select_sample_set.total_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the total distance measure of all pairs of samples in a set.</p>
+<p>The equation corresponds to Equation (10) in [2].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>distance_matrix</strong><span class="classifier">ndarray</span></dt><dd><p>diagonal matrix of distances for sample pairs.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>total_distance: float</dt><dd><p>total distance measure of all pairs of samples in a set.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-scrypy.transform_distributions">
+<span id="scrypy-transform-distributions-module"></span><h2>scrypy.transform_distributions module<a class="headerlink" href="#module-scrypy.transform_distributions" title="Permalink to this headline">¶</a></h2>
+<p>Implementation of the inverse Rosenblatt / inverse Nataf transformation
+from uniform to normal distribution.</p>
+<dl class="function">
+<dt id="scrypy.transform_distributions.covariance_to_correlation">
+<code class="sig-prename descclassname">scrypy.transform_distributions.</code><code class="sig-name descname">covariance_to_correlation</code><span class="sig-paren">(</span><em class="sig-param">cov</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_distributions.html#covariance_to_correlation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_distributions.covariance_to_correlation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts covariance matrix to correlation matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cov</strong><span class="classifier">ndarray</span></dt><dd><p>Covariance matrix.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>corr</strong><span class="classifier">ndarray</span></dt><dd><p>Correlation matrix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.transform_distributions.transform_stnormal_normal_corr">
+<code class="sig-prename descclassname">scrypy.transform_distributions.</code><code class="sig-name descname">transform_stnormal_normal_corr</code><span class="sig-paren">(</span><em class="sig-param">z_row</em>, <em class="sig-param">cov</em>, <em class="sig-param">mu</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_distributions.html#transform_stnormal_normal_corr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_distributions.transform_stnormal_normal_corr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverse Rosenblatt/Nataf transformation (from standard normal)
+to multivariate normal space with given correlations following
+[1], page 77-102.</p>
+<p>Step 1) Compute correlation matrix.
+Step 2) Introduce dependencies to standard normal sample.
+Step 3) De-standardize sample to normal space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>z_row</strong><span class="classifier">ndarray</span></dt><dd><p>Row of uncorrelated standard normal deviates.</p>
+</dd>
+<dt><strong>cov</strong><span class="classifier">ndarray</span></dt><dd><p>Covariance matrix of correlated normal deviates.</p>
+</dd>
+<dt><strong>mu</strong><span class="classifier">ndarray</span></dt><dd><p>Expectation values of correlated normal deviates</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>x_norm_row</strong><span class="classifier">ndarray</span></dt><dd><p>Row of correlated normal deviates.</p>
+</dd>
+<dt><strong>correlate_step</strong><span class="classifier">float</span></dt><dd><p>Lower right corner element of the lower Cholesky matrix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Importantly, the step in the numerator of the uncorrelated Elementary Effect
+is multiplied by <cite>correlate_step</cite>. Therefore, this factor has to multiply
+the step in the denominator as well to not violate the definition of the
+function derivation.</p>
+<p>This method is equivalent to the one in [2], page 199 which uses the Cholesky decomposition
+of the covariance matrix directly. This saves the scaling by SD and expectation.
+-This method is simpler and slightly more precise than the one in [3], page 33, for
+normally distributed paramters.</p>
+<p>[1] explains how Rosenblatt and Nataf transformation are equal for normally distributed
+deviates.</p>
+<p class="rubric">References</p>
+<p>[1] Lemaire, M. (2013). Structural reliability. John Wiley &amp; Sons.
+[2] Gentle, J. E. (2006). Random number generation and Monte Carlo methods. Springer
+Science &amp; Business Media.
+[3] Ge, Q. and M. Menendez (2017). Extending morris method for qualitative global sensitivity
+analysis of models with dependent inputs. Reliability Engineering &amp; System
+Safety 100 (162), 28–39.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.transform_distributions.transform_uniform_stnormal_uncorr">
+<code class="sig-prename descclassname">scrypy.transform_distributions.</code><code class="sig-name descname">transform_uniform_stnormal_uncorr</code><span class="sig-paren">(</span><em class="sig-param">uniform_deviates</em>, <em class="sig-param">numeric_zero=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_distributions.html#transform_uniform_stnormal_uncorr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_distributions.transform_uniform_stnormal_uncorr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts sample from uniform distribution to standard normal space
+without regarding correlations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>uniform_deviates</strong><span class="classifier">ndarray</span></dt><dd><p>Draws from Uniform[0,1].</p>
+</dd>
+<dt><strong>numeric_zero</strong><span class="classifier">float</span></dt><dd><p>Used to substitute zeros and ones before applying <cite>scipy.stats.norm</cite>
+to not obtain <cite>-Inf</cite> and <cite>Inf</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>stnormal_deviates</strong><span class="classifier">ndarray</span></dt><dd><p><cite>uniform deviates</cite> converted to standard normal space without correlations.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">morris_trajectory</span></code></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>This transformation is already applied as option in <cite>morris_trajectory</cite>.
+The reason is that <cite>scipy.stats.norm</cite> transforms the random draws from the
+unit cube non-linearily including the addition of the step. To obtain
+non-distorted screening measures, it is important to also account for this
+transformation of delta in the denumerator to not violate the definition of
+the function derivation.</p>
+<p>The parameter <cite>numeric_zero</cite> can be highly influential. I prefer it to be
+relatively large to put more proportional, i.e. less weight on the extremes.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-scrypy.transform_reorder">
+<span id="scrypy-transform-reorder-module"></span><h2>scrypy.transform_reorder module<a class="headerlink" href="#module-scrypy.transform_reorder" title="Permalink to this headline">¶</a></h2>
+<p>Functions for reordering the sample rows following [1].</p>
+<p>The intuition behind the reordering in general is the following: To compute the
+uncorrelated Elementary Effects, one puts the sampled elements that have been changed
+by <cite>step</cite> to the back of the row. For the correlated EE, one leaves the newly changed
+element in front, but puts the elements that were changed in rows above to the end.
+These compose the left parts of the numerator in the EE definition. One then subtracts
+the same row, except that the changed element is unchanged. The reason for these
+reorderings is that the correlation technique works hierarchically, like Dominoes.
+The Element before is unaffected by the correlation of the elements thereafter.
+This implies that the first Element is unchanged, as for the correlated EE. Therefore,
+the step is involved in correlating the other elements without becoming changed itself.
+The opposite is true for the uncorrelated EE.
+Other functions order the expectations and covariance matrix accordingly. They are also
+used to initialize the correlating loops in <cite>transform_traj_elementary_effects</cite> in the
+right order.</p>
+<div class="section" id="id2">
+<h3>References<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>[1] Ge, Q. and M. Menendez (2017). Extending morris method for qualitative global
+sensitivityanalysis of models with dependent inputs. Reliability Engineering &amp;
+System Safety 100 (162), 28–39.</p>
+<dl class="function">
+<dt id="scrypy.transform_reorder.ee_corr_reorder_trajectory">
+<code class="sig-prename descclassname">scrypy.transform_reorder.</code><code class="sig-name descname">ee_corr_reorder_trajectory</code><span class="sig-paren">(</span><em class="sig-param">traj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_reorder.html#ee_corr_reorder_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_reorder.ee_corr_reorder_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each row i (non-pythonic), move the first i-1 elements to the back.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>traj</strong><span class="classifier">ndarray</span></dt><dd><p>Trajectory.</p>
+</dd>
+<dt><strong>row_plus_one</strong><span class="classifier">bool</span></dt><dd><p>Add 1 to row index, i.e. start with second row.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>traj_reordered</strong><span class="classifier">ndarray</span></dt><dd><p>Reordered trajectory.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>There is no <cite>row_plus_one=False</cite> option because this is equivalent
+with <cite>uncorr_reorder_trajectory(traj, row_plus_one=True)</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.transform_reorder.ee_uncorr_reorder_trajectory">
+<code class="sig-prename descclassname">scrypy.transform_reorder.</code><code class="sig-name descname">ee_uncorr_reorder_trajectory</code><span class="sig-paren">(</span><em class="sig-param">traj</em>, <em class="sig-param">row_plus_one=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_reorder.html#ee_uncorr_reorder_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_reorder.ee_uncorr_reorder_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each row i (non-pythonic), move the first i elements to the back.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>traj</strong><span class="classifier">ndarray</span></dt><dd><p>Trajectory.</p>
+</dd>
+<dt><strong>row_plus_one</strong><span class="classifier">bool</span></dt><dd><p>Add 1 to row index, i.e. start with second row.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>traj_reordered</strong><span class="classifier">ndarray</span></dt><dd><p>Reordered trajectory.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.transform_reorder.reorder_cov">
+<code class="sig-prename descclassname">scrypy.transform_reorder.</code><code class="sig-name descname">reorder_cov</code><span class="sig-paren">(</span><em class="sig-param">cov</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_reorder.html#reorder_cov"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_reorder.reorder_cov" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arrange covariance matrix according to the expectation vector when
+the first element is moved to the end.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cov</strong><span class="classifier">ndarray</span></dt><dd><p>Covariance matrix of row.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>cov_reordered</strong><span class="classifier">ndarray</span></dt><dd><p>Reordered covariance matrix of row.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.transform_reorder.reorder_mu">
+<code class="sig-prename descclassname">scrypy.transform_reorder.</code><code class="sig-name descname">reorder_mu</code><span class="sig-paren">(</span><em class="sig-param">mu</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_reorder.html#reorder_mu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_reorder.reorder_mu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the first element of the expectation vector to the end.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mu</strong><span class="classifier">ndarray</span></dt><dd><p>Expectation values of row.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>mu_reordered</strong><span class="classifier">ndarray</span></dt><dd><p>Reordered expectation values of row.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.transform_reorder.reverse_ee_corr_reorder_trajectory">
+<code class="sig-prename descclassname">scrypy.transform_reorder.</code><code class="sig-name descname">reverse_ee_corr_reorder_trajectory</code><span class="sig-paren">(</span><em class="sig-param">traj_reordered</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_reorder.html#reverse_ee_corr_reorder_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_reorder.reverse_ee_corr_reorder_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverses function <cite>corr_reorder_trajectory</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>traj_reordered</strong><span class="classifier">ndarray</span></dt><dd><p>Reordered trajectory.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>traj</strong><span class="classifier">ndarray</span></dt><dd><p>Trjectory in original order.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.transform_reorder.reverse_ee_uncorr_reorder_trajectory">
+<code class="sig-prename descclassname">scrypy.transform_reorder.</code><code class="sig-name descname">reverse_ee_uncorr_reorder_trajectory</code><span class="sig-paren">(</span><em class="sig-param">traj_reordered</em>, <em class="sig-param">row_plus_one=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_reorder.html#reverse_ee_uncorr_reorder_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_reorder.reverse_ee_uncorr_reorder_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverses function <cite>uncorr_reorder_trajectory</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>traj_reordered</strong><span class="classifier">ndarray</span></dt><dd><p>Reordered trajectory.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>traj</strong><span class="classifier">ndarray</span></dt><dd><p>Trjectory in original order.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.transform_reorder.reverse_reorder_cov">
+<code class="sig-prename descclassname">scrypy.transform_reorder.</code><code class="sig-name descname">reverse_reorder_cov</code><span class="sig-paren">(</span><em class="sig-param">cov_reordered</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_reorder.html#reverse_reorder_cov"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_reorder.reverse_reorder_cov" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverses function <cite>reorder_cov</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cov_reordered</strong><span class="classifier">ndarray</span></dt><dd><p>Reordered covariance matrix.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>cov</strong><span class="classifier">ndarray</span></dt><dd><p>Covarince matrix in original order.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.transform_reorder.reverse_reorder_mu">
+<code class="sig-prename descclassname">scrypy.transform_reorder.</code><code class="sig-name descname">reverse_reorder_mu</code><span class="sig-paren">(</span><em class="sig-param">mu_reordered</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_reorder.html#reverse_reorder_mu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_reorder.reverse_reorder_mu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reverses function <cite>reorder_mu</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mu_reordered</strong><span class="classifier">ndarray</span></dt><dd><p>Reordered expectation values of row.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>mu</strong><span class="classifier">ndarray</span></dt><dd><p>Expectation values of row in original order.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-scrypy.transform_traj_elementary_effects">
+<span id="scrypy-transform-traj-elementary-effects-module"></span><h2>scrypy.transform_traj_elementary_effects module<a class="headerlink" href="#module-scrypy.transform_traj_elementary_effects" title="Permalink to this headline">¶</a></h2>
+<p>Functions to compute the arguments for the function evaluations in the numerator
+of the individual uncorrelated and correlated Elementary Effects following [1],
+page 33 and 34, and coefficients that scale the step.</p>
+<div class="section" id="id3">
+<h3>References<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>[1] Ge, Q. and M. Menendez (2017). Extending morris method for qualitative global
+sensitivityanalysis of models with dependent inputs. Reliability Engineering &amp;
+System Safety 100 (162), 28–39.</p>
+<dl class="function">
+<dt id="scrypy.transform_traj_elementary_effects.trans_ee_corr_trajectories">
+<code class="sig-prename descclassname">scrypy.transform_traj_elementary_effects.</code><code class="sig-name descname">trans_ee_corr_trajectories</code><span class="sig-paren">(</span><em class="sig-param">sample_traj_list</em>, <em class="sig-param">cov</em>, <em class="sig-param">mu</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_traj_elementary_effects.html#trans_ee_corr_trajectories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_traj_elementary_effects.trans_ee_corr_trajectories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms list of trajectories to two lists of transformed trajectories
+for the computation of the correlated Elementary Effects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample_traj_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Set of untransformed trajectories.</p>
+</dd>
+<dt><strong>cov</strong><span class="classifier">ndarray</span></dt><dd><p>Covariance matrix.</p>
+</dd>
+<dt><strong>mu</strong><span class="classifier">ndarray</span></dt><dd><p>Expectation value.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>trans_piplusone_iminusone</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Trajectories containing the rows that are the arguments for the LHS function
+evaluation for the correlated Elementary Effect.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>AssertionError</dt><dd><p>If the dimension of <cite>mu</cite>, <cite>cov</cite> and the elements in <cite>sample_traj_list</cite>
+do not fit together.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#scrypy.transform_traj_elementary_effects.trans_ee_uncorr_trajectories" title="scrypy.transform_traj_elementary_effects.trans_ee_uncorr_trajectories"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trans_ee_uncorr_trajectories</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Transformation for the rows on the RHS of the correlated Elementary Effects
+is equal to the one on the LHS of the uncorrelated Elementary Effects.
+Therefore, it is left out here as it can be obtained by
+<cite>trans_ee_uncorr_trajectories</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrypy.transform_traj_elementary_effects.trans_ee_uncorr_trajectories">
+<code class="sig-prename descclassname">scrypy.transform_traj_elementary_effects.</code><code class="sig-name descname">trans_ee_uncorr_trajectories</code><span class="sig-paren">(</span><em class="sig-param">sample_traj_list</em>, <em class="sig-param">cov</em>, <em class="sig-param">mu</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scrypy/transform_traj_elementary_effects.html#trans_ee_uncorr_trajectories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrypy.transform_traj_elementary_effects.trans_ee_uncorr_trajectories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms list of trajectories to two lists of transformed trajectories
+for the computation of the uncorrelated Elementary Effects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample_traj_list</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Set of untransformed trajectories.</p>
+</dd>
+<dt><strong>cov</strong><span class="classifier">ndarray</span></dt><dd><p>Covariance matrix.</p>
+</dd>
+<dt><strong>mu</strong><span class="classifier">ndarray</span></dt><dd><p>Expectation value.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>trans_piplusone_i</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Trajectories containing the rows that are the arguments for the LHS function
+evaluation for the uncorrelated Elementary Effect.</p>
+</dd>
+<dt><strong>trans_pi_i</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Trajectories containing the rows that are the arguments for the RHS function
+evaluation for the uncorrelated Elementary Effect.</p>
+</dd>
+<dt><strong>coeff_step</strong><span class="classifier">list of ndarrays</span></dt><dd><p>Factors in the denumerator of the uncorrelated Elementary Effect. Accounts
+for the decorrelation of the Step.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>AssertionError</dt><dd><p>If the dimension of <cite>mu</cite>, <cite>cov</cite> and the elements in <cite>sample_traj_list</cite>
+do not fit together.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The rows in the two different transformed trajectories equal to T(p_{i+1}, i)
+and T(p_{i}, i). Understanding the transformations may require to write up the
+first transformation from p_i and p_{i+1} to T_1(p_{i}, i) and T_1(p_{i+1}, i).
+T_1 shifts the first i elements to the end for each row p_{i}.</p>
+<p>This function creates list of transformations of whole trajectories.
+The rows in the trajectories for T(p_{i}, i) that are to be subtracted from
+T(p_{i+1}, i), are still positioned one below compared to the trajectories for
+T(p_{i}, i). Therefore, importantly, one needs to compare each row in a traj from
+<cite>trans_pi_i</cite> with the respective row one below in <cite>trans_piplusone_i</cite>.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-scrypy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-scrypy" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">scrypy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">scrypy package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.figure_choice_shares_over_time">scrypy.figure_choice_shares_over_time module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.figure_cone_plot_choice_shares">scrypy.figure_cone_plot_choice_shares module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.jac_estimation_chol">scrypy.jac_estimation_chol module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.multi_quantities_of_interest">scrypy.multi_quantities_of_interest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.plots">scrypy.plots module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.sampling_schemes">scrypy.sampling_schemes module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.sandbox">scrypy.sandbox module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.screening_measures">scrypy.screening_measures module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.script_uncertainty_propagation">scrypy.script_uncertainty_propagation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.select_sample_set">scrypy.select_sample_set module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.transform_distributions">scrypy.transform_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.transform_reorder">scrypy.transform_reorder module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy.transform_traj_elementary_effects">scrypy.transform_traj_elementary_effects module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-scrypy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to scrypy’s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Tobias Stenzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/scrypy.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

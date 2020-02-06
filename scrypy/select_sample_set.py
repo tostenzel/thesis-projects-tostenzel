@@ -42,9 +42,10 @@ def compute_pair_distance(sample_0, sample_1):
 
     Raises
     ------
-    AssertionError:
-        if sample is not in sampleectory or radial design shape.
-        if the sample shapes differ.
+    AssertionError
+        If sample is not in sampleectory or radial design shape.
+    AssertionError
+        If the sample shapes differ.
 
     Notes
     -----
@@ -138,9 +139,6 @@ def total_distance(distance_matrix):
     total_distance: float
         total distance measure of all pairs of samples in a set.
 
-    Note
-    ----
-
     """
     # The `*0.5` is implemented by only considering the lower triangular.
     total_distance = np.sqrt(sum(sum(np.tril(distance_matrix ** 2))))
@@ -171,17 +169,19 @@ def select_trajectories(traj_dist_matrix, n_traj):
 
     Raises
     ------
-    AssertionError:
-        -if `traj_dist_matrix` is not symmetric.
-        -if the number of combinations does not correspong to the combinations
+    AssertionError
+        If `traj_dist_matrix` is not symmetric.
+    AssertionError
+        If the number of combinations does not correspong to the combinations
         indicated by the size of `traj_dist_matrix`.
 
     Notes
     -----
-    -This function can be very slow because it computes distances
+    This function can be very slow because it computes distances
     between np.binomial(len(traj_dist_matrix, n_traj) pairs of trajectories.
     Example: `np.biomial(30,15)` = 155117520.
-    -This selection function yields precise results
+
+    This selection function yields precise results
     because each total distance for each possible combination of
     trajectories is computed directly. The faster, iterative methods
     can yield different results that are, however, close in the total
@@ -247,21 +247,23 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
 
     See Also
     --------
-    `select_trajectories`
+    select_trajectories
 
     Notes
     -----
-    -Oftentimes this function leads to diffent combinations than
+    Oftentimes this function leads to diffent combinations than
     `select_trajectories`. The reason seems to be that this function
     deviates from the optimal path due to numerical reasons as different
     combinations may be very close (see [2]).
     However, the total sum of the returned combinations are close.
     Therefore, the `total_distance` loss is negligible compared to the speed gain
     for large numbers of trajectory combinations.
-    -This implies that, `combi_total_distance` always differs from the one in
+
+    This implies that, `combi_total_distance` always differs from the one in
     `select_trajectories` because it only contains the combination indices from
     the last iteration if n_traj is smaller than the sample set minus 1.
-    - The trick using `tracker_keep_indices` is an elegant solution.
+
+    The trick using `tracker_keep_indices` is an elegant solution.
 
     """
     n_traj_sample = np.size(traj_dist_matrix, 0)
@@ -386,7 +388,7 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
 
     See Also
     --------
-    `select_trajectories_wrapper_iteration`
+    select_trajectories_wrapper_iteration
 
     Notes
     -----
@@ -440,14 +442,16 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
 
     Notes
     -----
-    -The function computes the total distance of each trajectory
+    The function computes the total distance of each trajectory
     combination by using the total distance of each combination in the previous step
     and subtracting each pair distance with the dropped trajectory, that yielded
     the lowest total distance combinations in the previous step.
-    -This function, is in fact much slower than
+
+    This function, is in fact much slower than
     `select_trajectories_wrapper_iteration` because it uses more for loops to get
     the pair distances from the right combinations that must be subtracted from the
     total distances.
+
     """
     old_combi_total_distance = combi_total_distance
     old_traj_dist_matrix = traj_dist_matrix
@@ -563,16 +567,17 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
 
     See Also
     --------
-    `next_combi_total_distance_gm14`
+    next_combi_total_distance_gm14
 
     Notes
     -----
-    -This function, is in fact much slower than `intermediate_ge_menendez_2014`
+    This function, is in fact much slower than `intermediate_ge_menendez_2014`
     because it uses more for loops to get the pair distances from the right
     combinations that must be subtracted from the total distances.
-    -This function selects n_traj trajectories from n_traj_sample trajectories by
+
+    This function selects n_traj trajectories from n_traj_sample trajectories by
     iteratively selecting n_traj_sample - i for i = 1,...,n_traj_sample - n-traj.
-    For this purpose, `next_combi_total_distance_gm14` computes the total distance
+    For this purpose, next_combi_total_distance_gm14 computes the total distance
     of each trajectory combination by using the total distance of each combination
     in the previous step and subtracting each pair distance with the dropped trajectory,
     that yielded the lowest total distance combinations in the previous step.

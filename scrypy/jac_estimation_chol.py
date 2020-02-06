@@ -24,20 +24,20 @@ def jac_estimation_chol(save=False):
 
     Parameters
     ----------
-    save: bool
+    save : bool
         Indicates wether to save data.
 
     Returns
     -------
-    par_estimates_chol_df. DataFrame:
-        Containes the estimates parameters and the not estimates fixed parameters
+    par_estimates_chol_df : DataFrame
+        Contains the estimates parameters and the not estimates fixed parameters
         in respy format.
-    rand_par_chol_df: DataFrame
+    rand_par_chol_df : DataFrame
         Df containing variable parameters, SDs and lower and upper bound in
         estimagic format. It can be post-processed with surface/topography plot.
-    cov_chol_df: DataFrame
+    cov_chol_df : DataFrame
         Df containing the covariance matrix.
-    corr_chol_df: DataFrame
+    corr_chol_df : DataFrame
         DF containing the correlation matrix.
 
     """
@@ -155,12 +155,12 @@ def chol_reindex_params(params_sdcorr):
 
     Parameters
     ----------
-    params_sdcorr: DataFrame
+    params_sdcorr : DataFrame
         Parameters DataFrame in respy format with SD-Corr matrix elements
 
     Returns
     -------
-    params_chol: DataFrame
+    params_chol : DataFrame
         Parameters DataFrame in respy format with matrix elements from Choleksy
         decomposition of covariance matrix that underlies the SD-Corr matrix.
 

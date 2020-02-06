@@ -54,17 +54,18 @@ def transform_uniform_stnormal_uncorr(uniform_deviates, numeric_zero=0.01):
 
     See Also
     --------
-    `morris_trajectory`
+    morris_trajectory
 
     Notes
     -----
-    -This transformation is already applied as option in `morris_trajectory`.
+    This transformation is already applied as option in `morris_trajectory`.
     The reason is that `scipy.stats.norm` transforms the random draws from the
     unit cube non-linearily including the addition of the step. To obtain
     non-distorted screening measures, it is important to also account for this
     transformation of delta in the denumerator to not violate the definition of
     the function derivation.
-    -The parameter `numeric_zero` can be highly influential. I prefer it to be
+
+    The parameter `numeric_zero` can be highly influential. I prefer it to be
     relatively large to put more proportional, i.e. less weight on the extremes.
 
     """
@@ -110,15 +111,17 @@ def transform_stnormal_normal_corr(z_row, cov, mu):
 
     Notes
     -----
-    -Importantly, the step in the numerator of the uncorrelated Elementary Effect
+    Importantly, the step in the numerator of the uncorrelated Elementary Effect
     is multiplied by `correlate_step`. Therefore, this factor has to multiply
     the step in the denominator as well to not violate the definition of the
     function derivation.
-    -This method is equivalent to the one in [2], page 199 which uses the Cholesky decomposition
+
+    This method is equivalent to the one in [2], page 199 which uses the Cholesky decomposition
     of the covariance matrix directly. This saves the scaling by SD and expectation.
     -This method is simpler and slightly more precise than the one in [3], page 33, for
     normally distributed paramters.
-    -[1] explains how Rosenblatt and Nataf transformation are equal for normally distributed
+
+    [1] explains how Rosenblatt and Nataf transformation are equal for normally distributed
     deviates.
 
     References

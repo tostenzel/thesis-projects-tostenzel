@@ -14,9 +14,9 @@ import respy as rp
 def get_quantity_of_interest(input_params):
     """Computes the Quantity of Interest.
 
-    Paramters
-    ---------
-    input_params: ndarray
+    Parameters
+    ----------
+    input_params : ndarray
         Unindexed input parameters.
     policy_occ_shares_df : DataFrame
         Occupation shares over all ages for the policy scenario.
@@ -25,7 +25,7 @@ def get_quantity_of_interest(input_params):
 
     Returns
     -------
-    qoi: float
+    qoi : float
         Quantity of Interest
 
     """
@@ -57,23 +57,23 @@ def model_wrapper_kw_94(input_params, base_options, tuition_subsidy):
 
     Parameters
     ----------
-    input_params: Dataframe
+    input_params : Dataframe
         Contains the complete respy vector of input parameters with indices.
-    base_options: dict
+    base_options : dict
         Contains the options for the sumulation of agents.
-    tuition_subsidy: float
+    tuition_subsidy : float
         tuition subsidy that is added to the respective paramter.
-    add_qoi_edu_choices: bool
+    add_qoi_edu_choices : bool
         Specifies whether to compute the addition QoIs, education choice shares
         in the sample over time, to depict a cone plot (confidence interval plot).
 
     Returns
     -------
-    edu: float
+    edu : float
         Mean number of years in education.
-    occ_shares_df: DataFrame
+    occ_shares_df : DataFrame
         Occupation shares over all ages.
-    policy_df: Dataframe
+    policy_df : Dataframe
         Dataframe of occupation choices of sample of agents of time.
 
     """
@@ -106,18 +106,18 @@ def transform_params_kw94_respy(params_idx):
 
     Parameters
     ----------
-    params_idx: Series
+    params_idx : Series
         Non-constant input paramters with correct indices
 
     Returns
     --------
-    rp_params_df: Dataframe
+    rp_params_df : Dataframe
         Input parameters in respy format.
 
     Raises
     ------
-    AssertionError:
-        if the lenght of the paramter vector is incorrect.
+    AssertionError
+        If the lenght of the paramter vector is incorrect.
 
     """
     assert len(params_idx) == 27, "Length of KW94 vector must be 27."

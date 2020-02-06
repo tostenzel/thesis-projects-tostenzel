@@ -41,10 +41,11 @@ def stepsize(n_levels):
 
     References
     ----------
-        [1] Morris, M. D. (1991). Factorial sampling plans for preliminary computational experiments.
-        Technometrics 33 (2), 161–174.
+    [1] Morris, M. D. (1991). Factorial sampling plans for preliminary computational experiments.
+    Technometrics 33 (2), 161–174.
 
     """
+
     assert float(
         n_levels / 2
     ).is_integer(), "n_levels must be an even number, see function docstring."
@@ -72,62 +73,63 @@ def morris_trajectory(
 
     Parameters
     ----------
-        n_inputs : int
-            Number of input paramters / columns / rows - 1.
-        n_levels: int
-            Number of distict grid points.
-        seed : int
-            Random seed.
-        normal : bool
-            Indicates whether to transform points by `scipy.normal.ppt`
-        numeric_zero : float
-            `if normal is True`: Prevents `scipy.normal.ppt` to return `-Inf`
-            and `Inf` for 0 and 1.
-        step_function : function
-            Constant step as function of `n_levels` added to lower half of point grid.
-        stairs : bool
-            if False: Randomly shuffle columns, dissolves stairs shape.
+    n_inputs : int
+        Number of input paramters / columns / rows - 1.
+    n_levels : int
+        Number of distict grid points.
+    seed : int
+        Random seed.
+    normal : bool
+        Indicates whether to transform points by `scipy.normal.ppt`
+    numeric_zero : float
+        `if normal is True`: Prevents `scipy.normal.ppt` to return `-Inf`
+        and `Inf` for 0 and 1.
+    step_function : function
+        Constant step as function of `n_levels` added to lower half of point grid.
+    stairs : bool
+        if False: Randomly shuffle columns, dissolves stairs shape.
 
     Returns
     -------
-        B_random : ndarray
-            Random sample in trajectory design.
-            Dimension `n_inputs` x `n_inputs + 1`.
-        trans_steps : ndarray
-            Column vector of steps added to base value point. Sorted by
-            parameter/column. Dimension `n_inputs` x `1`.
+    B_random : ndarray
+        Random sample in trajectory design.
+        Dimension `n_inputs` x `n_inputs + 1`.
+    trans_steps : ndarray
+        Column vector of steps added to base value point. Sorted by
+        parameter/column. Dimension `n_inputs` x `1`.
 
     See Also
     --------
-        `stepsize` : See parameter `step_function`.
-        `transform_uniform_stnormal_uncorr` : See parameter `numeric_zero`.
+    stepsize : See parameter `step_function`.
+    transform_uniform_stnormal_uncorr : See parameter `numeric_zero`.
 
     Notes
     -----
-        The method is described in [1]. This function follows the notation therein.
-        The idea is tailored to compute a random sample of function arguments to
-        compute local derivates. First, a random row of paramters is drawn. Then, one
-        parameter is changed by a fixed step in each row. The local derivatives can be
-        computed by subtracting the function evaluations of each row from its upper row,
-        thereby obtaining one local derivative for each parameter. The order of rows and
-        columns may be shuffled. Shuffling rows creates a negative stepsize. By default,
-        the shuffling of columns is turned off to facilitate post-processing.
+    The method is described in [1]. This function follows the notation therein.
+    The idea is tailored to compute a random sample of function arguments to
+    compute local derivates. First, a random row of paramters is drawn. Then, one
+    parameter is changed by a fixed step in each row. The local derivatives can be
+    computed by subtracting the function evaluations of each row from its upper row,
+    thereby obtaining one local derivative for each parameter. The order of rows and
+    columns may be shuffled. Shuffling rows creates a negative stepsize. By default,
+    the shuffling of columns is turned off to facilitate post-processing.
 
-        Importantly, an additional option is to evaluate the points by the inverse
-        normal cdf to account for normally distributed input paramters vice versa
-        uniformly distributed ones. For this purpose, zeros and ones are slighly shifted
-        towards the centre of [0,1], so that no infinite values arise. Given the shape
-        of the inverse cdf, the specific transformation choice has large influences
-        on the stepsize and therefore the Elementary Effects.
-        To account for transformations, the step is recomputed for each parameter by
-        subtracting the last first row from the last row.
+    Importantly, an additional option is to evaluate the points by the inverse
+    normal cdf to account for normally distributed input paramters vice versa
+    uniformly distributed ones. For this purpose, zeros and ones are slighly shifted
+    towards the centre of [0,1], so that no infinite values arise. Given the shape
+    of the inverse cdf, the specific transformation choice has large influences
+    on the stepsize and therefore the Elementary Effects.
+    To account for transformations, the step is recomputed for each parameter by
+    subtracting the last first row from the last row.
 
     References
     ----------
-        [1] Morris, M. D. (1991). Factorial sampling plans for preliminary computational
-        experiments. Technometrics 33 (2), 161–174.
+    [1] Morris, M. D. (1991). Factorial sampling plans for preliminary computational
+    experiments. Technometrics 33 (2), 161–174.
 
     """
+
     np.random.seed(seed)
 
     step = stepsize(n_levels)

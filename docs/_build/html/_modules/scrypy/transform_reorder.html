@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>scrypy.transform_reorder &#8212; scrypy  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for scrypy.transform_reorder</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions for reordering the sample rows following [1].</span>
+
+<span class="sd">The intuition behind the reordering in general is the following: To compute the</span>
+<span class="sd">uncorrelated Elementary Effects, one puts the sampled elements that have been changed</span>
+<span class="sd">by `step` to the back of the row. For the correlated EE, one leaves the newly changed</span>
+<span class="sd">element in front, but puts the elements that were changed in rows above to the end.</span>
+<span class="sd">These compose the left parts of the numerator in the EE definition. One then subtracts</span>
+<span class="sd">the same row, except that the changed element is unchanged. The reason for these</span>
+<span class="sd">reorderings is that the correlation technique works hierarchically, like Dominoes.</span>
+<span class="sd">The Element before is unaffected by the correlation of the elements thereafter.</span>
+<span class="sd">This implies that the first Element is unchanged, as for the correlated EE. Therefore,</span>
+<span class="sd">the step is involved in correlating the other elements without becoming changed itself.</span>
+<span class="sd">The opposite is true for the uncorrelated EE.</span>
+<span class="sd">Other functions order the expectations and covariance matrix accordingly. They are also</span>
+<span class="sd">used to initialize the correlating loops in `transform_traj_elementary_effects` in the</span>
+<span class="sd">right order.</span>
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+<span class="sd">[1] Ge, Q. and M. Menendez (2017). Extending morris method for qualitative global</span>
+<span class="sd">sensitivityanalysis of models with dependent inputs. Reliability Engineering &amp;</span>
+<span class="sd">System Safety 100 (162), 28–39.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="ee_uncorr_reorder_trajectory"><a class="viewcode-back" href="../../scrypy.html#scrypy.transform_reorder.ee_uncorr_reorder_trajectory">[docs]</a><span class="k">def</span> <span class="nf">ee_uncorr_reorder_trajectory</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">row_plus_one</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For each row i (non-pythonic), move the first i elements to the back.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    traj : ndarray</span>
+<span class="sd">        Trajectory.</span>
+<span class="sd">    row_plus_one : bool</span>
+<span class="sd">        Add 1 to row index, i.e. start with second row.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    traj_reordered : ndarray</span>
+<span class="sd">        Reordered trajectory.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">traj_reordered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">row_plus_one</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># In the first row, put the first element to the back.</span>
+            <span class="c1"># In the second, the first two etc.</span>
+            <span class="n">traj_reordered</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">row_plus_one</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># In the first row, put 0 elements to the back.</span>
+            <span class="c1"># IN the second, put the first element to the back etc.</span>
+            <span class="n">traj_reordered</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="o">-</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">traj_reordered</span></div>
+
+
+<div class="viewcode-block" id="reverse_ee_uncorr_reorder_trajectory"><a class="viewcode-back" href="../../scrypy.html#scrypy.transform_reorder.reverse_ee_uncorr_reorder_trajectory">[docs]</a><span class="k">def</span> <span class="nf">reverse_ee_uncorr_reorder_trajectory</span><span class="p">(</span><span class="n">traj_reordered</span><span class="p">,</span> <span class="n">row_plus_one</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reverses function `uncorr_reorder_trajectory`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    traj_reordered : ndarray</span>
+<span class="sd">        Reordered trajectory.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    traj : ndarray</span>
+<span class="sd">        Trjectory in original order.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">traj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_reordered</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_reordered</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_reordered</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">row_plus_one</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">traj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span>
+                <span class="n">traj_reordered</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_reordered</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">row_plus_one</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">traj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span>
+                <span class="n">traj_reordered</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_reordered</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">traj</span></div>
+
+
+<div class="viewcode-block" id="ee_corr_reorder_trajectory"><a class="viewcode-back" href="../../scrypy.html#scrypy.transform_reorder.ee_corr_reorder_trajectory">[docs]</a><span class="k">def</span> <span class="nf">ee_corr_reorder_trajectory</span><span class="p">(</span><span class="n">traj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For each row i (non-pythonic), move the first i-1 elements to the back.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    traj : ndarray</span>
+<span class="sd">        Trajectory.</span>
+<span class="sd">    row_plus_one : bool</span>
+<span class="sd">        Add 1 to row index, i.e. start with second row.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    traj_reordered : ndarray</span>
+<span class="sd">        Reordered trajectory.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    There is no `row_plus_one=False` option because this is equivalent</span>
+<span class="sd">    with `uncorr_reorder_trajectory(traj, row_plus_one=True)`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">traj_reordered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="c1"># In the first row, put the first two elements to the back.</span>
+        <span class="c1"># In the second row, put the first three element to the back etc.</span>
+        <span class="n">traj_reordered</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">traj_reordered</span></div>
+
+
+<div class="viewcode-block" id="reverse_ee_corr_reorder_trajectory"><a class="viewcode-back" href="../../scrypy.html#scrypy.transform_reorder.reverse_ee_corr_reorder_trajectory">[docs]</a><span class="k">def</span> <span class="nf">reverse_ee_corr_reorder_trajectory</span><span class="p">(</span><span class="n">traj_reordered</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reverses function `corr_reorder_trajectory`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    traj_reordered : ndarray</span>
+<span class="sd">        Reordered trajectory.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    traj : ndarray</span>
+<span class="sd">        Trjectory in original order.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">traj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_reordered</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_reordered</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="n">traj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span>
+            <span class="n">traj_reordered</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_reordered</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">traj</span></div>
+
+
+<div class="viewcode-block" id="reorder_mu"><a class="viewcode-back" href="../../scrypy.html#scrypy.transform_reorder.reorder_mu">[docs]</a><span class="k">def</span> <span class="nf">reorder_mu</span><span class="p">(</span><span class="n">mu</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Move the first element of the expectation vector to the end.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu : ndarray</span>
+<span class="sd">        Expectation values of row.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mu_reordered : ndarray</span>
+<span class="sd">        Reordered expectation values of row.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mu_reordered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mu_reordered</span></div>
+
+
+<div class="viewcode-block" id="reorder_cov"><a class="viewcode-back" href="../../scrypy.html#scrypy.transform_reorder.reorder_cov">[docs]</a><span class="k">def</span> <span class="nf">reorder_cov</span><span class="p">(</span><span class="n">cov</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Arrange covariance matrix according to the expectation vector when</span>
+<span class="sd">    the first element is moved to the end.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cov : ndarray</span>
+<span class="sd">        Covariance matrix of row.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cov_reordered : ndarray</span>
+<span class="sd">        Reordered covariance matrix of row.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cov_reordered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">cov</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="c1"># Put untouched square one up and one left</span>
+    <span class="n">cov_reordered</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cov</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">),</span> <span class="mi">1</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">)]</span>
+    <span class="c1"># Put [0,0] to [n,n]</span>
+    <span class="n">cov_reordered</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cov</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Put [0, 1:n] to [n, 0:n-1] and same for the column.</span>
+    <span class="n">cov_reordered</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cov</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">)]</span>
+    <span class="n">cov_reordered</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cov</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">cov_reordered</span></div>
+
+
+<div class="viewcode-block" id="reverse_reorder_mu"><a class="viewcode-back" href="../../scrypy.html#scrypy.transform_reorder.reverse_reorder_mu">[docs]</a><span class="k">def</span> <span class="nf">reverse_reorder_mu</span><span class="p">(</span><span class="n">mu_reordered</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reverses function `reorder_mu`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mu_reordered : ndarray</span>
+<span class="sd">        Reordered expectation values of row.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mu : ndarray</span>
+<span class="sd">        Expectation values of row in original order.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">mu_reordered</span><span class="p">,</span> <span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mu</span></div>
+
+
+<div class="viewcode-block" id="reverse_reorder_cov"><a class="viewcode-back" href="../../scrypy.html#scrypy.transform_reorder.reverse_reorder_cov">[docs]</a><span class="k">def</span> <span class="nf">reverse_reorder_cov</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reverses function `reorder_cov`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cov_reordered : ndarray</span>
+<span class="sd">        Reordered covariance matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cov : ndarray</span>
+<span class="sd">        Covarince matrix in original order.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">cov_reordered</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">cov</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">),</span> <span class="mi">1</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">)]</span> <span class="o">=</span> <span class="n">cov_reordered</span><span class="p">[</span>
+        <span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="p">]</span>
+    <span class="n">cov</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cov_reordered</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">cov</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">)]</span> <span class="o">=</span> <span class="n">cov_reordered</span><span class="p">[</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="p">]</span>
+    <span class="n">cov</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">),</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cov_reordered</span><span class="p">[</span>
+        <span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov_reordered</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">cov</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">scrypy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scrypy.html">scrypy package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Tobias Stenzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -120,9 +120,9 @@ def distplot(sample, qoi_name, save=False):
     ----------
     sample: Series, 1d-array, or list.
         A vector of random observations in vertical format.
-    qoi_name: str
+    qoi_name : str
         Name of Quantity of interest used for x label and png-file.
-    save: bool
+    save : bool
         Indicate whether to save the plot as png.
 
     Returns
@@ -221,15 +221,15 @@ def convergence_plot(sample, expected, qoi_name, absolute_deviation=False, save=
 
     Parameters
     ----------
-    sample: Series, 1d-array, or list.
+    sample : Series, 1d-array, or list.
         A vector of random observations.
-    expected: float, int.
+    expected : float, int.
         Expected value of sample mean.
-    qoi_name: str
+    qoi_name : str
         Label of y-axis.
-    absolute_deviation: bool
+    absolute_deviation : bool
         Plots absolute deviation of means to zero expectation value.
-    save: bool
+    save : bool
         Indicates whether to save the plot as png.
 
     Returns

@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>scrypy.multi_quantities_of_interest &#8212; scrypy  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for scrypy.multi_quantities_of_interest</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Besides the difference in mean age of education, this module also generates two</span>
+<span class="sd">Dataframes for a second QoI:</span>
+<span class="sd">The difference in education shares over time for a sample of agents.</span>
+<span class="sd">The second quantity is used to create the cone plot.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">respy</span> <span class="k">as</span> <span class="nn">rp</span>
+
+
+<div class="viewcode-block" id="get_quantity_of_interest"><a class="viewcode-back" href="../../scrypy.html#scrypy.multi_quantities_of_interest.get_quantity_of_interest">[docs]</a><span class="k">def</span> <span class="nf">get_quantity_of_interest</span><span class="p">(</span><span class="n">input_params</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes the Quantity of Interest.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_params : ndarray</span>
+<span class="sd">        Unindexed input parameters.</span>
+<span class="sd">    policy_occ_shares_df : DataFrame</span>
+<span class="sd">        Occupation shares over all ages for the policy scenario.</span>
+<span class="sd">    base_occ_shares_df : DataFrame</span>
+<span class="sd">        Occupation shares over all ages for the base scenario.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    qoi : float</span>
+<span class="sd">        Quantity of Interest</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># We need the baseline options and a grid for the indices.</span>
+    <span class="c1"># It does not matter which of the three KW94 specifications we use here.</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">base_options</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_example_model</span><span class="p">(</span><span class="s2">&quot;kw_94_one&quot;</span><span class="p">,</span> <span class="n">with_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># Define the script path relative to the jupyter notebook that calls the script.</span>
+    <span class="n">abs_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+    <span class="c1"># Estimated parameters with Choleskies plus 3 fixed respy parameters.</span>
+    <span class="n">base_params</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">abs_dir</span><span class="p">,</span> <span class="s2">&quot;input/est_rp_params_chol.pkl&quot;</span><span class="p">))</span>
+
+    <span class="n">params_idx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">input_params</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">base_params</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">27</span><span class="p">])</span>
+    <span class="n">params_idx_respy</span> <span class="o">=</span> <span class="n">transform_params_kw94_respy</span><span class="p">(</span><span class="n">params_idx</span><span class="p">)</span>
+
+    <span class="n">policy_edu</span><span class="p">,</span> <span class="n">policy_occ_shares_df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model_wrapper_kw_94</span><span class="p">(</span>
+        <span class="n">params_idx_respy</span><span class="p">,</span> <span class="n">base_options</span><span class="p">,</span> <span class="mf">500.0</span>
+    <span class="p">)</span>
+
+    <span class="n">base_edu</span><span class="p">,</span> <span class="n">base_occ_shares_df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model_wrapper_kw_94</span><span class="p">(</span>
+        <span class="n">params_idx_respy</span><span class="p">,</span> <span class="n">base_options</span><span class="p">,</span> <span class="mf">0.0</span>
+    <span class="p">)</span>
+    <span class="n">change_mean_edu</span> <span class="o">=</span> <span class="n">policy_edu</span> <span class="o">-</span> <span class="n">base_edu</span>
+
+    <span class="k">return</span> <span class="n">change_mean_edu</span><span class="p">,</span> <span class="n">policy_occ_shares_df</span><span class="p">,</span> <span class="n">base_occ_shares_df</span></div>
+
+
+<div class="viewcode-block" id="model_wrapper_kw_94"><a class="viewcode-back" href="../../scrypy.html#scrypy.multi_quantities_of_interest.model_wrapper_kw_94">[docs]</a><span class="k">def</span> <span class="nf">model_wrapper_kw_94</span><span class="p">(</span><span class="n">input_params</span><span class="p">,</span> <span class="n">base_options</span><span class="p">,</span> <span class="n">tuition_subsidy</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper around respy to compute the mean number of years in education.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_params : Dataframe</span>
+<span class="sd">        Contains the complete respy vector of input parameters with indices.</span>
+<span class="sd">    base_options : dict</span>
+<span class="sd">        Contains the options for the sumulation of agents.</span>
+<span class="sd">    tuition_subsidy : float</span>
+<span class="sd">        tuition subsidy that is added to the respective paramter.</span>
+<span class="sd">    add_qoi_edu_choices : bool</span>
+<span class="sd">        Specifies whether to compute the addition QoIs, education choice shares</span>
+<span class="sd">        in the sample over time, to depict a cone plot (confidence interval plot).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    edu : float</span>
+<span class="sd">        Mean number of years in education.</span>
+<span class="sd">    occ_shares_df : DataFrame</span>
+<span class="sd">        Occupation shares over all ages.</span>
+<span class="sd">    policy_df : Dataframe</span>
+<span class="sd">        Dataframe of occupation choices of sample of agents of time.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">simulate</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_simulate_func</span><span class="p">(</span><span class="n">input_params</span><span class="p">,</span> <span class="n">base_options</span><span class="p">)</span>
+
+    <span class="n">policy_params</span> <span class="o">=</span> <span class="n">input_params</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">policy_params</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;nonpec_edu&quot;</span><span class="p">,</span> <span class="s2">&quot;at_least_twelve_exp_edu&quot;</span><span class="p">),</span> <span class="s2">&quot;value&quot;</span>
+    <span class="p">]</span> <span class="o">+=</span> <span class="n">tuition_subsidy</span>
+    <span class="n">policy_df</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">policy_params</span><span class="p">)</span>
+
+    <span class="n">edu</span> <span class="o">=</span> <span class="n">policy_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Identifier&quot;</span><span class="p">)[</span><span class="s2">&quot;Experience_Edu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="n">policy_df</span><span class="p">[</span><span class="s2">&quot;Age&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">policy_df</span><span class="p">[</span><span class="s2">&quot;Period&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">16</span>
+    <span class="n">occ_shares_df</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">policy_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Age&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">Choice</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">unstack</span><span class="p">()[[</span><span class="s2">&quot;home&quot;</span><span class="p">,</span> <span class="s2">&quot;edu&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">]]</span>
+    <span class="p">)</span>
+    <span class="c1"># Set 0 NaNs in edu shares to 0.</span>
+    <span class="n">occ_shares_df</span><span class="p">[</span><span class="s2">&quot;edu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">edu</span><span class="p">,</span> <span class="n">occ_shares_df</span><span class="p">,</span> <span class="n">policy_df</span></div>
+
+
+<div class="viewcode-block" id="transform_params_kw94_respy"><a class="viewcode-back" href="../../scrypy.html#scrypy.multi_quantities_of_interest.transform_params_kw94_respy">[docs]</a><span class="k">def</span> <span class="nf">transform_params_kw94_respy</span><span class="p">(</span><span class="n">params_idx</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts indexed Series of non-constant input paramters to a Dataframe</span>
+<span class="sd">    and adds three constant factors to achieve respy format.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    params_idx : Series</span>
+<span class="sd">        Non-constant input paramters with correct indices</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    rp_params_df : Dataframe</span>
+<span class="sd">        Input parameters in respy format.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AssertionError</span>
+<span class="sd">        If the lenght of the paramter vector is incorrect.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">params_idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">27</span><span class="p">,</span> <span class="s2">&quot;Length of KW94 vector must be 27.&quot;</span>
+    <span class="n">part_1</span> <span class="o">=</span> <span class="n">params_idx</span>
+
+    <span class="n">rp_params</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">get_example_model</span><span class="p">(</span><span class="s2">&quot;kw_94_one&quot;</span><span class="p">,</span> <span class="n">with_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">part_2</span> <span class="o">=</span> <span class="n">rp_params</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">27</span><span class="p">:</span><span class="mi">31</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">part_1</span><span class="p">,</span> <span class="n">part_2</span><span class="p">]</span>
+    <span class="n">rp_params_series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+    <span class="n">rp_params_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rp_params_series</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">rp_params_df</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">scrypy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scrypy.html">scrypy package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Tobias Stenzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -34,7 +34,7 @@ def ee_uncorr_reorder_trajectory(traj, row_plus_one=True):
     ----------
     traj : ndarray
         Trajectory.
-    row_plus_one: bool
+    row_plus_one : bool
         Add 1 to row index, i.e. start with second row.
 
     Returns
@@ -94,7 +94,7 @@ def ee_corr_reorder_trajectory(traj):
     ----------
     traj : ndarray
         Trajectory.
-    row_plus_one: bool
+    row_plus_one : bool
         Add 1 to row index, i.e. start with second row.
 
     Returns
@@ -102,8 +102,8 @@ def ee_corr_reorder_trajectory(traj):
     traj_reordered : ndarray
         Reordered trajectory.
 
-    Note
-    ----
+    Notes
+    -----
     There is no `row_plus_one=False` option because this is equivalent
     with `uncorr_reorder_trajectory(traj, row_plus_one=True)`.
 

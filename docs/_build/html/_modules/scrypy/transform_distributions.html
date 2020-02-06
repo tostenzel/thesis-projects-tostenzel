@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>scrypy.transform_distributions &#8212; scrypy  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for scrypy.transform_distributions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Implementation of the inverse Rosenblatt / inverse Nataf transformation</span>
+<span class="sd">from uniform to normal distribution.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1"># Define parent folder as relative path.</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;scrypy&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">linalg</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">norm</span>
+
+
+<div class="viewcode-block" id="covariance_to_correlation"><a class="viewcode-back" href="../../scrypy.html#scrypy.transform_distributions.covariance_to_correlation">[docs]</a><span class="k">def</span> <span class="nf">covariance_to_correlation</span><span class="p">(</span><span class="n">cov</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts covariance matrix to correlation matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cov : ndarray</span>
+<span class="sd">        Covariance matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    corr : ndarray</span>
+<span class="sd">        Correlation matrix.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Standard deviations of each variable.</span>
+    <span class="n">sd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">cov</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">))</span>
+    <span class="n">corr</span> <span class="o">=</span> <span class="n">cov</span> <span class="o">/</span> <span class="n">sd</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">sd</span>
+
+    <span class="k">return</span> <span class="n">corr</span></div>
+
+
+<div class="viewcode-block" id="transform_uniform_stnormal_uncorr"><a class="viewcode-back" href="../../scrypy.html#scrypy.transform_distributions.transform_uniform_stnormal_uncorr">[docs]</a><span class="k">def</span> <span class="nf">transform_uniform_stnormal_uncorr</span><span class="p">(</span><span class="n">uniform_deviates</span><span class="p">,</span> <span class="n">numeric_zero</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts sample from uniform distribution to standard normal space</span>
+<span class="sd">    without regarding correlations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    uniform_deviates : ndarray</span>
+<span class="sd">        Draws from Uniform[0,1].</span>
+<span class="sd">    numeric_zero : float</span>
+<span class="sd">        Used to substitute zeros and ones before applying `scipy.stats.norm`</span>
+<span class="sd">        to not obtain `-Inf` and `Inf`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    stnormal_deviates : ndarray</span>
+<span class="sd">        `uniform deviates` converted to standard normal space without correlations.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    morris_trajectory</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This transformation is already applied as option in `morris_trajectory`.</span>
+<span class="sd">    The reason is that `scipy.stats.norm` transforms the random draws from the</span>
+<span class="sd">    unit cube non-linearily including the addition of the step. To obtain</span>
+<span class="sd">    non-distorted screening measures, it is important to also account for this</span>
+<span class="sd">    transformation of delta in the denumerator to not violate the definition of</span>
+<span class="sd">    the function derivation.</span>
+
+<span class="sd">    The parameter `numeric_zero` can be highly influential. I prefer it to be</span>
+<span class="sd">    relatively large to put more proportional, i.e. less weight on the extremes.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Need to replace ones, because norm.ppf(1) = Inf and zeros because norm.ppf(0) = -Inf</span>
+    <span class="n">approx_uniform_devs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">uniform_deviates</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">numeric_zero</span><span class="p">,</span> <span class="n">uniform_deviates</span>
+    <span class="p">)</span>
+    <span class="n">approx_uniform_devs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">approx_uniform_devs</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">numeric_zero</span><span class="p">,</span> <span class="n">approx_uniform_devs</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Inverse cdf of standard normal distribution N(0, 1).</span>
+    <span class="n">stnormal_deviates</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">approx_uniform_devs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">stnormal_deviates</span></div>
+
+
+<div class="viewcode-block" id="transform_stnormal_normal_corr"><a class="viewcode-back" href="../../scrypy.html#scrypy.transform_distributions.transform_stnormal_normal_corr">[docs]</a><span class="k">def</span> <span class="nf">transform_stnormal_normal_corr</span><span class="p">(</span><span class="n">z_row</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">mu</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Inverse Rosenblatt/Nataf transformation (from standard normal)</span>
+<span class="sd">    to multivariate normal space with given correlations following</span>
+<span class="sd">    [1], page 77-102.</span>
+
+<span class="sd">    Step 1) Compute correlation matrix.</span>
+<span class="sd">    Step 2) Introduce dependencies to standard normal sample.</span>
+<span class="sd">    Step 3) De-standardize sample to normal space.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z_row : ndarray</span>
+<span class="sd">        Row of uncorrelated standard normal deviates.</span>
+<span class="sd">    cov : ndarray</span>
+<span class="sd">        Covariance matrix of correlated normal deviates.</span>
+<span class="sd">    mu : ndarray</span>
+<span class="sd">        Expectation values of correlated normal deviates</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x_norm_row : ndarray</span>
+<span class="sd">        Row of correlated normal deviates.</span>
+<span class="sd">    correlate_step : float</span>
+<span class="sd">        Lower right corner element of the lower Cholesky matrix.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Importantly, the step in the numerator of the uncorrelated Elementary Effect</span>
+<span class="sd">    is multiplied by `correlate_step`. Therefore, this factor has to multiply</span>
+<span class="sd">    the step in the denominator as well to not violate the definition of the</span>
+<span class="sd">    function derivation.</span>
+
+<span class="sd">    This method is equivalent to the one in [2], page 199 which uses the Cholesky decomposition</span>
+<span class="sd">    of the covariance matrix directly. This saves the scaling by SD and expectation.</span>
+<span class="sd">    -This method is simpler and slightly more precise than the one in [3], page 33, for</span>
+<span class="sd">    normally distributed paramters.</span>
+
+<span class="sd">    [1] explains how Rosenblatt and Nataf transformation are equal for normally distributed</span>
+<span class="sd">    deviates.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    [1] Lemaire, M. (2013). Structural reliability. John Wiley &amp; Sons.</span>
+<span class="sd">    [2] Gentle, J. E. (2006). Random number generation and Monte Carlo methods. Springer</span>
+<span class="sd">    Science &amp; Business Media.</span>
+<span class="sd">    [3] Ge, Q. and M. Menendez (2017). Extending morris method for qualitative global sensitivity</span>
+<span class="sd">    analysis of models with dependent inputs. Reliability Engineering &amp; System</span>
+<span class="sd">    Safety 100 (162), 28–39.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Convert covariance matrix to correlation matrix</span>
+    <span class="n">corr</span> <span class="o">=</span> <span class="n">covariance_to_correlation</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span>
+
+    <span class="c1"># Compute lower Cholesky matrix from `corr`.</span>
+    <span class="n">chol_low</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">corr</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">correlate_step</span> <span class="o">=</span> <span class="n">chol_low</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">z_corr_stnorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">chol_low</span><span class="p">,</span> <span class="n">z_row</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">x_norm</span> <span class="o">=</span> <span class="n">z_corr_stnorm</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">cov</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">mu</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">cov</span><span class="p">),</span> <span class="mi">1</span>
+    <span class="p">)</span>
+    <span class="n">x_norm_row</span> <span class="o">=</span> <span class="n">x_norm</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">return</span> <span class="n">x_norm_row</span><span class="p">,</span> <span class="n">correlate_step</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">scrypy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scrypy.html">scrypy package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Tobias Stenzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

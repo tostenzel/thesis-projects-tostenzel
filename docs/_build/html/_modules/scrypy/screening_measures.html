@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>scrypy.screening_measures &#8212; scrypy  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for scrypy.screening_measures</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Computes the screening measures for correlated inputs that I improved upon</span>
+<span class="sd">[1] by adjusting the step in the denumeroter to the transformed step in the</span>
+<span class="sd">nominator in order to not violate the definition of the function derivative.</span>
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+<span class="sd">[1] Ge, Q. and M. Menendez (2017). Extending morris method for qualitative global</span>
+<span class="sd">sensitivityanalysis of models with dependent inputs. Reliability Engineering &amp;</span>
+<span class="sd">System Safety 100 (162), 28–39.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">transform_traj_elementary_effects</span> <span class="k">import</span> <span class="n">trans_ee_corr_trajectories</span>
+<span class="kn">from</span> <span class="nn">transform_traj_elementary_effects</span> <span class="k">import</span> <span class="n">trans_ee_uncorr_trajectories</span>
+
+
+<div class="viewcode-block" id="screening_measures"><a class="viewcode-back" href="../../scrypy.html#scrypy.screening_measures.screening_measures">[docs]</a><span class="k">def</span> <span class="nf">screening_measures</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">traj_list</span><span class="p">,</span> <span class="n">step_list</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">mu</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes screening measures for a set of paramters.</span>
+
+<span class="sd">    This works for correlated normally distributed and uncorrelated uniformly</span>
+<span class="sd">    distributed paramters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function : Function</span>
+<span class="sd">        Function or Model of which its parameters are subject to screening.</span>
+<span class="sd">    traj_list : list of ndarrays</span>
+<span class="sd">        List of transformed trajectories according to [1].</span>
+<span class="sd">    step_list : list of ndarrays</span>
+<span class="sd">        List of steps that each parameter takes in each trajectory.</span>
+<span class="sd">    cov : ndarray</span>
+<span class="sd">        Covariance matrix of the input parameters.</span>
+<span class="sd">    mu : ndarray</span>
+<span class="sd">        Expectation values of the input parameters.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ee_uncorr : ndarray</span>
+<span class="sd">        Mean uncorrelated Elementary Effect for each parameter.</span>
+<span class="sd">    ee_corr : ndarray</span>
+<span class="sd">        Mean correlated Elementary Effect for each parameter.</span>
+<span class="sd">    abs_ee_uncorr : ndarray</span>
+<span class="sd">        Mean absolute uncorrelated Elementary Effect for each parameter.</span>
+<span class="sd">    abs_ee_corr : ndarray</span>
+<span class="sd">        Mean absolute correlated Elementary Effect for each parameter.</span>
+<span class="sd">    sd_ee_uncorr : ndarray</span>
+<span class="sd">        SD of individual uncorrelated Elementary Effects for each parameter.</span>
+<span class="sd">    sd_ee_corr : ndarray</span>
+<span class="sd">        SD of individual correlated Elementary Effects for each parameter.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Unorrelated uniform paramters require different interpretion of `mu`</span>
+<span class="sd">    as a scaling summand rather than the expectation value.</span>
+
+<span class="sd">    It might be necessary to multiply the SDs by `(n_trajs/(n_trajs - 1))`</span>
+<span class="sd">    for the precise formula. However, this leads to problems for the case</span>
+<span class="sd">    of only one trajectory - which is used in</span>
+<span class="sd">    `test_screening_measures_uncorrelated_g_function`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_trajs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">traj_list</span><span class="p">)</span>
+    <span class="n">n_rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">n_inputs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Compute the transformed trajectory lists/function arguments.</span>
+    <span class="n">trans_piplusone_i_list</span><span class="p">,</span> <span class="n">trans_pi_i_list</span><span class="p">,</span> <span class="n">coeff_step</span> <span class="o">=</span> <span class="n">trans_ee_uncorr_trajectories</span><span class="p">(</span>
+        <span class="n">traj_list</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">mu</span>
+    <span class="p">)</span>
+    <span class="n">trans_piplusone_iminusone_list</span> <span class="o">=</span> <span class="n">trans_ee_corr_trajectories</span><span class="p">(</span><span class="n">traj_list</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
+
+    <span class="c1"># Init function evaluations</span>
+    <span class="n">fct_evals_pi_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_trajs</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">fct_evals_piplusone_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_trajs</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">fct_evals_piplusone_iminusone</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_trajs</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="c1"># Compute the function evaluations for each transformed trajectory list.</span>
+    <span class="k">for</span> <span class="n">traj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_trajs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_rows</span><span class="p">):</span>
+            <span class="n">fct_evals_pi_i</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">traj</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">trans_pi_i_list</span><span class="p">[</span><span class="n">traj</span><span class="p">][</span><span class="n">row</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="n">fct_evals_piplusone_i</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">traj</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span>
+                <span class="o">*</span><span class="n">trans_piplusone_i_list</span><span class="p">[</span><span class="n">traj</span><span class="p">][</span><span class="n">row</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="p">)</span>
+            <span class="n">fct_evals_piplusone_iminusone</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">traj</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span>
+                <span class="o">*</span><span class="n">trans_piplusone_iminusone_list</span><span class="p">[</span><span class="n">traj</span><span class="p">][</span><span class="n">row</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Init measures for uncorr effects</span>
+    <span class="n">ee_uncorr_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_inputs</span><span class="p">,</span> <span class="n">n_trajs</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">ee_uncorr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_inputs</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">abs_ee_uncorr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_inputs</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">sd_ee_uncorr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_inputs</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="c1"># Init measuresfor corr effects</span>
+    <span class="n">ee_corr_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_inputs</span><span class="p">,</span> <span class="n">n_trajs</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">ee_corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_inputs</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">abs_ee_corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_inputs</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">sd_ee_corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">n_inputs</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="c1"># Compute the individual Elementary Effects for each parameter draw.</span>
+    <span class="k">for</span> <span class="n">traj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_trajs</span><span class="p">):</span>
+        <span class="c1"># uncorr Elementary Effects for each trajectory (for each parameter).</span>
+        <span class="n">ee_uncorr_i</span><span class="p">[:,</span> <span class="n">traj</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">fct_evals_piplusone_i</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="n">n_inputs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">traj</span><span class="p">]</span>
+            <span class="o">-</span> <span class="n">fct_evals_pi_i</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n_inputs</span><span class="p">,</span> <span class="n">traj</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+            <span class="n">step_list</span><span class="p">[</span><span class="n">traj</span><span class="p">]</span>
+            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">coeff_step</span><span class="p">[</span><span class="n">traj</span><span class="p">])</span>
+            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">cov</span><span class="p">)))</span>
+        <span class="p">)</span>
+        <span class="c1"># Above, we additionally need to account for the decorrelation</span>
+        <span class="c1"># when we account for the scaling by the SD.</span>
+
+        <span class="n">ee_corr_i</span><span class="p">[:,</span> <span class="n">traj</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">fct_evals_piplusone_iminusone</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="n">n_inputs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">traj</span><span class="p">]</span>
+            <span class="o">-</span> <span class="n">fct_evals_piplusone_i</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n_inputs</span><span class="p">,</span> <span class="n">traj</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">step_list</span><span class="p">[</span><span class="n">traj</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">cov</span><span class="p">))))</span>
+        <span class="c1"># Above, account for the scaling by the SD.</span>
+
+    <span class="c1"># Compute the aggregate screening measures.</span>
+    <span class="n">ee_uncorr</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ee_uncorr_i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">abs_ee_uncorr</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">ee_uncorr_i</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Precise formula is import for small number of trajectories.</span>
+    <span class="n">sd_ee_uncorr</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">ee_uncorr_i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">ee_corr</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ee_corr_i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">abs_ee_corr</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">ee_corr_i</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Precise formula is import for small number of trajectories.</span>
+    <span class="n">sd_ee_corr</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">ee_corr_i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">ee_uncorr</span><span class="p">,</span> <span class="n">ee_corr</span><span class="p">,</span> <span class="n">abs_ee_uncorr</span><span class="p">,</span> <span class="n">abs_ee_corr</span><span class="p">,</span> <span class="n">sd_ee_uncorr</span><span class="p">,</span> <span class="n">sd_ee_corr</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">scrypy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scrypy.html">scrypy package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Tobias Stenzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

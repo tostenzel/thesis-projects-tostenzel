@@ -1,0 +1,729 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>scrypy.select_sample_set &#8212; scrypy  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for scrypy.select_sample_set</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions that decrease a set of sample sets in order to increase its</span>
+<span class="sd">representativeness.</span>
+<span class="sd">The methods are taken from the effective screening design in [1] and the</span>
+<span class="sd">efficient screening design in [2]</span>
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+<span class="sd">[1] Campolongo, F., J. Cariboni, and A. Saltelli (2007). An effective screening design for</span>
+<span class="sd">sensitivity analysis of large models. Environmental modelling &amp; software 22 (10), 1509–</span>
+<span class="sd">1518.</span>
+<span class="sd">[2] Ge, Q. and M. Menendez (2014). An efficient sensitivity analysis approach for</span>
+<span class="sd">computationally expensive microscopic traffic simulation models. International Journal of</span>
+<span class="sd">Transportation 2 (2), 49–64.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">combinations</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sampling_schemes</span> <span class="k">import</span> <span class="n">morris_trajectory</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="k">import</span> <span class="n">binom</span>
+
+
+<div class="viewcode-block" id="compute_pair_distance"><a class="viewcode-back" href="../../scrypy.html#scrypy.select_sample_set.compute_pair_distance">[docs]</a><span class="k">def</span> <span class="nf">compute_pair_distance</span><span class="p">(</span><span class="n">sample_0</span><span class="p">,</span> <span class="n">sample_1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the distance measure between a pair of samples.</span>
+
+<span class="sd">    The aggregate distance between sum of the root of the square distance between each</span>
+<span class="sd">    parameter vector of one sample to each vector of the other sample.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sample_0 : ndarray</span>
+<span class="sd">        Sample with paramters in cols and draws as rows.</span>
+<span class="sd">    sample_1 : ndarray</span>
+<span class="sd">        Sample with paramters in cols and draws as rows.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    distance : float</span>
+<span class="sd">        Pair distance.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AssertionError</span>
+<span class="sd">        If sample is not in sampleectory or radial design shape.</span>
+<span class="sd">    AssertionError</span>
+<span class="sd">        If the sample shapes differ.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The distance between two samples is sum of the root of the square distance between</span>
+<span class="sd">    each parameter vector of one sample to each vector of the other sample.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">sample_0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">sample_0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">assert</span> <span class="n">sample_0</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">sample_1</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">sample_0</span><span class="p">,</span> <span class="n">sample_1</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">col_0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">sample_0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">col_1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">sample_1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+                <span class="n">distance</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="n">sample_0</span><span class="p">[:,</span> <span class="n">col_0</span><span class="p">]</span> <span class="o">-</span> <span class="n">sample_1</span><span class="p">[:,</span> <span class="n">col_1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">distance</span></div>
+
+
+<div class="viewcode-block" id="distance_matrix"><a class="viewcode-back" href="../../scrypy.html#scrypy.select_sample_set.distance_matrix">[docs]</a><span class="k">def</span> <span class="nf">distance_matrix</span><span class="p">(</span><span class="n">sample_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes symmetric matrix of pair distances for a list of samples.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sample_list : list of ndarrays</span>
+<span class="sd">        Set of samples.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    distance_matrix : ndarry</span>
+<span class="sd">        Symmatric matrix of pair distances.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sample_list</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_list</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_list</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_list</span><span class="p">)):</span>
+            <span class="n">distance_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_pair_distance</span><span class="p">(</span>
+                <span class="n">sample_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sample_list</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">distance_matrix</span></div>
+
+
+<div class="viewcode-block" id="combi_wrapper"><a class="viewcode-back" href="../../scrypy.html#scrypy.select_sample_set.combi_wrapper">[docs]</a><span class="k">def</span> <span class="nf">combi_wrapper</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper around `itertools.combinations`, written in C, see [1].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    iterable : iterable object</span>
+<span class="sd">        Hashable container like a list of distinct elements to combine.</span>
+<span class="sd">    r : int</span>
+<span class="sd">        Number to draw from `iterable` with putting back and regarding the order.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list_list : list of lists</span>
+<span class="sd">        All possible combinations in ascending order.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    combi_wrapper([0, 1, 2, 3], 2) returns</span>
+<span class="sd">    [[0, 1], [0,2], [0,3], [1,2], [1,3], [2,3]].</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    [1] https://docs.python.org/2/library/itertools.html#itertools.combinations.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tup_tup</span> <span class="o">=</span> <span class="n">combinations</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+    <span class="n">list_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tup_tup</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">list_list</span></div>
+
+
+<div class="viewcode-block" id="total_distance"><a class="viewcode-back" href="../../scrypy.html#scrypy.select_sample_set.total_distance">[docs]</a><span class="k">def</span> <span class="nf">total_distance</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the total distance measure of all pairs of samples in a set.</span>
+
+<span class="sd">    The equation corresponds to Equation (10) in [2].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distance_matrix : ndarray</span>
+<span class="sd">        diagonal matrix of distances for sample pairs.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    total_distance: float</span>
+<span class="sd">        total distance measure of all pairs of samples in a set.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The `*0.5` is implemented by only considering the lower triangular.</span>
+    <span class="n">total_distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">distance_matrix</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))))</span>
+
+    <span class="k">return</span> <span class="n">total_distance</span></div>
+
+
+<div class="viewcode-block" id="select_trajectories"><a class="viewcode-back" href="../../scrypy.html#scrypy.select_sample_set.select_trajectories">[docs]</a><span class="k">def</span> <span class="nf">select_trajectories</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes `total distance` for each `n_traj` combinations of a set of samples.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    traj_dist_matrix : ndarray</span>
+<span class="sd">        `distance_matrix` for a sample set.</span>
+<span class="sd">    n_traj : int</span>
+<span class="sd">        Number of sample combinations for which the `total_distance` is computed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    max_dist_indices : list of ints</span>
+<span class="sd">        Indices of samples in `traj_dist_matrix` that are part of the combination</span>
+<span class="sd">        with the largest `total_distance`.</span>
+<span class="sd">    combi_total_distance : ndarray</span>
+<span class="sd">        Matrix with n_traj + 1 rows. The first n_traj cols are filled with indices</span>
+<span class="sd">        of samples and the last column is the `total_distance` of the combinations</span>
+<span class="sd">        of samples marked by indices in the same row and the columns before.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AssertionError</span>
+<span class="sd">        If `traj_dist_matrix` is not symmetric.</span>
+<span class="sd">    AssertionError</span>
+<span class="sd">        If the number of combinations does not correspong to the combinations</span>
+<span class="sd">        indicated by the size of `traj_dist_matrix`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This function can be very slow because it computes distances</span>
+<span class="sd">    between np.binomial(len(traj_dist_matrix, n_traj) pairs of trajectories.</span>
+<span class="sd">    Example: `np.biomial(30,15)` = 155117520.</span>
+
+<span class="sd">    This selection function yields precise results</span>
+<span class="sd">    because each total distance for each possible combination of</span>
+<span class="sd">    trajectories is computed directly. The faster, iterative methods</span>
+<span class="sd">    can yield different results that are, however, close in the total</span>
+<span class="sd">    distance. The total distances tend to differentiate clearly.</span>
+<span class="sd">    Therefore, the optimal combination is precisely determined.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">traj_dist_matrix</span> <span class="o">-</span> <span class="n">traj_dist_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">)</span>
+    <span class="c1"># Get all possible combinations of input parameters by their indices.</span>
+    <span class="n">combi</span> <span class="o">=</span> <span class="n">combi_wrapper</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="mi">1</span><span class="p">))),</span> <span class="n">n_traj</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">combi</span><span class="p">)</span> <span class="o">==</span> <span class="n">binom</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">n_traj</span><span class="p">)</span>
+    <span class="c1"># leave last column open for total distance</span>
+    <span class="n">combi_total_distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">combi</span><span class="p">),</span> <span class="n">n_traj</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">combi_total_distance</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n_traj</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">combi</span><span class="p">)</span>
+
+    <span class="c1"># This loop could be parallelized.</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">combi</span><span class="p">)):</span>
+        <span class="c1"># Assign last column</span>
+        <span class="n">combi_total_distance</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">pair_combi</span> <span class="o">=</span> <span class="n">combi_wrapper</span><span class="p">(</span><span class="n">combi</span><span class="p">[</span><span class="n">row</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pair_combi</span><span class="p">:</span>
+            <span class="c1"># Aggreate the pair distance to the total distance of the</span>
+            <span class="c1"># trajectory combination.</span>
+            <span class="c1"># There is no * 0.5 in contrary to Ge/Menendez (2014) because</span>
+            <span class="c1"># this only uses half of the matrix.</span>
+            <span class="n">combi_total_distance</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="n">traj_dist_matrix</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">])][</span><span class="nb">int</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="p">)</span>
+    <span class="n">combi_total_distance</span><span class="p">[:,</span> <span class="n">n_traj</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">combi_total_distance</span><span class="p">[:,</span> <span class="n">n_traj</span><span class="p">])</span>
+    <span class="c1"># Select indices of combination that yields highest total distance.</span>
+    <span class="n">max_dist_indices_row</span> <span class="o">=</span> <span class="n">combi_total_distance</span><span class="p">[:,</span> <span class="n">n_traj</span><span class="p">]</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">:][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">max_dist_indices</span> <span class="o">=</span> <span class="n">combi_total_distance</span><span class="p">[</span><span class="n">max_dist_indices_row</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n_traj</span><span class="p">]</span>
+    <span class="c1"># Convert list of float indices to list of ints.</span>
+    <span class="n">max_dist_indices</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">max_dist_indices</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span>
+
+    <span class="k">return</span> <span class="n">max_dist_indices</span><span class="p">,</span> <span class="n">combi_total_distance</span></div>
+
+
+<div class="viewcode-block" id="select_trajectories_wrapper_iteration"><a class="viewcode-back" href="../../scrypy.html#scrypy.select_sample_set.select_trajectories_wrapper_iteration">[docs]</a><span class="k">def</span> <span class="nf">select_trajectories_wrapper_iteration</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Selects the set of samples minus one sample.</span>
+
+<span class="sd">    Used for selecting iteratively rather than by brute force.</span>
+<span class="sd">    Implements the main step of the essential of the two &quot;improvements&quot;</span>
+<span class="sd">    from [2] to [1].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    traj_dist_matrix : ndarray</span>
+<span class="sd">        Distance matrix of all combinations and their total_distance.</span>
+<span class="sd">    n_traj : int</span>
+<span class="sd">        number of samples to choose from a set of samples based on their</span>
+<span class="sd">        `total_distance`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tracker_keep_indices : list</span>
+<span class="sd">        Indices of samples part of the selection.</span>
+<span class="sd">    combi_total_distance : ndarray</span>
+<span class="sd">        Matrix with n_traj + 1 rows. The first n_traj cols are filled with indices</span>
+<span class="sd">        of samples and the last column is the `total_distance` of the combinations</span>
+<span class="sd">        of samples marked by indices in the same row and the columns before.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    select_trajectories</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Oftentimes this function leads to diffent combinations than</span>
+<span class="sd">    `select_trajectories`. The reason seems to be that this function</span>
+<span class="sd">    deviates from the optimal path due to numerical reasons as different</span>
+<span class="sd">    combinations may be very close (see [2]).</span>
+<span class="sd">    However, the total sum of the returned combinations are close.</span>
+<span class="sd">    Therefore, the `total_distance` loss is negligible compared to the speed gain</span>
+<span class="sd">    for large numbers of trajectory combinations.</span>
+
+<span class="sd">    This implies that, `combi_total_distance` always differs from the one in</span>
+<span class="sd">    `select_trajectories` because it only contains the combination indices from</span>
+<span class="sd">    the last iteration if n_traj is smaller than the sample set minus 1.</span>
+
+<span class="sd">    The trick using `tracker_keep_indices` is an elegant solution.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_traj_sample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">tracker_keep_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_traj_sample</span> <span class="o">-</span> <span class="n">n_traj</span><span class="p">):</span>
+
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="c1"># get list of all indices</span>
+        <span class="c1"># get list of surviving indices</span>
+        <span class="n">max_dist_indices</span><span class="p">,</span> <span class="n">combi_total_distance</span> <span class="o">=</span> <span class="n">select_trajectories</span><span class="p">(</span>
+            <span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="c1"># lost index</span>
+        <span class="n">lost_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">indices</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">max_dist_indices</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># delete pairs with dropped trajectory from distance matrix</span>
+        <span class="n">traj_dist_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="n">lost_index</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">traj_dist_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="n">lost_index</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">tracker_keep_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+            <span class="n">tracker_keep_indices</span><span class="p">,</span> <span class="n">lost_index</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">tracker_keep_indices</span><span class="p">,</span> <span class="n">combi_total_distance</span></div>
+
+
+<div class="viewcode-block" id="simple_stairs"><a class="viewcode-back" href="../../scrypy.html#scrypy.select_sample_set.simple_stairs">[docs]</a><span class="k">def</span> <span class="nf">simple_stairs</span><span class="p">(</span><span class="n">n_inputs</span><span class="p">,</span> <span class="n">n_levels</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns array and list of Morris trajectories without further</span>
+<span class="sd">    post-selection.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_inputs : int</span>
+<span class="sd">        Number if input paramters.</span>
+<span class="sd">    n_levels : int</span>
+<span class="sd">        Number of different elements in value grid.</span>
+<span class="sd">    n_traj : int</span>
+<span class="sd">        Number of samples to create.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    input_par_array : ndarray</span>
+<span class="sd">        Set of trajectories as vertical array.</span>
+<span class="sd">    sample_traj_list : list of ndarrays</span>
+<span class="sd">        Set of trajectories.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sample_traj_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">traj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">):</span>
+        <span class="n">seed</span> <span class="o">=</span> <span class="mi">123</span> <span class="o">+</span> <span class="n">traj</span>
+
+        <span class="n">m_traj</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">morris_trajectory</span><span class="p">(</span><span class="n">n_inputs</span><span class="p">,</span> <span class="n">n_levels</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">sample_traj_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_traj</span><span class="p">)</span>
+
+    <span class="c1"># Rows are parameters, cols is number of drawn parameter vectors.</span>
+    <span class="n">input_par_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">sample_traj_list</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">return</span> <span class="n">input_par_array</span><span class="p">,</span> <span class="n">sample_traj_list</span></div>
+
+
+<div class="viewcode-block" id="campolongo_2007"><a class="viewcode-back" href="../../scrypy.html#scrypy.select_sample_set.campolongo_2007">[docs]</a><span class="k">def</span> <span class="nf">campolongo_2007</span><span class="p">(</span><span class="n">sample_traj_list</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the post-selected sample set in [1].</span>
+
+<span class="sd">    Takes a list of Morris trajectories and selects the `n_traj` trajectories</span>
+<span class="sd">    with the largest distance between them.</span>
+<span class="sd">    Returns the selection as array with n_inputs at the verical and n_traj at the</span>
+<span class="sd">    horizontal axis and as a list.</span>
+<span class="sd">    It also returns the diagonal matrix that contains the pair distance</span>
+<span class="sd">    between each trajectory pair.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sample_traj_list : list of ndarrays</span>
+<span class="sd">        Set of samples.</span>
+<span class="sd">    n_traj : int</span>
+<span class="sd">        Number of samples to choose from `sample_traj_list`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    input_par_array : ndarray</span>
+<span class="sd">        Set of trajectories as vertical array.</span>
+<span class="sd">    sample_traj_list : list of ndarrays</span>
+<span class="sd">        Set of trajectories.</span>
+<span class="sd">    select_dist_matrix : ndarray</span>
+<span class="sd">        Symmetric `distance_matrix` of selection.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pair_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">(</span><span class="n">sample_traj_list</span><span class="p">)</span>
+    <span class="n">select_indices</span><span class="p">,</span> <span class="n">combi_total_distance</span> <span class="o">=</span> <span class="n">select_trajectories</span><span class="p">(</span><span class="n">pair_matrix</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">)</span>
+
+    <span class="n">select_trajs</span> <span class="o">=</span> <span class="p">[</span><span class="n">sample_traj_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">select_indices</span><span class="p">]</span>
+    <span class="c1"># Rows are parameters, cols is number of drawn parameter vectors.</span>
+    <span class="n">input_par_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">select_trajs</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">select_dist_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">(</span><span class="n">select_trajs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">input_par_array</span><span class="p">,</span> <span class="n">select_trajs</span><span class="p">,</span> <span class="n">select_dist_matrix</span></div>
+
+
+<div class="viewcode-block" id="intermediate_ge_menendez_2014"><a class="viewcode-back" href="../../scrypy.html#scrypy.select_sample_set.intermediate_ge_menendez_2014">[docs]</a><span class="k">def</span> <span class="nf">intermediate_ge_menendez_2014</span><span class="p">(</span><span class="n">sample_traj_list</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements the the essential of the two &quot;improvements&quot; in[2] vis-a-vis [1].</span>
+
+<span class="sd">    This is basically a wrapper around `select_trajectories_wrapper_iteration`.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sample_traj_list : list of ndarrays</span>
+<span class="sd">        Set of samples.</span>
+<span class="sd">    n_traj : int</span>
+<span class="sd">        Number of samples to choose from `sample_traj_list`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    input_par_array : ndarray</span>
+<span class="sd">        Set of trajectories as vertical array.</span>
+<span class="sd">    sample_traj_list : list of ndarrays</span>
+<span class="sd">        Set of trajectories.</span>
+<span class="sd">    select_dist_matrix : ndarray</span>
+<span class="sd">        Symmetric `distance_matrix` of selection.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    select_trajectories_wrapper_iteration</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Oftentimes this function leads to diffent combinations than</span>
+<span class="sd">    `select_trajectories`. However, their total distance is very close</span>
+<span class="sd">    to the optimal solution.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pair_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">(</span><span class="n">sample_traj_list</span><span class="p">)</span>
+    <span class="c1"># This function is the difference to Campolongo.</span>
+    <span class="n">select_indices</span><span class="p">,</span> <span class="n">combi_total_distance</span> <span class="o">=</span> <span class="n">select_trajectories_wrapper_iteration</span><span class="p">(</span>
+        <span class="n">pair_matrix</span><span class="p">,</span> <span class="n">n_traj</span>
+    <span class="p">)</span>
+
+    <span class="n">select_trajs</span> <span class="o">=</span> <span class="p">[</span><span class="n">sample_traj_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">select_indices</span><span class="p">]</span>
+    <span class="c1"># Rows are parameters, cols is number of drawn parameter vectors.</span>
+    <span class="n">input_par_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">select_trajs</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">select_dist_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">(</span><span class="n">select_trajs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">input_par_array</span><span class="p">,</span> <span class="n">select_trajs</span><span class="p">,</span> <span class="n">select_dist_matrix</span></div>
+
+
+<div class="viewcode-block" id="next_combi_total_distance_gm14"><a class="viewcode-back" href="../../scrypy.html#scrypy.select_sample_set.next_combi_total_distance_gm14">[docs]</a><span class="k">def</span> <span class="nf">next_combi_total_distance_gm14</span><span class="p">(</span><span class="n">combi_total_distance</span><span class="p">,</span> <span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="n">lost_index</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Selects the set of samples minus one sample.</span>
+
+<span class="sd">    Based on the algorithmic computation of the `total_distance` proposed by [2].</span>
+<span class="sd">    I.e. by re-using and adjusting the first `combi_total_distance` matrix each iteration.</span>
+<span class="sd">    Used for selecting iteratively rather than by brute force.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    combi_total_distance_next : ndarray</span>
+<span class="sd">        Matrix with n_traj + 1 rows. The first n_traj cols are filled with indices</span>
+<span class="sd">        of samples and the last column is the `total_distance` of the combinations</span>
+<span class="sd">        of samples marked by indices in the same row and the columns before.</span>
+<span class="sd">    traj_dist_matrix : ndarray</span>
+<span class="sd">        Distance matrix of all combinations and their total_distance.</span>
+<span class="sd">    lost_index : int</span>
+<span class="sd">        index of the sample that will be dropped from the samples in the above objects.</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    combi_total_distance_next : ndarray</span>
+<span class="sd">        `combi_total_distance` without the dropped sample.</span>
+<span class="sd">    traj_dist_matrix_next : ndarray</span>
+<span class="sd">        `traj_dist_matrix` without the dropped sample.</span>
+<span class="sd">    lost_index : ndarray</span>
+<span class="sd">        `lost_index` without the dropped sample one iteration before.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The function computes the total distance of each trajectory</span>
+<span class="sd">    combination by using the total distance of each combination in the previous step</span>
+<span class="sd">    and subtracting each pair distance with the dropped trajectory, that yielded</span>
+<span class="sd">    the lowest total distance combinations in the previous step.</span>
+
+<span class="sd">    This function, is in fact much slower than</span>
+<span class="sd">    `select_trajectories_wrapper_iteration` because it uses more for loops to get</span>
+<span class="sd">    the pair distances from the right combinations that must be subtracted from the</span>
+<span class="sd">    total distances.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">old_combi_total_distance</span> <span class="o">=</span> <span class="n">combi_total_distance</span>
+    <span class="n">old_traj_dist_matrix</span> <span class="o">=</span> <span class="n">traj_dist_matrix</span>
+    <span class="c1"># Want to select all trajectories but one which is given by the length of</span>
+    <span class="c1"># the dist_matrix</span>
+    <span class="n">n_traj_sample_old</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">old_traj_dist_matrix</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">n_traj_sample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">old_traj_dist_matrix</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">n_traj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">old_traj_dist_matrix</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>
+    <span class="n">remained_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_traj_sample_old</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="c1"># This step shows that the indices in combi_total_distance_next mapp</span>
+    <span class="c1"># to the indices in the old version. The index of the worst traj is missing.</span>
+    <span class="n">remained_indices</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">lost_index</span><span class="p">)</span>
+    <span class="c1"># Get all n_traj_sample combintaions from the indices above.</span>
+    <span class="n">combi_next</span> <span class="o">=</span> <span class="n">combi_wrapper</span><span class="p">(</span><span class="n">remained_indices</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">)</span>
+    <span class="c1"># The  + 1 to n_traj is for the total distance.</span>
+    <span class="n">combi_total_distance_next</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">combi_next</span><span class="p">),</span> <span class="n">n_traj</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">combi_total_distance_next</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n_traj</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">combi_next</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># Compute the sum of squared pair distances</span>
+    <span class="c1"># that each trajectory in new combination has with the lost trajectory.</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">combi_next</span><span class="p">)):</span>
+        <span class="n">sum_dist_squared</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># - 1 is to no spare the total ditance column.</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">):</span>
+            <span class="c1"># Get the distance between lost index trajectory and present ones in row.</span>
+            <span class="n">sum_dist_squared</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="n">old_traj_dist_matrix</span><span class="p">[</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">combi_total_distance_next</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]),</span> <span class="n">lost_index</span>
+                <span class="p">]</span>
+            <span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
+            <span class="c1"># Map old total distance to total distance for new combination of</span>
+            <span class="c1"># trajectories.</span>
+            <span class="k">for</span> <span class="n">row_old</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">old_combi_total_distance</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+                <span class="c1"># Construct the specific indices of each combi</span>
+                <span class="c1"># in the old combi_total_distance matrix from the new combi and the lost</span>
+                <span class="c1"># trajectories.</span>
+
+                <span class="c1"># For each traj combination of (n_traj_sample_old - 2) trajs,</span>
+                <span class="c1"># the lost index is added to get the total distance from</span>
+                <span class="c1"># old_combi_total_distance that contains (n_traj_sample_old - 1)</span>
+                <span class="c1"># trajectory combinations and their total distances.</span>
+                <span class="n">indices_in_old_combi_dist</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="n">idx_new_trajs</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">idx_new_trajs</span> <span class="ow">in</span> <span class="n">combi_total_distance_next</span><span class="p">[</span>
+                        <span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n_traj</span>
+                    <span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="p">]</span>
+                <span class="n">indices_in_old_combi_dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">lost_index</span><span class="p">))</span>
+                <span class="c1"># Obtain total distances of new combinations by subtracting</span>
+                <span class="c1"># the respective sum of old squared distances</span>
+                <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">indices_in_old_combi_dist</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span>
+                    <span class="n">old_combi_total_distance</span><span class="p">[</span><span class="n">row_old</span><span class="p">,</span> <span class="mi">0</span> <span class="p">:</span> <span class="n">n_traj_sample_old</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="p">):</span>
+                    <span class="c1"># + 1 because the total distance columns must be changed.</span>
+                    <span class="c1"># - one because its the new matrix?</span>
+                    <span class="n">combi_total_distance_next</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">n_traj_sample</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                        <span class="n">old_combi_total_distance</span><span class="p">[</span><span class="n">row_old</span><span class="p">,</span> <span class="n">n_traj_sample</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="o">-</span> <span class="n">sum_dist_squared</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="c1"># Dissolving the mapping from old to new combi_total_distance by decreasing the</span>
+        <span class="c1"># indices that are larger than lost_index by 1.</span>
+        <span class="n">combi_total_distance_next</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n_traj</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">combi_total_distance_next</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n_traj</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">lost_index</span><span class="p">,</span>
+            <span class="n">combi_total_distance_next</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n_traj</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">combi_total_distance_next</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n_traj</span><span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Select indices of combination that yields highest total distance.</span>
+    <span class="n">max_dist_indices_next_row</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">combi_total_distance_next</span><span class="p">[:,</span> <span class="n">n_traj</span><span class="p">]</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">:][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">max_dist_indices_next</span> <span class="o">=</span> <span class="n">combi_total_distance_next</span><span class="p">[</span>
+        <span class="n">max_dist_indices_next_row</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">n_traj</span>
+    <span class="p">]</span>
+    <span class="c1"># Convert list of float indices to list of ints.</span>
+    <span class="n">max_dist_indices_next</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">max_dist_indices_next</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span>
+
+    <span class="n">traj_dist_matrix_next</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">old_traj_dist_matrix</span><span class="p">,</span> <span class="n">lost_index</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">traj_dist_matrix_next</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">traj_dist_matrix_next</span><span class="p">,</span> <span class="n">lost_index</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">lost_index_next</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">item</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_traj</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">max_dist_indices_next</span>
+    <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">combi_total_distance_next</span><span class="p">,</span> <span class="n">traj_dist_matrix_next</span><span class="p">,</span> <span class="n">lost_index_next</span></div>
+
+
+<div class="viewcode-block" id="final_ge_menendez_2014"><a class="viewcode-back" href="../../scrypy.html#scrypy.select_sample_set.final_ge_menendez_2014">[docs]</a><span class="k">def</span> <span class="nf">final_ge_menendez_2014</span><span class="p">(</span><span class="n">sample_traj_list</span><span class="p">,</span> <span class="n">n_traj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements both &quot;improvements&quot; in [2] vis-a-vis [1].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sample_traj_list : list of ndarrays</span>
+<span class="sd">        Set of samples.</span>
+<span class="sd">    n_traj : int</span>
+<span class="sd">        Number of samples to choose from `sample_traj_list`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    input_par_array : ndarray</span>
+<span class="sd">        Set of trajectories as vertical array.</span>
+<span class="sd">    sample_traj_list : list of ndarrays</span>
+<span class="sd">        Set of trajectories.</span>
+<span class="sd">    select_dist_matrix : ndarray</span>
+<span class="sd">        Symmetric `distance_matrix` of selection.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    next_combi_total_distance_gm14</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This function, is in fact much slower than `intermediate_ge_menendez_2014`</span>
+<span class="sd">    because it uses more for loops to get the pair distances from the right</span>
+<span class="sd">    combinations that must be subtracted from the total distances.</span>
+
+<span class="sd">    This function selects n_traj trajectories from n_traj_sample trajectories by</span>
+<span class="sd">    iteratively selecting n_traj_sample - i for i = 1,...,n_traj_sample - n-traj.</span>
+<span class="sd">    For this purpose, next_combi_total_distance_gm14 computes the total distance</span>
+<span class="sd">    of each trajectory combination by using the total distance of each combination</span>
+<span class="sd">    in the previous step and subtracting each pair distance with the dropped trajectory,</span>
+<span class="sd">    that yielded the lowest total distance combinations in the previous step.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_traj_sample</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_traj_list</span><span class="p">)</span>
+    <span class="c1"># Step 1: Compute pair distance and total distances for the trajectory</span>
+    <span class="c1"># combinations.</span>
+    <span class="n">traj_dist_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">(</span><span class="n">sample_traj_list</span><span class="p">)</span>
+
+    <span class="c1"># Step 2: Compute total distances for combinations and identify worst trajectory.</span>
+    <span class="n">max_dist_indices</span><span class="p">,</span> <span class="n">combi_total_distance</span> <span class="o">=</span> <span class="n">select_trajectories</span><span class="p">(</span>
+        <span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_traj_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Get lost index from first intitial selection (to get previous</span>
+    <span class="c1"># combi_total_distance). This index is used to access the pair distance</span>
+    <span class="c1"># with the lost trajectory in the old pair distance matrix.</span>
+    <span class="c1"># They are subtracted from the total in the old combi_total distance.</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">lost_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">indices</span> <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">max_dist_indices</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Init index tracker and delete first index.</span>
+    <span class="n">tracker_keep_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">traj_dist_matrix</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">tracker_keep_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">tracker_keep_indices</span><span class="p">,</span> <span class="n">lost_index</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1">#  ... to (n_traj_sample - n_traj - 1), the minus one is because</span>
+    <span class="c1"># this is already Step 2.</span>
+    <span class="k">for</span> <span class="n">_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_traj_sample</span> <span class="o">-</span> <span class="n">n_traj</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+
+        <span class="c1"># Use shrink trick for largest loop.</span>
+        <span class="p">(</span>
+            <span class="n">combi_total_distance</span><span class="p">,</span>
+            <span class="n">traj_dist_matrix</span><span class="p">,</span>
+            <span class="n">lost_index</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">next_combi_total_distance_gm14</span><span class="p">(</span>
+            <span class="n">combi_total_distance</span><span class="p">,</span> <span class="n">traj_dist_matrix</span><span class="p">,</span> <span class="n">lost_index</span>
+        <span class="p">)</span>
+
+        <span class="n">tracker_keep_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">tracker_keep_indices</span><span class="p">,</span> <span class="n">lost_index</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">select_trajs</span> <span class="o">=</span> <span class="p">[</span><span class="n">sample_traj_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">tracker_keep_indices</span><span class="p">]</span>
+
+    <span class="c1"># Rows are parameters, cols is number of drawn parameter vectors.</span>
+    <span class="n">input_par_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">select_trajs</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">select_dist_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">(</span><span class="n">select_trajs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">input_par_array</span><span class="p">,</span> <span class="n">select_trajs</span><span class="p">,</span> <span class="n">select_dist_matrix</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">scrypy</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scrypy.html">scrypy package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Tobias Stenzel.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
