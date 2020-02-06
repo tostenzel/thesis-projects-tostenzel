@@ -24,7 +24,7 @@ def jac_estimation_chol(save=False):
 
     Parameters
     ----------
-    save: Bool
+    save: bool
         Indicates wether to save data.
 
     Returns

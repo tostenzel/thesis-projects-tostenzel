@@ -25,8 +25,8 @@ def cone_plot_choice_shares(save=True):
 
     Parameters
     ----------
-    Returns
-    -------
+    save : bool
+        Indicates if the graph is saved as png-file.
 
     """
     tuition_subsidies = [0, 500]

@@ -35,11 +35,6 @@ repos:
         exclude: >
             (?x)^(
                 utils/travis_runner.py|
-                python/tests/test_sampling_trajectory.py|
-                python/tests/test_ge_menendez_2017_traj_transformation.py|
-                python/tests/test_chol_sdcorr.py|
-                python/tests/test_transform_distributions.py|
-                python/tests/test_transform_reorder.py|
                 python/tests/resources/test_transform_distributions/distributions.py|
                 python/tests/resources/test_transform_distributions/nataf_transformation.py
             )$

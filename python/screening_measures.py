@@ -52,8 +52,12 @@ def screening_measures(function, traj_list, step_list, cov, mu):
 
     Notes
     -----
-    Unorrelated uniform paramters require different interpretion of `mu`
+    -Unorrelated uniform paramters require different interpretion of `mu`
     as a scaling summand rather than the expectation value.
+    -It might be necessary to subtract the SDs by `(n_trajs/(n_trajs - 1))`
+    for the precise formula. However, this leads to problems for the case
+    of only one trajectory - which is used in
+    `test_screening_measures_uncorrelated_g_function`.
 
     """
     n_trajs = len(traj_list)
@@ -124,10 +128,12 @@ def screening_measures(function, traj_list, step_list, cov, mu):
     # Compute the aggregate screening measures.
     ee_uncorr[:, 0] = np.mean(ee_uncorr_i, axis=1)
     abs_ee_uncorr[:, 0] = np.mean(abs(ee_uncorr_i), axis=1)
+    # Precise formula is import for small number of trajectories.
     sd_ee_uncorr[:, 0] = np.sqrt(np.var(ee_uncorr_i, axis=1))
 
     ee_corr[:, 0] = np.mean(ee_corr_i, axis=1)
     abs_ee_corr[:, 0] = np.mean(abs(ee_corr_i), axis=1)
+    # Precise formula is import for small number of trajectories.
     sd_ee_corr[:, 0] = np.sqrt(np.var(ee_corr_i, axis=1))
 
     return ee_uncorr, ee_corr, abs_ee_uncorr, abs_ee_corr, sd_ee_uncorr, sd_ee_corr

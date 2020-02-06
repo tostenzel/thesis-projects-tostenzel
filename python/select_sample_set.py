@@ -17,6 +17,7 @@ Transportation 2 (2), 49–64.
 from itertools import combinations
 
 import numpy as np
+from sampling_schemes import morris_trajectory
 from scipy.special import binom
 
 
@@ -80,9 +81,7 @@ def distance_matrix(sample_list):
         Symmatric matrix of pair distances.
 
     """
-    distance_matrix = np.nan * np.ones(
-        shape=(len(sample_list), len(sample_list))
-    )
+    distance_matrix = np.nan * np.ones(shape=(len(sample_list), len(sample_list)))
     for i in range(0, len(sample_list)):
         for j in range(0, len(sample_list)):
             distance_matrix[i, j] = compute_pair_distance(
@@ -171,7 +170,7 @@ def select_trajectories(traj_dist_matrix, n_traj):
         of samples marked by indices in the same row and the columns before.
 
     Raises
-    -----
+    ------
     AssertionError:
         -if `traj_dist_matrix` is not symmetric.
         -if the number of combinations does not correspong to the combinations
@@ -258,7 +257,7 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
     combinations may be very close (see [2]).
     However, the total sum of the returned combinations are close.
     Therefore, the `total_distance` loss is negligible compared to the speed gain
-    for large numbers of trajectory combinations.   
+    for large numbers of trajectory combinations.
     -This implies that, `combi_total_distance` always differs from the one in
     `select_trajectories` because it only contains the combination indices from
     the last iteration if n_traj is smaller than the sample set minus 1.
@@ -281,7 +280,9 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
         # delete pairs with dropped trajectory from distance matrix
         traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=0)
         traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=1)
-        tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0).tolist()
+        tracker_keep_indices = np.delete(
+            tracker_keep_indices, lost_index, axis=0
+        ).tolist()
 
     return tracker_keep_indices, combi_total_distance
 
@@ -344,7 +345,7 @@ def campolongo_2007(sample_traj_list, n_traj):
     input_par_array : ndarray
         Set of trajectories as vertical array.
     sample_traj_list : list of ndarrays
-        Set of trajectories.  
+        Set of trajectories.
     select_dist_matrix : ndarray
         Symmetric `distance_matrix` of selection.
 
@@ -379,7 +380,7 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     input_par_array : ndarray
         Set of trajectories as vertical array.
     sample_traj_list : list of ndarrays
-        Set of trajectories.  
+        Set of trajectories.
     select_dist_matrix : ndarray
         Symmetric `distance_matrix` of selection.
 
@@ -443,7 +444,7 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
         `lost_index` without the dropped sample one iteration before.
 
     Notes
-    ----
+    -----
     -The function computes the total distance of each trajectory
     combination by using the total distance of each combination in the previous step
     and subtracting each pair distance with the dropped trajectory, that yielded
@@ -561,7 +562,7 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
     input_par_array : ndarray
         Set of trajectories as vertical array.
     sample_traj_list : list of ndarrays
-        Set of trajectories.  
+        Set of trajectories.
     select_dist_matrix : ndarray
         Symmetric `distance_matrix` of selection.
 
@@ -570,7 +571,7 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
     `next_combi_total_distance_gm14`
 
     Notes
-    ----
+    -----
     -This function, is in fact much slower than `intermediate_ge_menendez_2014`
     because it uses more for loops to get the pair distances from the right
     combinations that must be subtracted from the total distances.

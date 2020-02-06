@@ -6,7 +6,6 @@ sys.path.append("python")
 
 import numpy as np
 from numpy.testing import assert_allclose
-from numpy.testing import assert_array_equal
 
 from transform_distributions import covariance_to_correlation
 from transform_distributions import transform_uniform_stnormal_uncorr

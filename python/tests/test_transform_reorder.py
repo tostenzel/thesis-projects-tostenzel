@@ -25,9 +25,10 @@ def traj():
     traj = np.array([[0, 0, 0], [1, 0, 0], [2, 3, 0], [4, 5, 6]])
     return traj
 
+
 def test_ee_uncorr_reorder_trajectory(traj):
     """
-    Unit tests for `ee_uncorr_reorder_trajectory` and 
+    Unit tests for `ee_uncorr_reorder_trajectory` and
     `reverse_ee_uncorr_reorder_trajectory`.
 
     """
@@ -55,7 +56,7 @@ def test_ee_uncorr_reorder_trajectory(traj):
 
 def test_ee_corr_reorder_trajectory(traj):
     """
-    Unit tests for `ee_corr_reorder_trajectory` and 
+    Unit tests for `ee_corr_reorder_trajectory` and
     `reverse_ee_corr_reorder_trajectory`.
 
     """
@@ -80,7 +81,7 @@ def test_reorder_mu(mu):
     """Unit tests for `reorder_mu` and `reverse_reorder_mu`."""
     expected = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 0])
     assert_array_equal(expected, reorder_mu(mu))
-    
+
     expected = np.array([9, 0, 1, 2, 3, 4, 5, 6, 7, 8])
     assert_array_equal(expected, reverse_reorder_mu(mu))
 

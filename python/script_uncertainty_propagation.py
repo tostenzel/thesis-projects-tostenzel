@@ -1,3 +1,8 @@
+"""
+Script for Uncertainty Propagation.
+The structure is adapted to parallel computing.
+
+"""
 import os
 
 # Define the script path relative to the location from where the script is called.
@@ -27,12 +32,16 @@ from multi_quantities_of_interest import get_quantity_of_interest
 
 
 def propagate_mean_estimates():
-    """Evaluates the QoI at the mean estimates
+    """Evaluates the QoI at the mean estimates. Called in `run`.
 
-    Parameters
-    ----------
     Returns
     -------
+    mean_edu_df : DataFrame
+        Difference in mean years of education between policy and base scenario.
+    base_occ_shares_df : DataFrame
+        Occupation shares over all ages for the policy scenario.
+    policy_occ_shares_df : DataFrame
+        Occupation shares over all ages for the base scenario.
 
     """
     # Init base_options because its part of the model wrapper argument
@@ -68,14 +77,27 @@ def propagate_mean_estimates():
 
 def run(args):
     """
-    Function that protects the "entry point" of new programs to not produce endlessly
-    many entries. See:
-    https://docs.python.org/3/library/multiprocessing.html#multiprocessing-programming
+    Creates and saves the inputs and the outputs of the Uncertainty Propgation.
+
+    In context of parallel computing, this function also protects the "entry point"
+    of new programs to not produce endlessly many entries. See [1].
 
     Parameters
     ----------
-    Returns
-    -------
+    number_draws : int
+        Number of draws of random input paramter vector from the respective distribution.
+    seed: int
+        Random seed.
+
+    Raises
+    ------
+    AssertionError:
+        if tempory output array `temp_array` contains NaNs, and +/- Infs.
+
+    References
+    ----------
+    [1] https://docs.python.org/3/library/multiprocessing.html#multiprocessing-programming.
+
     """
     # Call function.
     _, _, _ = propagate_mean_estimates()
@@ -155,7 +177,7 @@ def run(args):
     )
 
 
-# Avoid mp Runtime error.
+# Avoid multiprocessing Runtime error.
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Create results for Uncertainty Propagation."
@@ -168,7 +190,7 @@ if __name__ == "__main__":
         dest="number_draws",
         default=5,
         type=int,
-        help="set number of random input parameter draws",
+        help="Set number of random input parameter draws",
     )
 
     parser.add_argument(
@@ -178,7 +200,7 @@ if __name__ == "__main__":
         dest="seed",
         default=123,
         type=int,
-        help="set seed for the random input parameter draws",
+        help="Set seed for the random input parameter draws",
     )
 
     args = parser.parse_args()

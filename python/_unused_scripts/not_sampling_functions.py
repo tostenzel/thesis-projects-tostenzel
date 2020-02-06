@@ -4,25 +4,6 @@ import numpy as np
 a = [78, 12, 0.5, 2, 97, 33]
 
 
-def sobol_model(input_pars, coeffs_a):
-    """
-    Tested by comparing graphs for 3 specifications to book.
-    Arguments are lists. Strongly nonlinear, nonmonotonic, and nonzero interactions.
-    Analytic results for Sobol Indices.
-
-    """
-    assert len(input_pars) == len(coeffs_a)
-
-    def g_i(input_par_i, coeffs_a_i):
-        return (abs(4 * input_par_i - 2) + coeffs_a_i) / (1 + coeffs_a_i)
-
-    y = 1
-    for i in range(0, len(input_pars)):
-        y *= g_i(input_pars[i], coeffs_a[i])
-
-    return y
-
-
 def elementary_effect_i(model, i_python, init_input_pars, stepsize):
     """EE"""
     vector_e = np.zeros(len(init_input_pars))
@@ -47,6 +28,7 @@ def lin_portfolio(q1, q2, c1=2, c2=1, *args):
 
 
 def test_elemtary_effect_i():
+    """Tests EE"""
     assert 2 == round(
         elementary_effect_i(lin_portfolio, 0, [0.5, 1], stepsize=2 / 3), 10
     )

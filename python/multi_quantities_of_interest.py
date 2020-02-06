@@ -1,10 +1,9 @@
 """
-Important: This module contains also the second QoI: The education shares
-over time for a sample of agents. This is used for the cone plot.
+Besides the difference in mean age of education, this module also generates two
+Dataframes for a second QoI:
+The difference in education shares over time for a sample of agents.
+The second quantity is used to create the cone plot.
 
-Model "mathcal{M}(pmb{theta}).
-This represents the Quantity of Interest q as a function of the
-vector of input paramters theta.
 """
 import os
 
@@ -13,16 +12,16 @@ import respy as rp
 
 
 def get_quantity_of_interest(input_params):
-    """
-    Computes the Quantity of Interest.
+    """Computes the Quantity of Interest.
 
     Paramters
     ---------
-    input_params: np.array
-        unindexed input parameters
-    add_qoi_edu_choices: bool
-        Specifies whether to compute the addition QoIs, education choice shares
-        in the sample over time, to depict a cone plot (confidence interval plot).
+    input_params: ndarray
+        Unindexed input parameters.
+    policy_occ_shares_df : DataFrame
+        Occupation shares over all ages for the policy scenario.
+    base_occ_shares_df : DataFrame
+        Occupation shares over all ages for the base scenario.
 
     Returns
     -------
@@ -54,8 +53,7 @@ def get_quantity_of_interest(input_params):
 
 
 def model_wrapper_kw_94(input_params, base_options, tuition_subsidy):
-    """
-    Wrapper around respy to compute the mean number of years in education.
+    """Wrapper around respy to compute the mean number of years in education.
 
     Parameters
     ----------
@@ -72,7 +70,9 @@ def model_wrapper_kw_94(input_params, base_options, tuition_subsidy):
     Returns
     -------
     edu: float
-        mean number of years in education.
+        Mean number of years in education.
+    occ_shares_df: DataFrame
+        Occupation shares over all ages.
     policy_df: Dataframe
         Dataframe of occupation choices of sample of agents of time.
 
@@ -113,6 +113,11 @@ def transform_params_kw94_respy(params_idx):
     --------
     rp_params_df: Dataframe
         Input parameters in respy format.
+
+    Raises
+    ------
+    AssertionError:
+        if the lenght of the paramter vector is incorrect.
 
     """
     assert len(params_idx) == 27, "Length of KW94 vector must be 27."

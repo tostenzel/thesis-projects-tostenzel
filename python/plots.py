@@ -15,12 +15,19 @@ plt.rcParams["font.family"] = "STIXGeneral"
 def heatmap_corr_chol(corr_df, save=False):
     """
     Creates the heatmap for the correlations between important
-    input parameters.
+    input parameters of the KW94 model.
 
     Parameters
     ----------
+    corr_df : Dataframe
+        Correlation matrix.
+    save : bool
+        Indicates if the graph is saved as png-file.
+
     Returns
     -------
+    fig : matplotlib Figure
+    ax : matplotlib Axes
 
     """
     # Mask to select the important parameters.
@@ -107,21 +114,21 @@ def heatmap_corr_chol(corr_df, save=False):
 
 def distplot(sample, qoi_name, save=False):
     """
-    This function is a custom-made wrapper around seaborn.distplot.
+    This function is a custom-made wrapper around seaborn.distplot for the QoI.
 
     Parameters
     ----------
     sample: Series, 1d-array, or list.
         A vector of random observations in vertical format.
     qoi_name: str
-        Name of Quantity of interest used for x label and png-name.
+        Name of Quantity of interest used for x label and png-file.
     save: bool
         Indicate whether to save the plot as png.
 
     Returns
     -------
-    dp: Figure
-        Returns Figure object setting figure-level attributes.
+    dp : matplotlib Axes
+    ax : matplotlib Axes
 
     """
     # Init colors.
@@ -227,9 +234,8 @@ def convergence_plot(sample, expected, qoi_name, absolute_deviation=False, save=
 
     Returns
     -------
-    dp: Figure
-        Returns Figure object setting figure-level attributes.
-
+    dp : pyplot.figure
+    ax : pyplot.axes
     """
     df = pd.DataFrame(list(sample), columns=["qoi_realization"])
     df["cum_sum"] = df["qoi_realization"].cumsum()

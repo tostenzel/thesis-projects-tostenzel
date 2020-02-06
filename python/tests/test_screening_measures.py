@@ -55,7 +55,7 @@ def test_screening_measures_uncorrelated_g_function():
     be recomputed for each trajectory because the the reordered trajectories with columns
     in order of the step addition are still composed of columns that represent different
     paramters.
-    
+
     References
     ----------
     [1] Saltelli, A., M. Ratto, T. Andres, F. Campolongo, J. Cariboni, D. Gatelli, M. Saisana,
@@ -204,7 +204,7 @@ def lin_portfolio(q1, q2, c1=2, c2=1, *args):
 def test_screening_measures_uncorrelated_linear_function():
     """
     Test for a linear function with two paramters. Non-unit variance and EEs are coefficients.
-    
+
     Results data taken from [1], page 335.
 
     Notes

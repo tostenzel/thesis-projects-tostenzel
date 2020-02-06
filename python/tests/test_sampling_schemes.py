@@ -6,7 +6,6 @@ sys.path.append("..")
 
 import numpy as np
 
-from sampling_schemes import stepsize
 from sampling_schemes import morris_trajectory
 
 

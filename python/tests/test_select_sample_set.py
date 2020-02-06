@@ -20,7 +20,6 @@ import numpy as np
 import pytest
 
 from numpy.testing import assert_array_equal
-from numpy.testing import assert_allclose
 
 from sampling_schemes import morris_trajectory
 from select_sample_set import compute_pair_distance
@@ -196,7 +195,9 @@ def sample_traj_list(numbers):
 @pytest.fixture
 def traj_selection(sample_traj_list, numbers):
     """Fix sample set and distance matrix for the next four tests."""
-    _, select_list, select_distance_matrix = campolongo_2007(sample_traj_list, numbers[3])
+    _, select_list, select_distance_matrix = campolongo_2007(
+        sample_traj_list, numbers[3]
+    )
 
     return [select_list, select_distance_matrix]
 
