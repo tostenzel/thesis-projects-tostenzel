@@ -21,6 +21,8 @@ dependencies:
 - doc8
 - restructuredtext_lint
 - respy
+- sphinx
+- sphinxcontrib-napoleon
 - pip:
   - chaospy
   - pre-commit

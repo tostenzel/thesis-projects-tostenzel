@@ -34,14 +34,14 @@ This repository hosts the Master's Thesis and its replication files written by
 I demonstrate the computations of the results in the jupyter notebooks below.
 
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
-     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/section_model.ipynb
+     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/notebooks/section_model.ipynb
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
-     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/section_uncertainty_propagation.ipynb
+     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/notebooks/section_uncertainty_propagation.ipynb
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
-     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/note_sampling.ipynb
+     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/notebooks/note_sampling.ipynb
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
-     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/note_transformations.ipynb
+     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/notebooks/note_transformations.ipynb
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
-     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/note_validation.ipynb
+     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/notebooks/note_validation.ipynb
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
-     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/note_robustness.ipynb
+     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/notebooks/note_robustness.ipynb
