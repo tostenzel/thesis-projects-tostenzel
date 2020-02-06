@@ -1,5 +1,4 @@
 """Functions that create random samples of the trajectory and the radial design."""
-
 import sys
 
 # Define parent folder as relative path.
