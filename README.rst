@@ -8,6 +8,10 @@ Uncertainty Quantification for an Eckstein-Keane-Wolpin model
 .. image:: https://codecov.io/gh/HumanCapitalAnalysis/thesis-projects-tostenzel/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/HumanCapitalAnalysis/thesis-projects-tostenzel
 
+.. image:: https://readthedocs.org/projects/thesis-projects-tostenzel/badge/?version=latest
+:target: https://thesis-projects-tostenzel.readthedocs.io/en/latest/?badge=latest
+:alt: Documentation Status
+
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/python/black
 

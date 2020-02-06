@@ -11,8 +11,8 @@
 import os
 import sys
 
-sys.path.insert(0, "..")
-
+# Adjust path to online Readthedocs.
+sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
 
