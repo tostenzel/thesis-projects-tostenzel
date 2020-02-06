@@ -21,10 +21,6 @@ dependencies:
 - doc8
 - restructuredtext_lint
 - respy
-# Docs 
-- nbsphinx
-- numpydoc
-- sphinx
 
 - pip:
   - chaospy
