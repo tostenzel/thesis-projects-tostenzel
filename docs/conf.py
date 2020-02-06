@@ -12,7 +12,7 @@ import os
 import sys
 
 # Adjust path to online Readthedocs. No package, therefore more dots.
-sys.path.insert(0, os.path.abspath("./../.."))
+sys.path.insert(0, os.path.abspath("."))
 
 # -- Project information -----------------------------------------------------
 
