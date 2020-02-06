@@ -11,7 +11,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("../.."))
+sys.path.insert(0, "..")
 
 # -- Project information -----------------------------------------------------
 
@@ -68,7 +68,7 @@ html_theme = "alabaster"
 # so a file named "default.css" will overwrite the builtin "default.css".
 
 # deleted "_static"
-html_static_path = []
+html_static_path = ["_static"]
 
 
 # -- Extension configuration -------------------------------------------------
