@@ -411,16 +411,11 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
 
 def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_index):
     """
-    Selects the set of samples minus one sample,
+    Selects the set of samples minus one sample.
 
     Based on the algorithmic computation of the `total_distance` proposed by [2].
+    I.e. by re-using and adjusting the first `combi_total_distance` matrix each iteration.
     Used for selecting iteratively rather than by brute force.
-
-    It takes the array of trajectory combinations and their total distances,
-    the pair distance matrix for these trajectories and the index of the
-    trajectory that is not part of the best combination of n_sample_traj - 1
-    trjactories.
-    It returns the same object for the next period.
 
     Parameters
     ----------
