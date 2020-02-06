@@ -23,7 +23,6 @@ dependencies:
 - respy
 - sphinx
 - sphinxcontrib-napoleon
-- sphinx-apidoc
 - pip:
   - chaospy
   - pre-commit
