@@ -12,7 +12,7 @@ if __name__ == "__main__":
     # Commented out to save travis around 5 minutes.
     # sp.check_call("python python/jac_estimation_chol.py", shell=True)
     sp.check_call("python scrypy/script_uncertainty_propagation.py", shell=True)
-    os.chdir("python")
+    os.chdir("notebooks")
     for notebook in glob.glob("*.ipynb"):
         cmd = " jupyter nbconvert --execute {} --ExecutePreprocessor.timeout=-1".format(
             notebook
