@@ -2,7 +2,7 @@
 import sys
 
 # Define parent folder as relative path.
-sys.path.append("python")
+sys.path.append("scrypy")
 
 import numpy as np
 from numpy.testing import assert_allclose
@@ -11,7 +11,7 @@ from transform_distributions import covariance_to_correlation
 from transform_distributions import transform_uniform_stnormal_uncorr
 from transform_distributions import transform_stnormal_normal_corr
 
-sys.path.append("python/tests/resources/test_transform_distributions")
+sys.path.append("scrypy/tests/resources/test_transform_distributions")
 from nataf_transformation import nataf_transformation
 from distributions import distributions
 

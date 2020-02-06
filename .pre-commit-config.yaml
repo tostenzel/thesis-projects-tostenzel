@@ -14,8 +14,8 @@ repos:
         types: [python]
         exclude: >
             (?x)^(
-                python/distributions.py|
-                python/nataf_transformation.py
+                scrypy/distributions.py|
+                scrypy/nataf_transformation.py
             )$
 
 
@@ -35,6 +35,6 @@ repos:
         exclude: >
             (?x)^(
                 utils/travis_runner.py|
-                python/tests/resources/test_transform_distributions/distributions.py|
-                python/tests/resources/test_transform_distributions/nataf_transformation.py
+                scrypy/tests/resources/test_transform_distributions/distributions.py|
+                scrypy/tests/resources/test_transform_distributions/nataf_transformation.py
             )$

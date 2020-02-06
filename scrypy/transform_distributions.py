@@ -3,6 +3,11 @@ Implementation of the inverse Rosenblatt / inverse Nataf transformation
 from uniform to normal distribution.
 
 """
+import sys
+
+# Define parent folder as relative path.
+sys.path.append("scrypy")
+
 import numpy as np
 import scipy.linalg as linalg
 from scipy.stats import norm
