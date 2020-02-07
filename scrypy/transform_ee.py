@@ -69,10 +69,8 @@ def trans_ee_uncorr(sample_traj_list, cov, mu, radial=False):
     `trans_pi_i` with the respective row one below in `trans_piplusone_i`.
 
     """
-    if radial is False:
-        trans_piplusone_i, trans_pi_i, coeff_step = trans_ee_uncorr_trajectories(sample_traj_list, cov, mu)
-    else:
-        trans_piplusone_i, trans_pi_i, coeff_step = trans_ee_uncorr_radial(sample_traj_list, cov, mu)
+
+    trans_piplusone_i, trans_pi_i, coeff_step = trans_ee_uncorr_radial(sample_traj_list, cov, mu, radial)
 
     return trans_piplusone_i, trans_pi_i, coeff_step
 
@@ -116,7 +114,7 @@ def trans_ee_corr(sample_traj_list, cov, mu, radial=False):
 
     """
     if radial is False:
-        trans_piplusone_iminusone = trans_ee_corr_trajectories(sample_traj_list, cov, mu)
+        trans_piplusone_iminusone = trans_ee_corr_trajectory(sample_traj_list, cov, mu)
 
         return trans_piplusone_iminusone
 
@@ -126,7 +124,7 @@ def trans_ee_corr(sample_traj_list, cov, mu, radial=False):
         return trans_piplusone_iminusone, trans_piplusone_i
 
 
-def trans_ee_uncorr_trajectories(sample_traj_list, cov, mu):
+def trans_ee_uncorr(sample_traj_list, cov, mu, radial=False):
 
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
 
@@ -138,8 +136,13 @@ def trans_ee_uncorr_trajectories(sample_traj_list, cov, mu):
     # Transformation 1.
     for traj in range(0, n_traj_sample):
         z = sample_traj_list[traj]
-        zero_idx_diff.append(ee_uncorr_reorder_trajectory(z, row_plus_one=False))
         one_idx_diff.append(ee_uncorr_reorder_trajectory(z))
+        if radial is not False:
+            # Only use first row for subtration in EE numerator for radial design.
+            z = np.tile(z[0, :], (n_rows, 1))
+        else:
+            pass
+        zero_idx_diff.append(ee_uncorr_reorder_trajectory(z, row_plus_one=False))
 
     # Transformation 2 for p_{i+1}.
     # No re-arrangement needed as the first transformation for p_{i+1}
@@ -197,7 +200,7 @@ def trans_ee_uncorr_trajectories(sample_traj_list, cov, mu):
     return trans_piplusone_i, trans_pi_i, coeff_step
 
 
-def trans_ee_corr_trajectories(sample_traj_list, cov, mu):
+def trans_ee_corr_trajectory(sample_traj_list, cov, mu):
 
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
 
@@ -232,79 +235,6 @@ def trans_ee_corr_trajectories(sample_traj_list, cov, mu):
         )
 
     return trans_piplusone_iminusone
-
-
-def trans_ee_uncorr_radial(sample_traj_list, cov, mu):
-
-    assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
-
-    n_traj_sample = len(sample_traj_list)
-    n_rows = np.size(sample_traj_list[0], 0)
-    zero_idx_diff = []
-    one_idx_diff = []
-
-    # Transformation 1.
-    for traj in range(0, n_traj_sample):
-        z = sample_traj_list[traj]
-        one_idx_diff.append(ee_uncorr_reorder_trajectory(z))
-        # Only use first row for subtration in EE numerator for radial design.
-        z = np.tile(z[0, :], (n_rows, 1))
-        zero_idx_diff.append(ee_uncorr_reorder_trajectory(z, row_plus_one=False))
-
-    # Transformation 2 for p_{i+1}.
-    # No re-arrangement needed as the first transformation for p_{i+1}
-    # is using the original order of mu and cov.
-    # ´coeff_step` saves the coefficient from the last element in the Cholesky matrix
-    # that transforms the step.
-    coeff_step = []
-    for traj in range(0, n_traj_sample):
-        # Needs to be set up again for each traj because otherwise it'd be one `i`too much.
-        mu_one = mu
-        cov_one = cov
-        # We do not need the coefficient of the first row as it is not used
-        c_step = np.ones([n_rows - 1, 1]) * np.nan
-        for row in range(0, n_rows):
-            (
-                one_idx_diff[traj][row, :],
-                correlate_step,
-            ) = transform_stnormal_normal_corr(
-                one_idx_diff[traj][row, :], cov_one, mu_one
-            )
-            if row > 0:
-                c_step[row - 1, 0] = correlate_step
-            else:
-                pass
-            mu_one = reorder_mu(mu_one)
-            cov_one = reorder_cov(cov_one)
-        coeff_step.append(c_step)
-
-    # Transformation 2 for p_i.
-    # Need to reorder mu and covariance according to the zero idx difference.
-    for traj in range(0, n_traj_sample):
-        # Needs to be set up again for each traj because otherwise it'd be `i` too much.
-        mu_zero = reorder_mu(mu)
-        cov_zero = reorder_cov(cov)
-        for row in range(0, n_rows):
-            zero_idx_diff[traj][row, :], _ = transform_stnormal_normal_corr(
-                zero_idx_diff[traj][row, :], cov_zero, mu_zero
-            )
-            mu_zero = reorder_mu(mu_zero)
-            cov_zero = reorder_cov(cov_zero)
-
-    # Transformation 3: Undo Transformation 1.
-    trans_pi_i = []
-    trans_piplusone_i = []
-    for traj in range(0, n_traj_sample):
-        trans_pi_i.append(
-            reverse_ee_uncorr_reorder_trajectory(
-                zero_idx_diff[traj], row_plus_one=False
-            )
-        )
-        trans_piplusone_i.append(
-            reverse_ee_uncorr_reorder_trajectory(one_idx_diff[traj])
-        )
-
-    return trans_piplusone_i, trans_pi_i, coeff_step
 
 
 def trans_ee_corr_radial(sample_traj_list, cov, mu):
