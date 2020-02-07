@@ -6,7 +6,12 @@ sys.path.append("..")
 
 import numpy as np
 
+from numpy.testing import assert_array_equal
+
+
 from sampling_schemes import morris_trajectory
+from sampling_schemes import radial_sample
+
 
 
 def test_morris_trajectory_value_grid():
@@ -35,3 +40,19 @@ def test_morris_trajectory_value_grid():
     expected = set(expected.tolist())
 
     assert grid == expected
+
+
+def test_radial_sample():
+    """
+    Tests wether for each row i (non-pythonic), only the ith elements is
+    different from the first row for a sample of radial subsamples.
+
+    """
+    n_rads = 10
+    n_params = 5
+    
+    rad_list, _ = radial_sample(n_rads, n_params)
+    
+    for rad in range(0, n_rads - 1):
+        for row in range(0, n_params):
+            assert_array_equal(np.delete(rad_list[rad][row + 1, :], row), np.delete(rad_list[rad][0, :], row))
