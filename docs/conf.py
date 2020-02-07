@@ -40,6 +40,10 @@ extensions = [
     "numpydoc",
 ]
 
+# try to fix TypeError: 'rcParams' object does not support item assignment
+# following https://github.com/readthedocs/readthedocs.org/issues/1803
+# import matplotlib.pyplot 
+
 # Proposed here to fix library import errros that depend on C
 # http://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_mock_imports
 autodoc_mock_imports = ["numpy", "matplotlib", "pandas", "chaospy", "respy", "scipy", "seaborn", "estimagic"]
