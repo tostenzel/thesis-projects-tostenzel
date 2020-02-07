@@ -20,6 +20,7 @@ dependencies:
 - flake8
 - doc8
 - restructuredtext_lint
+- respy
 - pip:
   - chaospy
   - pre-commit
