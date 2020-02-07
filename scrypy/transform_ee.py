@@ -22,7 +22,6 @@ from transform_reorder import reverse_reorder_cov
 from transform_reorder import reverse_reorder_mu
 
 
-
 def trans_ee_uncorr(sample_traj_list, cov, mu, radial=False):
     """
     Transforms list of trajectories to two lists of transformed trajectories
@@ -69,63 +68,6 @@ def trans_ee_uncorr(sample_traj_list, cov, mu, radial=False):
     `trans_pi_i` with the respective row one below in `trans_piplusone_i`.
 
     """
-
-    trans_piplusone_i, trans_pi_i, coeff_step = trans_ee_uncorr_radial(sample_traj_list, cov, mu, radial)
-
-    return trans_piplusone_i, trans_pi_i, coeff_step
-
-
-def trans_ee_corr(sample_traj_list, cov, mu, radial=False):
-    """
-    Transforms list of trajectories to two lists of transformed trajectories
-    for the computation of the correlated Elementary Effects.
-
-    Parameters
-    ----------
-    sample_traj_list : list of ndarrays
-        Set of untransformed trajectories.
-    cov : ndarray
-        Covariance matrix.
-    mu : ndarray
-        Expectation value.
-
-    Returns
-    -------
-    trans_piplusone_iminusone : list of ndarrays
-        Trajectories containing the rows that are the arguments for the LHS function
-        evaluation for the correlated Elementary Effect.
-
-    Raises
-    ------
-    AssertionError
-        If the dimension of `mu`, `cov` and the elements in `sample_traj_list`
-        do not fit together.
-
-    Notes
-    -----
-    Transformation for the rows on the RHS of the correlated Elementary Effects
-    is equal to the one on the LHS of the uncorrelated Elementary Effects.
-    Therefore, it is left out here as it can be obtained by
-    `trans_ee_uncorr_trajectories`.
-
-    See Also
-    --------
-    trans_ee_uncorr_trajectories
-
-    """
-    if radial is False:
-        trans_piplusone_iminusone = trans_ee_corr_trajectory(sample_traj_list, cov, mu)
-
-        return trans_piplusone_iminusone
-
-    else:
-        trans_piplusone_iminusone, trans_piplusone_i = trans_ee_corr_radial(sample_traj_list, cov, mu)
-
-        return trans_piplusone_iminusone, trans_piplusone_i
-
-
-def trans_ee_uncorr(sample_traj_list, cov, mu, radial=False):
-
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
 
     n_traj_sample = len(sample_traj_list)
@@ -200,8 +142,44 @@ def trans_ee_uncorr(sample_traj_list, cov, mu, radial=False):
     return trans_piplusone_i, trans_pi_i, coeff_step
 
 
-def trans_ee_corr_trajectory(sample_traj_list, cov, mu):
+def trans_ee_corr(sample_traj_list, cov, mu, radial=False):
+    """
+    Transforms list of trajectories to two lists of transformed trajectories
+    for the computation of the correlated Elementary Effects.
 
+    Parameters
+    ----------
+    sample_traj_list : list of ndarrays
+        Set of untransformed trajectories.
+    cov : ndarray
+        Covariance matrix.
+    mu : ndarray
+        Expectation value.
+
+    Returns
+    -------
+    trans_piplusone_iminusone : list of ndarrays
+        Trajectories containing the rows that are the arguments for the LHS function
+        evaluation for the correlated Elementary Effect.
+
+    Raises
+    ------
+    AssertionError
+        If the dimension of `mu`, `cov` and the elements in `sample_traj_list`
+        do not fit together.
+
+    Notes
+    -----
+    Transformation for the rows on the RHS of the correlated Elementary Effects
+    is equal to the one on the LHS of the uncorrelated Elementary Effects.
+    Therefore, it is left out here as it can be obtained by
+    `trans_ee_uncorr_trajectories`.
+
+    See Also
+    --------
+    trans_ee_uncorr_trajectories
+
+    """
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
 
     n_traj_sample = len(sample_traj_list)
@@ -227,74 +205,47 @@ def trans_ee_corr_trajectory(sample_traj_list, cov, mu):
             mu_two = reorder_mu(mu_two)
             cov_two = reorder_cov(cov_two)
 
-    # # Transformation 3: Undo Transformation 1.
+    # Transformation 3: Undo Transformation 1.
     trans_piplusone_iminusone = []
     for traj in range(0, n_traj_sample):
         trans_piplusone_iminusone.append(
             reverse_ee_corr_reorder_trajectory(two_idx_diff[traj])
         )
 
-    return trans_piplusone_iminusone
+    if radial is False:
+        return trans_piplusone_iminusone
 
+    else:
+        one_idx_diff = []
 
-def trans_ee_corr_radial(sample_traj_list, cov, mu):
+        # Transformation 1 for p_{i+1} 2.
+        for traj in range(0, n_traj_sample):
+            z = sample_traj_list[traj]
 
-    assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
+            z = np.tile(z[0, :], (n_rows, 1))
+            one_idx_diff.append(ee_uncorr_reorder_trajectory(z))
 
-    n_traj_sample = len(sample_traj_list)
-    n_rows = np.size(sample_traj_list[0], 0)
-    one_idx_diff = []
-    two_idx_diff = []
+        # Transformation 2 for p_{i+1}.
+        # No re-arrangement needed as the first transformation for p_{i+1}
+        # is using the original order of mu and cov.
+        for traj in range(0, n_traj_sample):
+            # Needs to be set up again for each traj because otherwise it'd be one `i`too much.
+            mu_one = mu
+            cov_one = cov
+            for row in range(0, n_rows):
+                (
+                    one_idx_diff[traj][row, :],
+                    _
+                ) = transform_stnormal_normal_corr(
+                    one_idx_diff[traj][row, :], cov_one, mu_one
+                )
+                mu_one = reorder_mu(mu_one)
+                cov_one = reorder_cov(cov_one)
 
-    # Transformation 1 for p_{i+1} 2.
-    for traj in range(0, n_traj_sample):
-        z = sample_traj_list[traj]
-        two_idx_diff.append(ee_corr_reorder_trajectory(z))
-        # Only use first row for subtration in EE numerator for radial design.
-        z = np.tile(z[0, :], (n_rows, 1))
-        one_idx_diff.append(ee_uncorr_reorder_trajectory(z))
-
-    # Transformation 2 for p_{i+1}.
-    # Need to reorder mu and covariance according to the two uncorrex difference by
-    # using the invese function as for p_i in `the function for the uncorrependent EEs.
-    for traj in range(0, n_traj_sample):
-        # Needs to be set up again for each traj because otherwise it'd be one too much.
-        mu_two = reverse_reorder_mu(mu)
-        cov_two = reverse_reorder_cov(cov)
-        for row in range(0, n_rows):
-            two_idx_diff[traj][row, :], _ = transform_stnormal_normal_corr(
-                two_idx_diff[traj][row, :], cov_two, mu_two
+        # Transformation 3: Undo Transformation 1.
+        trans_piplusone_i = []
+        for traj in range(0, n_traj_sample):
+            trans_piplusone_iminusone.append(
+                reverse_ee_corr_reorder_trajectory(two_idx_diff[traj])
             )
-            mu_two = reorder_mu(mu_two)
-            cov_two = reorder_cov(cov_two)
-
-    # Transformation 2 for p_{i+1}.
-    # No re-arrangement needed as the first transformation for p_{i+1}
-    # is using the original order of mu and cov.
-    for traj in range(0, n_traj_sample):
-        # Needs to be set up again for each traj because otherwise it'd be one `i`too much.
-        mu_one = mu
-        cov_one = cov
-        for row in range(0, n_rows):
-            (
-                one_idx_diff[traj][row, :],
-                _
-            ) = transform_stnormal_normal_corr(
-                one_idx_diff[traj][row, :], cov_one, mu_one
-            )
-            mu_one = reorder_mu(mu_one)
-            cov_one = reorder_cov(cov_one)
-
-    # # Transformation 3: Undo Transformation 1.
-    trans_piplusone_iminusone = []
-    trans_piplusone_i = []
-    for traj in range(0, n_traj_sample):
-        trans_piplusone_iminusone.append(
-            reverse_ee_corr_reorder_trajectory(two_idx_diff[traj])
-        )
-        trans_piplusone_i.append(
-        reverse_ee_uncorr_reorder_trajectory(one_idx_diff[traj])
-        )
-
-    return trans_piplusone_iminusone, trans_piplusone_i
-
+        return trans_piplusone_iminusone, trans_piplusone_i
