@@ -78,8 +78,10 @@ def trans_ee_uncorr_radial(sample_traj_list, cov, mu):
     # Transformation 1.
     for traj in range(0, n_traj_sample):
         z = sample_traj_list[traj]
-        zero_idx_diff.append(ee_uncorr_reorder_trajectory(z, row_plus_one=False))
         one_idx_diff.append(ee_uncorr_reorder_trajectory(z))
+        # Only use first row for subtration in EE numerator for radial design.
+        z = np.tile(z[0, :], (n_rows, 1))
+        zero_idx_diff.append(ee_uncorr_reorder_trajectory(z, row_plus_one=False))
 
     # Transformation 2 for p_{i+1}.
     # No re-arrangement needed as the first transformation for p_{i+1}
@@ -186,6 +188,8 @@ def trans_ee_corr_radial(sample_traj_list, cov, mu):
     for traj in range(0, n_traj_sample):
         z = sample_traj_list[traj]
         two_idx_diff.append(ee_corr_reorder_trajectory(z))
+        # Only use first row for subtration in EE numerator for radial design.
+        z = np.tile(z[0, :], (n_rows, 1))
         one_idx_diff.append(ee_uncorr_reorder_trajectory(z))
 
     # Transformation 2 for p_{i+1}.
