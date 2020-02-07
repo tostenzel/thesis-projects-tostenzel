@@ -52,4 +52,5 @@ I demonstrate the computations of the results in the jupyter notebooks below.
 |
 
 **Documentation**
-https://thesis-projects-tostenzel.readthedocs.io
+
+  https://thesis-projects-tostenzel.readthedocs.io
