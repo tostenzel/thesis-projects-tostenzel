@@ -1,4 +1,4 @@
-"""Tests for `screening_measures`."""
+"""Tests for `screening_measures_trajectory`."""
 import sys
 
 # Define parent folder as relative path.
@@ -10,12 +10,12 @@ from numpy.testing import assert_array_equal
 from numpy.testing import assert_allclose
 
 from sampling_schemes import trajectory_sample
-from screening_measures import screening_measures
+from screening_measures_trajectory import screening_measures_trajectory
 
 
 def sobol_model(a, b, c, d, e, f, coeffs, *args):
     """
-    Test function used in `test_screening_measures_uncorrelated_g_function`.
+    Test function used in `test_screening_measures_trajectory_uncorrelated_g_function`.
 
     Notes
     -----
@@ -35,7 +35,7 @@ def sobol_model(a, b, c, d, e, f, coeffs, *args):
     return y
 
 
-def test_screening_measures_uncorrelated_g_function():
+def test_screening_measures_trajectory_uncorrelated_g_function():
     """
     Tests the screening measures for six uncorrelated parameters.
 
@@ -45,9 +45,9 @@ def test_screening_measures_uncorrelated_g_function():
 
     Notes
     -----
-    -Many intermediate results are given as well. `screening_measures` is able
+    -Many intermediate results are given as well. `screening_measures_trajectory` is able
     to compute all of them precisely.
-    -The function uses a lot of reorderings. The reason is that `screening_measures`
+    -The function uses a lot of reorderings. The reason is that `screening_measures_trajectory`
     assumes that the first columns has the first step addition etc. This facilitates
     the necessary transformations to account for correlations. In this example
     the order of the paramters to which the step is added is different for each
@@ -155,19 +155,19 @@ def test_screening_measures_uncorrelated_g_function():
 
     # Compute the uncorrependent Elementary Effects.
     # Since there is no correlation, they equal their abolute versions.
-    one_ee_uncorr, _, _, _, _, _ = screening_measures(
+    one_ee_uncorr, _, _, _, _, _ = screening_measures_trajectory(
         wrapper_one, [traj_one], [steps_one], cov, mu
     )
 
-    two_ee_uncorr, _, _, _, _, _ = screening_measures(
+    two_ee_uncorr, _, _, _, _, _ = screening_measures_trajectory(
         wrapper_two, [traj_two], [steps_two], cov, mu
     )
 
-    three_ee_uncorr, _, _, _, _, _ = screening_measures(
+    three_ee_uncorr, _, _, _, _, _ = screening_measures_trajectory(
         wrapper_three, [traj_three], [steps_three], cov, mu
     )
 
-    four_ee_uncorr, _, _, _, _, _ = screening_measures(
+    four_ee_uncorr, _, _, _, _, _ = screening_measures_trajectory(
         wrapper_four, [traj_four], [steps_four], cov, mu
     )
 
@@ -179,7 +179,7 @@ def test_screening_measures_uncorrelated_g_function():
 
     ee_i = np.concatenate((ee_one, ee_two, ee_three, ee_four), axis=1)
 
-    # Compute summary measures "by hand" because `screening_measures`
+    # Compute summary measures "by hand" because `screening_measures_trajectory`
     # takes only a list of one trajectory because the argument order is different.
     ee = np.mean(ee_i, axis=1).reshape(6, 1)
     abs_ee = np.mean(abs(ee_i), axis=1).reshape(6, 1)
@@ -202,7 +202,7 @@ def lin_portfolio(q1, q2, c1=2, c2=1, *args):
     return c1 * q1 + c2 * q2
 
 
-def test_screening_measures_uncorrelated_linear_function():
+def test_screening_measures_trajectory_uncorrelated_linear_function():
     """
     Test for a linear function with two paramters. Non-unit variance and EEs are coefficients.
 
@@ -245,7 +245,7 @@ def test_screening_measures_uncorrelated_linear_function():
         abs_ee_corr,
         sd_ee_uncorr,
         sd_ee_corr,
-    ) = screening_measures(lin_portfolio, traj_list, step_list, cov, mu)
+    ) = screening_measures_trajectory(lin_portfolio, traj_list, step_list, cov, mu)
 
     exp_ee = np.array([2, 1]).reshape(n_inputs, 1)
     exp_sd = np.array([0, 0]).reshape(n_inputs, 1)

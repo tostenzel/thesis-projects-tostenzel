@@ -227,7 +227,16 @@ def trajectory_sample(
     for traj in range(0, n_traj):
         seed = 123 + traj
 
-        m_traj, steps = morris_trajectory(n_inputs, n_levels, seed=seed)
+        m_traj, steps = morris_trajectory(
+            n_inputs,
+            n_levels,
+            seed,
+            normal,
+            numeric_zero,
+            step_function,
+            stairs,
+            )
+
         sample_traj_list.append(m_traj)
         steps_list.append(steps)
 

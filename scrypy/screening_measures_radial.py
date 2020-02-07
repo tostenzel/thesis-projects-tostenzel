@@ -11,11 +11,11 @@ System Safety 100 (162), 28–39.
 
 """
 import numpy as np
-from transform_traj_elementary_effects import trans_ee_corr_trajectories
-from transform_traj_elementary_effects import trans_ee_uncorr_trajectories
+from transform_ee_radial import trans_ee_corr_radial
+from transform_ee_radial import trans_ee_uncorr_radial
 
 
-def screening_measures(function, traj_list, step_list, cov, mu):
+def screening_measures_radial(function, traj_list, step_list, cov, mu):
     """
     Computes screening measures for a set of paramters.
 
@@ -66,15 +66,16 @@ def screening_measures(function, traj_list, step_list, cov, mu):
     n_inputs = np.size(traj_list[0], 1)
 
     # Compute the transformed trajectory lists/function arguments.
-    trans_piplusone_i_list, trans_pi_i_list, coeff_step = trans_ee_uncorr_trajectories(
+    trans_piplusone_i_list, trans_pi_i_list, coeff_step = trans_ee_uncorr_radial(
         traj_list, cov, mu
     )
-    trans_piplusone_iminusone_list = trans_ee_corr_trajectories(traj_list, cov, mu)
+    trans_piplusone_iminusone_list, pp_one_row_zero = trans_ee_corr_radial(traj_list, cov, mu)
 
     # Init function evaluations
     fct_evals_pi_i = np.ones([n_rows, n_trajs]) * np.nan
     fct_evals_piplusone_i = np.ones([n_rows, n_trajs]) * np.nan
     fct_evals_piplusone_iminusone = np.ones([n_rows, n_trajs]) * np.nan
+    fct_evals_pp_one_row_zero = np.ones([n_rows, n_trajs]) * np.nan
 
     # Compute the function evaluations for each transformed trajectory list.
     for traj in range(0, n_trajs):
@@ -86,6 +87,8 @@ def screening_measures(function, traj_list, step_list, cov, mu):
             fct_evals_piplusone_iminusone[row, traj] = function(
                 *trans_piplusone_iminusone_list[traj][row, :]
             )
+            fct_evals_pp_one_row_zero[row, traj] = function(
+                *pp_one_row_zero[traj][row, :])
 
     # Init measures for uncorr effects
     ee_uncorr_i = np.ones([n_inputs, n_trajs]) * np.nan
@@ -115,7 +118,7 @@ def screening_measures(function, traj_list, step_list, cov, mu):
 
         ee_corr_i[:, traj] = (
             fct_evals_piplusone_iminusone[1 : n_inputs + 1, traj]
-            - fct_evals_piplusone_i[0:n_inputs, traj]
+            - fct_evals_pp_one_row_zero[0:n_inputs, traj]
         ) / (step_list[traj] * np.squeeze(np.sqrt(np.diag(cov))))
         # Above, account for the scaling by the SD.
 
