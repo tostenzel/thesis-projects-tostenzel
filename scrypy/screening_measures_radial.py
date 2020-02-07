@@ -11,8 +11,8 @@ System Safety 100 (162), 28–39.
 
 """
 import numpy as np
-from transform_ee_radial import trans_ee_corr_radial
-from transform_ee_radial import trans_ee_uncorr_radial
+from transform_ee import trans_ee_corr
+from transform_ee import trans_ee_uncorr
 
 
 def screening_measures_radial(function, traj_list, step_list, cov, mu):
@@ -66,10 +66,10 @@ def screening_measures_radial(function, traj_list, step_list, cov, mu):
     n_inputs = np.size(traj_list[0], 1)
 
     # Compute the transformed trajectory lists/function arguments.
-    trans_piplusone_i_list, trans_pi_i_list, coeff_step = trans_ee_uncorr_radial(
-        traj_list, cov, mu
+    trans_piplusone_i_list, trans_pi_i_list, coeff_step = trans_ee_uncorr(
+        traj_list, cov, mu, radial=True
     )
-    trans_piplusone_iminusone_list, pp_one_row_zero = trans_ee_corr_radial(traj_list, cov, mu)
+    trans_piplusone_iminusone_list, pp_one_row_zero = trans_ee_corr(traj_list, cov, mu, radial=True)
 
     # Init function evaluations
     fct_evals_pi_i = np.ones([n_rows, n_trajs]) * np.nan

@@ -23,51 +23,7 @@ from transform_reorder import reverse_reorder_mu
 
 
 def trans_ee_uncorr_radial(sample_traj_list, cov, mu):
-    """
-    Transforms list of trajectories to two lists of transformed trajectories
-    for the computation of the uncorrelated Elementary Effects.
 
-    Parameters
-    ----------
-    sample_traj_list : list of ndarrays
-        Set of untransformed trajectories.
-    cov : ndarray
-        Covariance matrix.
-    mu : ndarray
-        Expectation value.
-
-    Returns
-    -------
-    trans_piplusone_i : list of ndarrays
-        Trajectories containing the rows that are the arguments for the LHS function
-        evaluation for the uncorrelated Elementary Effect.
-    trans_pi_i : list of ndarrays
-        Trajectories containing the rows that are the arguments for the RHS function
-        evaluation for the uncorrelated Elementary Effect.
-    coeff_step : list of ndarrays
-        Factors in the denumerator of the uncorrelated Elementary Effect. Accounts
-        for the decorrelation of the Step.
-
-    Raises
-    ------
-    AssertionError
-        If the dimension of `mu`, `cov` and the elements in `sample_traj_list`
-        do not fit together.
-
-    Notes
-    -----
-    The rows in the two different transformed trajectories equal to T(p_{i+1}, i)
-    and T(p_{i}, i). Understanding the transformations may require to write up the
-    first transformation from p_i and p_{i+1} to T_1(p_{i}, i) and T_1(p_{i+1}, i).
-    T_1 shifts the first i elements to the end for each row p_{i}.
-
-    This function creates list of transformations of whole trajectories.
-    The rows in the trajectories for T(p_{i}, i) that are to be subtracted from
-    T(p_{i+1}, i), are still positioned one below compared to the trajectories for
-    T(p_{i}, i). Therefore, importantly, one needs to compare each row in a traj from
-    `trans_pi_i` with the respective row one below in `trans_piplusone_i`.
-
-    """
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
 
     n_traj_sample = len(sample_traj_list)
@@ -140,43 +96,7 @@ def trans_ee_uncorr_radial(sample_traj_list, cov, mu):
 
 
 def trans_ee_corr_radial(sample_traj_list, cov, mu):
-    """
-    Transforms list of trajectories to two lists of transformed trajectories
-    for the computation of the correlated Elementary Effects.
 
-    Parameters
-    ----------
-    sample_traj_list : list of ndarrays
-        Set of untransformed trajectories.
-    cov : ndarray
-        Covariance matrix.
-    mu : ndarray
-        Expectation value.
-
-    Returns
-    -------
-    trans_piplusone_iminusone : list of ndarrays
-        Trajectories containing the rows that are the arguments for the LHS function
-        evaluation for the correlated Elementary Effect.
-
-    Raises
-    ------
-    AssertionError
-        If the dimension of `mu`, `cov` and the elements in `sample_traj_list`
-        do not fit together.
-
-    Notes
-    -----
-    Transformation for the rows on the RHS of the correlated Elementary Effects
-    is equal to the one on the LHS of the uncorrelated Elementary Effects.
-    Therefore, it is left out here as it can be obtained by
-    `trans_ee_uncorr_trajectories`.
-
-    See Also
-    --------
-    trans_ee_uncorr_trajectories
-
-    """
     assert len(mu) == len(cov) == np.size(sample_traj_list[0], 1)
 
     n_traj_sample = len(sample_traj_list)
