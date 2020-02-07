@@ -10,12 +10,6 @@ import seaborn as sns
 
 from matplotlib.lines import Line2D
 
-# Set some plt and sns properties: Latex font and custom colors.
-plt.rcParams["mathtext.fontset"] = "cm"
-plt.rcParams["font.family"] = "STIXGeneral"
-current_palette = sns.color_palette("deep")
-sns.set_palette(current_palette)
-
 
 def cone_plot_choice_shares(save=True):
     """
@@ -29,6 +23,12 @@ def cone_plot_choice_shares(save=True):
         Indicates if the graph is saved as png-file.
 
     """
+    # Set some plt and sns properties: Latex font and custom colors.
+    plt.rcParams["mathtext.fontset"] = "cm"
+    plt.rcParams["font.family"] = "STIXGeneral"
+    current_palette = sns.color_palette("deep")
+    sns.set_palette(current_palette)
+
     tuition_subsidies = [0, 500]
 
     mc_base_shares_occ_df = pd.read_pickle(
