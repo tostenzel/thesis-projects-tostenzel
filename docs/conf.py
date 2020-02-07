@@ -42,7 +42,7 @@ extensions = [
 
 # Proposed here to fix library import errros that depend on C
 # http://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_mock_imports
-autodoc_mock_imports = ["numpy", "matplotlib", "pandas", "chaospy", "respy", "scipy"]
+autodoc_mock_imports = ["numpy", "matplotlib", "pandas", "chaospy", "respy", "scipy", "seaborn", "estimagic"]
 
 
 # Add any paths that contain templates here, relative to this directory.
