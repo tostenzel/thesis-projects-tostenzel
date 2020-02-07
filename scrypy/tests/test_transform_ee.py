@@ -8,8 +8,8 @@ import numpy as np
 
 from numpy.testing import assert_array_equal
 
-from sampling_schemes import morris_trajectory
-from transform_ee_trajectory import trans_ee_uncorr_trajectories
+from sampling_schemes import trajectory_sample
+from transform_ee import trans_ee_uncorr
 
 
 def test_trans_ee_uncorr_trajectories():
@@ -54,15 +54,10 @@ def test_trans_ee_uncorr_trajectories():
 
     n_inputs = 5
     n_levels = 10
-    n_traj_sample = 10
-    sample_traj_list = list()
-    for traj in range(0, n_traj_sample):
-        seed = 123 + traj
+    n_sample = 10
+    sample_traj_list, _ = trajectory_sample(n_sample, n_inputs, n_levels)
 
-        m_traj, _ = morris_trajectory(n_inputs, n_levels, seed=seed)
-        sample_traj_list.append(m_traj)
-
-    trans_one, trans_zero, _ = trans_ee_uncorr_trajectories(sample_traj_list, cov, mu)
+    trans_one, trans_zero, _ = trans_ee_uncorr(sample_traj_list, cov, mu, radial=False)
 
     for traj in range(0, len(trans_zero)):
         for row in range(0, np.size(trans_zero[0], 0) - 1):

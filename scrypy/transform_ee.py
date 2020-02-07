@@ -119,6 +119,7 @@ def trans_ee_corr(sample_traj_list, cov, mu, radial=False):
         trans_piplusone_iminusone = trans_ee_corr_trajectories(sample_traj_list, cov, mu)
 
         return trans_piplusone_iminusone
+
     else:
         trans_piplusone_iminusone, trans_piplusone_i = trans_ee_corr_radial(sample_traj_list, cov, mu)
 

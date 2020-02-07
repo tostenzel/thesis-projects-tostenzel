@@ -1,4 +1,4 @@
-"""Tests for `screening_measures_trajectory`."""
+"""Tests for `screening_measures`."""
 import sys
 
 # Define parent folder as relative path.
@@ -10,7 +10,7 @@ from numpy.testing import assert_array_equal
 from numpy.testing import assert_allclose
 
 from sampling_schemes import trajectory_sample
-from screening_measures_trajectory import screening_measures_trajectory
+from screening_measures import screening_measures
 
 
 def sobol_model(a, b, c, d, e, f, coeffs, *args):
@@ -155,20 +155,20 @@ def test_screening_measures_trajectory_uncorrelated_g_function():
 
     # Compute the uncorrependent Elementary Effects.
     # Since there is no correlation, they equal their abolute versions.
-    one_ee_uncorr, _, _, _, _, _ = screening_measures_trajectory(
-        wrapper_one, [traj_one], [steps_one], cov, mu
+    one_ee_uncorr, _, _, _, _, _ = screening_measures(
+        wrapper_one, [traj_one], [steps_one], cov, mu, radial=False
     )
 
-    two_ee_uncorr, _, _, _, _, _ = screening_measures_trajectory(
-        wrapper_two, [traj_two], [steps_two], cov, mu
+    two_ee_uncorr, _, _, _, _, _ = screening_measures(
+        wrapper_two, [traj_two], [steps_two], cov, mu, radial=False
     )
 
-    three_ee_uncorr, _, _, _, _, _ = screening_measures_trajectory(
-        wrapper_three, [traj_three], [steps_three], cov, mu
+    three_ee_uncorr, _, _, _, _, _ = screening_measures(
+        wrapper_three, [traj_three], [steps_three], cov, mu, radial=False
     )
 
-    four_ee_uncorr, _, _, _, _, _ = screening_measures_trajectory(
-        wrapper_four, [traj_four], [steps_four], cov, mu
+    four_ee_uncorr, _, _, _, _, _ = screening_measures(
+        wrapper_four, [traj_four], [steps_four], cov, mu, radial=False
     )
 
     # `argsort` inverses the transformation that uncorruced the stairs shape to the trajectories.
@@ -245,7 +245,7 @@ def test_screening_measures_trajectory_uncorrelated_linear_function():
         abs_ee_corr,
         sd_ee_uncorr,
         sd_ee_corr,
-    ) = screening_measures_trajectory(lin_portfolio, traj_list, step_list, cov, mu)
+    ) = screening_measures(lin_portfolio, traj_list, step_list, cov, mu, radial=False)
 
     exp_ee = np.array([2, 1]).reshape(n_inputs, 1)
     exp_sd = np.array([0, 0]).reshape(n_inputs, 1)
