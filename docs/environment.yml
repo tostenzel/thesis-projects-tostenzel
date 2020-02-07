@@ -6,4 +6,3 @@ dependencies:
   - nbsphinx
   - numpydoc
   - sphinx
-  - matplotlib

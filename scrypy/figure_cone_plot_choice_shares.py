@@ -5,7 +5,7 @@ import os
 abs_dir = os.path.dirname(__file__)
 
 import pandas as pd
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 import seaborn as sns
 
 from matplotlib.lines import Line2D
