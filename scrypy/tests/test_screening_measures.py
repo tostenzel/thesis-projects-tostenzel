@@ -9,7 +9,7 @@ import numpy as np
 from numpy.testing import assert_array_equal
 from numpy.testing import assert_allclose
 
-from sampling_schemes import morris_trajectory
+from sampling_schemes import trajectory_sample
 from screening_measures import screening_measures
 
 
@@ -36,7 +36,8 @@ def sobol_model(a, b, c, d, e, f, coeffs, *args):
 
 
 def test_screening_measures_uncorrelated_g_function():
-    """Tests the screening measures for six uncorrelated parameters.
+    """
+    Tests the screening measures for six uncorrelated parameters.
 
     Data and results taken from pages 123 - 127 in [1]. The data is
     four trajectories and the results are the Elementary Effects, the absolute
@@ -234,13 +235,8 @@ def test_screening_measures_uncorrelated_linear_function():
     n_inputs = 2
     n_traj_sample = 10_000
 
-    traj_list = list()
-    step_list = list()
-    for traj in range(0, n_traj_sample):
-        seed = seed + traj
-        m_traj, step = morris_trajectory(n_inputs, n_levels, seed, True, numeric_zero)
-        traj_list.append(m_traj)
-        step_list.append(step)
+    traj_list, step_list = trajectory_sample(
+        n_traj_sample, n_inputs, n_levels, seed, True, numeric_zero)
 
     (
         ee_uncorr,

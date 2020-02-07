@@ -289,41 +289,6 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
     return tracker_keep_indices, combi_total_distance
 
 
-def simple_stairs(n_inputs, n_levels, n_traj):
-    """
-    Returns array and list of Morris trajectories without further
-    post-selection.
-
-    Parameters
-    ----------
-    n_inputs : int
-        Number if input paramters.
-    n_levels : int
-        Number of different elements in value grid.
-    n_traj : int
-        Number of samples to create.
-
-    Returns
-    -------
-    input_par_array : ndarray
-        Set of trajectories as vertical array.
-    sample_traj_list : list of ndarrays
-        Set of trajectories.
-
-    """
-    sample_traj_list = list()
-    for traj in range(0, n_traj):
-        seed = 123 + traj
-
-        m_traj, _ = morris_trajectory(n_inputs, n_levels, seed=seed)
-        sample_traj_list.append(m_traj)
-
-    # Rows are parameters, cols is number of drawn parameter vectors.
-    input_par_array = np.vstack(sample_traj_list).T
-
-    return input_par_array, sample_traj_list
-
-
 def campolongo_2007(sample_traj_list, n_traj):
     """
     Implements the post-selected sample set in [1].
@@ -344,8 +309,6 @@ def campolongo_2007(sample_traj_list, n_traj):
 
     Returns
     -------
-    input_par_array : ndarray
-        Set of trajectories as vertical array.
     sample_traj_list : list of ndarrays
         Set of trajectories.
     select_dist_matrix : ndarray
@@ -356,11 +319,10 @@ def campolongo_2007(sample_traj_list, n_traj):
     select_indices, combi_total_distance = select_trajectories(pair_matrix, n_traj)
 
     select_trajs = [sample_traj_list[idx] for idx in select_indices]
-    # Rows are parameters, cols is number of drawn parameter vectors.
-    input_par_array = np.vstack(select_trajs).T
+
     select_dist_matrix = distance_matrix(select_trajs)
 
-    return input_par_array, select_trajs, select_dist_matrix
+    return select_trajs, select_dist_matrix
 
 
 def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
@@ -404,11 +366,10 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     )
 
     select_trajs = [sample_traj_list[idx] for idx in select_indices]
-    # Rows are parameters, cols is number of drawn parameter vectors.
-    input_par_array = np.vstack(select_trajs).T
+
     select_dist_matrix = distance_matrix(select_trajs)
 
-    return input_par_array, select_trajs, select_dist_matrix
+    return select_trajs, select_dist_matrix
 
 
 def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_index):
@@ -558,8 +519,6 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
 
     Returns
     -------
-    input_par_array : ndarray
-        Set of trajectories as vertical array.
     sample_traj_list : list of ndarrays
         Set of trajectories.
     select_dist_matrix : ndarray
@@ -621,8 +580,6 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
 
     select_trajs = [sample_traj_list[idx] for idx in tracker_keep_indices]
 
-    # Rows are parameters, cols is number of drawn parameter vectors.
-    input_par_array = np.vstack(select_trajs).T
     select_dist_matrix = distance_matrix(select_trajs)
 
-    return input_par_array, select_trajs, select_dist_matrix
+    return select_trajs, select_dist_matrix

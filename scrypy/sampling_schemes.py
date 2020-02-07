@@ -6,6 +6,7 @@ sys.path.append("../scrypy")
 
 import random
 
+import chaospy as cp
 import numpy as np
 from transform_distributions import transform_uniform_stnormal_uncorr
 
@@ -177,3 +178,139 @@ def morris_trajectory(
     trans_steps = B_random[-1, :] - B_random[0, :]
 
     return B_random, trans_steps
+
+
+def trajectory_sample(
+    n_traj,
+    n_inputs,
+    n_levels,
+    seed=123,
+    normal=False,
+    numeric_zero=0.01,
+    step_function=stepsize,
+    stairs=True
+):
+    """
+    Returns array and list of Morris trajectories without further
+    post-selection.
+    
+    Loops over `morris_sample`
+
+    Parameters
+    ----------
+    n_inputs : int
+        Number if input paramters.
+    n_levels : int
+        Number of distict grid points.
+    seed : int
+        Random seed.
+    normal : bool
+        Indicates whether to transform points by `scipy.normal.ppt`
+    numeric_zero : float
+        `if normal is True`: Prevents `scipy.normal.ppt` to return `-Inf`
+        and `Inf` for 0 and 1.
+    step_function : function
+        Constant step as function of `n_levels` added to lower half of point grid.
+    stairs : bool
+        if False: Randomly shuffle columns, dissolves stairs shape.
+
+    Returns
+    -------
+    sample_traj_list : list of ndarrays
+        Set of trajectories.
+    steps_list : list of ndarrays
+        Set of steps taken by each base row.
+
+    """
+    sample_traj_list = list()
+    steps_list = list()
+    for traj in range(0, n_traj):
+        seed = 123 + traj
+
+        m_traj, steps = morris_trajectory(n_inputs, n_levels, seed=seed)
+        sample_traj_list.append(m_traj)
+        steps_list.append(steps)
+
+    return sample_traj_list, steps_list
+
+
+def radial_sample(n_rad, n_inputs, seed=123, normal=False, numeric_zero=0.01, sequence='S'):
+    """
+    Generates sample in radial design.
+    
+    For each subsample, there are `n_inputs + 1` rows and `n_inputs` colums.
+    Each row is identical except of the diagonal of the sample w/o the first row.
+    
+    Parameters
+    ----------
+    n_rad : int
+        Number of subsamples.
+    n_inputs : int
+        Number of input paramters / columns / rows - 1.
+    seed : int
+        Random seed.
+    normal : bool
+        Indicates whether to transform points by `scipy.normal.ppt`
+    numeric_zero : float
+        `if normal is True`: Prevents `scipy.normal.ppt` to return `-Inf`
+        and `Inf` for 0 and 1.
+    sequence : string
+        Type of quasi-random sequence.
+    
+    Returns
+    -------
+    sample : ndarray
+        Random sample in radial design.
+        Dimension `n_inputs` x `n_inputs + 1`.
+    trans_steps : ndarray
+        Column vector of steps added to base value point. Sorted by
+        parameter/column. Dimension `n_inputs` x `1`.
+    
+    Notes
+    -----
+    See [1] for abbreviations of the different sequence types.
+    
+    In contrary to the trajectory design, the stepsize differs right from the start
+    by design and only one element changes in each row compared to the first row.
+    
+    All distict elements in the whole sample are drawn at once because the
+    default Sobol' sequence can not be reseeded.
+    
+    References
+    ----------
+    [1] https://github.com/jonathf/chaospy/blob/master/chaospy/distributions/sampler/generator.py#L62
+    
+    """
+    # Draw base elements and copy to each row 
+    random.seed(seed)
+    
+    # Sample all at once because apparently Sobol' sequence cannot be reseeded?
+    all_elements = cp.generate_samples(order=n_rad * 2 * n_inputs, rule=sequence)
+    all_elements =  all_elements.reshape(n_rad, 2 * n_inputs)
+    
+    rad_list = list()
+    steps_list = list()
+    for row in range(0, n_rad):
+        rad_temp = np.tile(all_elements[row, 0:n_inputs], (n_inputs + 1, 1))
+        diag_temp = all_elements[row, n_inputs:]
+        rad_temp[1:,:].flat[::n_inputs + 1] =  diag_temp
+        
+        # For standard normally distributed draws.
+        if normal is True:
+            rad_temp = np.apply_along_axis(
+                transform_uniform_stnormal_uncorr, 1, rad_temp, numeric_zero
+            )
+        else:
+            pass
+    
+        rad_list.append(rad_temp)
+        
+        steps_temp = np.array([1, n_inputs])
+        steps_temp = rad_temp[1:,:].flat[::n_inputs + 1] - rad_temp[0, :]
+        steps_list.append(steps_temp)
+    
+    return rad_list, steps_list
+
+
+
+eins, zwo = radial_sample(2, 10)
