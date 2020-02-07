@@ -49,7 +49,7 @@ I demonstrate the computations of the results in the jupyter notebooks below.
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
      :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/notebooks/note_robustness.ipynb
 
+|
 
 **Documentation**
-
 https://thesis-projects-tostenzel.readthedocs.io
