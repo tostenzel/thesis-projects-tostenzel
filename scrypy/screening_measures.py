@@ -24,7 +24,7 @@ def screening_measures(function, traj_list, step_list, cov, mu):
 
     Parameters
     ----------
-    function : Function
+    function : function
         Function or Model of which its parameters are subject to screening.
     traj_list : list of ndarrays
         List of transformed trajectories according to [1].

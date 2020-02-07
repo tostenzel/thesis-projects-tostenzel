@@ -4,6 +4,12 @@ from matplotlib import pyplot as plt
 import respy as rp
 import seaborn as sns
 
+# Set some plt and sns properties: Latex font and custom colors.
+plt.rcParams["mathtext.fontset"] = "cm"
+plt.rcParams["font.family"] = "STIXGeneral"
+current_palette = sns.color_palette("deep")
+sns.set_palette(current_palette)
+
 
 def figure_choice_shares_over_time(save=False):
     """
@@ -21,12 +27,6 @@ def figure_choice_shares_over_time(save=False):
     axs : matplotlib Axes
 
     """
-    # Set some plt and sns properties: Latex font and custom colors.
-    plt.rcParams["mathtext.fontset"] = "cm"
-    plt.rcParams["font.family"] = "STIXGeneral"
-    current_palette = sns.color_palette("deep")
-    sns.set_palette(current_palette)
-
     # Build simulate function. As only parameters change, it can be reused.
     params, options, _ = rp.get_example_model("kw_94_one")
     options["simulation_agents"] = 4_000
