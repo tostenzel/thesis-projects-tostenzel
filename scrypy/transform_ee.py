@@ -199,7 +199,7 @@ def trans_ee_corr(sample_traj_list, cov, mu, radial=False):
         )
 
     if radial is False:
-        return trans_piplusone_iminusone
+        return trans_piplusone_iminusone, None
 
     else:
         one_idx_diff = []
