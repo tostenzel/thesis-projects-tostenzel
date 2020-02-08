@@ -9,10 +9,10 @@ import pytest
 
 from numpy.testing import assert_array_equal
 
-from transform_reorder import ee_corr_reorder_trajectory
-from transform_reorder import reverse_ee_corr_reorder_trajectory
-from transform_reorder import ee_uncorr_reorder_trajectory
-from transform_reorder import reverse_ee_uncorr_reorder_trajectory
+from transform_reorder import ee_corr_reorder_sample
+from transform_reorder import reverse_ee_corr_reorder_sample
+from transform_reorder import ee_uncorr_reorder_sample
+from transform_reorder import reverse_ee_uncorr_reorder_sample
 from transform_reorder import reorder_mu
 from transform_reorder import reorder_cov
 from transform_reorder import reverse_reorder_mu
@@ -26,47 +26,47 @@ def traj():
     return traj
 
 
-def test_ee_uncorr_reorder_trajectory(traj):
+def test_ee_uncorr_reorder_sample(traj):
     """
-    Unit tests for `ee_uncorr_reorder_trajectory` and
-    `reverse_ee_uncorr_reorder_trajectory`.
+    Unit tests for `ee_uncorr_reorder_sample` and
+    `reverse_ee_uncorr_reorder_sample`.
 
     """
     assert_array_equal(
-        ee_uncorr_reorder_trajectory(traj),
+        ee_uncorr_reorder_sample(traj),
         np.array([[0, 0, 0], [0, 0, 1], [0, 2, 3], [4, 5, 6]]),
     )
 
     assert_array_equal(
-        traj, reverse_ee_uncorr_reorder_trajectory(ee_uncorr_reorder_trajectory(traj))
+        traj, reverse_ee_uncorr_reorder_sample(ee_uncorr_reorder_sample(traj))
     )
 
     assert_array_equal(
-        ee_uncorr_reorder_trajectory(traj, row_plus_one=False),
+        ee_uncorr_reorder_sample(traj, row_plus_one=False),
         np.array([[0, 0, 0], [0, 1, 0], [2, 3, 0], [5, 6, 4]]),
     )
 
     assert_array_equal(
         traj,
-        reverse_ee_uncorr_reorder_trajectory(
-            ee_uncorr_reorder_trajectory(traj, row_plus_one=False), row_plus_one=False
+        reverse_ee_uncorr_reorder_sample(
+            ee_uncorr_reorder_sample(traj, row_plus_one=False), row_plus_one=False
         ),
     )
 
 
-def test_ee_corr_reorder_trajectory(traj):
+def test_ee_corr_reorder_sample(traj):
     """
-    Unit tests for `ee_corr_reorder_trajectory` and
-    `reverse_ee_corr_reorder_trajectory`.
+    Unit tests for `ee_corr_reorder_sample` and
+    `reverse_ee_corr_reorder_sample`.
 
     """
     assert_array_equal(
-        ee_corr_reorder_trajectory(traj),
+        ee_corr_reorder_sample(traj),
         np.array([[0, 0, 0], [1, 0, 0], [3, 0, 2], [6, 4, 5]]),
     )
 
     assert_array_equal(
-        traj, reverse_ee_corr_reorder_trajectory(ee_corr_reorder_trajectory(traj))
+        traj, reverse_ee_corr_reorder_sample(ee_corr_reorder_sample(traj))
     )
 
 

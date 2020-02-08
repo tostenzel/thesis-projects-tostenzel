@@ -1,6 +1,7 @@
 """
 Functions that decrease a set of sample sets in order to increase its
-representativeness.
+representativeness. These are developed in the context of the trajectory design because
+it can not cover the space very densely.
 The methods are taken from the effective screening design in [1] and the
 efficient screening design in [2]
 
@@ -43,7 +44,7 @@ def compute_pair_distance(sample_0, sample_1):
     Raises
     ------
     AssertionError
-        If sample is not in sampleectory or radial design shape.
+        If sample is not in trajectory or radial design shape.
     AssertionError
         If the sample shapes differ.
 
@@ -146,13 +147,13 @@ def total_distance(distance_matrix):
     return total_distance
 
 
-def select_trajectories(traj_dist_matrix, n_traj):
+def select_trajectories(pair_dist_matrix, n_traj):
     """
     Computes `total distance` for each `n_traj` combinations of a set of samples.
 
     Parameters
     ----------
-    traj_dist_matrix : ndarray
+    pair_dist_matrix : ndarray
         `distance_matrix` for a sample set.
     n_traj : int
         Number of sample combinations for which the `total_distance` is computed.
@@ -160,7 +161,7 @@ def select_trajectories(traj_dist_matrix, n_traj):
     Returns
     -------
     max_dist_indices : list of ints
-        Indices of samples in `traj_dist_matrix` that are part of the combination
+        Indices of samples in `pair_dist_matrix` that are part of the combination
         with the largest `total_distance`.
     combi_total_distance : ndarray
         Matrix with n_traj + 1 rows. The first n_traj cols are filled with indices
@@ -170,15 +171,15 @@ def select_trajectories(traj_dist_matrix, n_traj):
     Raises
     ------
     AssertionError
-        If `traj_dist_matrix` is not symmetric.
+        If `pair_dist_matrix` is not symmetric.
     AssertionError
         If the number of combinations does not correspong to the combinations
-        indicated by the size of `traj_dist_matrix`.
+        indicated by the size of `pair_dist_matrix`.
 
     Notes
     -----
     This function can be very slow because it computes distances
-    between np.binomial(len(traj_dist_matrix, n_traj) pairs of trajectories.
+    between np.binomial(len(pair_dist_matrix, n_traj) pairs of trajectories.
     Example: `np.biomial(30,15)` = 155117520.
 
     This selection function yields precise results
@@ -189,10 +190,10 @@ def select_trajectories(traj_dist_matrix, n_traj):
     Therefore, the optimal combination is precisely determined.
 
     """
-    assert np.all(np.abs(traj_dist_matrix - traj_dist_matrix.T) < 1e-8)
+    assert np.all(np.abs(pair_dist_matrix - pair_dist_matrix.T) < 1e-8)
     # Get all possible combinations of input parameters by their indices.
-    combi = combi_wrapper(list(np.arange(0, np.size(traj_dist_matrix, 1))), n_traj)
-    assert len(combi) == binom(np.size(traj_dist_matrix, 1), n_traj)
+    combi = combi_wrapper(list(np.arange(0, np.size(pair_dist_matrix, 1))), n_traj)
+    assert len(combi) == binom(np.size(pair_dist_matrix, 1), n_traj)
     # leave last column open for total distance
     combi_total_distance = np.ones([len(combi), n_traj + 1]) * np.nan
     combi_total_distance[:, 0:n_traj] = np.array(combi)
@@ -208,7 +209,7 @@ def select_trajectories(traj_dist_matrix, n_traj):
             # There is no * 0.5 in contrary to Ge/Menendez (2014) because
             # this only uses half of the matrix.
             combi_total_distance[row, n_traj] += (
-                traj_dist_matrix[int(pair[0])][int(pair[1])] ** 2
+                pair_dist_matrix[int(pair[0])][int(pair[1])] ** 2
             )
     combi_total_distance[:, n_traj] = np.sqrt(combi_total_distance[:, n_traj])
     # Select indices of combination that yields highest total distance.
@@ -220,7 +221,7 @@ def select_trajectories(traj_dist_matrix, n_traj):
     return max_dist_indices, combi_total_distance
 
 
-def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
+def select_trajectories_wrapper_iteration(pair_dist_matrix, n_traj):
     """
     Selects the set of samples minus one sample.
 
@@ -230,7 +231,7 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
 
     Parameters
     ----------
-    traj_dist_matrix : ndarray
+    pair_dist_matrix : ndarray
         Distance matrix of all combinations and their total_distance.
     n_traj : int
         number of samples to choose from a set of samples based on their
@@ -266,22 +267,22 @@ def select_trajectories_wrapper_iteration(traj_dist_matrix, n_traj):
     The trick using `tracker_keep_indices` is an elegant solution.
 
     """
-    n_traj_sample = np.size(traj_dist_matrix, 0)
-    tracker_keep_indices = np.arange(0, np.size(traj_dist_matrix, 0))
+    n_traj_sample = np.size(pair_dist_matrix, 0)
+    tracker_keep_indices = np.arange(0, np.size(pair_dist_matrix, 0))
     for _i in range(0, n_traj_sample - n_traj):
 
-        indices = np.arange(0, np.size(traj_dist_matrix, 0)).tolist()
+        indices = np.arange(0, np.size(pair_dist_matrix, 0)).tolist()
         # get list of all indices
         # get list of surviving indices
         max_dist_indices, combi_total_distance = select_trajectories(
-            traj_dist_matrix, np.size(traj_dist_matrix, 0) - 1
+            pair_dist_matrix, np.size(pair_dist_matrix, 0) - 1
         )
         # lost index
         lost_index = [item for item in indices if item not in max_dist_indices][0]
 
         # delete pairs with dropped trajectory from distance matrix
-        traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=0)
-        traj_dist_matrix = np.delete(traj_dist_matrix, lost_index, axis=1)
+        pair_dist_matrix = np.delete(pair_dist_matrix, lost_index, axis=0)
+        pair_dist_matrix = np.delete(pair_dist_matrix, lost_index, axis=1)
         tracker_keep_indices = np.delete(
             tracker_keep_indices, lost_index, axis=0
         ).tolist()
@@ -372,7 +373,7 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     return select_trajs, select_dist_matrix
 
 
-def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_index):
+def next_combi_total_distance_gm14(combi_total_distance, pair_dist_matrix, lost_index):
     """
     Selects the set of samples minus one sample.
 
@@ -386,7 +387,7 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
         Matrix with n_traj + 1 rows. The first n_traj cols are filled with indices
         of samples and the last column is the `total_distance` of the combinations
         of samples marked by indices in the same row and the columns before.
-    traj_dist_matrix : ndarray
+    pair_dist_matrix : ndarray
         Distance matrix of all combinations and their total_distance.
     lost_index : int
         index of the sample that will be dropped from the samples in the above objects.
@@ -396,8 +397,8 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
     -------
     combi_total_distance_next : ndarray
         `combi_total_distance` without the dropped sample.
-    traj_dist_matrix_next : ndarray
-        `traj_dist_matrix` without the dropped sample.
+    pair_dist_matrix_next : ndarray
+        `pair_dist_matrix` without the dropped sample.
     lost_index : ndarray
         `lost_index` without the dropped sample one iteration before.
 
@@ -415,12 +416,12 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
 
     """
     old_combi_total_distance = combi_total_distance
-    old_traj_dist_matrix = traj_dist_matrix
+    old_pair_dist_matrix = pair_dist_matrix
     # Want to select all trajectories but one which is given by the length of
     # the dist_matrix
-    n_traj_sample_old = np.size(old_traj_dist_matrix, 0)
-    n_traj_sample = np.size(old_traj_dist_matrix, 0) - 1
-    n_traj = np.size(old_traj_dist_matrix, 0) - 2
+    n_traj_sample_old = np.size(old_pair_dist_matrix, 0)
+    n_traj_sample = np.size(old_pair_dist_matrix, 0) - 1
+    n_traj = np.size(old_pair_dist_matrix, 0) - 2
     remained_indices = np.arange(0, n_traj_sample_old).tolist()
     # This step shows that the indices in combi_total_distance_next mapp
     # to the indices in the old version. The index of the worst traj is missing.
@@ -439,7 +440,7 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
         for col in range(0, n_traj):
             # Get the distance between lost index trajectory and present ones in row.
             sum_dist_squared += (
-                old_traj_dist_matrix[
+                old_pair_dist_matrix[
                     int(combi_total_distance_next[row, col]), lost_index
                 ]
             ) ** 2
@@ -494,8 +495,8 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
     # Convert list of float indices to list of ints.
     max_dist_indices_next = [int(i) for i in max_dist_indices_next.tolist()[0]]
 
-    traj_dist_matrix_next = np.delete(old_traj_dist_matrix, lost_index, axis=0)
-    traj_dist_matrix_next = np.delete(traj_dist_matrix_next, lost_index, axis=1)
+    pair_dist_matrix_next = np.delete(old_pair_dist_matrix, lost_index, axis=0)
+    pair_dist_matrix_next = np.delete(pair_dist_matrix_next, lost_index, axis=1)
 
     lost_index_next = [
         item
@@ -503,7 +504,7 @@ def next_combi_total_distance_gm14(combi_total_distance, traj_dist_matrix, lost_
         if item not in max_dist_indices_next
     ][0]
 
-    return combi_total_distance_next, traj_dist_matrix_next, lost_index_next
+    return combi_total_distance_next, pair_dist_matrix_next, lost_index_next
 
 
 def final_ge_menendez_2014(sample_traj_list, n_traj):
@@ -545,22 +546,22 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
     n_traj_sample = len(sample_traj_list)
     # Step 1: Compute pair distance and total distances for the trajectory
     # combinations.
-    traj_dist_matrix = distance_matrix(sample_traj_list)
+    pair_dist_matrix = distance_matrix(sample_traj_list)
 
     # Step 2: Compute total distances for combinations and identify worst trajectory.
     max_dist_indices, combi_total_distance = select_trajectories(
-        traj_dist_matrix, len(sample_traj_list) - 1
+        pair_dist_matrix, len(sample_traj_list) - 1
     )
 
     # Get lost index from first intitial selection (to get previous
     # combi_total_distance). This index is used to access the pair distance
     # with the lost trajectory in the old pair distance matrix.
     # They are subtracted from the total in the old combi_total distance.
-    indices = np.arange(0, len(traj_dist_matrix)).tolist()
+    indices = np.arange(0, len(pair_dist_matrix)).tolist()
     lost_index = [item for item in indices if item not in max_dist_indices][0]
 
     # Init index tracker and delete first index.
-    tracker_keep_indices = np.arange(0, len(traj_dist_matrix)).tolist()
+    tracker_keep_indices = np.arange(0, len(pair_dist_matrix)).tolist()
     tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)
 
     #  ... to (n_traj_sample - n_traj - 1), the minus one is because
@@ -570,10 +571,10 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
         # Use shrink trick for largest loop.
         (
             combi_total_distance,
-            traj_dist_matrix,
+            pair_dist_matrix,
             lost_index,
         ) = next_combi_total_distance_gm14(
-            combi_total_distance, traj_dist_matrix, lost_index
+            combi_total_distance, pair_dist_matrix, lost_index
         )
 
         tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)

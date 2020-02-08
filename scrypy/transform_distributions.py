@@ -1,5 +1,5 @@
 """
-Implementation of the inverse Rosenblatt / inverse Nataf transformation
+Functions for the inverse Rosenblatt / inverse Nataf transformation
 from uniform to normal distribution.
 
 """
@@ -29,6 +29,7 @@ def covariance_to_correlation(cov):
     """
     # Standard deviations of each variable.
     sd = np.sqrt(np.diag(cov)).reshape(1, len(cov))
+
     corr = cov / sd.T / sd
 
     return corr
@@ -62,7 +63,7 @@ def transform_uniform_stnormal_uncorr(uniform_deviates, numeric_zero=0.01):
     The reason is that `scipy.stats.norm` transforms the random draws from the
     unit cube non-linearily including the addition of the step. To obtain
     non-distorted screening measures, it is important to also account for this
-    transformation of delta in the denumerator to not violate the definition of
+    transformation of the step in the denominator to not violate the definition of
     the function derivation.
 
     The parameter `numeric_zero` can be highly influential. I prefer it to be
@@ -86,9 +87,8 @@ def transform_uniform_stnormal_uncorr(uniform_deviates, numeric_zero=0.01):
 
 def transform_stnormal_normal_corr(z_row, cov, mu):
     """
-    Inverse Rosenblatt/Nataf transformation (from standard normal)
-    to multivariate normal space with given correlations following
-    [1], page 77-102.
+    Transformation from standard normal to multivariate normal space with given
+    correlations following [1], page 77-102.
 
     Step 1) Compute correlation matrix.
     Step 2) Introduce dependencies to standard normal sample.
@@ -117,9 +117,11 @@ def transform_stnormal_normal_corr(z_row, cov, mu):
     the step in the denominator as well to not violate the definition of the
     function derivation.
 
-    This method is equivalent to the one in [2], page 199 which uses the Cholesky decomposition
-    of the covariance matrix directly. This saves the scaling by SD and expectation.
-    -This method is simpler and slightly more precise than the one in [3], page 33, for
+    This method is equivalent to the one in [2], page 199 which uses the Cholesky
+    decomposition of the covariance matrix directly. This saves the scaling by SD and
+    expectation.
+
+    This method is simpler and slightly more precise than the one in [3], page 33, for
     normally distributed paramters.
 
     [1] explains how Rosenblatt and Nataf transformation are equal for normally distributed
@@ -141,10 +143,14 @@ def transform_stnormal_normal_corr(z_row, cov, mu):
 
     # Compute lower Cholesky matrix from `corr`.
     chol_low = linalg.cholesky(corr, lower=True)
+
+    # Save last element that distorts the step for the uncorrelated Elementary Effect.
     correlate_step = chol_low[-1, -1]
 
+    # Obtain correlated deviates.
     z_corr_stnorm = np.dot(chol_low, z_row.reshape(len(cov), 1))
 
+    # Scale from standard normal to normal space.
     x_norm = z_corr_stnorm * np.sqrt(np.diag(cov)).reshape(len(cov), 1) + mu.reshape(
         len(cov), 1
     )

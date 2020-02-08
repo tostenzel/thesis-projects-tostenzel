@@ -19,9 +19,6 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
     """
     Computes screening measures for a set of paramters.
 
-    This works for correlated normally distributed and uncorrelated uniformly
-    distributed paramters.
-
     Parameters
     ----------
     function : function
@@ -34,6 +31,8 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
         Covariance matrix of the input parameters.
     mu : ndarray
         Expectation values of the input parameters.
+    radial : bool
+        Sample is in trajectory or radial design.
 
     Returns
     -------
@@ -52,6 +51,10 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
 
     Notes
     -----
+    The samples can be in trajectory or in radial design and the deviates can be
+    from an arbitrary (correlated) normal distribution or an uncorrelated
+    Uniform[0,1] distribution.
+
     Unorrelated uniform paramters require different interpretion of `mu`
     as a scaling summand rather than the expectation value.
 
@@ -115,7 +118,7 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
             # Above, account for the scaling by the SD.
     else:
 
-        # Need to get the first row in different orders.
+        # Need to get the samples of first rows in different orders.
         _, pp_one_row_zero = trans_ee_corr(traj_list, cov, mu, radial=True)
 
         fct_evals_pp_one_row_zero = np.ones([n_rows, n_trajs]) * np.nan

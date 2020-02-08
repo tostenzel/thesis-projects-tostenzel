@@ -1,4 +1,4 @@
-"""Functions that create random samples of the trajectory and the radial design."""
+"""Functions that create random samples in trajectory and radial design."""
 import sys
 
 # Define parent folder as relative path.
@@ -45,7 +45,6 @@ def stepsize(n_levels):
     Technometrics 33 (2), 161–174.
 
     """
-
     assert float(
         n_levels / 2
     ).is_integer(), "n_levels must be an even number, see function docstring."
@@ -70,6 +69,7 @@ def morris_trajectory(
     This function creates a random sample for a number of function parameters
     (columns). The sample itself consists of the number plus one vectors of
     parameter draws (rows).
+    It also computes the steps taken by each element.
 
     Parameters
     ----------
@@ -191,10 +191,7 @@ def trajectory_sample(
     stairs=True
 ):
     """
-    Returns array and list of Morris trajectories without further
-    post-selection.
-    
-    Loops over `morris_sample`
+    Loops over `morris_sample`.
 
     Parameters
     ----------
@@ -222,8 +219,9 @@ def trajectory_sample(
         Set of steps taken by each base row.
 
     """
-    sample_traj_list = list()
-    steps_list = list()
+    sample_traj_list = []
+    steps_list = []
+
     for traj in range(0, n_traj):
         seed = 123 + traj
 
@@ -243,9 +241,9 @@ def trajectory_sample(
     return sample_traj_list, steps_list
 
 
-def radial_sample(n_rad, n_inputs, seed=123, normal=False, numeric_zero=0.01, sequence='S'):
+def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence='S'):
     """
-    Generates sample in radial design.
+    Generates sample in radial design as described in [1].
     
     For each subsample, there are `n_inputs + 1` rows and `n_inputs` colums.
     Each row is identical except of the diagonal of the sample w/o the first row.
@@ -277,7 +275,7 @@ def radial_sample(n_rad, n_inputs, seed=123, normal=False, numeric_zero=0.01, se
     
     Notes
     -----
-    See [1] for abbreviations of the different sequence types.
+    See [2] for abbreviations of the different sequence types.
     
     In contrary to the trajectory design, the stepsize differs right from the start
     by design and only one element changes in each row compared to the first row.
@@ -287,20 +285,27 @@ def radial_sample(n_rad, n_inputs, seed=123, normal=False, numeric_zero=0.01, se
     
     References
     ----------
+    [1] Ge, Q. and M. Menendez (2017). Extending morris method for qualitative global
+    sensitivityanalysis of models with dependent inputs. Reliability Engineering &
+    System Safety 100 (162), 28–39.
+
     [1] https://github.com/jonathf/chaospy/blob/master/chaospy/distributions/sampler/generator.py#L62
     
     """
-    # Draw base elements and copy to each row 
-    random.seed(seed)
-    
-    # Sample all at once because apparently Sobol' sequence cannot be reseeded?
+
+    # Draw all elements at once.
     all_elements = cp.generate_samples(order=n_rad * 2 * n_inputs, rule=sequence)
     all_elements =  all_elements.reshape(n_rad, 2 * n_inputs)
     
-    rad_list = list()
-    steps_list = list()
+    rad_list = []
+    steps_list = []
+
     for row in range(0, n_rad):
+
+        # Copy first row.
         rad_temp = np.tile(all_elements[row, 0:n_inputs], (n_inputs + 1, 1))
+
+        # Fill diagonal.
         diag_temp = all_elements[row, n_inputs:]
         rad_temp[1:,:].flat[::n_inputs + 1] =  diag_temp
         
@@ -314,6 +319,7 @@ def radial_sample(n_rad, n_inputs, seed=123, normal=False, numeric_zero=0.01, se
     
         rad_list.append(rad_temp)
         
+        # Subtract diagonal elements from first row.
         steps_temp = np.array([1, n_inputs])
         steps_temp = rad_temp[1:,:].flat[::n_inputs + 1] - rad_temp[0, :]
         steps_list.append(steps_temp)
