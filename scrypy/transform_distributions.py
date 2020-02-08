@@ -69,6 +69,7 @@ def transform_uniform_stnormal_uncorr(uniform_deviates, numeric_zero=0.01):
     relatively large to put more proportional, i.e. less weight on the extremes.
 
     """
+
     # Need to replace ones, because norm.ppf(1) = Inf and zeros because norm.ppf(0) = -Inf
     approx_uniform_devs = np.where(
         uniform_deviates == 1, 1 - numeric_zero, uniform_deviates
@@ -134,6 +135,7 @@ def transform_stnormal_normal_corr(z_row, cov, mu):
     Safety 100 (162), 28–39.
 
     """
+
     # Convert covariance matrix to correlation matrix
     corr = covariance_to_correlation(cov)
 

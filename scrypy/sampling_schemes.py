@@ -319,7 +319,3 @@ def radial_sample(n_rad, n_inputs, seed=123, normal=False, numeric_zero=0.01, se
         steps_list.append(steps_temp)
     
     return rad_list, steps_list
-
-
-
-eins, zwo = radial_sample(2, 10)

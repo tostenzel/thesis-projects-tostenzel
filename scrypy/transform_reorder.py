@@ -73,11 +73,14 @@ def reverse_ee_uncorr_reorder_trajectory(traj_reordered, row_plus_one=True):
 
     """
     traj = np.ones([np.size(traj_reordered, 0), np.size(traj_reordered, 1)]) * np.nan
+
     for i in range(0, np.size(traj_reordered, 0)):
+
         if row_plus_one is False:
             traj[i, :] = np.roll(
                 traj_reordered[i, :], -(np.size(traj_reordered, 1) - (i + 1))
             )
+
         if row_plus_one is True:
             traj[i, :] = np.roll(
                 traj_reordered[i, :], -(np.size(traj_reordered, 1) - (i))
@@ -109,7 +112,9 @@ def ee_corr_reorder_trajectory(traj):
 
     """
     traj_reordered = np.ones([np.size(traj, 0), np.size(traj, 1)]) * np.nan
+
     for i in range(0, np.size(traj, 0)):
+
         # In the first row, put the first two elements to the back.
         # In the second row, put the first three element to the back etc.
         traj_reordered[i, :] = np.roll(traj[i, :], -(i - 1))
@@ -133,6 +138,7 @@ def reverse_ee_corr_reorder_trajectory(traj_reordered):
 
     """
     traj = np.ones([np.size(traj_reordered, 0), np.size(traj_reordered, 1)]) * np.nan
+
     for i in range(0, np.size(traj, 0)):
         traj[i, :] = np.roll(
             traj_reordered[i, :], -(np.size(traj_reordered, 1) - (i - 1))
@@ -157,6 +163,7 @@ def reorder_mu(mu):
 
     """
     mu_reordered = np.roll(mu, -1)
+
     return mu_reordered
 
 
@@ -177,10 +184,13 @@ def reorder_cov(cov):
 
     """
     cov_reordered = np.ones(cov.shape) * np.nan
+
     # Put untouched square one up and one left
     cov_reordered[0 : len(cov) - 1, 0 : len(cov) - 1] = cov[1 : len(cov), 1 : len(cov)]
+
     # Put [0,0] to [n,n]
     cov_reordered[len(cov) - 1, len(cov) - 1] = cov[0, 0]
+
     # Put [0, 1:n] to [n, 0:n-1] and same for the column.
     cov_reordered[len(cov) - 1, 0 : len(cov) - 1] = cov[0, 1 : len(cov)]
     cov_reordered[0 : len(cov) - 1, len(cov) - 1] = cov[0, 1 : len(cov)]
@@ -204,6 +214,7 @@ def reverse_reorder_mu(mu_reordered):
 
     """
     mu = np.roll(mu_reordered, +1)
+
     return mu
 
 
@@ -223,6 +234,7 @@ def reverse_reorder_cov(cov_reordered):
 
     """
     cov = np.ones(cov_reordered.shape) * np.nan
+
     cov[1 : len(cov_reordered), 1 : len(cov_reordered)] = cov_reordered[
         0 : len(cov_reordered) - 1, 0 : len(cov_reordered) - 1
     ]

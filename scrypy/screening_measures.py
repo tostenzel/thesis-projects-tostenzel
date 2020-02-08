@@ -69,10 +69,10 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
     trans_piplusone_i_list, trans_pi_i_list, coeff_step = trans_ee_uncorr(
         traj_list, cov, mu, radial
     )
-    # Fix at False b/c makes no difference for first output.
+    # Fix at False b/c first output is unaffected by `radial`.
     trans_piplusone_iminusone_list, _ = trans_ee_corr(traj_list, cov, mu, radial=False)
 
-    # Init function evaluations.
+    # Init function evals.
     fct_evals_pi_i = np.ones([n_rows, n_trajs]) * np.nan
     fct_evals_piplusone_i = np.ones([n_rows, n_trajs]) * np.nan
     fct_evals_piplusone_iminusone = np.ones([n_rows, n_trajs]) * np.nan
@@ -88,7 +88,7 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
                 *trans_piplusone_iminusone_list[traj][row, :]
             )
 
-    # Init individual Elementary Effects.
+    # Init individual EEs.
     ee_uncorr_i = np.ones([n_inputs, n_trajs]) * np.nan
     ee_corr_i = np.ones([n_inputs, n_trajs]) * np.nan
 
@@ -105,6 +105,7 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
         )
         # Above, we additionally need to account for the decorrelation
         # when we account for the scaling by the SD.
+
     if radial is False:
         for traj in range(0, n_trajs):
             ee_corr_i[:, traj] = (
@@ -113,31 +114,29 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
             ) / (step_list[traj] * np.squeeze(np.sqrt(np.diag(cov))))
             # Above, account for the scaling by the SD.
     else:
+
+        # Need to get the first row in different orders.
         _, pp_one_row_zero = trans_ee_corr(traj_list, cov, mu, radial=True)
 
         fct_evals_pp_one_row_zero = np.ones([n_rows, n_trajs]) * np.nan
 
-        # Compute the function evaluations for each transformed trajectory list.
         for traj in range(0, n_trajs):
             for row in range(0, n_rows):
                 fct_evals_pp_one_row_zero[row, traj] = function(
                     *pp_one_row_zero[traj][row, :])
 
-        # Compute the individual Elementary Effects for each parameter draw.
         for traj in range(0, n_trajs):
-
             ee_corr_i[:, traj] = (
                 fct_evals_piplusone_iminusone[1 : n_inputs + 1, traj]
                 - fct_evals_pp_one_row_zero[0:n_inputs, traj]
             ) / (step_list[traj] * np.squeeze(np.sqrt(np.diag(cov))))
             # Above, account for the scaling by the SD.
 
-    # Init measures for uncorr effects
+    # Init measures.
     ee_uncorr = np.ones([n_inputs, 1]) * np.nan
     abs_ee_uncorr = np.ones([n_inputs, 1]) * np.nan
     sd_ee_uncorr = np.ones([n_inputs, 1]) * np.nan
 
-    # Init measuresfor corr effects
     ee_corr = np.ones([n_inputs, 1]) * np.nan
     abs_ee_corr = np.ones([n_inputs, 1]) * np.nan
     sd_ee_corr = np.ones([n_inputs, 1]) * np.nan
@@ -145,12 +144,10 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
     # Compute the aggregate screening measures.
     ee_uncorr[:, 0] = np.mean(ee_uncorr_i, axis=1)
     abs_ee_uncorr[:, 0] = np.mean(abs(ee_uncorr_i), axis=1)
-    # Precise formula is import for small number of trajectories.
     sd_ee_uncorr[:, 0] = np.sqrt(np.var(ee_uncorr_i, axis=1))
 
     ee_corr[:, 0] = np.mean(ee_corr_i, axis=1)
     abs_ee_corr[:, 0] = np.mean(abs(ee_corr_i), axis=1)
-    # Precise formula is import for small number of trajectories.
     sd_ee_corr[:, 0] = np.sqrt(np.var(ee_corr_i, axis=1))
 
     return ee_uncorr, ee_corr, abs_ee_uncorr, abs_ee_corr, sd_ee_uncorr, sd_ee_corr
