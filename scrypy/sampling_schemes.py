@@ -165,13 +165,15 @@ def morris_trajectory(
     )
 
     # Comment out and copy to the bottom for repication.
+    """
     # For standard normally distributed draws.
-    #if normal is True:
-    #    B_random = np.apply_along_axis(
-    #        transform_uniform_stnormal_uncorr, 1, B_random, numeric_zero
-    #    )
-    #else:
-    #    pass
+    if normal is True:
+        B_random = np.apply_along_axis(
+            transform_uniform_stnormal_uncorr, 1, B_random, numeric_zero
+        )
+    else:
+        pass
+    """
 
     # Recompute step for each point because it may have been transformed by `(-1)` or
     # or by `transform_uniform_stnormal_uncorr`.
@@ -250,7 +252,7 @@ def trajectory_sample(
     return sample_traj_list, steps_list
 
 
-def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence='S'):
+def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.0, sequence='S'):
     """
     Generates sample in radial design as described in [1].
     
@@ -319,16 +321,18 @@ def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence='S'
         rad_temp[1:,:].flat[::n_inputs + 1] =  diag_temp
         
         # Comment out and copy to the bottom for repication.
+        """
         # For standard normally distributed draws.
-        #if normal is True:
-        #    B_random = np.apply_along_axis(
-        #        transform_uniform_stnormal_uncorr, 1, B_random, numeric_zero
-        #    )
-        #else:
-        #    pass
-    
-        rad_list.append(rad_temp)
+        if normal is True:
+            rad_temp = np.apply_along_axis(
+                transform_uniform_stnormal_uncorr, 1, rad_temp, numeric_zero
+            )
+        else:
+            pass
         
+        rad_list.append(rad_temp)
+        """
+
         # Subtract diagonal elements from first row.
         steps_temp = np.array([1, n_inputs])
         steps_temp = rad_temp[1:,:].flat[::n_inputs + 1] - rad_temp[0, :]
@@ -336,10 +340,12 @@ def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence='S'
 
         # For standard normally distributed draws.
         if normal is True:
-            B_random = np.apply_along_axis(
-                transform_uniform_stnormal_uncorr, 1, B_random, numeric_zero
+            rad_temp = np.apply_along_axis(
+                transform_uniform_stnormal_uncorr, 1, rad_temp, numeric_zero
             )
         else:
             pass
+        
+        rad_list.append(rad_temp)
     
     return rad_list, steps_list
