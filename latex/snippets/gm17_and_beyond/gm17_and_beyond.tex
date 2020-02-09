@@ -138,7 +138,7 @@ Both samples consist of a set of $(k + 1) \times k$-dimensional matrices. The co
 \noindent
 A subsample, or matrix, in radial design is generated the the following way: Draw a vector of length $2k$ from a quasi-random sequence. The first row, or parameter vector, is the first half of the sequence. Then copy the first row to the remaining $k$ rows. For each row $k'$ of the remaining 2, ..., $k+1$ rows, replace the $k'$-th element by the $k'$-th element of the second half of the vector. This generates a matrix of the following form:
 \begin{align}
-\bold{R} =
+\underset{(k+1)\times k}{\bold{R}} =
 \begin{pmatrix}
 a_1 & a_2 & ... & a_k \\
 \bold{b_1} & a_2 & ... & a_k \\
@@ -149,9 +149,9 @@ a_1 & a_2 & ... & \bold{b_k}
 \end{align}
 \noindent
 Note here, that each column consists only of the first row element, except of one row.
-From this matrix, one individual EE can be obtained for each parameter $X_i \in X_1, X_2, ..., X_k$. This is achieved by using the $i+1$-th row as function argument for the minuend and the first row as subtrahend in the formula for the individual EE. Then, $\Delta^{(i,j)} = b_i^{(j)} - a_i^{(j)}$. This yields to the following re-formulation of the derivation in Equation (3).
+From this matrix, one individual EE can be obtained for each parameter $X_i \in X_1, X_2, ..., X_k$. This is achieved by using the $i+1$-th row as function argument for the minuend and the first row as subtrahend in the formula for the individual EE. Then, $\Delta^{(i,j)} = b_i^{(j)} - a_i^{(j)}$. This yields to the re-formulation of the derivation in Equation (3), where $j$ is the number of radial subsamples and $i$ is the input parameter $X_i$.
 \begin{align}
-d^{(j)} =  \frac{Y(\bold{a_{\sim i}^{(j)}}, b_i^{(j)}) - Y(\bold{a})}{b_i^{(j)} - a_i^{(j)}} = \frac{Y(\bold{R_{i+1,*}}) -  Y(\bold{R_{1,*}})}{b_i^{(j)} - a_i^{(j)}}.
+d^{(j)}_i =  \frac{Y(\bold{a_{\sim i}^{(j)}}, b_i^{(j)}) - Y(\bold{a})}{b_i^{(j)} - a_i^{(j)}} = \frac{Y(\bold{R_{i+1,*}}) -  Y(\bold{R_{1,*}})}{b_i^{(j)} - a_i^{(j)}}.
 \end{align}
 If the number of radial subsamples is high, the quasi-random sequence lead to a good coverage of the input space. The quasi-random sequence considered here is the Sobol' sequence. This sequence is comparably succesful in covering interval the unit hypercube but also conceptually more involved. Therefore, it's presentation is beyond the scope of this work. Since this sequence is quasi-random, the sequence has to be drawn at once for all sets of radial matrices.\\
 
@@ -160,7 +160,7 @@ Next, I present the trajectory design. As we will see, it leads to a relatively 
 In this outline, I skip the exact equations that produces a trajectory and simply present the method verbally.
 There are multiple approaches to construct different forms of trajectory. Here, I focus on the version presented in \cite{Morris.1991} that yields to equiprobable elements. The first step is to decide the number $p$ of grid points in interval $[0,1]$. Then, the first row of the trajectory is composed of the lower half value of these grid points. Now, fix $\Delta = p/[2(p-1)]$. This function implies, that the lowest point in the lowest half results in the lowest point of the upper half of the grid points if $\Delta$ is added. The rest of the rows is constructed by, first, copying the upper row and, second, by adding $\Delta$ to the $k$-th element of the $k+1$-th row. The implied matrix scheme is depictet below.
 \begin{align}
-\bold{T} =
+\underset{(k+1)\times k}{\bold{T}} =
 \begin{pmatrix}
 a_1 & a_2 & ... & a_k \\
 \bold{b_1} & a_2 & ... & a_k \\
@@ -173,21 +173,31 @@ a_1 & a_2 & ... & a_k \\
 
 \noindent
 In contrary to the radial scheme, each $b_i$ is copied to the subsequent row. Therefore, the EEs have to be determined by comparing each row with the row above instead of with the first row.
-Importantly, two random transformations are common. These are randomly switching rows and randomly interchanging the $i$-th column with the $(k-i)$-th column. The first transformation is skipped as it does not add additional coverage and because we need the stairs-shape facilitate later transformations to account for correlation between input parameters. The second transformation is adapted because it is important to also have negative $\Delta$ and because it does also sustain the stairs-shape. Yet, this implies that $\Delta$ is also column and trajectory specific. Let $f$ and $h$ be additional index parameters. The derivation formula is adapted to the trajectory design as follows\footnote{In contrary to most authors, I also denote the step as difference instead of $\Delta$ when referring to the trajectory design. This provides additional clarity.}:
+Importantly, two random transformations are common. These are randomly switching rows and randomly interchanging the $i$-th column with the $(k-i)$-th column. The first transformation is skipped as it does not add additional coverage and because we need the stairs-shape facilitate later transformations to account for correlation between input parameters. The second transformation is adapted because it is important to also have negative $\Delta$ and because it does also sustain the stairs-shape. Yet, this implies that $\Delta$ is also column and trajectory specific. Let $f$ and $h$ be additional index parameters. The derivation formula is adapted to the trajectory design as follows, , where $j$ is the number of trajectory subsamples and $i$ is the input parameter $X_i$:\footnote{In contrary to most authors, I also denote the step as difference instead of $\Delta$ when referring to the trajectory design. This provides additional clarity.}
 
 \begin{align}
-d^{(j)} =  \frac{Y(\bold{b_{f \leq i}^{(j)}}, \bold{a_{h>i}^{(j)}}) - Y(\bold{b_{f<i}^{(j)}}, \bold{a_{h \geq i}^{(j)}})}{b_i^{(j)} - a_i^{(j)}} = \frac{Y(\bold{T_{i+1,*})} -  Y(\bold{T_{i,*}})}{b_i^{(j)} - a_i^{(j)}}.
+d^{(j)}_i =  \frac{Y(\bold{b_{f \leq i}^{(j)}}, \bold{a_{h>i}^{(j)}}) - Y(\bold{b_{f<i}^{(j)}}, \bold{a_{h \geq i}^{(j)}})}{b_i^{(j)} - a_i^{(j)}} = \frac{Y(\bold{T_{i+1,*})} -  Y(\bold{T_{i,*}})}{b_i^{(j)} - a_i^{(j)}}.
 \end{align}
-The trajectory design involves first, a fixed grid, and second and more importantly, a fixed step $\Delta$. Hence the coverage of points is worse for larger samples. Additionally, $\{\Delta\} = \{\pm \Delta\}$ implies less variety vis-á-vis the radial design.\\
+The trajectory design involves first, a fixed grid, and second and more importantly, a fixed step $\Delta$. Hence the coverage of points is worse for larger samples. Additionally, $\{\Delta\} = \{\pm \Delta\}$ implies less step variety and less space coverage vis-á-vis the radial design for more than a small number of draws.\\
 
 \noindent
-So far, we have only considered draws from Uniform[0,1]. For uncorrelated input parameters and arbitrary distributions with well-defined cumulative distribution function CDF, one would simply evaluate each element (of course, potentially including the addition of the step) by the inverse CDF of the respective parameter. The intuition is, that the CDF maps the sample space to [0,1]. Hence, the inverse CDF can be used to transform random draws in [0,1] to the sample space of the arbitrary distribution.
+So far, we have only considered draws from Uniform[0,1]. For uncorrelated input parameters and arbitrary distributions with well-defined cumulative distribution function CDF, one would simply evaluate each element (of course, potentially including the addition of the step) by the inverse CDF of the respective parameter. The intuition is, that the CDF maps the sample space to [0,1]. Hence, the inverse CDF can be used to transform random draws in [0,1] to the sample space of the arbitrary distribution. This is basic example of inverse transform sampling.
 
 
 
 \subsection{The approach for correlated parameters in \cite{ge2017extending}}
 
-The following describes the incomplete approach by \cite{ge2017extending} to extend the EE-based measures to input parameters that are correlated. Their main achievement is to outline a transformation of samples in radial and trajectory design that incorporates the correlation between the input parameters. This implies, that the trajectory and radial samples cannot be written as in Equation (6) and Equation (8). The reason is that the correlation of the parameter to which the step is added has to all other parameters in the same row with non-zero correlation. Therefore, the rows cannot be as easily denoted and compared by $a$'s and $b$'s as in these equations. The transformation of the matrices makes it possible to redefine the EE-based measures accordingly, so that they sustain the main properties of the ordinary measures for uncorrelated parameters. Yet, \cite{ge2017extending} fail to fully develop measures that sustain the properties of the function derivation. I will explain how their measures lead to arbitrary results. This section explains their approach and presents their measures.
+The following describes the incomplete approach by \cite{ge2017extending} to extend the EE-based measures to input parameters that are correlated. Their main achievement is to outline a transformation of samples in radial and trajectory design that incorporates the correlation between the input parameters. This implies, that the trajectory and radial samples cannot be written as in Equation (6) and Equation (8). The reason is that the correlation of the parameter $X_i$ to which the step $\Delta^i$ is added, implies that all other parameters $\bold{X_{\sim i}}$ in the same row with non-zero correlation are changed as well. Therefore, the rows cannot be as easily denoted and compared by $a$'s and $b$'s as in Equation (6) to (8). The transformation of the matrices makes it possible to re-define the EE-based measures accordingly, so that they sustain the main properties of the ordinary measures for uncorrelated parameters. Yet, \cite{ge2017extending} fail to fully develop measures that sustain the properties of the function derivation. I will explain how their measures lead to arbitrary results. This section explains their approach in a simplified form and presents their measures.\\
+
+\noindent
+Let $\bold{\Sigma}$ be a non-singular variance-covariance matrix and let $\pmb{\mu}$ be the mean vector. The $k$-variate normal distribution is denoted by $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$. Creating potentially correlated draws $\bold{x}$ from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$ is simple. Following \cite{lemaire2013structural}, page 197, this can be done as follows: Draw a $k$-dimension row vector of i.i.d standard normal deviates from the \textit{univariate} $N_1(0,1)$ distribution, such that  $\bold{z} = \{z_1, z_2, ..., z_k\}$, and compute the Cholesky decomposition of $\Sigma$ such that $\bold{\Sigma} = \bold{T^T T}$, where $\bold{T'}$ is the lower triangular matrix. Then apply the operation in Equation (10) to obtain the potentially correlated deviates from $N_k(\mu, \Sigma)$.
+\begin{align}
+\bold{x} = \pmb{\mu} + \bold{T^T z^T} 
+\end{align}
+Intuition for the mechanisms underlying this equation can be found in Appendix A.\\
+
+\noindent
+Let $\pmb{\sigma}$ be the vector of standard deviations and $\bold{R}$ be the correlation matrix of $\bold{x}$. The next step is to understand that we can split the operation $\bold{\Sigma} = \bold{T^T T}$ in two steps: First correlate the standard deviates by $\bold{z_c}=\bold{Q^T z^T}$, , where $\bold{T^t}$ is the lower matrix from the Cholesky decomposition $\bold{R}=\bold{Q^T Q}$. This is equivalent to the above approach for the multivariate standard normal distribution $\mathcal{N}_k(0, \Sigma)$. The reason is that for multivariate standard normal deviates, the correlation matrix equals the covariance matrix. The last step is to scale the correlated standard normal deviates: $\bold{z}=\bold{z_c}\pmb{\sigma} + \pmb{\mu}$.
 
 
 
