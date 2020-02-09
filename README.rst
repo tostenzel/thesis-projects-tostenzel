@@ -36,8 +36,9 @@ This repository hosts the Master's Thesis and its replication files written by
 
 I demonstrate the computations of the results in the jupyter notebooks below.
 
+|
 
-.. image:: https://github.com/jupyter/design/blob/replication_gm17/logos/Badges/nbviewer_badge.svg
+.. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
      :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/replication_gm17/notebooks/replication_trajectory.ipynb
 
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
