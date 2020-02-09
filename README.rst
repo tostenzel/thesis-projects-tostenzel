@@ -41,7 +41,7 @@ I demonstrate the computations of the results in the jupyter notebooks below.
      :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/replication_gm17/notebooks/replication_trajectory.ipynb
 
 .. image:: https://github.com/jupyter/design/blob/master/logos/Badges/nbviewer_badge.svg
-     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/master/notebooks/replication_radial.ipynb
+     :target: https://nbviewer.jupyter.org/github/HumanCapitalAnalysis/thesis-projects-tostenzel/blob/replication_gm17/notebooks/replication_radial.ipynb
 
 |
 
