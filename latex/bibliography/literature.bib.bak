@@ -17466,4 +17466,26 @@
   publisher = {Science \& Engineering Research Support Society (SERSC)},
 }
 
+@Article{campolongo2007effective,
+  author    = {Campolongo, Francesca and Cariboni, Jessica and Saltelli, Andrea},
+  title     = {An effective screening design for sensitivity analysis of large models},
+  journal   = {Environmental modelling \& software},
+  year      = {2007},
+  volume    = {22},
+  number    = {10},
+  pages     = {1509--1518},
+  publisher = {Elsevier},
+}
+
+@Article{campolongo2011screening,
+  author    = {Campolongo, Francesca and Saltelli, Andrea and Cariboni, Jessica},
+  title     = {From screening to quantitative sensitivity analysis. A unified approach},
+  journal   = {Computer Physics Communications},
+  year      = {2011},
+  volume    = {182},
+  number    = {4},
+  pages     = {978--988},
+  publisher = {Elsevier},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}
