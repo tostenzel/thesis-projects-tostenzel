@@ -82,7 +82,7 @@
 
 \newpage % delete after section is complete
 
-\section{\cite{ge2017extending} and beyond}
+\section{Qualitative GSA measures for functions with correlated input parameters}
 \thispagestyle{plain} % suppress header on first page
 
 
@@ -90,53 +90,51 @@
 
 \cite{lemaire2013structural}
 
-\cite{gentle2006random}
-
-\cite{ge2017extending}
-
 \cite{Smith.2014}
 
 \subsection{Qualitative General Sensitivity Analysis}
 \noindent
-Qualitative Global Sensitivity Analysis (GSA) deals with computing measures that can rank random input parameters in terms of their importance on the function output and the variability thereof. If the measures for some input parameters are negligibly small, these parameters can be fixed so that the number of random input parameters decreases for a subsequent quantitative GSA. This pre-selection step is called Factor Fixing. The quantitative GSA then aims to determine the effect size. of the random input parameters on the function output. The most common measures in quantitative GSA are the so-called Sobol' sensitivtiy indices. Equation 1 shows the first order index. It is the share of the variance in the function output induced by exclusively one single input parameter $X_i$ of the variance in the function output induced by all random input parameters $X_1, X_2, ..., X_k$.
+Qualitative Global Sensitivity Analysis (Qualitative GSA) deals with computing measures that can rank random input parameters in terms of their importance on the function output and the variability thereof. If the measures for some input parameters are negligibly small, these parameters can be fixed so that the number of random input parameters decreases for a subsequent quantitative GSA. This pre-selection step is called Factor Fixing. The quantitative GSA then aims to determine the precise effect size of each random input parameter on the function output. The most common measures in quantitative GSA are the so-called Sobol' sensitivtiy indices. Equation 1 shows the first order index. It is the share of the variance in the function output induced by exclusively one single input parameter $X_i$ of the variance induced by all random input parameters $X_1, X_2, ..., X_k$.
+
 
 \begin{align}
 S_i = \frac{\text{Var}_i[Y|X_i ]}{\text{Var}[Y]}
 \end{align}
 
-Equation 2 show the total order index. This measure is equal to the first order index except of that it numerator includes the variance in the function output that is induced by changes in the other input parameters $X_{\sim i}$, caused by interactions with $X_i$.
+\noindent
+Equation 2 shows the total order index. This measure is equal to the first order index except of that its numerator includes the variance in the function output that is induced by changes in the other input parameters $X_{\sim i}$, caused by interactions with the variation in $X_i$.
 
 \begin{align}
 S_{i}^T = \frac{\E_{\sim i}[\text{Var}_{i}[Y|\bold{X_{\sim i}]]}}{\text{Var}[Y]}
 \end{align}
 
-Computing these measures requires many function evaluations, even if estimators are used that can provide some shortcuts. The more time-intense one function evaluation is, the more appealing gets the aforementioned Factor Fixing. These can provide qualitative results with less function evaluations.
-The most commonly used measures in qualitative GSA is the Elementary Effect (EE), $\mu$, the absolute Elementary Effects, $\mu^*$, and the standard deviation of the Elementary Effect $\sigma$. The Elementary Effect is given by the mean of a number of function derivatives with respect to one input parameter. The "change in", or the "step of" the input parameter, denotes by $\Delta$, has not to be infinitesimally small. The derivation is denoted as
+\noindent
+Computing these measures requires many function evaluations, even if an estimator is used as a shortcut. The more time-intense one function evaluation is, the more utility provides the aforementioned Factor Fixing based on qualitative measures. The most commonly used measures in qualitative GSA is the Elementary Effect (EE), $\mu$, the absolute Elementary Effects, $\mu^*$, and the standard deviation of the Elementary Effect, $\sigma$. The Elementary Effect is given by the mean of a number of function derivatives with respect to one input parameter. The "change in", or the "step of" the input parameter, denoted by $\Delta$, has not to be infinitesimally small. The only restriction is that $X_i + \Delta$ is in the domain of $X_i$. The derivation, also called the individual Elementary Effect, is denoted by
 \begin{align}
 d^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delta^{(i,j)}},
 \end{align}
-where $j$ is an index for the number of parameter-specific argument observations for the function derivative.
+where $j$ is an index for the number of observations of $X_i$.
 Then, the Elementary Effect is given by
 
 \begin{align}
 \mu = \frac{1}{r} \sum_{j=1}^{r} d^{(j)}.
 \end{align}
 \noindent
-The absolute Elementary Effects, $\mu^*$ is used to prevent observations to cancel each other out.
+The absolute Elementary Effects, $\mu^*$ is used to prevent observations of opposite sign to cancel each other out.
 
 \begin{align}
 \mu^* = \frac{1}{r} \sum_{j=1}^{r} \big| d^{(j)} \big|.
 \end{align}
 \noindent
-In Equation 4 and 5, $r$ is the number of parameter draws with index $(j)$. Step $\Delta^{(j)}$ may or may not vary depending on the sample design that is used to draw the input parameters. These measures (together) are used to proxy the total Sobol' indices that contains the parameter-specific interactions with all other parameter in Equation(2). If they are close to 0 (,and given there are parameters with measures substantially different from 0), these respective factors' variation can be rendered as irrelevant for the variation in the function output.
+In Equation 4 and 5, $r$ is the number of parameter draws with index $j$. Step $\Delta^{(j)}$ may or may not vary depending on the sample design that is used to draw the input parameters. These measures (together) are used to proxy the total Sobol' indices that contains the parameter-specific interactions with all other parameter in Equation(2). The total Sobol' index is the relevant one because it also contains interactions that may be important. If the qualitative measures are close to 0 for one particular parameter, its variation can be rendered as irrelevant for the variation in the function output (given there are parameters with measures substantially different from 0).
 
 \subsection{Sampling Schemes}
 
 According to several experiments by \cite{campolongo2011screening} using common test functions, the best design is the radial design (\cite{saltelli2002making}) and the most commonly used is the trajectory design (\cite{Morris.1991}).
-Both samples consist of a set of $(k + 1) \times k$-dimensional matrices. The columns represent the input parameters and each row is a complete input parameter vector.\\
+Both designs are comprised by a $(k + 1) \times k$-dimensional matrix. The elements are generated in $[0,1]$. Afterwards, they can be transformed to the distributions of choice. The columns represent the input parameters and each row is a complete input parameter vector. To compute the qualitative measures, a set of multiple matrices, or subsets, of input parameters has to be generated.\\
 
 \noindent
-A subsample, or matrix, in radial design is generated the the following way: Draw a vector of length $2k$ from a quasi-random sequence. The first row, or parameter vector, is the first half of the sequence. Then copy the first row to the remaining $k$ rows. For each row $k'$ of the remaining 2, ..., $k+1$ rows, replace the $k'$-th element by the $k'$-th element of the second half of the vector. This generates a matrix of the following form:
+A matrix in radial design is generated in the following way: Draw a vector of length $2k$ from a quasi-random sequence. The first row, or parameter vector, is the first half of the sequence. Then, copy the first row to the remaining $k$ rows. For each row $k'$ of the remaining 2, ..., $k+1$ rows, replace the $k'$-th element by the $k'$-th element of the second half of the vector. This generates a matrix of the following form:
 \begin{align}
 \underset{(k+1)\times k}{\bold{R}} =
 \begin{pmatrix}
@@ -148,17 +146,17 @@ a_1 & a_2 & ... & \bold{b_k}
 \end{pmatrix}
 \end{align}
 \noindent
-Note here, that each column consists only of the first row element, except of one row.
-From this matrix, one individual EE can be obtained for each parameter $X_i \in X_1, X_2, ..., X_k$. This is achieved by using the $i+1$-th row as function argument for the minuend and the first row as subtrahend in the formula for the individual EE. Then, $\Delta^{(i,j)} = b_i^{(j)} - a_i^{(j)}$. This yields to the re-formulation of the derivation in Equation (3), where $j$ is the number of radial subsamples and $i$ is the input parameter $X_i$.
+Note here, that each column consists only of the first row element, except of for one row.
+From this matrix, one individual EE can be obtained for each parameter $X_i$. This is achieved by using the $(i+1)$-th row as function argument for the minuend and the first row as subtrahend in the formula for the individual EE. Then, $\Delta^{(i,j)} = b_i^{(j)} - a_i^{(j)}$. Tailored to the radial scheme, the derivation can be re-formulated as in Equation (3), where $j$ is the number of radial subsamples and $i$ represents the input parameter $X_i$.
 \begin{align}
 d^{(j)}_i =  \frac{Y(\bold{a_{\sim i}^{(j)}}, b_i^{(j)}) - Y(\bold{a})}{b_i^{(j)} - a_i^{(j)}} = \frac{Y(\bold{R_{i+1,*}}) -  Y(\bold{R_{1,*}})}{b_i^{(j)} - a_i^{(j)}}.
 \end{align}
-If the number of radial subsamples is high, the quasi-random sequence lead to a good coverage of the input space. The quasi-random sequence considered here is the Sobol' sequence. This sequence is comparably succesful in covering interval the unit hypercube but also conceptually more involved. Therefore, it's presentation is beyond the scope of this work. Since this sequence is quasi-random, the sequence has to be drawn at once for all sets of radial matrices.\\
+If the number of radial subsamples is high, the quasi-random sequence lead to a good and fast coverage of the input space (compared to a random sequence). The quasi-random sequence considered here is the Sobol' sequence. This sequence is comparably succesful in covering the unit hypercube, but also conceptually more involved. Therefore, its presentation is beyond the scope of this work. Since this sequence is quasi-random, the sequence has to be drawn at once for all sets of radial matrices.\\
 
 \noindent
-Next, I present the trajectory design. As we will see, it leads to a relatively representative coverage for a very small number of subsamples but leads to frequent repetitions of similar draws for higher number of draws.
-In this outline, I skip the exact equations that produces a trajectory and simply present the method verbally.
-There are multiple approaches to construct different forms of trajectory. Here, I focus on the version presented in \cite{Morris.1991} that yields to equiprobable elements. The first step is to decide the number $p$ of grid points in interval $[0,1]$. Then, the first row of the trajectory is composed of the lower half value of these grid points. Now, fix $\Delta = p/[2(p-1)]$. This function implies, that the lowest point in the lowest half results in the lowest point of the upper half of the grid points if $\Delta$ is added. The rest of the rows is constructed by, first, copying the upper row and, second, by adding $\Delta$ to the $k$-th element of the $k+1$-th row. The implied matrix scheme is depictet below.
+Next, I present the trajectory design. As we will see, it leads to a relatively representative coverage for a very small number of subsamples but also to frequent repetitions of similar draws.
+In this outline, I skip the equations that generate a trajectory and present the method verbally.
+There are different forms of trajectories. Here, I focus on the version presented in \cite{Morris.1991} that yields to equiprobable elements. The first step is to decide the number $p$ of grid points in interval $[0,1]$. Then, the first row of the trajectory is composed of the lower half value of these grid points. Now, fix $\Delta = p/[2(p-1)]$. This function implies, that adding $\Delta$ to the lowest point in the lowest half results in the lowest point of the upper half of the grid points, and so on. The rest of the rows is constructed by, first, copying the row one above and, second, by adding $\Delta$ to the $k$-th element of the $k+1$-th row. The implied matrix scheme is depicted below.
 \begin{align}
 \underset{(k+1)\times k}{\bold{T}} =
 \begin{pmatrix}
@@ -173,31 +171,51 @@ a_1 & a_2 & ... & a_k \\
 
 \noindent
 In contrary to the radial scheme, each $b_i$ is copied to the subsequent row. Therefore, the EEs have to be determined by comparing each row with the row above instead of with the first row.
-Importantly, two random transformations are common. These are randomly switching rows and randomly interchanging the $i$-th column with the $(k-i)$-th column. The first transformation is skipped as it does not add additional coverage and because we need the stairs-shape facilitate later transformations to account for correlation between input parameters. The second transformation is adapted because it is important to also have negative $\Delta$ and because it does also sustain the stairs-shape. Yet, this implies that $\Delta$ is also column and trajectory specific. Let $f$ and $h$ be additional index parameters. The derivation formula is adapted to the trajectory design as follows, , where $j$ is the number of trajectory subsamples and $i$ is the input parameter $X_i$:\footnote{In contrary to most authors, I also denote the step as difference instead of $\Delta$ when referring to the trajectory design. This provides additional clarity.}
+Importantly, two random transformations are common. These are randomly switching rows and randomly interchanging the $i$-th column with the $(k-i)$-th column and then reversing the column. The first transformation is skipped as it does not add additional coverage and because we need the stairs-shaped design to facilitate later transformations which account for correlation between input parameters. The second transformation is adapted because it is important to also have negative steps and because it does sustain the stairs shape. Yet, this implies that $\Delta^{(i,j)}$ is also parameter- and trajectory-specific. Let $f$ and $h$ be additional indices representing the input parameters. The derivation formula is adapted to the trajectory design as follows:\footnote{In contrary to most authors, I also denote the step as a subtraction instead of $\Delta$ when referring to the trajectory design. This provides additional clarity.}
 
 \begin{align}
 d^{(j)}_i =  \frac{Y(\bold{b_{f \leq i}^{(j)}}, \bold{a_{h>i}^{(j)}}) - Y(\bold{b_{f<i}^{(j)}}, \bold{a_{h \geq i}^{(j)}})}{b_i^{(j)} - a_i^{(j)}} = \frac{Y(\bold{T_{i+1,*})} -  Y(\bold{T_{i,*}})}{b_i^{(j)} - a_i^{(j)}}.
 \end{align}
-The trajectory design involves first, a fixed grid, and second and more importantly, a fixed step $\Delta$. Hence the coverage of points is worse for larger samples. Additionally, $\{\Delta\} = \{\pm \Delta\}$ implies less step variety and less space coverage vis-á-vis the radial design for more than a small number of draws.\\
+The trajectory design involves first, a fixed grid, and second and more importantly, a fixed step $\Delta$. s.t. $\{\Delta\} = \{\pm \Delta\}$. This implies less step variety and less space coverage vis-á-vis the radial design for more than a small number of draws.\\
 
 \noindent
-So far, we have only considered draws from Uniform[0,1]. For uncorrelated input parameters and arbitrary distributions with well-defined cumulative distribution function CDF, one would simply evaluate each element (of course, potentially including the addition of the step) by the inverse CDF of the respective parameter. The intuition is, that the CDF maps the sample space to [0,1]. Hence, the inverse CDF can be used to transform random draws in [0,1] to the sample space of the arbitrary distribution. This is basic example of inverse transform sampling.
+So far, we have only considered draws in [0,1]. For uncorrelated input parameters from arbitrary distributions with well-defined cumulative distribution function, $\Phi$, one would simply evaluate each element (of course, potentially including the addition of the step) by the inverse cumulative distribution function, $\Phi^{-1}$, of the respective parameter. A bit of intuition is, that $\Phi$ maps the sample space to [0,1]. Hence $\Phi^{-1}$ can be used to transform random draws in [0,1] to the sample space of the arbitrary distribution. This is a basic example of so-called inverse transform sampling which we will recall in the next section.
 
 
 
-\subsection{The approach for correlated parameters in \cite{ge2017extending}}
+\subsection{The approach for correlated input parameters in \cite{ge2017extending}}
 
-The following describes the incomplete approach by \cite{ge2017extending} to extend the EE-based measures to input parameters that are correlated. Their main achievement is to outline a transformation of samples in radial and trajectory design that incorporates the correlation between the input parameters. This implies, that the trajectory and radial samples cannot be written as in Equation (6) and Equation (8). The reason is that the correlation of the parameter $X_i$ to which the step $\Delta^i$ is added, implies that all other parameters $\bold{X_{\sim i}}$ in the same row with non-zero correlation are changed as well. Therefore, the rows cannot be as easily denoted and compared by $a$'s and $b$'s as in Equation (6) to (8). The transformation of the matrices makes it possible to re-define the EE-based measures accordingly, so that they sustain the main properties of the ordinary measures for uncorrelated parameters. Yet, \cite{ge2017extending} fail to fully develop measures that sustain the properties of the function derivation. I will explain how their measures lead to arbitrary results. This section explains their approach in a simplified form and presents their measures.\\
+This section describes the incomplete approach by \cite{ge2017extending} to extend the EE-based measures to input parameters that are correlated. Their main achievement is to outline a transformation of samples in radial and trajectory design that incorporates the correlation between the input parameters. This implies, that the trajectory and radial samples cannot be written as in Equation (6) and Equation (8). The reason is that the correlations of parameter $X_i$, to which step $\Delta^i$ is added, implies that all other parameters $\bold{X_{\sim i}}$ in the same row with non-zero correlation are changed as well. Therefore, the rows cannot be denoted and compared as easily by $a$'s and $b$'s as in Equation (6) and (8). Transforming these matrices allows to re-define the EE-based measures accordingly, such that they sustain the main properties of the ordinary measures for uncorrelated parameters. The property is to be a function of the mean derivative. Yet, \cite{ge2017extending} fail to fully develop these measures. I will explain how their measures lead to arbitrary results for correlated input parameters. This section covers their approach in a simplified form, focussing on normally distributed input parameters, and presents their measures.\\
 
 \noindent
-Let $\bold{\Sigma}$ be a non-singular variance-covariance matrix and let $\pmb{\mu}$ be the mean vector. The $k$-variate normal distribution is denoted by $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$. Creating potentially correlated draws $\bold{x}$ from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$ is simple. Following \cite{lemaire2013structural}, page 197, this can be done as follows: Draw a $k$-dimension row vector of i.i.d standard normal deviates from the \textit{univariate} $N_1(0,1)$ distribution, such that  $\bold{z} = \{z_1, z_2, ..., z_k\}$, and compute the Cholesky decomposition of $\Sigma$ such that $\bold{\Sigma} = \bold{T^T T}$, where $\bold{T'}$ is the lower triangular matrix. Then apply the operation in Equation (10) to obtain the potentially correlated deviates from $N_k(\mu, \Sigma)$.
+The next paragraph deals with developing a recipe for transforming draws $\bold{u} = \{u_1, u_2, ..., u_k\}$ from $[0,1]$ for an input parameter vector to draws $\bold{x} = \{x_1, x_2, ..., x_k\}$ from an arbitrary joint normal distribution. We will do this in three steps. 
+
+For this purpose, let $\bold{\Sigma}$ be a non-singular variance-covariance matrix and let $\pmb{\mu}$ be the mean vector. The $k$-variate normal distribution is denoted by $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$. \\
+
+\noindent
+Creating potentially correlated draws $\bold{x}$ from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$ is simple. Following \cite{gentle2006random}, page 197, this can be done the following way: Draw a $k$-dimensional row vector of i.i.d standard normal deviates from the \textit{univariate} $N_1(0,1)$ distribution, such that  $\bold{z} = \{z_1, z_2, ..., z_k\}$, and compute the Cholesky decomposition of $\Sigma$, such that $\bold{\Sigma} = \bold{T^T T}$. The lower triangular matrix is denoted by $\bold{T'}$. Then apply the operation in Equation (10) to obtain the correlated deviates from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$.
 \begin{align}
 \bold{x} = \pmb{\mu} + \bold{T^T z^T} 
 \end{align}
-Intuition for the mechanisms underlying this equation can be found in Appendix A.\\
+Intuition for the mechanics  that underlie is provided in Appendix A (not in this draft). \\
 
 \noindent
-Let $\pmb{\sigma}$ be the vector of standard deviations and $\bold{R}$ be the correlation matrix of $\bold{x}$. The next step is to understand that we can split the operation $\bold{\Sigma} = \bold{T^T T}$ in two steps: First correlate the standard deviates by $\bold{z_c}=\bold{Q^T z^T}$, , where $\bold{T^t}$ is the lower matrix from the Cholesky decomposition $\bold{R}=\bold{Q^T Q}$. This is equivalent to the above approach for the multivariate standard normal distribution $\mathcal{N}_k(0, \Sigma)$. The reason is that for multivariate standard normal deviates, the correlation matrix equals the covariance matrix. The last step is to scale the correlated standard normal deviates: $\bold{z}=\bold{z_c}\pmb{\sigma} + \pmb{\mu}$.
+The next step is to understand that we can split the operation in Equation (10) into two subsequent operations. For this, let $\pmb{\sigma}$ be the vector of standard deviations and let $\bold{R}$ be the correlation matrix of $\bold{x}$.
+
+The first operation is to transform the standard deviates $\bold{z}$ to correlated standard deviates $\bold{z_c}$ by using $\bold{z_c}=\bold{Q^T z^T}$. In this equation, $\bold{Q^t}$ is the lower matrix from the Cholesky decomposition $\bold{R}=\bold{Q^T Q}$. This is equivalent to the above approach in \cite{gentle2006random} for the specific case of the multivariate standard normal distribution $\mathcal{N}_k(0, R)$. This is true because for multivariate standard normal deviates, the correlation matrix is equal to the covariance matrix.
+
+The second operation is to scale the correlated standard normal deviates: $\bold{z}=\bold{z_c}\pmb{\sigma} + \pmb{\mu}$.\\
+
+\noindent
+The last step is to recall the inverse transform sampling method. Therewith we can transform the input parameter draws $\bold{u}$ to uncorrelated standard normal draws $\bold{z}$. Then we will continue with the two operation in the above paragraph. The transformation from $\bold{u}$ to $\bold{z}$ is summarized by the following three points:
+
+
+\centering\parbox{.35\textwidth}{
+\begin{enumerate}
+	\item $\bold{z} = \pmb{\Phi^{-1}({u})}$
+	\item $\bold{z_c} = \bold{z Q^T}$
+	\item $\bold{x} = \pmb{\mu} + \bold{z_c}\pmb{\sigma}$.
+\end{enumerate}}
 
 
 
