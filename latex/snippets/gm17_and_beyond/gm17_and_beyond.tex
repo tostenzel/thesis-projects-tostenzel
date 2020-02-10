@@ -78,6 +78,12 @@
 
 
 \usepackage{tikz}
+
+
+\usepackage{enumitem}
+
+
+
 \begin{document}
 
 \newpage % delete after section is complete
@@ -197,28 +203,48 @@ Creating potentially correlated draws $\bold{x}$ from $\mathcal{N}_k(\pmb{\mu}, 
 \begin{align}
 \bold{x} = \pmb{\mu} + \bold{T^T z^T} 
 \end{align}
-Intuition for the mechanics  that underlie is provided in Appendix A (not in this draft). \\
+Intuition for the mechanics  that underlie is provided in Appendix A (not contained this draft). \\
 
 \noindent
 The next step is to understand that we can split the operation in Equation (10) into two subsequent operations. For this, let $\pmb{\sigma}$ be the vector of standard deviations and let $\bold{R}$ be the correlation matrix of $\bold{x}$.
 
-The first operation is to transform the standard deviates $\bold{z}$ to correlated standard deviates $\bold{z_c}$ by using $\bold{z_c}=\bold{Q^T z^T}$. In this equation, $\bold{Q^t}$ is the lower matrix from the Cholesky decomposition $\bold{R}=\bold{Q^T Q}$. This is equivalent to the above approach in \cite{gentle2006random} for the specific case of the multivariate standard normal distribution $\mathcal{N}_k(0, R)$. This is true because for multivariate standard normal deviates, the correlation matrix is equal to the covariance matrix.
+The first operation is to transform the standard deviates $\bold{z}$ to correlated standard deviates $\bold{z_c}$ by using $\bold{z_c}=\bold{Q^T z^T}$. In this equation, $\bold{Q^t}$ is the lower matrix from the Cholesky decomposition $\bold{R_k}=\bold{Q^T Q}$. This is equivalent to the above approach in \cite{gentle2006random} for the specific case of the multivariate standard normal distribution $\mathcal{N}_k(0, R_k)$. This is true because for multivariate standard normal deviates, the correlation matrix is equal to the covariance matrix.
 
 The second operation is to scale the correlated standard normal deviates: $\bold{z}=\bold{z_c}\pmb{\sigma} + \pmb{\mu}$.\\
 
 \noindent
-The last step is to recall the inverse transform sampling method. Therewith we can transform the input parameter draws $\bold{u}$ to uncorrelated standard normal draws $\bold{z}$. Then we will continue with the two operation in the above paragraph. The transformation from $\bold{u}$ to $\bold{z}$ is summarized by the following three points:
+The last step is to recall the inverse transform sampling method. Therewith we can transform the input parameter draws $\bold{u}$ to uncorrelated standard normal draws $\bold{z}$. Then we will continue with the two operation in the above paragraph. The transformation from $\bold{u}$ to $\bold{z}$ is denoted by $ F^{-1}(\Phi)$ and summarized by the following three points:
 
 
-\centering\parbox{.35\textwidth}{
-\begin{enumerate}
+\[
+\left.\parbox{0.5\textwidth}{%
+\begin{enumerate}[label=\bfseries Step \arabic*:,leftmargin=*,labelindent=5em]
 	\item $\bold{z} = \pmb{\Phi^{-1}({u})}$
-	\item $\bold{z_c} = \bold{z Q^T}$
-	\item $\bold{x} = \pmb{\mu} + \bold{z_c}\pmb{\sigma}$.
-\end{enumerate}}
+    \item $\bold{z_c} = \bold{z Q^T}$
+    \item $\bold{x} = \pmb{\mu} + \bold{z_c(i)}\pmb{\sigma(i)}$
+\end{enumerate}
+}\right\}F^{-1}(\Phi)
+\]
 
 
+\noindent
+The above procedure is equivalent to an inverse Rosenblatt transformation, a linear inverse Nataf transformation\footnote{For the first two transformations, see \cite{lemaire2013structural}, page 78 - 113} and a linear Guassian copula. These concepts can be used to transform deviates in [0,1] to the sample space of arbitrary distribution by using the properties sketched above under varying assumptions. Notes on this relation are provided in Appendix B (not contained in this draft).\\
 
+\indent
+The one most important thing to understand is that the transformation comprised by the three steps listed above is not unique for correlated input parameters. Rather, the transformation changes with the order of parameters in vector $\bold{u}$ (see formal definition of the Rosenblatt transformation). This can seen from the lower triangular matrix $\bold{Q^T}$. For the next equation, let $R_k = (\rho_{ij})_{ij=1}^k$ and sub-matrix $R_h = (\rho_{ij})_{ij=1}^h$. Also let $\rho_i^{*,j} = (\rho_{1,j}, \rho_{1,j}, ..., \rho_{i-1,j})$ for $j \geq i$, such that $\rho_i=\rho_i^{*,j}$. Then, following \cite{madar2015direct}, 
+
+\begin{align}
+\bold{Q^T} =
+\begin{pmatrix}
+\\ 1 & 0 & 0 & ... & 0
+\\\rho_{1,2} & \sqrt{1-\rho_{1,2}^2} & 0 & ... & 0
+\\ \rho_{1,3} & \frac{\rho_{2,3}-\rho_{1,2}\rho_{1,3}}{\sqrt{1-\rho_{1,2}^2}} & \sqrt{1-\rho_{3}R^{-1}_2\rho_{3}^T} & ... & 0
+\\\vdots & \vdots & \vdots & \vdots & \vdots
+\\ \rho_{1,k} & \frac{\rho_{3,k}-\rho_{3}^{*,k}R^{-1}_2\rho_{3}^T}{\sqrt{1-\rho_{3}R^{-1}_2\rho_{3}^T}} & ... &
+... & \sqrt{1-\rho_{k}R^{-1}_2\rho_{k}^T}
+\end{pmatrix}.
+\end{align}
+This implies, looking at Step 2, that the order of the uncorrelated standard normal deviates $\pmb{z}$ implies a hierarchy amongst the correlated deviates $\pmb{z_c}$, such that: The first parameter is not subject to the correlation, the second parameter is subject to the correlation with the first parameter, the third parameter is subject to the parameters before, etc. Therefore, typically $F^{-1}(\Phi)(\bold{u}) \neq F^{-1}(\Phi)(\bold{u'})$, where $\bold{u'}$ denotes $\bold{u}$ in a different order.
 
 
 

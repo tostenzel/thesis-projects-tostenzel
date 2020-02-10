@@ -17488,4 +17488,15 @@
   publisher = {Elsevier},
 }
 
+@Article{saltelli2002making,
+  author    = {Saltelli, Andrea},
+  title     = {Making best use of model evaluations to compute sensitivity indices},
+  journal   = {Computer physics communications},
+  year      = {2002},
+  volume    = {145},
+  number    = {2},
+  pages     = {280--297},
+  publisher = {North-Holland},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}
