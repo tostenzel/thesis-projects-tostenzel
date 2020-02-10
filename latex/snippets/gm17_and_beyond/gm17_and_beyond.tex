@@ -147,7 +147,7 @@ A matrix in radial design is generated in the following way: Draw a vector of le
 a_1 & a_2 & ... & a_k \\
 \bold{b_1} & a_2 & ... & a_k \\
 a_1 & \bold{b_2} & ... & a_k \\
-\vdots & \vdots & \vdots & \vdots\\
+\vdots & \vdots & 	\ddots & \vdots\\
 a_1 & a_2 & ... & \bold{b_k}
 \end{pmatrix}
 \end{align}
@@ -169,7 +169,7 @@ There are different forms of trajectories. Here, I focus on the version presente
 a_1 & a_2 & ... & a_k \\
 \bold{b_1} & a_2 & ... & a_k \\
 \bold{b_1} & \bold{b_2} & ... & a_k \\
-\vdots & \vdots & \vdots & \vdots\\
+\vdots & \vdots & 	\ddots & \vdots\\
 \bold{b_1} & \bold{b_2} & ... & \bold{b_k}
 \end{pmatrix}
 \end{align}
@@ -239,14 +239,16 @@ The one most important point to understand is that the transformation comprised 
 \\ 1 & 0 & 0 & ... & 0
 \\\rho_{1,2} & \sqrt{1-\rho_{1,2}^2} & 0 & ... & 0
 \\ \rho_{1,3} & \frac{\rho_{2,3}-\rho_{1,2}\rho_{1,3}}{\sqrt{1-\rho_{1,2}^2}} & \sqrt{1-\pmb{\rho_{3}}\bold{R^{-1}_2}\pmb{\rho_{3}^T}} & ... & 0
-\\\vdots & \vdots & \vdots & \vdots & \vdots
+\\\vdots & \vdots & \vdots & 	\ddots & \vdots
 \\ \rho_{1,k} &\frac{\rho_{2,k}-\rho_{1,2}\rho_{1,k}}{\sqrt{1-\rho_{1,2}^2}} & \frac{\pmb{\rho_{3,k}}-\pmb{\rho_{3}^{*,k}}\bold{R^{-1}_2}\pmb{\rho_{3}^T}}{\sqrt{1-\pmb{\rho_{3}}\bold{R^{-1}_2}\pmb{\rho_{3}^T}}}  &
 ... & \sqrt{1-\pmb{\rho_{k}}\bold{R^{-1}_2}\pmb{\rho_{k}^T}}
 \end{pmatrix}.
 \end{align}
 Equation (11) together with Step 2 implies, that the order of the uncorrelated standard normal deviates $\pmb{z}$ constitute a hierarchy amongst the correlated deviates $\bold{z_c}$t, in the following manner: The first parameter is not subject to any correlations, parameter is subject to the correlation with the first parameter, the third parameter is subject to the correlations with the parameters before, etc. Therefore, if parameters are correlated, typically $\bold{Q^T z^T} \neq \bold{Q^T (z')^T}$ and $F^{-1}(\Phi)(\bold{u}) \neq F^{-1}(\Phi)(\bold{u'})$, where $\bold{z'}$ and $\bold{u'}$ denote $\bold{z}$ and $\bold{u}$ in different orders.
 
-Coming back to the EE-based measures for correlated inputs, \cite{ge2017extending} construct two variations of derivatives / EEs $d$ in Equation (3). They call one derivative the independent Elementary Effects, $d_i^{ind}$, and the other the full Elementary Effects, $d_i^{full}$. For each of these two EEs, they derive the aggreate measures $\mu$, $\mu^*$ and $\sigma$. The difference between the two EEs is that the first one excludes and the second one includes the effect from adding the step $\Delta^i$ to $X_i$ on the other parameters $\bold{X_{\sim i}}$. Knowing $d_i^{ind}$ is important because the correlations can decrease $d_i^{full}$ (close to 0). However, if the independent-EE-based measures are not close to zero, $X_i$ is still important. Additionally, fixing this parameter might possibly change the $d_i^{full}$s of $\bold{X_{\sim i}}$. 
+Coming back to the EE-based measures for correlated inputs, \cite{ge2017extending} construct two variations of derivatives / EEs $d$ in Equation (3). They call one derivative the independent Elementary Effects, $d_i^{ind}$, and the other the full Elementary Effects, $d_i^{full}$. For each of these two EEs, they derive the aggreate measures $\mu$, $\mu^*$ and $\sigma$. The difference between the two EEs is that the first one excludes and the second one includes the effect from adding the step $\Delta^i$ to $X_i$ on the other parameters $\bold{X_{\sim i}}$. Knowing $d_i^{ind}$ is important because the correlations can decrease $d_i^{full}$ (close to 0). However, if the independent-EE-based measures are not close to zero, $X_i$ is still important. Additionally, fixing this parameter might possibly change the $d_i^{full}$s of $\bold{X_{\sim i}}$.\\
+
+\noindent 
 For the trajectory design, the formula for the full Elementary Effect, is given by
 \begin{align}
 d_i^{full} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\Delta}.
@@ -260,71 +262,65 @@ In Equation (12), $\mathcal{T}(\cdot; i) \defeq \mathcal{T}_1\bigg(\mathcal{T}_2
 a_k & a_1 & ... & ... &  a_{k-1} \\
 \bold{b_1} & a_2 & ... & ... &  a_k \\
 \bold{b_2} & a_3 & ... & ... &  \bold{b_1} \\
-\vdots & \vdots & \vdots & ... &  \vdots\\
+\vdots & \vdots & \vdots & 	\ddots &  \vdots\\
 \bold{b_k} & \bold{b_{1}} & ... & ... &  \bold{b_{k-1}}
 \end{pmatrix}
 \end{align}
 \begin{align}
-\mathcal{T}_1(\bold{T_{i,*}}; i)=
+\mathcal{T}_1(\bold{T_{i,*}}; i-1)=
 \begin{pmatrix}
 a_1 & a_2 & ... & ... &  a_k \\
 a_2 & ... & ... &  a_k & \bold{b_1} \\
 a_3 & ... & ... &  \bold{b_1} & \bold{b_2} & \\
-\vdots & \vdots & \vdots & ... &  \vdots\\
+\vdots & \vdots & \vdots & 	\ddots &  \vdots\\
 \bold{b_1} & \bold{b_{2}} & ... & ... &  \bold{b_{k}}
 \end{pmatrix}
 \end{align}
-Two points can be seen from Equation (13) and (14). First, $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$ and $\mathcal{T}_1(\bold{T_{i,*}}; i)$, i.e. the $(i+1)$-th row in Eq. 13 and the $(i)$-th row in Eq. 14 only differ on the $(i)$-th element. The difference is $b_i - a_i$. Thus, these two rows can be used two compute the Elementary Effects as for the uncorrelated case in Equation (9). However, in this order, the parameters are in the wrong positions to be directly handed over to the function, as the $i$-th parameter is always in front. The second point is that in $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$, $b_i$ is in front of the $i$-th row. This order prepares the establishing of the right correlation by $\mathcal{T}_2$ hierarchy, such that $\Delta$ in $a_i + \Delta$ is included to transform all other elements that represent parameters $X_{\sim i}$. 
-Then, $\mathcal{T}_1$ restores the original row order and $d_i^{full}$ can comfortably be computed by comparing function evaluations of row $i+1$ in $\mathcal{T}(\bold{T_{i+1,*}}; i-1)$ with function evaluations of row $i$ in $\mathcal{T}(\bold{T_{i,*}}; i-1)$.
+Two points can be seen from Equation (13) and (14). First, $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$ and $\mathcal{T}_1(\bold{T_{i,*}}; i)$, i.e. the $(i+1)$-th row in Eq. 13 and the $(i)$-th row in Eq. 14 only differ on the $(i)$-th element. The difference is $b_i - a_i$. Thus, these two rows can be used two compute the Elementary Effects as for the uncorrelated case in Equation (9). However, in this order, the parameters are in the wrong positions to be directly handed over to the function, as the $i$-th parameter is always in front. The second point is that in $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$, $b_i$ is in front of the $i$-th row. This order prepares the establishing of the right correlation by $\mathcal{T}_2$ hierarchy, such that $\Delta$ in $a_i + \Delta$ is included to transform all other elements that represent parameters $X_{\sim i}$. Importantly, the mean vector $\bold{x}$ and the covariance matrix $\pmb{\Sigma}$ and its transformed representatives have always to be re-ordered according to each row. 
+Then, $\mathcal{T}_1$ restores the original row order and $d_i^{full}$ can comfortably be computed by comparing function evaluations of row $i+1$ in $\mathcal{T}(\bold{T_{i+1,*}}; i-1)$ with function evaluations of row $i$ in $\mathcal{T}(\bold{T_{i,*}}; i-1)$. Now, the two transformed trajectories only differ in the $i$-th element in each row $i$. \\
 
-
-
-The formula for the independent Elementary Effect is
+\noindent
+The formula for the independent Elementary Effect for the trajectory design is given by
 \begin{align}
 d_i^{ind} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\Delta}.
 \end{align}
 
+Note that $f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) = \mathcal{T}(\bold{T_{i,*}}; i-1)$ which is the funcion argument in the subtrahent in the definition of $d^{full}$ in Equation (12). Here, the $X_i$ that takes the step in the denominator of the Elementary Effect is moved to the back such that the step does not affect the other input parameters $\bold{X_{\sim i}}$ through the correlations. The left trajectory is constructed such that for each row $i$, $a_i$ does take the step that $b_i$ took in the aforementioned minuend trajectory. The argument of subtrahend in the denominator in $d_i^{ind}$ is given by the rows in
 
 \begin{align}
-\mathcal{T}({\bold{R}})
-=
+\mathcal{T}_1(\bold{T_{i,*}}; i-1)=
 \begin{pmatrix}
-a_1 & a_2 & ... & ... &  a_k \\
-\bold{b_1} & a_2 & ... & ... &  a_k \\
-\bold{b_2} & a_3 & ... & ... &  \bold{b_1} \\
-\vdots & \vdots & \vdots & ... &  \vdots\\
-\bold{b_k} & \bold{b_{1}} & ... & ... &  \bold{b_{k-1}}
+a_2 & a_3 & ... & ... &  a_1 \\
+a_3 & ... & a_k &  \bold{b_1} & a_2 \\
+a_4 & ... & \bold{b_1} &  \bold{b_2} & a_3 & \\
+\vdots & \vdots & \vdots & 	\ddots &  \vdots\\
+\bold{b_2} & \bold{b_{3}} & ... & ... &  \bold{b_{1}}
 \end{pmatrix}
 \end{align}
 
-
-The reordering transformation for the minuend of the independet EE is.
-
-
+The transformation for the samples in radial design work equal except of that the minuend samples are composed of the first row copied to each row below because the steps in the radial design are always taken from the draws in the first row. It is important to also reorder the minuend trajectories to account for the correlation hierarchy and the inverse transformation performed by $\mathcal{T_2}$. The forumalae of the Elementary Effects for the radial design are given by Equation (17) and (18).
 
 \begin{align}
-\mathcal{T}({\bold{R}}) =
-\begin{pmatrix}
-a_1 & a_2 & ... &  ... & a_k \\
-a_2 & ... & ... &    a_k & \bold{b_1} \\
-a_3 & ... &  a_k & \bold{b_1}  & \bold{b_2}\\
-\vdots & \vdots & \vdots & \vdots & \vdots\\
-\bold{b_1} & \bold{b_2} & ... &   ... & \bold{b_k}
-\end{pmatrix}
+d_i^{full} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i)\big)}{\Delta}.
 \end{align}
 
+\begin{align}
+d_i^{ind} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i)\big)}{\Delta}.
+\end{align}
 
-- Here I run short of time and will cut it short to get to my own measures and some comments on the implementation.\\
+\subsection{Implementation}
 
-- The main idea of the reordering is for the minuend in $EE_full$ to move the newly altered $a+\Delta$ to the FRONT and the old $a+\Delta$ to the back. Therewith, only the $\Delta$ in the $a+\Delta$ is included in the on-sided correlation of all other parameters thereafter. The subtrahent of each row is the very same row except of that $\Delta$ is not added to the first element. \\
+I implemented the method by \cite{ge2017extending} in Python 3. I wrote at least one test for each function. This is a coverage of 100 \%. I am able to replicate their results for the normally distributed examples, i.e. Test Case 1 and Test Case 2 up to a reasonable degree given that they do not use a large number of samples.
+The replication can be found in the two notebooks at branch $\textit{replication\_gm17}$.
 
-- The main idea of the reordering is for the minuend in $EE_ind$ to move the newly altered $a+\Delta$ to the BACK and the old $a+\Delta$ in front of the BACK. Therewith, only no $\Delta$ included in the on-sided correlation of all other parameters after the front. The subtrahent of each row is the very same row except of that $\Delta$ is not added to the first element. \\
+I will present the shortcomings of the Elementary Effects in \cite{ge2017extending}. There, I will explain why it not possible to solve common tests function for uncorrelated, normally distributed parameters.
 
-- The only difference from the radial design to the trajectory design is, that the matrix for the subtrahend is only comprised of the first rows. Yet, the order of the first rows is also changed in the same way as for the trajectory design! \\
+I will also present improved measures that I created. With these, I can solve all test for uncorrelated and correlated input parameters. Test functions that I solved exactly are, first, the large test function with six paramters in [0,1] based on the so-called $g$-function, presented in \cite{Saltelli.2008}, page 123 - 129. The second test function is the linear function with two normally distributed input parameters and non-unit variance in \cite{Smith.2014}, page 335. This function is similar to Test Case 1 and 2 and provides intuition on what the results for well-defined Elementary Effects for correlated input parameters should be. I am able to generate these with the implementation of my measures.
 
-These four transformations are applied to each trajectory or radial sample. Then, $F^{-1}(\Phi)(\bold{u'})$ is applied to each row - using the covariance matrix and mean vector according to the new order of the parameter vector for each row. \\
+\subsection{Drawbacks in \cite{ge2017extending} and corrected Elementary Effects.}
 
-Afterwards, the reorder-transformation is reversed.
+
+
 
 
 
@@ -334,10 +330,7 @@ Then, using the respective rows \cite{ge2017extending} apply the formula for $d^
 The mistake is, that they transform $\Delta$ and $(b_i - a_i)$ multiple times. $F^{-1}(\Phi)$ for normally distributed parameters involves the non-linear transformation by $\Phi$ and the scaling by $\sigma$. This transformation must also be executed for the step in the denominator for both Effects. Additionally, the step in the denominator of the independent effect has to be multiplied by the last element of the lower triangular matrix from the Cholesky decomposition of the correlation matrix, i.e. ${Q^T}_{k,k}$. If this is not done, $EE_full$ is non-linearily distorted and $EE_ind$ is non-linearily distorted and distorted such that the effects for parameters at later positions in the parameter vector are decreased.
 The correct denominator for both $EE_{full}$ is $F^{-1}(\Phi(b)) - F^{-1}(\Phi(a))$. The correct denominator for both $EE_{ind}$ is ${Q^T}_{k,k}(F^{-1}(\Phi(b)) - F^{-1}(\Phi(a)))$
 
-Remarks on the implementation. I can implement all results by GM, see the notebooks in the README at branch $`replication_gm17`$: $https://github.com/HumanCapitalAnalysis/thesis-projects-tostenzel/tree/replication_gm17$
 
-The authors measures do not work for uncorrelated parameters because they are distored.
-My measures work for these cases. I solved one test function from \cite{Smith.2014}, page 335 which is very similar to Test Case 1 and 2 in \cite{ge2017extending} (correlated normal). I also solved the large test function from \cite{Saltelli.2008}, page 123 - 239 (uncorrelated uniform). These can be found in $test_screening_measures.py$ on the master branch.
 
 My results for Test Case 1 and 2 are correct: The EE-full is the sum of coefficients times the correlation of one parameter with all other parameters including itself. The EE-ind is only its coefficient. The SD is always zero as the effect of a linear function is always the same of its domain, see \cite{Smith.2014}, page 335.
 
