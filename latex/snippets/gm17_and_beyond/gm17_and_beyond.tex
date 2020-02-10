@@ -246,7 +246,85 @@ The one most important thing to understand is that the transformation comprised 
 \end{align}
 This implies, looking at Step 2, that the order of the uncorrelated standard normal deviates $\pmb{z}$ implies a hierarchy amongst the correlated deviates $\pmb{z_c}$, such that: The first parameter is not subject to the correlation, the second parameter is subject to the correlation with the first parameter, the third parameter is subject to the parameters before, etc. Therefore, typically $F^{-1}(\Phi)(\bold{u}) \neq F^{-1}(\Phi)(\bold{u'})$, where $\bold{u'}$ denotes $\bold{u}$ in a different order.
 
+Coming back to the EE-based measures for correlated inputs, \cite{ge2017extending} construct two measures for each measure for uncorrelated inputs. One half of these measures is based on the so-called independent Elementary Effects and the other half on the full Elementary Effects. The difference between these measures is that the first excludes and the second includes correlation. It is important to have the independent Elementary Effects, because it is possible that the correlation decreases the measure of one input parameter (close to 0). However, if the independent-EE-based measures are not close to zero, $X_i$ is still important. Additionally, fixing this parameter might possibly change the full-EEs of $X_{\sim i}$. Another notable is that the full Elementary Effect is design to include the additional effect of the step in the two sampling schemes on the other parameters
 
+Considering the impact of the parameter order, \cite{ge2017extending} apply the following reordering transformation $\mathcal{T}$ right before $F^{-1}(\Phi)$ to each trajectory to obtain the minuend of the full EE:
+
+\begin{align}
+\mathcal{T}({\bold{R}}) =
+\mathcal{T}
+\begin{pmatrix}
+a_1 & a_2 & ... & a_k \\
+\bold{b_1} & a_2 & ... & a_k \\
+\bold{b_1} & \bold{b_2} & ... & a_k \\
+\vdots & \vdots & \vdots & \vdots\\
+\bold{b_1} & \bold{b_2} & ... & \bold{b_k}
+\end{pmatrix}
+=
+\begin{pmatrix}
+a_1 & a_2 & ... & ... &  a_k \\
+\bold{b_1} & a_2 & ... & ... &  a_k \\
+\bold{b_2} & a_3 & ... & ... &  \bold{b_1} \\
+\vdots & \vdots & \vdots & ... &  \vdots\\
+\bold{b_k} & \bold{b_{1}} & ... & ... &  \bold{b_{k-1}}
+\end{pmatrix}
+\end{align}
+
+
+The reordering transformation for the minuend of the independet EE is.
+
+
+
+\begin{align}
+\mathcal{T}({\bold{R}}) =
+\mathcal{T}
+\begin{pmatrix}
+a_1 & a_2 & ... & a_k \\
+\bold{b_1} & a_2 & ... & a_k \\
+\bold{b_1} & \bold{b_2} & ... & a_k \\
+\vdots & \vdots & \vdots & \vdots\\
+\bold{b_1} & \bold{b_2} & ... & \bold{b_k}
+\end{pmatrix}
+=
+\begin{pmatrix}
+a_1 & a_2 & ... &  ... & a_k \\
+a_2 & ... & ... &    a_k & \bold{b_1} \\
+a_3 & ... &  a_k & \bold{b_1}  & \bold{b_2}\\
+\vdots & \vdots & \vdots & \vdots & \vdots\\
+\bold{b_1} & \bold{b_2} & ... &   ... & \bold{b_k}
+\end{pmatrix}
+\end{align}
+
+
+- Here I run short of time and will cut it short to get to my own measures and some comments on the implementation.\\
+
+- The main idea of the reordering is for the minuend in $EE_full$ to move the newly altered $a+\Delta$ to the FRONT and the old $a+\Delta$ to the back. Therewith, only the $\Delta$ in the $a+\Delta$ is included in the on-sided correlation of all other parameters thereafter. The subtrahent of each row is the very same row except of that $\Delta$ is not added to the first element. \\
+
+- The main idea of the reordering is for the minuend in $EE_ind$ to move the newly altered $a+\Delta$ to the BACK and the old $a+\Delta$ in front of the BACK. Therewith, only no $\Delta$ included in the on-sided correlation of all other parameters after the front. The subtrahent of each row is the very same row except of that $\Delta$ is not added to the first element. \\
+
+- The only difference from the radial design to the trajectory design is, that the matrix for the subtrahend is only comprised of the first rows. Yet, the order of the first rows is also changed in the same way as for the trajectory design! \\
+
+These four transformations are applied to each trajectory or radial sample. Then, $F^{-1}(\Phi)(\bold{u'})$ is applied to each row - using the covariance matrix and mean vector according to the new order of the parameter vector for each row. \\
+
+Afterwards, the reorder-transformation is reversed.
+
+
+
+Then, using the respective rows \cite{ge2017extending} apply the formula for $d^{(j)}$ to obtain the individual Elementary Effects. \\
+
+{\color{red}
+The mistake is, that they transform $\Delta$ and $(b_i - a_i)$ multiple times. $F^{-1}(\Phi)$ for normally distributed parameters involves the non-linear transformation by $\Phi$ and the scaling by $\sigma$. This transformation must also be executed for the step in the denominator for both Effects. Additionally, the step in the denominator of the independent effect has to be multiplied by the last element of the lower triangular matrix from the Cholesky decomposition of the correlation matrix, i.e. ${Q^T}_{k,k}$. If this is not done, $EE_full$ is non-linearily distorted and $EE_ind$ is non-linearily distorted and distorted such that the effects for parameters at later positions in the parameter vector are decreased.
+The correct denominator for both $EE_{full}$ is $F^{-1}(\Phi(b)) - F^{-1}(\Phi(a))$. The correct denominator for both $EE_{ind}$ is ${Q^T}_{k,k}(F^{-1}(\Phi(b)) - F^{-1}(\Phi(a)))$
+
+Remarks on the implementation. I can implement all results by GM, see the notebooks in the README at branch $`replication_gm17`$: $https://github.com/HumanCapitalAnalysis/thesis-projects-tostenzel/tree/replication_gm17$
+
+The authors measures do not work for uncorrelated parameters because they are distored.
+My measures work for these cases. I solved one test function from \cite{Smith.2014}, page 335 which is very similar to Test Case 1 and 2 in \cite{ge2017extending} (correlated normal). I also solved the large test function from \cite{Saltelli.2008}, page 123 - 239 (uncorrelated uniform). These can be found in $test_screening_measures.py$ on the master branch.
+
+My results for Test Case 1 and 2 are correct: The EE-full is the sum of coefficients times the correlation of one parameter with all other parameters including itself. The EE-ind is only its coefficient. The SD is always zero as the effect of a linear function is always the same of its domain, see \cite{Smith.2014}, page 335.
+
+
+}
 
 
 
