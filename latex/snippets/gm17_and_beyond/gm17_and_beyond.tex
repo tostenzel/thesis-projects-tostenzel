@@ -115,21 +115,21 @@ S_{i}^T = \frac{\E_{\sim i}[\text{Var}_{i}[Y|\bold{X_{\sim i}]]}}{\text{Var}[Y]}
 \end{align}
 
 \noindent
-Computing these measures requires many function evaluations, even if an estimator is used as a shortcut. The more time-intense one function evaluation is, the more utility provides the aforementioned Factor Fixing based on qualitative measures. The most commonly used measures in qualitative GSA is the Elementary Effect (EE), $\mu$, the absolute Elementary Effects, $\mu^*$, and the standard deviation of the Elementary Effect, $\sigma$. The Elementary Effect is given by the mean of a number of function derivatives with respect to one input parameter. The "change in", or the "step of" the input parameter, denoted by $\Delta$, has not to be infinitesimally small. The only restriction is that $X_i + \Delta$ is in the domain of $X_i$. The derivation, also called the individual Elementary Effect, is denoted by
+Computing these measures requires many function evaluations, even if an estimator is used as a shortcut. The more time-intense one function evaluation is, the more utility provides the aforementioned Factor Fixing based on qualitative measures. The most commonly used measures in qualitative GSA is the mean Elementary Effect (EE), $\mu$, the mean absolute Elementary Effects, $\mu^*$, and the standard deviation of the Elementary Effects, $\sigma$. The Elementary Effect of $X_i$ is given by one individual function derivative with respect $X_i$. The "change in", or the "step of" the input parameter, denoted by $\Delta$, has not to be infinitesimally small. The only restriction is that $X_i + \Delta$ is in the domain of $X_i$. The Elementary Effect, or derivative, is denoted by
 \begin{align}
-d^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delta^{(i,j)}},
+d_i^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delta^{(i,j)}},
 \end{align}
 where $j$ is an index for the number of observations of $X_i$.
-Then, the Elementary Effect is given by
+Then, the mean Elementary Effect is given by
 
 \begin{align}
-\mu = \frac{1}{r} \sum_{j=1}^{r} d^{(j)}.
+\mu_i = \frac{1}{r} \sum_{j=1}^{r} d_i^{(j)}.
 \end{align}
 \noindent
-The absolute Elementary Effects, $\mu^*$ is used to prevent observations of opposite sign to cancel each other out.
+The mean absolute Elementary Effect, $\mu_i^*$ is used to prevent observations of opposite sign to cancel each other out.
 
 \begin{align}
-\mu^* = \frac{1}{r} \sum_{j=1}^{r} \big| d^{(j)} \big|.
+\mu_i^* = \frac{1}{r} \sum_{j=1}^{r} \big| d_i^{(j)} \big|.
 \end{align}
 \noindent
 In Equation 4 and 5, $r$ is the number of parameter draws with index $j$. Step $\Delta^{(j)}$ may or may not vary depending on the sample design that is used to draw the input parameters. These measures (together) are used to proxy the total Sobol' indices that contains the parameter-specific interactions with all other parameter in Equation(2). The total Sobol' index is the relevant one because it also contains interactions that may be important. If the qualitative measures are close to 0 for one particular parameter, its variation can be rendered as irrelevant for the variation in the function output (given there are parameters with measures substantially different from 0).
@@ -153,7 +153,7 @@ a_1 & a_2 & ... & \bold{b_k}
 \end{align}
 \noindent
 Note here, that each column consists only of the first row element, except of for one row.
-From this matrix, one individual EE can be obtained for each parameter $X_i$. This is achieved by using the $(i+1)$-th row as function argument for the minuend and the first row as subtrahend in the formula for the individual EE. Then, $\Delta^{(i,j)} = b_i^{(j)} - a_i^{(j)}$. Tailored to the radial scheme, the derivation can be re-formulated as in Equation (3), where $j$ is the number of radial subsamples and $i$ represents the input parameter $X_i$.
+From this matrix, one EE can be obtained for each parameter $X_i$. This is achieved by using the $(i+1)$-th row as function argument for the minuend and the first row as subtrahend in the formula for the EE. Then, $\Delta^{(i,j)} = b_i^{(j)} - a_i^{(j)}$. Tailored to the radial scheme, the derivative can be re-formulated as in Equation (3), where $j$ is the number of radial subsamples and $i$ represents the input parameter $X_i$.
 \begin{align}
 d^{(j)}_i =  \frac{Y(\bold{a_{\sim i}^{(j)}}, b_i^{(j)}) - Y(\bold{a})}{b_i^{(j)} - a_i^{(j)}} = \frac{Y(\bold{R_{i+1,*}}) -  Y(\bold{R_{1,*}})}{b_i^{(j)} - a_i^{(j)}}.
 \end{align}
@@ -177,7 +177,7 @@ a_1 & a_2 & ... & a_k \\
 
 \noindent
 In contrary to the radial scheme, each $b_i$ is copied to the subsequent row. Therefore, the EEs have to be determined by comparing each row with the row above instead of with the first row.
-Importantly, two random transformations are common. These are randomly switching rows and randomly interchanging the $i$-th column with the $(k-i)$-th column and then reversing the column. The first transformation is skipped as it does not add additional coverage and because we need the stairs-shaped design to facilitate later transformations which account for correlation between input parameters. The second transformation is adapted because it is important to also have negative steps and because it does sustain the stairs shape. Yet, this implies that $\Delta^{(i,j)}$ is also parameter- and trajectory-specific. Let $f$ and $h$ be additional indices representing the input parameters. The derivation formula is adapted to the trajectory design as follows:\footnote{In contrary to most authors, I also denote the step as a subtraction instead of $\Delta$ when referring to the trajectory design. This provides additional clarity.}
+Importantly, two random transformations are common. These are randomly switching rows and randomly interchanging the $i$-th column with the $(k-i)$-th column and then reversing the column. The first transformation is skipped as it does not add additional coverage and because we need the stairs-shaped design to facilitate later transformations which account for correlation between input parameters. The second transformation is adapted because it is important to also have negative steps and because it does sustain the stairs shape. Yet, this implies that $\Delta^{(i,j)}$ is also parameter- and trajectory-specific. Let $f$ and $h$ be additional indices representing the input parameters. The derivative formula is adapted to the trajectory design as follows:\footnote{In contrary to most authors, I also denote the step as a subtraction instead of $\Delta$ when referring to the trajectory design. This provides additional clarity.}
 
 \begin{align}
 d^{(j)}_i =  \frac{Y(\bold{b_{f \leq i}^{(j)}}, \bold{a_{h>i}^{(j)}}) - Y(\bold{b_{f<i}^{(j)}}, \bold{a_{h \geq i}^{(j)}})}{b_i^{(j)} - a_i^{(j)}} = \frac{Y(\bold{T_{i+1,*})} -  Y(\bold{T_{i,*}})}{b_i^{(j)} - a_i^{(j)}}.
@@ -210,7 +210,7 @@ The next step is to understand that we can split the operation in Equation (10) 
 
 The first operation is to transform the standard deviates $\bold{z}$ to correlated standard deviates $\bold{z_c}$ by using $\bold{z_c}=\bold{Q^T z^T}$. In this equation, $\bold{Q^t}$ is the lower matrix from the Cholesky decomposition $\bold{R_k}=\bold{Q^T Q}$. This is equivalent to the above approach in \cite{gentle2006random} for the specific case of the multivariate standard normal distribution $\mathcal{N}_k(0, R_k)$. This is true because for multivariate standard normal deviates, the correlation matrix is equal to the covariance matrix.
 
-The second operation is to scale the correlated standard normal deviates: $\bold{z}=\bold{z_c}\pmb{\sigma} + \pmb{\mu}$.\\
+The second operation is to scale the correlated standard normal deviates: $\bold{z}=\bold{z_c(i)}\pmb{\sigma}\bold{(i)} + \pmb{\mu}$.\\
 
 \noindent
 The last step is to recall the inverse transform sampling method. Therewith we can transform the input parameter draws $\bold{u}$ to uncorrelated standard normal draws $\bold{z}$. Then we will continue with the two operation in the above paragraph. The transformation from $\bold{u}$ to $\bold{z}$ is denoted by $ F^{-1}(\Phi)$ and summarized by the following three points:
@@ -220,46 +220,45 @@ The last step is to recall the inverse transform sampling method. Therewith we c
 \left.\parbox{0.5\textwidth}{%
 \begin{enumerate}[label=\bfseries Step \arabic*:,leftmargin=*,labelindent=5em]
 	\item $\bold{z} = \pmb{\Phi^{-1}({u})}$
-    \item $\bold{z_c} = \bold{z Q^T}$
+    \item $\bold{z_c} = \bold{Q^T z^T}$
     \item $\bold{x} = \pmb{\mu} + \bold{z_c(i)}\pmb{\sigma(i)}$
 \end{enumerate}
-}\right\}F^{-1}(\Phi)
+}\right\}F^{-1}(\Phi) \defeq \mathcal{T}_2
 \]
 
 
 \noindent
 The above procedure is equivalent to an inverse Rosenblatt transformation, a linear inverse Nataf transformation\footnote{For the first two transformations, see \cite{lemaire2013structural}, page 78 - 113} and a linear Guassian copula. These concepts can be used to transform deviates in [0,1] to the sample space of arbitrary distribution by using the properties sketched above under varying assumptions. Notes on this relation are provided in Appendix B (not contained in this draft).\\
 
-\indent
-The one most important thing to understand is that the transformation comprised by the three steps listed above is not unique for correlated input parameters. Rather, the transformation changes with the order of parameters in vector $\bold{u}$ (see formal definition of the Rosenblatt transformation). This can seen from the lower triangular matrix $\bold{Q^T}$. For the next equation, let $R_k = (\rho_{ij})_{ij=1}^k$ and sub-matrix $R_h = (\rho_{ij})_{ij=1}^h$. Also let $\rho_i^{*,j} = (\rho_{1,j}, \rho_{1,j}, ..., \rho_{i-1,j})$ for $j \geq i$, such that $\rho_i=\rho_i^{*,j}$. Then, following \cite{madar2015direct}, 
+\noindent
+The one most important point to understand is that the transformation comprised by the three steps listed above is not unique for correlated input parameters. Rather, the transformation changes with the order of parameters in vector $\bold{u}$ (see also the formal definition of the Rosenblatt transformation). This can be seen from the lower triangular matrix $\bold{Q^T}$. To prepare the next equation, let $\bold{R_k} = (\rho_{ij})_{ij=1}^k$ and sub-matrix $\bold{R_h} = (\rho_{ij})_{ij=1}^h$. Also let $\pmb{\rho_i^{*,j}} = (\rho_{1,j}, \rho_{2,j}, ..., \rho_{i-1,j})$ for $j \geq i$ with the following abbreviation $\pmb{\rho_i}\defeq\pmb{\rho_i^{*,i}}$. Following \cite{madar2015direct}, this the lower matrix can be written as
 
 \begin{align}
 \bold{Q^T} =
 \begin{pmatrix}
 \\ 1 & 0 & 0 & ... & 0
 \\\rho_{1,2} & \sqrt{1-\rho_{1,2}^2} & 0 & ... & 0
-\\ \rho_{1,3} & \frac{\rho_{2,3}-\rho_{1,2}\rho_{1,3}}{\sqrt{1-\rho_{1,2}^2}} & \sqrt{1-\rho_{3}R^{-1}_2\rho_{3}^T} & ... & 0
+\\ \rho_{1,3} & \frac{\rho_{2,3}-\rho_{1,2}\rho_{1,3}}{\sqrt{1-\rho_{1,2}^2}} & \sqrt{1-\pmb{\rho_{3}}\bold{R^{-1}_2}\pmb{\rho_{3}^T}} & ... & 0
 \\\vdots & \vdots & \vdots & \vdots & \vdots
-\\ \rho_{1,k} & \frac{\rho_{3,k}-\rho_{3}^{*,k}R^{-1}_2\rho_{3}^T}{\sqrt{1-\rho_{3}R^{-1}_2\rho_{3}^T}} & ... &
-... & \sqrt{1-\rho_{k}R^{-1}_2\rho_{k}^T}
+\\ \rho_{1,k} &\frac{\rho_{2,k}-\rho_{1,2}\rho_{1,k}}{\sqrt{1-\rho_{1,2}^2}} & \frac{\pmb{\rho_{3,k}}-\pmb{\rho_{3}^{*,k}}\bold{R^{-1}_2}\pmb{\rho_{3}^T}}{\sqrt{1-\pmb{\rho_{3}}\bold{R^{-1}_2}\pmb{\rho_{3}^T}}}  &
+... & \sqrt{1-\pmb{\rho_{k}}\bold{R^{-1}_2}\pmb{\rho_{k}^T}}
 \end{pmatrix}.
 \end{align}
-This implies, looking at Step 2, that the order of the uncorrelated standard normal deviates $\pmb{z}$ implies a hierarchy amongst the correlated deviates $\pmb{z_c}$, such that: The first parameter is not subject to the correlation, the second parameter is subject to the correlation with the first parameter, the third parameter is subject to the parameters before, etc. Therefore, typically $F^{-1}(\Phi)(\bold{u}) \neq F^{-1}(\Phi)(\bold{u'})$, where $\bold{u'}$ denotes $\bold{u}$ in a different order.
+Equation (11) together with Step 2 implies, that the order of the uncorrelated standard normal deviates $\pmb{z}$ constitute a hierarchy amongst the correlated deviates $\bold{z_c}$t, in the following manner: The first parameter is not subject to any correlations, parameter is subject to the correlation with the first parameter, the third parameter is subject to the correlations with the parameters before, etc. Therefore, if parameters are correlated, typically $\bold{Q^T z^T} \neq \bold{Q^T (z')^T}$ and $F^{-1}(\Phi)(\bold{u}) \neq F^{-1}(\Phi)(\bold{u'})$, where $\bold{z'}$ and $\bold{u'}$ denote $\bold{z}$ and $\bold{u}$ in different orders.
 
-Coming back to the EE-based measures for correlated inputs, \cite{ge2017extending} construct two measures for each measure for uncorrelated inputs. One half of these measures is based on the so-called independent Elementary Effects and the other half on the full Elementary Effects. The difference between these measures is that the first excludes and the second includes correlation. It is important to have the independent Elementary Effects, because it is possible that the correlation decreases the measure of one input parameter (close to 0). However, if the independent-EE-based measures are not close to zero, $X_i$ is still important. Additionally, fixing this parameter might possibly change the full-EEs of $X_{\sim i}$. Another notable is that the full Elementary Effect is design to include the additional effect of the step in the two sampling schemes on the other parameters
+Coming back to the EE-based measures for correlated inputs, \cite{ge2017extending} construct two variations of derivatives / EEs $d$ in Equation (3). They call one derivative the independent Elementary Effects, $d_i^{ind}$, and the other the full Elementary Effects, $d_i^{full}$. For each of these two EEs, they derive the aggreate measures $\mu$, $\mu^*$ and $\sigma$. The difference between the two EEs is that the first one excludes and the second one includes the effect from adding the step $\Delta^i$ to $X_i$ on the other parameters $X_{\sim i}$. Knowing $d_i^{ind}$ is important because the correlations can decrease $d_i^{full}$ (close to 0). However, if the independent-EE-based measures are not close to zero, $X_i$ is still important. Additionally, fixing this parameter might possibly change the $d_i^{full}$s of $X_{\sim i}$. 
+For the trajectory design, the formula for the full Elementary Effect, is given by
+\begin{align}
+d_i^{full} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i-1)\big)}{\Delta}.
+\end{align}
+The formula for the independent Elementary Effect is
+\begin{align}
+d_i^{ind} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\Delta}.
+\end{align}
 
-Considering the impact of the parameter order, \cite{ge2017extending} apply the following reordering transformation $\mathcal{T}$ right before $F^{-1}(\Phi)$ to each trajectory to obtain the minuend of the full EE:
 
 \begin{align}
-\mathcal{T}({\bold{R}}) =
-\mathcal{T}
-\begin{pmatrix}
-a_1 & a_2 & ... & a_k \\
-\bold{b_1} & a_2 & ... & a_k \\
-\bold{b_1} & \bold{b_2} & ... & a_k \\
-\vdots & \vdots & \vdots & \vdots\\
-\bold{b_1} & \bold{b_2} & ... & \bold{b_k}
-\end{pmatrix}
+\mathcal{T}({\bold{R}})
 =
 \begin{pmatrix}
 a_1 & a_2 & ... & ... &  a_k \\
@@ -277,15 +276,6 @@ The reordering transformation for the minuend of the independet EE is.
 
 \begin{align}
 \mathcal{T}({\bold{R}}) =
-\mathcal{T}
-\begin{pmatrix}
-a_1 & a_2 & ... & a_k \\
-\bold{b_1} & a_2 & ... & a_k \\
-\bold{b_1} & \bold{b_2} & ... & a_k \\
-\vdots & \vdots & \vdots & \vdots\\
-\bold{b_1} & \bold{b_2} & ... & \bold{b_k}
-\end{pmatrix}
-=
 \begin{pmatrix}
 a_1 & a_2 & ... &  ... & a_k \\
 a_2 & ... & ... &    a_k & \bold{b_1} \\
