@@ -153,9 +153,9 @@ a_1 & a_2 & ... & \bold{b_k}
 \end{align}
 \noindent
 Note here, that each column consists only of the first row element, except of for one row.
-From this matrix, one EE can be obtained for each parameter $X_i$. This is achieved by using the $(i+1)$-th row as function argument for the minuend and the first row as subtrahend in the formula for the EE. Then, $\Delta^{(i,j)} = b_i^{(j)} - a_i^{(j)}$. Tailored to the radial scheme, the derivative can be re-formulated as in Equation (3), where $j$ is the number of radial subsamples and $i$ represents the input parameter $X_i$.
+From this matrix, one EE can be obtained for each parameter $X_i$. This is achieved by using the $(i+1)$-th row as function argument for the minuend and the first row as subtrahend in the formula for the EE. Then, $\Delta^{(i,j)} = b_i^{(j)} - a_i^{(j)}$. Tailored to the radial scheme, the derivative can be re-formulated as in Equation (3), where $i$ represents the input parameter $X_i$. We abstract from multiple sample sets and do not use index $j$ compared to Equation (3).
 \begin{align}
-d^{(j)}_i =  \frac{Y(\bold{a_{\sim i}^{(j)}}, b_i^{(j)}) - Y(\bold{a})}{b_i^{(j)} - a_i^{(j)}} = \frac{Y(\bold{R_{i+1,*}}) -  Y(\bold{R_{1,*}})}{b_i^{(j)} - a_i^{(j)}}.
+d_i =  \frac{Y(\bold{a_{\sim i}}, b_i) - Y(\bold{a})}{b_i - a_i} = \frac{Y(\bold{R_{i+1,*}}) -  Y(\bold{R_{1,*}})}{b_i - a_i}.
 \end{align}
 If the number of radial subsamples is high, the quasi-random sequence lead to a good and fast coverage of the input space (compared to a random sequence). The quasi-random sequence considered here is the Sobol' sequence. This sequence is comparably succesful in covering the unit hypercube, but also conceptually more involved. Therefore, its presentation is beyond the scope of this work. Since this sequence is quasi-random, the sequence has to be drawn at once for all sets of radial matrices.\\
 
@@ -177,10 +177,10 @@ a_1 & a_2 & ... & a_k \\
 
 \noindent
 In contrary to the radial scheme, each $b_i$ is copied to the subsequent row. Therefore, the EEs have to be determined by comparing each row with the row above instead of with the first row.
-Importantly, two random transformations are common. These are randomly switching rows and randomly interchanging the $i$-th column with the $(k-i)$-th column and then reversing the column. The first transformation is skipped as it does not add additional coverage and because we need the stairs-shaped design to facilitate later transformations which account for correlation between input parameters. The second transformation is adapted because it is important to also have negative steps and because it does sustain the stairs shape. Yet, this implies that $\Delta^{(i,j)}$ is also parameter- and trajectory-specific. Let $f$ and $h$ be additional indices representing the input parameters. The derivative formula is adapted to the trajectory design as follows:\footnote{In contrary to most authors, I also denote the step as a subtraction instead of $\Delta$ when referring to the trajectory design. This provides additional clarity.}
+Importantly, two random transformations are common. These are randomly switching rows and randomly interchanging the $i$-th column with the $(k-i)$-th column and then reversing the column. The first transformation is skipped as it does not add additional coverage and because we need the stairs-shaped design to facilitate later transformations which account for correlation between input parameters. The second transformation is adapted because it is important to also have negative steps and because it does sustain the stairs shape. Yet, this implies that $\Delta^{(i)}$ is also parameter- and trajectory-specific. Let $f$ and $h$ be additional indices representing the input parameters. The derivative formula is adapted to the trajectory design as follows:\footnote{In contrary to most authors, I also denote the step as a subtraction instead of $\Delta$ when referring to the trajectory design. This provides additional clarity.}
 
 \begin{align}
-d^{(j)}_i =  \frac{Y(\bold{b_{f \leq i}^{(j)}}, \bold{a_{h>i}^{(j)}}) - Y(\bold{b_{f<i}^{(j)}}, \bold{a_{h \geq i}^{(j)}})}{b_i^{(j)} - a_i^{(j)}} = \frac{Y(\bold{T_{i+1,*})} -  Y(\bold{T_{i,*}})}{b_i^{(j)} - a_i^{(j)}}.
+d_i =  \frac{Y(\bold{b_{f \leq i}}, \bold{a_{h>i}}) - Y(\bold{b_{f<i}}, \bold{a_{h \geq i}})}{b_i - a_i} = \frac{Y(\bold{T_{i+1,*})} -  Y(\bold{T_{i,*}})}{b_i - a_i}.
 \end{align}
 The trajectory design involves first, a fixed grid, and second and more importantly, a fixed step $\Delta$. s.t. $\{\Delta\} = \{\pm \Delta\}$. This implies less step variety and less space coverage vis-á-vis the radial design for more than a small number of draws.\\
 
@@ -246,11 +246,39 @@ The one most important point to understand is that the transformation comprised 
 \end{align}
 Equation (11) together with Step 2 implies, that the order of the uncorrelated standard normal deviates $\pmb{z}$ constitute a hierarchy amongst the correlated deviates $\bold{z_c}$t, in the following manner: The first parameter is not subject to any correlations, parameter is subject to the correlation with the first parameter, the third parameter is subject to the correlations with the parameters before, etc. Therefore, if parameters are correlated, typically $\bold{Q^T z^T} \neq \bold{Q^T (z')^T}$ and $F^{-1}(\Phi)(\bold{u}) \neq F^{-1}(\Phi)(\bold{u'})$, where $\bold{z'}$ and $\bold{u'}$ denote $\bold{z}$ and $\bold{u}$ in different orders.
 
-Coming back to the EE-based measures for correlated inputs, \cite{ge2017extending} construct two variations of derivatives / EEs $d$ in Equation (3). They call one derivative the independent Elementary Effects, $d_i^{ind}$, and the other the full Elementary Effects, $d_i^{full}$. For each of these two EEs, they derive the aggreate measures $\mu$, $\mu^*$ and $\sigma$. The difference between the two EEs is that the first one excludes and the second one includes the effect from adding the step $\Delta^i$ to $X_i$ on the other parameters $X_{\sim i}$. Knowing $d_i^{ind}$ is important because the correlations can decrease $d_i^{full}$ (close to 0). However, if the independent-EE-based measures are not close to zero, $X_i$ is still important. Additionally, fixing this parameter might possibly change the $d_i^{full}$s of $X_{\sim i}$. 
+Coming back to the EE-based measures for correlated inputs, \cite{ge2017extending} construct two variations of derivatives / EEs $d$ in Equation (3). They call one derivative the independent Elementary Effects, $d_i^{ind}$, and the other the full Elementary Effects, $d_i^{full}$. For each of these two EEs, they derive the aggreate measures $\mu$, $\mu^*$ and $\sigma$. The difference between the two EEs is that the first one excludes and the second one includes the effect from adding the step $\Delta^i$ to $X_i$ on the other parameters $\bold{X_{\sim i}}$. Knowing $d_i^{ind}$ is important because the correlations can decrease $d_i^{full}$ (close to 0). However, if the independent-EE-based measures are not close to zero, $X_i$ is still important. Additionally, fixing this parameter might possibly change the $d_i^{full}$s of $\bold{X_{\sim i}}$. 
 For the trajectory design, the formula for the full Elementary Effect, is given by
 \begin{align}
-d_i^{full} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i-1)\big)}{\Delta}.
+d_i^{full} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\Delta}.
 \end{align}
+In Equation (12), $\mathcal{T}(\cdot; i) \defeq \mathcal{T}_1\bigg(\mathcal{T}_2\big(\mathcal{T}_3(\cdot; i)\big); i\bigg)$. $\mathcal{T}_1(\cdot; i)$ orders the parameters / row elements to establish the right correlation hierarchy. $\mathcal{T}_2$, or $F^{-1}(\Phi)$, correlates the draws in $[0,1]$ and transforms them to the sample space. $\mathcal{T}_3(\cdot; i)$ reverses the element order back to the start, to be able to apply the subtraction in the numerator of the EEs row-by-row. Index $i$ in $\mathcal{T}_1(\cdot; i)$ and $\mathcal{T}_3(\cdot; i)$ stands for the number of first row elements that is cut and moved to the back of the row in the same order and in reverse. Applying $\mathcal{T}(\bold{T_{i+1,*}}; i-1)$ and $\mathcal{T}(\bold{T_{i+1,*}}; i)$ to all rows $i$ of trjactory $\bold{T}$ as in Equation (12) yields the following two transformed trajectories:
+
+\begin{align}
+\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)
+=
+\begin{pmatrix}
+a_k & a_1 & ... & ... &  a_{k-1} \\
+\bold{b_1} & a_2 & ... & ... &  a_k \\
+\bold{b_2} & a_3 & ... & ... &  \bold{b_1} \\
+\vdots & \vdots & \vdots & ... &  \vdots\\
+\bold{b_k} & \bold{b_{1}} & ... & ... &  \bold{b_{k-1}}
+\end{pmatrix}
+\end{align}
+\begin{align}
+\mathcal{T}_1(\bold{T_{i,*}}; i)=
+\begin{pmatrix}
+a_1 & a_2 & ... & ... &  a_k \\
+a_2 & ... & ... &  a_k & \bold{b_1} \\
+a_3 & ... & ... &  \bold{b_1} & \bold{b_2} & \\
+\vdots & \vdots & \vdots & ... &  \vdots\\
+\bold{b_1} & \bold{b_{2}} & ... & ... &  \bold{b_{k}}
+\end{pmatrix}
+\end{align}
+Two points can be seen from Equation (13) and (14). First, $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$ and $\mathcal{T}_1(\bold{T_{i,*}}; i)$, i.e. the $(i+1)$-th row in Eq. 13 and the $(i)$-th row in Eq. 14 only differ on the $(i)$-th element. The difference is $b_i - a_i$. Thus, these two rows can be used two compute the Elementary Effects as for the uncorrelated case in Equation (9). However, in this order, the parameters are in the wrong positions to be directly handed over to the function, as the $i$-th parameter is always in front. The second point is that in $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$, $b_i$ is in front of the $i$-th row. This order prepares the establishing of the right correlation by $\mathcal{T}_2$ hierarchy, such that $\Delta$ in $a_i + \Delta$ is included to transform all other elements that represent parameters $X_{\sim i}$. 
+Then, $\mathcal{T}_1$ restores the original row order and $d_i^{full}$ can comfortably be computed by comparing function evaluations of row $i+1$ in $\mathcal{T}(\bold{T_{i+1,*}}; i-1)$ with function evaluations of row $i$ in $\mathcal{T}(\bold{T_{i,*}}; i-1)$.
+
+
+
 The formula for the independent Elementary Effect is
 \begin{align}
 d_i^{ind} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\Delta}.
