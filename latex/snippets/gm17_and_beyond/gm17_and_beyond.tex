@@ -91,13 +91,6 @@
 \section{Qualitative GSA measures for functions with correlated input parameters}
 \thispagestyle{plain} % suppress header on first page
 
-
-\cite{Saltelli.2008}
-
-\cite{lemaire2013structural}
-
-\cite{Smith.2014}
-
 \subsection{Qualitative General Sensitivity Analysis}
 \noindent
 Qualitative Global Sensitivity Analysis (Qualitative GSA) deals with computing measures that can rank random input parameters in terms of their importance on the function output and the variability thereof. If the measures for some input parameters are negligibly small, these parameters can be fixed so that the number of random input parameters decreases for a subsequent quantitative GSA. This pre-selection step is called Factor Fixing. The quantitative GSA then aims to determine the precise effect size of each random input parameter on the function output. The most common measures in quantitative GSA are the so-called Sobol' sensitivtiy indices. Equation 1 shows the first order index. It is the share of the variance in the function output induced by exclusively one single input parameter $X_i$ of the variance induced by all random input parameters $X_1, X_2, ..., X_k$.
@@ -251,9 +244,9 @@ Coming back to the EE-based measures for correlated inputs, \cite{ge2017extendin
 \noindent 
 For the trajectory design, the formula for the full Elementary Effect, is given by
 \begin{align}
-d_i^{full} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\Delta}.
+d_i^{full,T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\Delta}.
 \end{align}
-In Equation (12), $\mathcal{T}(\cdot; i) \defeq \mathcal{T}_1\bigg(\mathcal{T}_2\big(\mathcal{T}_3(\cdot; i)\big); i\bigg)$. $\mathcal{T}_1(\cdot; i)$ orders the parameters / row elements to establish the right correlation hierarchy. $\mathcal{T}_2$, or $F^{-1}(\Phi)$, correlates the draws in $[0,1]$ and transforms them to the sample space. $\mathcal{T}_3(\cdot; i)$ reverses the element order back to the start, to be able to apply the subtraction in the numerator of the EEs row-by-row. Index $i$ in $\mathcal{T}_1(\cdot; i)$ and $\mathcal{T}_3(\cdot; i)$ stands for the number of first row elements that is cut and moved to the back of the row in the same order and in reverse. Applying $\mathcal{T}(\bold{T_{i+1,*}}; i-1)$ and $\mathcal{T}(\bold{T_{i+1,*}}; i)$ to all rows $i$ of trjactory $\bold{T}$ as in Equation (12) yields the following two transformed trajectories:
+In Equation (12), $\mathcal{T}(\cdot; i) \defeq \mathcal{T}_3\bigg(\mathcal{T}_2\big(\mathcal{T}_1(\cdot; i)\big); i\bigg)$. $\mathcal{T}_1(\cdot; i)$ orders the parameters / row elements to establish the right correlation hierarchy. $\mathcal{T}_2$, or $F^{-1}(\Phi)$, correlates the draws in $[0,1]$ and transforms them to the sample space. $\mathcal{T}_3(\cdot; i)$ reverses the element order back to the start, to be able to apply the subtraction in the numerator of the EEs row-by-row. Index $i$ in $\mathcal{T}_1(\cdot; i)$ and $\mathcal{T}_3(\cdot; i)$ stands for the number of first row elements that is cut and moved to the back of the row in the same order and in reverse. Applying $\mathcal{T}(\bold{T_{i+1,*}}; i-1)$ and $\mathcal{T}(\bold{T_{i+1,*}}; i)$ to all rows $i$ of trjactory $\bold{T}$ as in Equation (12) yields the following two transformed trajectories:
 
 \begin{align}
 \mathcal{T}_1(\bold{T_{i+1,*}}; i-1)
@@ -282,7 +275,7 @@ Then, $\mathcal{T}_1$ restores the original row order and $d_i^{full}$ can comfo
 \noindent
 The formula for the independent Elementary Effect for the trajectory design is given by
 \begin{align}
-d_i^{ind} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\Delta}.
+d_i^{ind, T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\Delta}.
 \end{align}
 
 Note that $f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) = \mathcal{T}(\bold{T_{i,*}}; i-1)$ which is the funcion argument in the subtrahent in the definition of $d^{full}$ in Equation (12). Here, the $X_i$ that takes the step in the denominator of the Elementary Effect is moved to the back such that the step does not affect the other input parameters $\bold{X_{\sim i}}$ through the correlations. The left trajectory is constructed such that for each row $i$, $a_i$ does take the step that $b_i$ took in the aforementioned minuend trajectory. The argument of subtrahend in the denominator in $d_i^{ind}$ is given by the rows in
@@ -301,11 +294,11 @@ a_4 & ... & \bold{b_1} &  \bold{b_2} & a_3 & \\
 The transformation for the samples in radial design work equal except of that the minuend samples are composed of the first row copied to each row below because the steps in the radial design are always taken from the draws in the first row. It is important to also reorder the minuend trajectories to account for the correlation hierarchy and the inverse transformation performed by $\mathcal{T_2}$. The forumalae of the Elementary Effects for the radial design are given by Equation (17) and (18).
 
 \begin{align}
-d_i^{full} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i)\big)}{\Delta}.
+d_i^{full, R} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i)\big)}{b_i - a_i}.
 \end{align}
 
 \begin{align}
-d_i^{ind} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i)\big)}{\Delta}.
+d_i^{ind, R} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i)\big)}{b_i - a_i}.
 \end{align}
 
 \subsection{Implementation}
@@ -319,23 +312,25 @@ I will also present improved measures that I created. With these, I can solve al
 
 \subsection{Drawbacks in \cite{ge2017extending} and corrected Elementary Effects.}
 
+The drawback in the definition of the Elementary Effects is that the step is transformed in the numerator multiple times but not in the denumerator. Therefore, these measures are not Elementary Effects in the sense of a derivation. The transformation in the numerator happend by applying $F^{-1}(\Phi)$ to $u_i^j = a_i^j + \Delta^{(i,j)}$. In case of the normal distribution this involves, for $d_i^{full}$ the multiplication with non-linear transformation with $\Phi$ and the multiplication by $\sigma$. The denominator has to be adapted accordingly. Additions like $+\mu$ can be skipped as they will cancel each other out in the denomintor in my solution. For $d_i^{ind}$, one also has to account for the multiplication of $(a_i^j + \Delta^{(i,j)})$ with the multiplication of the $\bold{z}$ by the lower triangular Cholesky matrix $\bold{Q^T}$. The corrected and slightly renamed measures are the correlated and the uncorrelated Elementary Effects $d_i^{c}$ and $d_i^{u}$. They are given below for the trajectory and the radial design. Some results can be found in the validation notebook at the master branch.
 
+\begin{align}
+d_i^{c,T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\mathcal{T}(b_i) - \mathcal{T}(a_i)}
+\end{align}
 
+\begin{align}
+d_i^{u, T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{F^{-1}\big({Q^T}_{k,k} \Phi(b_i)\big) - F^{-1}\big({Q^T}_{k,k} \Phi(a_i)\big)}
+\end{align}
 
+\begin{align}
+d_i^{c, R} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i)\big)}{\mathcal{T}(b_i) - \mathcal{T}(a_i)}
+\end{align}
 
+\begin{align}
+d_i^{u, R} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i)\big)}{F^{-1}\big({Q^T}_{k,k} \Phi(b_i)\big) - F^{-1}\big({Q^T}_{k,k} \Phi(a_i)\big)}
+\end{align}
 
-Then, using the respective rows \cite{ge2017extending} apply the formula for $d^{(j)}$ to obtain the individual Elementary Effects. \\
-
-{\color{red}
-The mistake is, that they transform $\Delta$ and $(b_i - a_i)$ multiple times. $F^{-1}(\Phi)$ for normally distributed parameters involves the non-linear transformation by $\Phi$ and the scaling by $\sigma$. This transformation must also be executed for the step in the denominator for both Effects. Additionally, the step in the denominator of the independent effect has to be multiplied by the last element of the lower triangular matrix from the Cholesky decomposition of the correlation matrix, i.e. ${Q^T}_{k,k}$. If this is not done, $EE_full$ is non-linearily distorted and $EE_ind$ is non-linearily distorted and distorted such that the effects for parameters at later positions in the parameter vector are decreased.
-The correct denominator for both $EE_{full}$ is $F^{-1}(\Phi(b)) - F^{-1}(\Phi(a))$. The correct denominator for both $EE_{ind}$ is ${Q^T}_{k,k}(F^{-1}(\Phi(b)) - F^{-1}(\Phi(a)))$
-
-
-
-My results for Test Case 1 and 2 are correct: The EE-full is the sum of coefficients times the correlation of one parameter with all other parameters including itself. The EE-ind is only its coefficient. The SD is always zero as the effect of a linear function is always the same of its domain, see \cite{Smith.2014}, page 335.
-
-
-}
+In the denominator ${\mathcal{T}(b_i) - \mathcal{T}(a_i)}$ accounts for all non-correlative, distributional transformation. 
 
 
 
