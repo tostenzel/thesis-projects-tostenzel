@@ -312,25 +312,45 @@ I will also present improved measures that I created. With these, I can solve al
 
 \subsection{Drawbacks in \cite{ge2017extending} and corrected Elementary Effects.}
 
-The drawback in the definition of the Elementary Effects is that the step is transformed in the numerator multiple times but not in the denumerator. Therefore, these measures are not Elementary Effects in the sense of a derivation. The transformation in the numerator happend by applying $F^{-1}(\Phi)$ to $u_i^j = a_i^j + \Delta^{(i,j)}$. In case of the normal distribution this involves, for $d_i^{full}$ the multiplication with non-linear transformation with $\Phi$ and the multiplication by $\sigma$. The denominator has to be adapted accordingly. Additions like $+\mu$ can be skipped as they will cancel each other out in the denomintor in my solution. For $d_i^{ind}$, one also has to account for the multiplication of $(a_i^j + \Delta^{(i,j)})$ with the multiplication of the $\bold{z}$ by the lower triangular Cholesky matrix $\bold{Q^T}$. The corrected and slightly renamed measures are the correlated and the uncorrelated Elementary Effects $d_i^{c}$ and $d_i^{u}$. They are given below for the trajectory and the radial design. Some results can be found in the validation notebook at the master branch.
+The drawback in the definition of the Elementary Effects is that the step is transformed in the numerator multiple times but not in the denumerator. Therefore, these measures are not Elementary Effects in the sense of a derivation. The transformation in the numerator happend by applying $F^{-1}(\Phi)$ to $u_i^j = a_i^j + \Delta^{(i,j)}$. In case of the normal distribution this involves, for $d_i^{full}$ the multiplication with non-linear transformation with $\Phi$ and the multiplication by $\sigma$. The denominator has to be adapted accordingly. Additions like $+\mu$ can be skipped as they will cancel each other out in the denomintor in my solution. For $d_i^{ind}$, one also has to account for the multiplication of $(a_i^j + \Delta^{(i,j)})$ with the multiplication of the $\bold{z}$ by the lower triangular Cholesky matrix $\bold{Q^T}$. The corrected and slightly renamed measures are the correlated and the uncorrelated Elementary Effects $d_i^{c}$ and $d_i^{u}$. They are given below for the trajectory and the radial design. Let ${Q^T}_{k,*k-1}$ be the last row except of the last element of the lower triangular Cholesky matrix of the correlation matrix in the respective order of $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$ and $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$. Let ${Q^T}_{k,k}$ be the last element of the same matrix. Let $F^{-1}$ be a transformation that maps standard normal deviates to an arbitrary sample space. Index $*k-1$ represent all elements except of the last one of a vector of length $k$. Index $j$ is used to indicate an element-wise multiplication. Then
 
 \begin{align}
-d_i^{c,T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\mathcal{T}(b_i) - \mathcal{T}(a_i)}
+d_i^{c,T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i-1,*}}; i)\big)}{F^{-1}\big(\Phi(b_i)\big) - F^{-1}\big( \Phi(a_i)\big)}
 \end{align}
 
 \begin{align}
-d_i^{u, T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{F^{-1}\big({Q^T}_{k,k} \Phi(b_i)\big) - F^{-1}\big({Q^T}_{k,k} \Phi(a_i)\big)}
+d_i^{u, T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{F^{-1}\big({Q^T}_{k,*k-1}(j)T_{i+1,*k-1}^T(j) + {Q^T}_{k,k} \Phi(b_i)\big) - F^{-1}\big({Q^T}_{k,*k-1}(j)T_{i+1,*k-1}^T(j)+{Q^T}_{k,k} \Phi(a_i)\big)}
 \end{align}
 
 \begin{align}
-d_i^{c, R} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i)\big)}{\mathcal{T}(b_i) - \mathcal{T}(a_i)}
+d_i^{c, R} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i-1)\big)}{F^{-1}\big( \Phi(b_i)\big) - F^{-1}\big( \Phi(a_i)\big)}
 \end{align}
 
 \begin{align}
-d_i^{u, R} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i)\big)}{F^{-1}\big({Q^T}_{k,k} \Phi(b_i)\big) - F^{-1}\big({Q^T}_{k,k} \Phi(a_i)\big)}
+d_i^{u, R} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i)\big) - f\big(\mathcal{T}(\bold{R_{1,*}}; i)\big)}{F^{-1}\big({Q^T}_{k,*k-1}(j)T_{i+1,*k-1}^T(j) + {Q^T}_{k,k} \Phi(b_i)\big) - F^{-1}\big({Q^T}_{k,*k-1}(j)T_{i+1,*k-1}^T(j)+{Q^T}_{k,k} \Phi(a_i)\big)}.
 \end{align}
 
-In the denominator ${\mathcal{T}(b_i) - \mathcal{T}(a_i)}$ accounts for all non-correlative, distributional transformation. 
+\noindent
+The denominator of the correlated Elementary Effect, $d_i^{c}$, consists of $\Phi$ and $F^{-1}$. These functions account for the transformation from uniform to arbitrary sample space. In $d_i^{c}$, the denominator must not account for a correlating transformation of $a_i$ and $b_i$ because ${Q^T}_{1,*} = (1, 0, ..., 0)$.  Therefore, $b_i$ and $a_i$ are multiplied by one in the correlation step of the standard normal deviates.
+
+The last point is not true for the uncorrelated Elementary Effect $d_i^{c}$. One accounts for the correlation step by multiplying $\Phi(b_i)$ by ${Q^T}_{k,*k-1}(j)T_{i+1,*k-1}^T(j)/\Phi(b_i)+{Q^T}_{k,k}$. The respective operation is done for $\Phi(b_i)$.
+
+For normally distributed $X_1, ..., X_k \sim \mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$, the denominator of $d_i^{u, R}$ simplifies drastically to
+
+\begin{align}
+\begin{split}
+ \big(\mu_i + \sigma_i{Q^T}_{k,k} \Phi(b_i) \big) -  \big(\mu_i + \sigma_i{Q^T}_{k,k} \Phi(a_i)\big)\\= \sigma_i{Q^T}_{k,k}\big(\Phi(b_i)-\Phi(a_i)\big).
+ \end{split}
+\end{align}
+
+\subsection{An example of the Corrected Elementary Effects}
+
+Let $f(X_1, ..., X_k)$ = $\sum_{i = 1}^{k} c_i X_i$ be an arbitrary linear function. Let $\rho_{i,j}$ be the linear correlation between $X_i$ and $X_j$. Then, for all $i \in 1, ..., k$,
+\begin{align}
+d_i^{u,T} = d_i^{u,R} = c_i \\
+d_i^{c,T} = d_i^{c,R} = \sum_{j = 1}^{k} \rho_{i,j} c_j c_i X_i.
+\end{align}
+This implies that the mean and the mean absolute aggregate effects are equal to their respective (individual) uncrrelated and correated Elementary Effect and that the respective standard deviation for both Elementary Effects is 0. This corresponds to the uncorrelated example in \cite{Saltelli.2008}, page 123.
 
 
 
