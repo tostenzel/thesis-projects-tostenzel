@@ -129,7 +129,7 @@ def run(args):
     mc_base_occ_shares = list()
 
     # Pool returns lists. Need Loop to handle these lists.
-    for i, j, k in pool.map(get_quantity_of_interest, mc_sample_input_parameters):
+    for i, j, k in pool.map(get_quantity_of_interest, mc_sample_input_parameters, multi_qois=True):
         mc_change_mean_edu.append(i)
         mc_policy_occ_shares.append(j)
         mc_base_occ_shares.append(k)
