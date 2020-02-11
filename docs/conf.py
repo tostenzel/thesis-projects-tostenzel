@@ -42,11 +42,21 @@ extensions = [
 
 # try to fix TypeError: 'rcParams' object does not support item assignment
 # following https://github.com/readthedocs/readthedocs.org/issues/1803
-# from matplotlib import pyplot 
+# from matplotlib import pyplot
 
 # Proposed here to fix library import errros that depend on C
 # http://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_mock_imports
-autodoc_mock_imports = ["matplotlib.pyplot", "numpy", "matplotlib", "pandas", "chaospy", "respy", "scipy", "seaborn", "estimagic"]
+autodoc_mock_imports = [
+    "matplotlib.pyplot",
+    "numpy",
+    "matplotlib",
+    "pandas",
+    "chaospy",
+    "respy",
+    "scipy",
+    "seaborn",
+    "estimagic",
+]
 
 
 # Add any paths that contain templates here, relative to this directory.

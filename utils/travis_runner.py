@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """This script manages all tasks for the TRAVIS build server."""
 import glob
-import subprocess as sp
 import os
+import subprocess as sp
 
 if __name__ == "__main__":
     sp.check_call(

@@ -188,7 +188,7 @@ def trajectory_sample(
     normal=False,
     numeric_zero=0.01,
     step_function=stepsize,
-    stairs=True
+    stairs=True,
 ):
     """
     Loops over `morris_sample`.
@@ -226,14 +226,8 @@ def trajectory_sample(
         seed = 123 + traj
 
         m_traj, steps = morris_trajectory(
-            n_inputs,
-            n_levels,
-            seed,
-            normal,
-            numeric_zero,
-            step_function,
-            stairs,
-            )
+            n_inputs, n_levels, seed, normal, numeric_zero, step_function, stairs,
+        )
 
         sample_traj_list.append(m_traj)
         steps_list.append(steps)
@@ -241,13 +235,13 @@ def trajectory_sample(
     return sample_traj_list, steps_list
 
 
-def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence='S'):
+def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence="S"):
     """
     Generates sample in radial design as described in [1].
-    
+
     For each subsample, there are `n_inputs + 1` rows and `n_inputs` colums.
     Each row is identical except of the diagonal of the sample w/o the first row.
-    
+
     Parameters
     ----------
     n_rad : int
@@ -263,7 +257,7 @@ def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence='S'
         and `Inf` for 0 and 1.
     sequence : string
         Type of quasi-random sequence.
-    
+
     Returns
     -------
     sample : ndarray
@@ -272,17 +266,17 @@ def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence='S'
     trans_steps : ndarray
         Column vector of steps added to base value point. Sorted by
         parameter/column. Dimension `n_inputs` x `1`.
-    
+
     Notes
     -----
     See [2] for abbreviations of the different sequence types.
-    
+
     In contrary to the trajectory design, the stepsize differs right from the start
     by design and only one element changes in each row compared to the first row.
-    
+
     All distict elements in the whole sample are drawn at once because the
     default Sobol' sequence can not be reseeded.
-    
+
     References
     ----------
     [1] Ge, Q. and M. Menendez (2017). Extending morris method for qualitative global
@@ -290,13 +284,13 @@ def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence='S'
     System Safety 100 (162), 28–39.
 
     [1] https://github.com/jonathf/chaospy/blob/master/chaospy/distributions/sampler/generator.py#L62
-    
+
     """
 
     # Draw all elements at once.
     all_elements = cp.generate_samples(order=n_rad * 2 * n_inputs, rule=sequence)
-    all_elements =  all_elements.reshape(n_rad, 2 * n_inputs)
-    
+    all_elements = all_elements.reshape(n_rad, 2 * n_inputs)
+
     rad_list = []
     steps_list = []
 
@@ -307,8 +301,8 @@ def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence='S'
 
         # Fill diagonal.
         diag_temp = all_elements[row, n_inputs:]
-        rad_temp[1:,:].flat[::n_inputs + 1] =  diag_temp
-        
+        rad_temp[1:, :].flat[:: n_inputs + 1] = diag_temp
+
         # For standard normally distributed draws.
         if normal is True:
             rad_temp = np.apply_along_axis(
@@ -316,12 +310,12 @@ def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence='S'
             )
         else:
             pass
-    
+
         rad_list.append(rad_temp)
-        
+
         # Subtract diagonal elements from first row.
         steps_temp = np.array([1, n_inputs])
-        steps_temp = rad_temp[1:,:].flat[::n_inputs + 1] - rad_temp[0, :]
+        steps_temp = rad_temp[1:, :].flat[:: n_inputs + 1] - rad_temp[0, :]
         steps_list.append(steps_temp)
-    
+
     return rad_list, steps_list

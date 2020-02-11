@@ -195,9 +195,7 @@ def sample_traj_list(numbers):
 @pytest.fixture
 def traj_selection(sample_traj_list, numbers):
     """Fix sample set and distance matrix for the next four tests."""
-    select_list, select_distance_matrix = campolongo_2007(
-        sample_traj_list, numbers[3]
-    )
+    select_list, select_distance_matrix = campolongo_2007(sample_traj_list, numbers[3])
 
     return [select_list, select_distance_matrix]
 

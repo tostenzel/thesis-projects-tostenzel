@@ -36,18 +36,26 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
 
     Returns
     -------
-    ee_uncorr : ndarray
-        Mean uncorrelated Elementary Effect for each parameter.
-    ee_corr : ndarray
-        Mean correlated Elementary Effect for each parameter.
-    abs_ee_uncorr : ndarray
-        Mean absolute uncorrelated Elementary Effect for each parameter.
-    abs_ee_corr : ndarray
-        Mean absolute correlated Elementary Effect for each parameter.
-    sd_ee_uncorr : ndarray
-        SD of individual uncorrelated Elementary Effects for each parameter.
-    sd_ee_corr : ndarray
-        SD of individual correlated Elementary Effects for each parameter.
+    measures_list: list
+       contains:
+            -ee_uncorr : ndarray
+                 Mean uncorrelated Elementary Effect for each parameter.
+            -ee_corr : ndarray
+                 Mean correlated Elementary Effect for each parameter.
+            -abs_ee_uncorr : ndarray
+                 Mean absolute uncorrelated Elementary Effect for each parameter.
+            -abs_ee_corr : ndarray
+                 Mean absolute correlated Elementary Effect for each parameter.
+            -sd_ee_uncorr : ndarray
+                 SD of uncorrelated Elementary Effects for each parameter.
+            -sd_ee_corr : ndarray
+                 SD of correlated Elementary Effects for each parameter.
+    obs_list: list
+        contains
+            -ee_uncorr_i : ndarray
+                 Observations of uncorrelated Elementary Effects.
+            -ee_corr_i : ndarray
+                 Observations of correlated Elementary Effects.
 
     Notes
     -----
@@ -126,7 +134,8 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
         for traj in range(0, n_trajs):
             for row in range(0, n_rows):
                 fct_evals_pp_one_row_zero[row, traj] = function(
-                    *pp_one_row_zero[traj][row, :])
+                    *pp_one_row_zero[traj][row, :]
+                )
 
         for traj in range(0, n_trajs):
             ee_corr_i[:, traj] = (
@@ -153,4 +162,15 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
     abs_ee_corr[:, 0] = np.mean(abs(ee_corr_i), axis=1)
     sd_ee_corr[:, 0] = np.sqrt(np.var(ee_corr_i, axis=1))
 
-    return ee_uncorr, ee_corr, abs_ee_uncorr, abs_ee_corr, sd_ee_uncorr, sd_ee_corr
+    measures_list = [
+        ee_uncorr,
+        ee_corr,
+        abs_ee_uncorr,
+        abs_ee_corr,
+        sd_ee_uncorr,
+        sd_ee_corr,
+    ]
+
+    obs_list = [ee_uncorr_i, ee_corr_i]
+
+    return measures_list, obs_list
