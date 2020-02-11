@@ -91,13 +91,30 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
     # Compute the function evaluations for each transformed trajectory list.
     for traj in range(0, n_trajs):
         for row in range(0, n_rows):
-            fct_evals_pi_i[row, traj] = function(*trans_pi_i_list[traj][row, :])
-            fct_evals_piplusone_i[row, traj] = function(
-                *trans_piplusone_i_list[traj][row, :]
-            )
-            fct_evals_piplusone_iminusone[row, traj] = function(
-                *trans_piplusone_iminusone_list[traj][row, :]
-            )
+
+            # In trajectory design `piplusone_i` is used as minuend and subtrahend.
+            if radial is False:
+                fct_evals_piplusone_i[row, traj] = function(
+                    *trans_piplusone_i_list[traj][row, :]
+                )
+
+            # For radial design, we do not need first row of subtrahend
+            else:
+                if row < n_rows - 1:
+                    fct_evals_piplusone_i[row + 1, traj] = function(
+                        *trans_piplusone_i_list[traj][row + 1, :]
+                    )
+                else:
+                    pass
+
+            # We do not need first row of minuend and last row of subtrahend
+            if row < n_rows - 1:
+                    fct_evals_pi_i[row, traj] = function(*trans_pi_i_list[traj][row, :])
+                    fct_evals_piplusone_iminusone[row + 1, traj] = function(
+                        *trans_piplusone_iminusone_list[traj][row + 1, :]
+                    )
+            else:
+                pass
 
     # Init individual EEs.
     ee_uncorr_i = np.ones([n_inputs, n_trajs]) * np.nan
@@ -132,7 +149,8 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
         fct_evals_pp_one_row_zero = np.ones([n_rows, n_trajs]) * np.nan
 
         for traj in range(0, n_trajs):
-            for row in range(0, n_rows):
+            # We do not need last row in subtrahend.
+            for row in range(0, n_rows - 1):
                 fct_evals_pp_one_row_zero[row, traj] = function(
                     *pp_one_row_zero[traj][row, :]
                 )
