@@ -61,7 +61,7 @@ def get_quantity_of_interest(input_params, multi_qois=False):
 	    )
 	    change_mean_edu = policy_edu - base_edu
 
-    return change_mean_edu, policy_occ_shares_df, base_occ_shares_df
+        return change_mean_edu, policy_occ_shares_df, base_occ_shares_df
 
 
 def model_wrapper_kw_94(input_params, base_options, tuition_subsidy):
