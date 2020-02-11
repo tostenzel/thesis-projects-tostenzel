@@ -42,7 +42,7 @@ def get_quantity_of_interest(input_params, multi_qois=False):
     params_idx_respy = transform_params_kw94_respy(params_idx)
 
     if multi_qois is False:
-	    policy_edu, _ _ = model_wrapper_kw_94(
+	    policy_edu, _, _ = model_wrapper_kw_94(
 	        params_idx_respy, base_options, 500.0
 	    )
 	    base_edu, _, _ = model_wrapper_kw_94(
