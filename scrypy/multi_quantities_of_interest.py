@@ -11,7 +11,7 @@ import pandas as pd
 import respy as rp
 
 
-def multi_quantities_of_interest(input_params):
+def multi_quantities_of_interest(input_params, *args):
     """Computes the Quantity of Interest.
 
     Parameters
@@ -20,6 +20,7 @@ def multi_quantities_of_interest(input_params):
         Unindexed input parameters.
     multi_qois : bool
         Option to compute `policy_occ_shares_df` and `base_occ_shares_df`.
+
     Returns
     -------
     change_mean_edu : float
@@ -49,7 +50,7 @@ def multi_quantities_of_interest(input_params):
     )
     change_mean_edu = policy_edu - base_edu
 
-        return change_mean_edu, policy_occ_shares_df, base_occ_shares_df
+    return change_mean_edu, policy_occ_shares_df, base_occ_shares_df
 
 
 def model_wrapper_kw_94(input_params, base_options, tuition_subsidy):

@@ -235,7 +235,7 @@ def trajectory_sample(
     return sample_traj_list, steps_list
 
 
-def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.01, sequence="S"):
+def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.005, sequence="S"):
     """
     Generates sample in radial design as described in [1].
 
