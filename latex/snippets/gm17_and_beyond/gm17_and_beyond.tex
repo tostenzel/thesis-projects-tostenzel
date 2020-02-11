@@ -333,6 +333,8 @@ d_i^{u, R} = \frac{f\big(\mathcal{T}(\bold{R_{i+1,*}}; i)\big) - f\big(\mathcal{
 \end{align}
 
 \noindent
+In Equation (22), ${Q^T}_{k,*k-1}(j)R_{i,*k-1}^T(j)$ refers to the transformed trajectory of the copied first rows, $\mathcal{T}(\bold{R_{i+1,*}}; i)$, as described in the previous section.
+
 The denominator of the correlated Elementary Effect, $d_i^{c}$, consists of $\Phi$ and $F^{-1}$. These functions account for the transformation from uniform to arbitrary sample space. In $d_i^{c}$, the denominator must not account for a correlating transformation of $a_i$ and $b_i$ because ${Q^T}_{1,*} = (1, 0, ..., 0)$.  Therefore, $b_i$ and $a_i$ are multiplied by one in the correlation step of the standard normal deviates.
 
 The last point is not true for the uncorrelated Elementary Effect $d_i^{c}$. One accounts for the correlation step by multiplying $\Phi(b_i)$ by ${Q^T}_{k,*k-1}(j)T_{i+1,*k-1}^T(j)/\Phi(b_i)+{Q^T}_{k,k}$. The respective operation is done for $\Phi(b_i)$. Not accounting for $Q_t$ like \cite{ge2017extending} leads to arbitrarily decreased independent Elementary Effects for input parameters with higher correlations. As $d_i^{full}$ and $d_i^{ind}$ are interpreted jointly, both measures are in fact useless.
