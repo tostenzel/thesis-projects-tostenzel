@@ -28,7 +28,7 @@ from multiprocessing import Pool
 import argparse
 
 from multi_quantities_of_interest import model_wrapper_kw_94
-from multi_quantities_of_interest import get_multi_quantities_of_interest
+from multi_quantities_of_interest import multi_quantities_of_interest
 
 
 def propagate_mean_estimates():
@@ -129,7 +129,7 @@ def run(args):
     mc_base_occ_shares = list()
 
     # Pool returns lists. Need Loop to handle these lists.
-    for i, j, k in pool.map(get_multi_quantities_of_interest, mc_sample_input_parameters):
+    for i, j, k in pool.map(multi_quantities_of_interest, mc_sample_input_parameters):
         mc_change_mean_edu.append(i)
         mc_policy_occ_shares.append(j)
         mc_base_occ_shares.append(k)

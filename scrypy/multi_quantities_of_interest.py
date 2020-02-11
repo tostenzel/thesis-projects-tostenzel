@@ -11,7 +11,7 @@ import pandas as pd
 import respy as rp
 
 
-def get_quantity_of_interest(input_params, multi_qois=False):
+def multi_quantities_of_interest(input_params):
     """Computes the Quantity of Interest.
 
     Parameters
@@ -41,25 +41,13 @@ def get_quantity_of_interest(input_params, multi_qois=False):
     params_idx = pd.Series(data=input_params, index=base_params.index[0:27])
     params_idx_respy = transform_params_kw94_respy(params_idx)
 
-    if multi_qois is False:
-	    policy_edu, _, _ = model_wrapper_kw_94(
-	        params_idx_respy, base_options, 500.0
-	    )
-	    base_edu, _, _ = model_wrapper_kw_94(
-	        params_idx_respy, base_options, 0.0
-	    )
-	    change_mean_edu = policy_edu - base_edu
-
-	    return change_mean_edu
-
-	else:
-	    policy_edu, policy_occ_shares_df, _ = model_wrapper_kw_94(
-	        params_idx_respy, base_options, 500.0
-	    )
-	    base_edu, base_occ_shares_df, _ = model_wrapper_kw_94(
-	        params_idx_respy, base_options, 0.0
-	    )
-	    change_mean_edu = policy_edu - base_edu
+    policy_edu, policy_occ_shares_df, _ = model_wrapper_kw_94(
+        params_idx_respy, base_options, 500.0
+    )
+    base_edu, base_occ_shares_df, _ = model_wrapper_kw_94(
+        params_idx_respy, base_options, 0.0
+    )
+    change_mean_edu = policy_edu - base_edu
 
         return change_mean_edu, policy_occ_shares_df, base_occ_shares_df
 
