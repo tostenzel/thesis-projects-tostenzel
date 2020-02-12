@@ -35,7 +35,7 @@ def covariance_to_correlation(cov):
     return corr
 
 
-def transform_uniform_stnormal_uncorr(uniform_deviates, numeric_zero=0.01):
+def transform_uniform_stnormal_uncorr(uniform_deviates, numeric_zero=0.005):
     """
     Converts sample from uniform distribution to standard normal space
     without regarding correlations.

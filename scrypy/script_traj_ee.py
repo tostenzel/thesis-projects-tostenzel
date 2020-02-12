@@ -1,15 +1,13 @@
-"""From Trajectory samples, compute EE-based measures for QoI from KW94."""
+"""From Trajectory samples, compute EE-based measures for single QoI from KW94."""
 
 import pickle
 import pandas as pd
-
 import time
 
 
 from multi_quantities_of_interest import  multi_quantities_of_interest
 from sampling_schemes import trajectory_sample
 from select_sample_set import intermediate_ge_menendez_2014
-
 from screening_measures import screening_measures
 
 
@@ -37,8 +35,6 @@ n_sample_traj = 150
 n_levels = 100
 numeric_zero = 0.005
 seed = 123
-
-
 
 
 traj_list, step_list_traj = trajectory_sample(n_sample_select, n_inputs, n_levels, seed, normal=True, numeric_zero = numeric_zero)

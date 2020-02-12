@@ -235,7 +235,7 @@ def trajectory_sample(
     return sample_traj_list, steps_list
 
 
-def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.005, sequence="S"):
+def radial_sample(n_rad, n_inputs, normal=False, sequence="S"):
     """
     Generates sample in radial design as described in [1].
 
@@ -306,7 +306,7 @@ def radial_sample(n_rad, n_inputs, normal=False, numeric_zero=0.005, sequence="S
         # For standard normally distributed draws.
         if normal is True:
             rad_temp = np.apply_along_axis(
-                transform_uniform_stnormal_uncorr, 1, rad_temp, numeric_zero
+                transform_uniform_stnormal_uncorr, 1, rad_temp
             )
         else:
             pass
