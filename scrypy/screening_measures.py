@@ -77,6 +77,9 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
     n_inputs = np.size(traj_list[0], 1)
 
     # Compute the transformed trajectory lists/function arguments.
+
+    # `If radial is true` `trans_pi_i_list` can be reused as ``trans_pi_iminus1_list`
+    # in subtrahend of EE_uncorr.
     trans_piplusone_i_list, trans_pi_i_list, coeff_step = trans_ee_uncorr(
         traj_list, cov, mu, radial
     )
@@ -97,9 +100,15 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
                 fct_evals_piplusone_i[row, traj] = function(
                     *trans_piplusone_i_list[traj][row, :]
                 )
+                # pi_i is not reused for trajs, we do not need last row ofsubtrahend
+                if row < n_rows - 1:
+                    fct_evals_pi_i[row, traj] = function(*trans_pi_i_list[traj][row, :])
 
-            # For radial design, we do not need first row of subtrahend
+            # For radial design, we do not need first row of subtrahend.
             else:
+
+                # pi_i is reused as pi_i-1 for rads, we need all rows (see line 81-85).
+                fct_evals_pi_i[row, traj] = function(*trans_pi_i_list[traj][row, :])
                 if row < n_rows - 1:
                     fct_evals_piplusone_i[row + 1, traj] = function(
                         *trans_piplusone_i_list[traj][row + 1, :]
@@ -107,9 +116,8 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
                 else:
                     pass
 
-            # We do not need first row of minuend and last row of subtrahend
+            # We do not need first row of minuend.
             if row < n_rows - 1:
-                    fct_evals_pi_i[row, traj] = function(*trans_pi_i_list[traj][row, :])
                     fct_evals_piplusone_iminusone[row + 1, traj] = function(
                         *trans_piplusone_iminusone_list[traj][row + 1, :]
                     )
@@ -143,22 +151,15 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
             # Above, account for the scaling by the SD.
     else:
 
-        # Need to get the samples of first rows in different orders.
-        _, pp_one_row_zero = trans_ee_corr(traj_list, cov, mu, radial=True)
-
-        fct_evals_pp_one_row_zero = np.ones([n_rows, n_trajs]) * np.nan
 
         for traj in range(0, n_trajs):
-            # We do not need last row in subtrahend.
-            for row in range(0, n_rows - 1):
-                fct_evals_pp_one_row_zero[row, traj] = function(
-                    *pp_one_row_zero[traj][row, :]
-                )
 
-        for traj in range(0, n_trajs):
+            # move last row of f-evals of pi_i to top to recycle it.
+            temp = np.roll(fct_evals_pi_i[0:n_inputs, traj], 1)
+
             ee_corr_i[:, traj] = (
                 fct_evals_piplusone_iminusone[1 : n_inputs + 1, traj]
-                - fct_evals_pp_one_row_zero[0:n_inputs, traj]
+                - temp[0:n_inputs]
             ) / (step_list[traj] * np.squeeze(np.sqrt(np.diag(cov))))
             # Above, account for the scaling by the SD.
 
