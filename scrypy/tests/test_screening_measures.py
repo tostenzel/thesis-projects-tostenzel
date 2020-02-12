@@ -300,7 +300,7 @@ def test_linear_model_equality_radial_trajectory():
     )
 
     # Generate radial samples and steps. Then computes measures.
-    rad_list, rad_step_list = radial_sample(n_sample, n_inputs, True, numeric_zero)
+    rad_list, rad_step_list = radial_sample(n_sample, n_inputs, True)
     measures_list_rad, _ = screening_measures(
         linear_function, rad_list, rad_step_list, cov, mu, radial=True
     )
