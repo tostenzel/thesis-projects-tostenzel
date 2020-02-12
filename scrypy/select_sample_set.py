@@ -19,6 +19,7 @@ from itertools import combinations
 
 import numpy as np
 from scipy.special import binom
+from transform_distributions import transform_uniform_stnormal_uncorr
 
 
 def compute_pair_distance(sample_0, sample_1):
@@ -363,7 +364,7 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     """
     pair_matrix = distance_matrix(sample_traj_list)
     # This function is the difference to Campolongo.
-    select_indices, combi_total_distance = select_trajectories_wrapper_iteration(
+    select_indices, _ = select_trajectories_wrapper_iteration(
         pair_matrix, n_traj
     )
 
@@ -588,3 +589,47 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
     select_dist_matrix = distance_matrix(select_trajs)
 
     return select_trajs, select_dist_matrix, select_indices
+
+
+def select_sample_set_normal(samp_list, n_select, numeric_zero):
+    """
+    Post-select set of samples based on [0,1] and transform it to stnormal space.
+
+    Parameters
+    ----------
+    samp_list : list of ndarrays
+        Sub-samples.
+    n_select : int
+        Number of sub-samples to select from `samp_list`.
+    numeric_zero : float
+        `if normal is True`: Prevents `scipy.normal.ppt` to return `-Inf`
+        and `Inf` for 0 and 1.
+
+    Returns
+    -------
+    samp_list : list of ndarrays
+    steps_list : list of ndarrays
+
+    Notes
+    -----
+    Function for post-selection is `intermediate_ge_menendez_2014` because it is the fastest.
+
+    See Also
+    --------
+    intermediate_ge_menendez_2014
+
+    """
+    n_sample = len(samp_list)
+
+    # Post- select `samp_list`.
+    samp_list, _, _ = intermediate_ge_menendez_2014(samp_list, n_select)
+
+    steps_list = []
+
+    for i in range(0, n_select):        
+        samp_list[i] = np.apply_along_axis(
+                transform_uniform_stnormal_uncorr, 1, samp_list[i], numeric_zero
+            )
+        steps_list.append(samp_list[i][-1, :] - samp_list[i][0, :])
+
+    return samp_list, steps_list
