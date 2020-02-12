@@ -8,6 +8,9 @@ import time
 
 from multi_quantities_of_interest import  multi_quantities_of_interest
 from sampling_schemes import trajectory_sample
+from select_sample_set import intermediate_ge_menendez_2014
+
+
 from sampling_schemes import radial_sample
 from screening_measures import screening_measures
 
@@ -20,10 +23,11 @@ cov = pd.read_pickle("input/est_cov_chol.pkl").to_numpy()
 n_inputs = len(mean)
 
 # Traj-exclusive params.
-n_sample_traj = 2
+n_sample_select = 300
+n_sample_traj = 150
 n_levels = 100
 numeric_zero = 0.005
-n_sample_traj = 2
+#n_sample_rad = 2
 seed = 123
 
 
@@ -31,7 +35,11 @@ seed = 123
 n_sample_rad = 2
 
 
-traj_list, step_list_traj = trajectory_sample(n_sample_traj, n_inputs, n_levels, seed, normal=True, numeric_zero = numeric_zero)
+traj_list, step_list_traj = trajectory_sample(n_sample_select, n_inputs, n_levels, seed, normal=True, numeric_zero = numeric_zero)
+
+# Implement sample post-selection.
+traj_list, _, select_indices = intermediate_ge_menendez_2014(traj_list, n_sample_traj)
+step_list_traj = [step_list_traj[idx] for idx in select_indices]
 #rad_list, step_list_rad = radial_sample(n_sample_rad, n_inputs, normal=True, numeric_zero=numeric_zero)
 
 

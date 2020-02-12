@@ -313,6 +313,8 @@ def campolongo_2007(sample_traj_list, n_traj):
         Set of trajectories.
     select_dist_matrix : ndarray
         Symmetric `distance_matrix` of selection.
+    select_indices : list
+        Indices of selected samples.
 
     """
     pair_matrix = distance_matrix(sample_traj_list)
@@ -322,12 +324,12 @@ def campolongo_2007(sample_traj_list, n_traj):
 
     select_dist_matrix = distance_matrix(select_trajs)
 
-    return select_trajs, select_dist_matrix
+    return select_trajs, select_dist_matrix, select_indices
 
 
 def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
     """
-    Implements the the essential of the two "improvements" in[2] vis-a-vis [1].
+    Implements the essential of the two "improvements" in[2] vis-a-vis [1].
 
     This is basically a wrapper around `select_trajectories_wrapper_iteration`.
 
@@ -341,12 +343,12 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
 
     Returns
     -------
-    input_par_array : ndarray
-        Set of trajectories as vertical array.
     sample_traj_list : list of ndarrays
         Set of trajectories.
     select_dist_matrix : ndarray
         Symmetric `distance_matrix` of selection.
+    select_indices : list
+        Indices of selected samples.
 
     See Also
     --------
@@ -369,7 +371,7 @@ def intermediate_ge_menendez_2014(sample_traj_list, n_traj):
 
     select_dist_matrix = distance_matrix(select_trajs)
 
-    return select_trajs, select_dist_matrix
+    return select_trajs, select_dist_matrix, select_indices
 
 
 def next_combi_total_distance_gm14(combi_total_distance, pair_dist_matrix, lost_index):
@@ -523,6 +525,8 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
         Set of trajectories.
     select_dist_matrix : ndarray
         Symmetric `distance_matrix` of selection.
+    select_indices : list
+        Indices of selected samples.
 
     See Also
     --------
@@ -578,8 +582,9 @@ def final_ge_menendez_2014(sample_traj_list, n_traj):
 
         tracker_keep_indices = np.delete(tracker_keep_indices, lost_index, axis=0)
 
-    select_trajs = [sample_traj_list[idx] for idx in tracker_keep_indices]
+    select_indices = tracker_keep_indices.tolist()
+    select_trajs = [sample_traj_list[idx] for idx in select_indices]
 
     select_dist_matrix = distance_matrix(select_trajs)
 
-    return select_trajs, select_dist_matrix
+    return select_trajs, select_dist_matrix, select_indices

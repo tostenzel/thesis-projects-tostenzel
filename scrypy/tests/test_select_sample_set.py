@@ -195,7 +195,7 @@ def sample_traj_list(numbers):
 @pytest.fixture
 def traj_selection(sample_traj_list, numbers):
     """Fix sample set and distance matrix for the next four tests."""
-    select_list, select_distance_matrix = campolongo_2007(sample_traj_list, numbers[3])
+    select_list, select_distance_matrix, _ = campolongo_2007(sample_traj_list, numbers[3])
 
     return [select_list, select_distance_matrix]
 
@@ -207,7 +207,7 @@ def test_compare_camp_07_int_ge_men_14_2(numbers, sample_traj_list, traj_selecti
     of their total distance.
 
     """
-    select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(
+    select_list_2, select_distance_matrix_2, _ = intermediate_ge_menendez_2014(
         sample_traj_list, numbers[3]
     )
 
@@ -229,7 +229,7 @@ def test_compare_camp_07_final_ge_men_14_2(numbers, sample_traj_list, traj_selec
     Very few times, the difference gets relatively large, see assert statement.
 
     """
-    select_list_2, select_distance_matrix_2 = final_ge_menendez_2014(
+    select_list_2, select_distance_matrix_2, _ = final_ge_menendez_2014(
         sample_traj_list, numbers[3]
     )
 
@@ -253,7 +253,7 @@ def test_compare_camp_07_int_ge_men_14_1(numbers, sample_traj_list, traj_selecti
     of the improvment in [2] are identical.
 
     """
-    select_list_2, select_distance_matrix_2 = intermediate_ge_menendez_2014(
+    select_list_2, select_distance_matrix_2, _ = intermediate_ge_menendez_2014(
         sample_traj_list, numbers[3]
     )
     selection = traj_selection
@@ -274,10 +274,10 @@ def test_compare_camp_07_final_ge_men_14_1(numbers, sample_traj_list, traj_selec
     of the improvment in [2] are identical.
 
     """
-    traj_list, diagonal_dist_matrix = final_ge_menendez_2014(
+    traj_list, diagonal_dist_matrix, _ = final_ge_menendez_2014(
         sample_traj_list, numbers[3]
     )
-    test_list, test_diagonal_dist_matrix = intermediate_ge_menendez_2014(
+    test_list, test_diagonal_dist_matrix, _ = intermediate_ge_menendez_2014(
         sample_traj_list, numbers[3]
     )
 
