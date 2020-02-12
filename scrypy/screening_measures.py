@@ -154,7 +154,7 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
 
         for traj in range(0, n_trajs):
 
-            # move last row of f-evals of pi_i to top to recycle it.
+            # Move last row of f-evals of pi_i=p1_i to top to recycle it.
             temp = np.roll(fct_evals_pi_i[0:n_inputs, traj], 1)
 
             ee_corr_i[:, traj] = (
