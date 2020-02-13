@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+from matplotlib.ticker import FormatStrFormatter
+from cycler import cycler
 # Load Measures.  
 with open('results/measures_to_plot.pkl', 'rb') as f:
   measures_to_plot = pickle.load(f)
@@ -20,90 +22,140 @@ with open('input/est_rand_params_chol.pkl', 'rb') as f:
 params.index
 """
 
-  
+def scatter_plot(df, iloc_col_x, iloc_col_y, xlim, ylim):
+
+    plt.style.use('_mplstyle/uq.mplstyle') # wanna include that in funciton.
+    
+    
+    plt.rcParams["mathtext.fontset"] = "cm"
+    plt.rcParams["font.family"] = "STIXGeneral"
+    current_palette = sns.color_palette("deep")
+    sns.set_palette(current_palette)
+    
+    colorz = ["c", current_palette[3], current_palette[0],
+        current_palette[1], current_palette[2], current_palette[5]]
+    
+    plt.rcParams["axes.prop_cycle"] = cycler('color', colorz)
+    fig, ax = plt.subplots(figsize=(12, 9))
+      
+    ax = sns.scatterplot(
+            df.iloc[:, iloc_col_x], df.iloc[:, iloc_col_y], s=250, hue=abs_ee_mean.index.get_level_values(0))
+    
+    ax.legend(
+    
+                frameon=True,
+                framealpha=1.0,
+                fontsize=22,
+                edgecolor="black",
+                fancybox=False,
+                borderpad=0.5,
+                handletextpad=-0.06,
+                markerscale=2.4
+            )
+    
+    
+    ax.grid(True, linestyle="-", alpha=0.5)
+    ax.set_xlim(0, xlim)
+    ax.set_ylim(0, ylim)
+    ax.tick_params(axis="x", which="major", pad=12)
+    ax.tick_params(axis="y", which="major", pad=8)
+
+    
+    for line in range(0,abs_ee_mean.shape[0]):
+         ax.text(df.iloc[line, iloc_col_x]+0.015, df.iloc[line, iloc_col_y]+0.00, 
+         param_labels[line], horizontalalignment='left', 
+         size=24, color='black', weight='semibold')   
+    
+    ax.tick_params(axis="both", direction="out", length=6, width=2, labelsize=22)
+    ax.set_ylabel(r"$\mu^{*,u}_{\sigma}$", labelpad=+35, rotation=0, fontsize=28)
+    ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+    ax.set_xlabel(r"$\mu^{*,c}_{\sigma}$", labelpad=+25, fontsize=28)
+
+
+
 param_labels = np.array(
     [
-        r"$\hat{\delta}$",
-        r"$\hat{\beta^{b}}$",
-        r"$\hat{\beta_{e}^{b}}$",
-        r"$\hat{\beta_{b}^{b}}$",
-        r"$\hat{\beta_{bb}^{b}}$",
-        r"$\hat{\beta_{w}^{b}}$",
-        r"$\hat{\beta_{ww}^{b}}$",
-        r"$\hat{\beta^{w}}$",
-        r"$\hat{\beta_{e}^{w}}$",
-        r"$\hat{\beta_{w}^{w}}$",
-        r"$\hat{\beta_{ww}^{w}}$",
-        r"$\hat{\beta_{b}^{w}}$",
-        r"$\hat{\beta_{bb}^{w}}$",
-        r"$\hat{\beta^{e}}$",
-        r"$\hat{\beta_{col}^{e}}$",
-        r"$\hat{\beta_{re}^{e}}$",
-        r"$\hat{\beta^{h}}$",
-        r"$\hat{c_{1}}$",
-        r"$\hat{c_{2}}$",
-        r"$\hat{c_{3}}$",
-        r"$\hat{c_{4}}$",
-        r"$\hat{c_{1,2}}$",
-        r"$\hat{c_{1,3}}$",
-        r"$\hat{c_{2,3}}$",
-        r"$\hat{c_{1,4}}$",
-        r"$\hat{c_{2,4}}$",
-        r"$\hat{c_{3,4}}$",
+        r"$\delta$",
+        r"$\beta^{b}$",
+        r"$\beta_{e}^{b}$",
+        r"$\beta_{b}^{b}$",
+        r"$\beta_{bb}^{b}$",
+        r"$\beta_{w}^{b}$",
+        r"$\beta_{ww}^{b}$",
+        r"$\beta^{w}$",
+        r"$\beta_{e}^{w}$",
+        r"$\beta_{w}^{w}$",
+        r"$\beta_{ww}^{w}$",
+        r"$\beta_{b}^{w}$",
+        r"$\beta_{bb}^{w}$",
+        r"$\beta^{e}$",
+        r"$\beta_{col}^{e}$",
+        r"$\beta_{re}^{e}$",
+        r"$\beta^{h}$",
+        r"$c_{1}$",
+        r"$c_{2}$",
+        r"$c_{3}$",
+        r"$c_{4}$",
+        r"$c_{1,2}$",
+        r"$c_{1,3}$",
+        r"$c_{2,3}$",
+        r"$c_{1,4}$",
+        r"$c_{2,4}$",
+        r"$c_{3,4}$",
     ]
 )
 
 param_groups = np.array(
     [
-        r"Discount factor",
-        r"Blue-collar",
-        r"Blue-collar",
-        r"Blue-collar",
-        r"Blue-collar",
-        r"Blue-collar",
-        r"Blue-collar",
-        r"White-collar",
-        r"White-collar",
-        r"White-collar",
-        r"White-collar",
-        r"White-collar",
-        r"White-collar",
-        r"Education",
-        r"Education",
-        r"Education",
-        r"Home",
-        r"Choleskies",
-        r"Choleskies",
-        r"Choleskies",
-        r"Choleskies",
-        r"Choleskies",
-        r"Choleskies",
-        r"Choleskies",
-        r"Choleskies",
-        r"Choleskies",
-        r"Choleskies",
+        "Discount factor",
+        "Blue-collar",
+        "Blue-collar",
+        "Blue-collar",
+        "Blue-collar",
+        "Blue-collar",
+        "Blue-collar",
+        "White-collar",
+        "White-collar",
+        "White-collar",
+        "White-collar",
+        "White-collar",
+        "White-collar",
+        "Education",
+        "Education",
+        "Education",
+        "Home",
+        "Choleskies",
+        "Choleskies",
+        "Choleskies",
+        "Choleskies",
+        "Choleskies",
+        "Choleskies",
+        "Choleskies",
+        "Choleskies",
+        "Choleskies",
+        "Choleskies",
     ]
 )
 
 #index = pd.MultiIndex.from_arrays(param_groups, param_labels)
 
 abs_ee_mean = pd.DataFrame(np.hstack(measures_to_plot), index=[param_groups, param_labels],
-                    columns= [r"$\mu_{traj}^{*,u}$", r"$\mu_{traj}^{*,c}$",
-                           r"$\mu_{rad}^{*,u}$", r"$\mu_{rad}^{*,c}$"])
+                    columns= ["traj_uncorr", "traj_corr",
+                           "rad_uncorr", "rad_corr"])
 
+abs_ee_mean = abs_ee_mean.reindex([
+        "Discount factor",
+        "Education",
+        "Blue-collar",
+        "White-collar",
+        "Home",
+        "Choleskies"
+    ], level=0)
 
-plt.style.use('_mplstyle/uq.mplstyle') # wanna include that in funciton.
+scatter_plot(abs_ee_mean, 1, 0, 0.9, 6)
 
-plt.rcParams["mathtext.fontset"] = "cm"
-plt.rcParams["font.family"] = "STIXGeneral"
-current_palette = sns.color_palette("deep")
-sns.set_palette(current_palette)
+plt.savefig("figures/scatter_traj.png", bbox_inches="tight")
 
- 
-  
-  
-sns.scatterplot(
+scatter_plot(abs_ee_mean, 3, 2, 0.9, 12)
 
-    x=abs_ee_mean.iloc[:,1], y=abs_ee_mean.iloc[:,0], hue=abs_ee_mean.index.get_level_values(0)
-
-)
+plt.savefig("figures/scatter_rad.png", bbox_inches="tight")
