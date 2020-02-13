@@ -12,7 +12,19 @@ from numpy.testing import assert_allclose
 from sampling_schemes import trajectory_sample
 from sampling_schemes import radial_sample
 from screening_measures import screening_measures
+from screening_measures import compute_measures
 
+
+def test_compute_measures():
+    """Tests the normalization option by `(sd_x / sd_y)` of `compute_measures`."""
+    ee_i = np.array([1, 1]*3).reshape(3,2)
+
+    sd_x_2 = np.array([2, 2, 2])
+    
+    means_unit, _, _ = compute_measures(ee_i)
+    means_double, _, _ = compute_measures(ee_i, sd_x_2, sigma_norm=True)
+    
+    assert_array_equal(means_unit*2, means_double)
 
 def sobol_model(a, b, c, d, e, f, coeffs, *args):
     """
