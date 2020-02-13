@@ -1,13 +1,14 @@
-"""From Trajectory samples, compute EE-based measures for single QoI from KW94."""
+"""From Trajectory samples, compute EE-based measures for QoI from KW94."""
 
 import pickle
 import pandas as pd
+
 import time
 
 
 from multi_quantities_of_interest import  multi_quantities_of_interest
 from sampling_schemes import trajectory_sample
-from select_sample_set import intermediate_ge_menendez_2014
+from select_sample_set import select_sample_set_normal
 from screening_measures import screening_measures
 
 
@@ -30,18 +31,20 @@ def wrapper_qoi(*args):
 n_inputs = len(mean)
 
 # Traj-exclusive params.
-n_sample_select = 300
-n_sample_traj = 150
+n_sample_traj = 200
+n_sample_select = 100
 n_levels = 100
 numeric_zero = 0.005
 seed = 123
 
 
-traj_list, step_list_traj = trajectory_sample(n_sample_select, n_inputs, n_levels, seed, normal=True, numeric_zero = numeric_zero)
 
-# Implement sample post-selection.
-traj_list, _, select_indices = intermediate_ge_menendez_2014(traj_list, n_sample_traj)
-step_list_traj = [step_list_traj[idx] for idx in select_indices]
+# Normal = False because we need to have stnormal ones for post-selection
+traj_list, _ = trajectory_sample(n_sample_traj, n_inputs, n_levels, seed, normal=False, numeric_zero = numeric_zero)
+
+
+# Implement sample post-selection and convert elements from [0,1] to stnormal space.
+traj_list, step_list_traj = select_sample_set_normal(traj_list, n_sample_select, numeric_zero)
 
 
 # Save post-selected trajectories and steps in input dir.
@@ -74,4 +77,4 @@ with open('results/measures_traj.pkl', 'rb') as f:
   
 with open('results/ee_obs_traj.pkl', 'rb') as f:
   read_ee_obs = pickle.load(f)
-  
+  """
