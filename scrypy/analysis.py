@@ -26,16 +26,19 @@ with open('results/ee_obs_traj.pkl', 'rb') as f:
 with open("results/ee_obs_radial.pkl", "rb") as f:
     rad_ee_obs = pickle.load(f)
 
-ee_mean_traj_uncorr, abs_ee_mean_traj_uncorr, sd_ee_traj_uncorr = compute_measures(traj_ee_obs[0], sd_x, sd_y, sigma_norm=False, ub=True)
 
-ee_mean_traj_corr, abs_ee_mean_traj_corr, sd_ee_traj_corr = compute_measures(traj_ee_obs[1], sd_x, sd_y, sigma_norm=False, ub=True)
+_, abs_ee_mean_traj_uncorr, _ = compute_measures(traj_ee_obs[0], sd_x, sd_y, sigma_norm=True, ub=False)
 
-
-#ee_mean_rad_uncorr, abs_ee_mean_rad_uncorr, sd_ee_rad_uncorr = compute_measures(rad_ee_obs[0], sd_vector, sd_y, sigma_norm=True)
-
-#ee_mean_rad_corr, abs_ee_mean_rad_corr, sd_ee_rad_corr = compute_measures(rad_ee_obs[1], sd_vector, sd_y, sigma_norm=True)
-#n_inputs = np.size(traj_ee_obs[0], 0)
-
-#norm = (sd_x / sd_y).reshape(n_inputs, 1)
+_, abs_ee_mean_traj_corr, _ = compute_measures(traj_ee_obs[1], sd_x, sd_y, sigma_norm=True, ub=False)
 
 
+_, abs_ee_mean_rad_uncorr, _ = compute_measures(rad_ee_obs[0], sd_x, sd_y, sigma_norm=True)
+
+_, abs_ee_mean_rad_corr, _ = compute_measures(rad_ee_obs[1], sd_x, sd_y, sigma_norm=True)
+
+
+measures_to_plot = [abs_ee_mean_traj_uncorr, abs_ee_mean_traj_corr, abs_ee_mean_rad_uncorr, abs_ee_mean_rad_corr]
+
+# Save observations to results dir.
+with open('results/measures_to_plot.pkl', 'wb') as f:
+  pickle.dump(measures_to_plot, f)

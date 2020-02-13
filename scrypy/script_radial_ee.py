@@ -53,16 +53,7 @@ print(end - start)
 comp_time = (end - start) / 60
 
 
-# Save measures and steps to results dir.
-with open("results/measures_radial.pkl", "wb") as f:
-    pickle.dump(measures_list_rad, f)
-
+# Save observations to results dir.
 with open("results/ee_obs_radial.pkl", "wb") as f:
     pickle.dump(obs_list_rad, f)
 
-# Load to check.
-with open("results/measures_radial.pkl", "rb") as f:
-    read_meas = pickle.load(f)
-
-with open("results/ee_obs_radial.pkl", "rb") as f:
-    read_ee_obs = pickle.load(f)
