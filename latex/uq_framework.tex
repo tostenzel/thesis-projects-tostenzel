@@ -39,107 +39,47 @@ In general, the emphasis on UQ measures for models with correlated input paramet
 This has the following reason: For correlated input parameters with a known, tractable joint distribution function like, for instance, the normal distribution, sampling-based measures can be computed by sampling from the unit cube. The samples are then converted from the unit cube to the domain of the joint probability distribution by evaluating the draws with the inverse cumulative distribution function, thereby accounting for the correlation. Alternatively, the decorrelation techniques Rosenblatt and Nataf transformation are usually used for less simple distribution functions
 
 
-
 \subsection{Global Sensitivity Analysis}
-\subsubsection{Morris Screening}
-\cite{Morris.1991}
+\subsubsection{Quantitative Global Sensitivity Analysis}
 
-\cite{Saltelli.2008}
+The quantitative GSA then aims to determine the precise effect size of each random input parameter on the function output. The most common measures in quantitative GSA are the so-called Sobol' sensitivtiy indices. Equation 1 shows the first order index. It is the share of the variance in the function output induced by exclusively one single input parameter $X_i$ of the variance induced by all random input parameters $X_1, X_2, ..., X_k$.
 
-\cite{lemaire2013structural}
-\cite{gentle2006random}
-\cite{ge2017extending}
-\cite{ge2014efficient}
-\cite{campolongo2007effective}
-\cite{Smith.2014}
-\subsubsection{Sobol' Indices}
 
 \begin{align}
 S_i = \frac{\text{Var}_i[Y|X_i ]}{\text{Var}[Y]}
 \end{align}
 
-\begin{align}
-S_i = \frac{\text{Var}_i[\E_{\sim i}[Y|X_i ]]}{\text{Var}[Y]}
-\end{align}
+\noindent
+Let $\sim i$ denote the set of indices except $i$. Equation 2 shows the total order index. This measure is equal to the first order index except of that its numerator includes the variance in the function output that is induced by changes in the other input parameters $X_{\sim i}$, caused by interactions with the variation in $X_i$.
 
 \begin{align}
-S_{ij} = \frac{\text{Var}_{ij}[\E_{\sim \{i,j\}}[Y|X_i, X_j ]]}{\text{Var}[Y]} - S_i - S_j
+S_{i}^T = \frac{\E_{\sim i}[\text{Var}_{i}[Y|\bold{X_{\sim i}]]}}{\text{Var}[Y]}
 \end{align}
+
+\noindent
+Computing these measures requires many function evaluations, even if an estimator is used as a shortcut. The more time-intense one function evaluation is, the more utility provides the aforementioned Factor Fixing based on qualitative measures. 
+
+
+\subsubsection{Qualitative Global Sensitivity Analysis}
+
+Qualitative Global Sensitivity Analysis (Qualitative GSA) deals with computing measures that can rank random input parameters in terms of their impact on the function output and the variability thereof. If the measures for some input parameters are negligibly small, these parameters can be fixed so that the number of random input parameters decreases for a subsequent quantitative GSA. This pre-selection step is called Factor Fixing.  \\
+
+
+The most commonly used measures in qualitative GSA is the mean Elementary Effect (EE), $\mu$, the mean absolute Elementary Effects, $\mu^*$, and the standard deviation of the Elementary Effects, $\sigma$. The Elementary Effect of $X_i$ is given by one individual function derivative with respect to $X_i$. The "change in", or the "step of" the input parameter, denoted by $\Delta$, has not to be infinitesimally small. The only restriction is that $X_i + \Delta$ is in the domain of $X_i$. The Elementary Effect, or derivative, is denoted by
+\begin{align}
+d_i^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delta^{(i,j)}},
+\end{align}
+where $j$ is an index for the number of $r$ observations of $X_i$.
+Then, the mean Elementary Effect is given by
 
 \begin{align}
-S_\text{u} = \frac{\text{Var}_\text{u}[\E_{\sim \text{u}}[Y|X_\text{u} ]]}{\text{Var}[Y]} - \sum_{\text{w} \subset \text{u}} S_\text{w}
+\mu_i = \frac{1}{r} \sum_{j=1}^{r} d_i^{(j)}.
 \end{align}
+\noindent
+The mean absolute Elementary Effect, $\mu_i^*$ is used to prevent observations of opposite sign to cancel each other out:
 
 \begin{align}
-S_i^\text{T} = \sum_{i \in \text{u}} S_\text{u}
+\mu_i^* = \frac{1}{r} \sum_{j=1}^{r} \big| d_i^{(j)} \big|.
 \end{align}
-
-\begin{align}
-\text{Var}[Y] = \text{Var}_i[\E_{\sim i}[Y|X_i]] + \E_{i}[\text{Var}_{\sim i}[Y|X_i]]
-\end{align}
-
-\begin{align}
-1 = \frac{\text{Var}_i[\E_{\sim i}[Y|X_i]]}{\text{Var}[Y]} + \frac{\E_{i}[Var_{\sim i}[Y|X_i]]}{\text{Var}[Y]}
-\end{align}
-\begin{align}
-1 = S_i + S_{\sim i}^T
-\end{align}
-
-\begin{align}
-S_{\sim i}^T = \frac{\E_{i}[\text{Var}_{\sim i}[Y|X_i]]}{\text{Var}[Y]}
-\end{align}
-
-\begin{align}
-S_{i}^T = \frac{\E_{\sim i}[\text{Var}_{i}[Y|X_{\sim i}]]}{\text{Var}[Y]}
-\end{align}
-
-\begin{align}
-S_\text{u}^{clo} = \frac{\text{Var}_\text{u}[\E_{\sim \text{u}}[Y|X_\text{u} ]]}{\text{Var}[Y]}
-\end{align}
-
-
-\begin{align}
-Y = \mathcal{M}(\text{x}) = \mathcal{M}_0 + \sum_{i=1}^{M} \mathcal{M}_i(x_i) + \sum_{1 \leq i \leq j \leq M} \mathcal{M}_{ij}(x_i,x_j) + ... + \mathcal{M}_{12..M}(\text{x})
-\end{align}
-
-\begin{align}
-S_i = \frac{\text{Cov}[\mathcal{M}_i(x_i), Y]}{\text{Var}[Y]}
-\end{align}
-
-\begin{align}
-S_i = \frac{\text{Var}[\mathcal{M}_i(x_i)]}{\text{Var}[Y]} + \frac{\text{Cov}[\mathcal{M}_i(x_i)]}{\text{Var}[Y]}
-\end{align}
-
-\begin{align}
-S_i = \frac{\text{Var}_i[\mathcal{M}_i(x_i)]}{\text{Var}[Y]}
-\end{align}
-
-\begin{align}
-S_{ij} = \frac{\text{Var}_{ij}[\mathcal{M}_{ij}(x_i,x_j)]}{\text{Var}[Y]}
-\end{align}
-
-\begin{align}
-\text{Var}[Y] =  \sum_{i=1}^{M} \text{Var}[\mathcal{M}_i(x_i)] + \sum_{1 \leq i \leq j \leq M} \text{Var}[\mathcal{M}_{ij}(x_i,x_j)] + ... + \text{Var}[\mathcal{M}_{12..M}(\text{x})]
-\end{align}
-
-\begin{equation}
-\begin{aligned}
-S_i^T = S_i + \sum_{j \ne i} S_{ij} + \sum_{1 \leq i \leq j \leq M,\{j,k\} \ne i} S_{ijk} + ... = \sum_{i \in \text{w}} S_\text{w} = \\
-\frac{1}{\text{Var}[Y]}\sum_{i \in \text{w}} \text{Var}_i[\mathcal{M}_\text{w}(x_\text{w})]
-\end{aligned}
-\end{equation}
-
-\begin{align}
-S_\text{u}^{clo} = \frac{\text{Var}_\text{u}[\mathcal{M}_\text{u}(\text{x}_\text{u})]}{\text{Var}[Y]} +  \sum_{\text{w} \subseteq \text{u}} \frac{\text{Var}_\text{w}[\mathcal{M}_\text{w}(\text{x}_\text{w})]}{\text{Var}[Y]}
-\end{align}
-
-
-\subsection{Surrogate Models and Spectral Expansions}
-
-
-[Univariate Effects as a measure for comparative statics]
-
-[Philipp: Please add a plot to your thesis (not our notebook) that implements the idea of the uncertainty cone in Figure 1. 2 in our textbook. For example, Figure 1 from KW97 could use such a cone for hte out of support predictions in the occupational shares.]
-
-\newpage
-%exlude, just to see how large the next chapter is
+\noindent
+Step $\Delta^{(i,j)}$ may or may not vary depending on the sample design that is used to draw the input parameters. These measures (together) are used to proxy the total Sobol' indices that contains the parameter-specific interactions with all other parameter, as shown in Equation (2). The total Sobol' index is the relevant one because the interactions are potentially be important. If the qualitative measures are close to 0 for one particular parameter, its variation can be rendered as irrelevant for the variation in the function output (given there are parameters with measures substantially different from 0).

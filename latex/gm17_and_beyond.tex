@@ -1,131 +1,7 @@
-\documentclass[a4paper,12pt]{article} 
 
-% packages and main settings
-\usepackage[left=3cm, right=2cm, top=2cm, bottom=2cm]{geometry}
-\usepackage[english]{babel}    
-\usepackage[utf8]{inputenc}  
-\usepackage[T1]{fontenc}        
-\usepackage{lmodern}            
-\usepackage{microtype}          
-\usepackage{amsmath}
-\usepackage{amsfonts, amsthm, amssymb, graphicx, booktabs}
-\usepackage{bm} %bold epsilon
-\usepackage{newclude}   
-\usepackage{placeins}  %surpresses floating tables
-\usepackage[labelfont=bf]{caption} %Figure etc steht dann in small caps 
-\usepackage[labelsep=period]{caption} % dot after figure, table caption.
-\usepackage[flushleft]{threeparttable} % for notes below table
-\usepackage{multirow} % for table cell merge along rows
-\usepackage{graphicx} % to adjust tablesize to textwidth
-\usepackage{caption}  % for centered captions
-\usepackage{float} % to set of autopositioning of tables
-\usepackage[bottom,hang,flushmargin]{footmisc} % forces footnotes to the bottom
-\usepackage{setspace}           % Fuer 1.5 fachen Zeilenabstand  
-\onehalfspacing % 1.5 cm Zeilenabstand
-%Bibtex
-\usepackage[round,sort&compress]{natbib}
-
-\bibliographystyle{chicago} % chicago bib style like in AER
-\usepackage[hidelinks]{hyperref} % fuer links und verweise. Cleverref ist eigentlich besser. 
-
-
-% Create header. The header must be surpressed for 
-% every first page per section and a solution
-% for the Appendix is used in the respective subfile.
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhf{}
-\chead{\nouppercase{\textit{\leftmark}}}
-\cfoot{\thepage}
-\renewcommand{\headrulewidth}{0pt} % no vertical line
-
-%\usepackage{lipsum}  % check if formats work
-
-\usepackage{afterpage} %clearpage w/o pagebreak for "header bug"
-
-% Expectation symbol
-\DeclareMathOperator*{\E}{\mathbb{E}}
-
-% thin space, limits underneath in displays
-% for strike through
-\DeclareMathOperator*{\argmax}{argmax}
-\newcommand*{\defeq}{\stackrel{\text{def}}{=}}
-\usepackage[normalem]{ulem}
-% try to use strikeout in section headers and others
-\DeclareRobustCommand{\hsout}[1]{\texorpdfstring{\sout{#1}}{#1}}
-
-% for gray table row color
-\usepackage[table]{xcolor}
-
-% decimal dot alignment in table columns
-\usepackage{siunitx}
-
-% for footnotes in table
-\usepackage[flushleft]{threeparttable}
-
-% for underbar
-\newcommand{\ubar}[1]{\text{\b{$#1$}}}
-
-\usepackage{tikz}
-
-% Setup for urls
-\usepackage{url}
-
-\defcitealias{Respy-Stenzel.2019}{\textit{respy}}
-\defcitealias{Gabler.2019}{\textit{estimagic}}
-\defcitealias{Stenzel.2020}{\textit{Master's Thesis Replication Repository}}
-\defcitealias{NLSY79}{NLSY79}
-
-
-\usepackage{tikz}
-
-
-\usepackage{enumitem}
-
-
-
-\begin{document}
-
-\newpage % delete after section is complete
-
-\section{Qualitative GSA measures for functions with correlated input parameters}
+\section{Elementary Effects for functions with correlated input parameters}
 \thispagestyle{plain} % suppress header on first page
 
-\subsection{Qualitative General Sensitivity Analysis}
-\noindent
-Qualitative Global Sensitivity Analysis (Qualitative GSA) deals with computing measures that can rank random input parameters in terms of their impact on the function output and the variability thereof. If the measures for some input parameters are negligibly small, these parameters can be fixed so that the number of random input parameters decreases for a subsequent quantitative GSA. This pre-selection step is called Factor Fixing. The quantitative GSA then aims to determine the precise effect size of each random input parameter on the function output. The most common measures in quantitative GSA are the so-called Sobol' sensitivtiy indices. Equation 1 shows the first order index. It is the share of the variance in the function output induced by exclusively one single input parameter $X_i$ of the variance induced by all random input parameters $X_1, X_2, ..., X_k$.
-
-
-\begin{align}
-S_i = \frac{\text{Var}_i[Y|X_i ]}{\text{Var}[Y]}
-\end{align}
-
-\noindent
-Let $\sim i$ denote the set of indices except $i$. Equation 2 shows the total order index. This measure is equal to the first order index except of that its numerator includes the variance in the function output that is induced by changes in the other input parameters $X_{\sim i}$, caused by interactions with the variation in $X_i$.
-
-\begin{align}
-S_{i}^T = \frac{\E_{\sim i}[\text{Var}_{i}[Y|\bold{X_{\sim i}]]}}{\text{Var}[Y]}
-\end{align}
-
-\noindent
-Computing these measures requires many function evaluations, even if an estimator is used as a shortcut. The more time-intense one function evaluation is, the more utility provides the aforementioned Factor Fixing based on qualitative measures. The most commonly used measures in qualitative GSA is the mean Elementary Effect (EE), $\mu$, the mean absolute Elementary Effects, $\mu^*$, and the standard deviation of the Elementary Effects, $\sigma$. The Elementary Effect of $X_i$ is given by one individual function derivative with respect to $X_i$. The "change in", or the "step of" the input parameter, denoted by $\Delta$, has not to be infinitesimally small. The only restriction is that $X_i + \Delta$ is in the domain of $X_i$. The Elementary Effect, or derivative, is denoted by
-\begin{align}
-d_i^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delta^{(i,j)}},
-\end{align}
-where $j$ is an index for the number of $r$ observations of $X_i$.
-Then, the mean Elementary Effect is given by
-
-\begin{align}
-\mu_i = \frac{1}{r} \sum_{j=1}^{r} d_i^{(j)}.
-\end{align}
-\noindent
-The mean absolute Elementary Effect, $\mu_i^*$ is used to prevent observations of opposite sign to cancel each other out:
-
-\begin{align}
-\mu_i^* = \frac{1}{r} \sum_{j=1}^{r} \big| d_i^{(j)} \big|.
-\end{align}
-\noindent
-Step $\Delta^{(i,j)}$ may or may not vary depending on the sample design that is used to draw the input parameters. These measures (together) are used to proxy the total Sobol' indices that contains the parameter-specific interactions with all other parameter, as shown in Equation (2). The total Sobol' index is the relevant one because the interactions are potentially be important. If the qualitative measures are close to 0 for one particular parameter, its variation can be rendered as irrelevant for the variation in the function output (given there are parameters with measures substantially different from 0).
 
 \subsection{Sampling Schemes}
 
@@ -209,15 +85,15 @@ The second operation is to scale the correlated standard normal deviates: $\bold
 The last step to construct the final approach is to recall the inverse transform sampling method. Therewith, we can transform the input parameter draws $\bold{u}$ to uncorrelated standard normal draws $\bold{z}$. Then we will continue with the two operation in the above paragraph. The transformation from $\bold{u}$ to $\bold{z}$ is denoted by $ F^{-1}(\Phi)$ and summarized by the following three points:
 
 
-\[
-\left.\parbox{0.5\textwidth}{%
-\begin{enumerate}[label=\bfseries Step \arabic*:,leftmargin=*,labelindent=5em]
-	\item $\bold{z} = \pmb{\Phi^{-1}({u})}$
-    \item $\bold{z_c} = \bold{Q^T z^T}$
-    \item $\bold{x} = \pmb{\mu} + \bold{z_c(i)}\pmb{\sigma(i)}$
-\end{enumerate}
-}\right\}F^{-1}(\Phi) \defeq \mathcal{T}_2
-\]
+%\[
+%\left.\parbox{0.5\textwidth}{%
+%\begin{enumerate}[label=\bfseries Step \arabic*:,leftmargin=*,labelindent=5em]
+%	\item $\bold{z} = \pmb{\Phi^{-1}({u})}$
+%    \item $\bold{z_c} = \bold{Q^T z^T}$
+%    \item $\bold{x} = \pmb{\mu} + \bold{z_c(i)}\pmb{\sigma(i)}$
+%\end{enumerate}
+%}\right\}F^{-1}(\Phi) \defeq \mathcal{T}_2
+%\]
 
 Step 3 is specific to the normal sample space in which we are interested in. A mapping to other sample spaces can, for instance. be achieved by, first, applying $\Phi$ and, second, the inverse cumulative distribution function of the desired distribution.
 
@@ -339,7 +215,7 @@ The denominator of the correlated Elementary Effect, $d_i^{c}$, consists of $\Ph
 
 The last point is not true for the uncorrelated Elementary Effect $d_i^{c}$. One accounts for the correlation step by multiplying $\Phi(b_i)$ by ${Q^T}_{k,*k-1}(j)T_{i+1,*k-1}^T(j)/\Phi(b_i)+{Q^T}_{k,k}$. The respective operation is done for $\Phi(b_i)$. Not accounting for $Q_t$ like \cite{ge2017extending} leads to arbitrarily decreased independent Elementary Effects for input parameters with higher correlations. As $d_i^{full}$ and $d_i^{ind}$ are interpreted jointly, both measures are in fact useless.
 
-For $X_1, ..., X_k \sim \mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$, the denominator of $d_i^{\bullet, R}$ simplifies drastically to
+For $X_1, ..., X_k \sim \mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$, the denominator of $d_i^{u, \bullet}$ simplifies drastically to
 
 \begin{align}
 \begin{split}
@@ -424,30 +300,6 @@ This implies that the mean and the mean absolute aggregate effects are equal to 
 \begin{figure}[H]
 	\caption{Grid points for trajectory design in \cite{ge2017extending}}
 	\centering
-	\includegraphics[scale=0.40]{../../../scrypy/figures/quantile_fct}
+	\includegraphics[scale=0.40]{../scrypy/figures/quantile_fct}
 	\label{fig:rad}
 \end{figure}
-
-
-
-\newpage
-\begin{figure}[H]
-	\caption{Sigma-normalized mean absolute Elementary Effects for trajectory design}
-	\centering
-	\includegraphics[scale=0.52]{../../../scrypy/figures/scatter_traj}
-	\label{fig:traj}
-\end{figure}
-
-\begin{figure}[H]
-	\caption{Sigma-normalized mean absolute Elementary Effects for radial design}
-	\centering
-	\includegraphics[scale=0.52]{../../../scrypy/figures/scatter_rad}
-	\label{fig:rad}
-\end{figure}
-
-
-
-\newpage
-\bibliography{../../bibliography/literature}
-
-\end{document}
