@@ -32,27 +32,29 @@ def scatter_plot(df, iloc_col_x, iloc_col_y, xlim, ylim):
     current_palette = sns.color_palette("deep")
     sns.set_palette(current_palette)
     
-    colorz = ["c", current_palette[3], current_palette[0],
-        current_palette[1], current_palette[2], current_palette[5]]
+    colorz = ["c", current_palette[0], current_palette[1],
+        current_palette[3], current_palette[2], current_palette[5]]
     
     plt.rcParams["axes.prop_cycle"] = cycler('color', colorz)
     fig, ax = plt.subplots(figsize=(12, 9))
       
     ax = sns.scatterplot(
             df.iloc[:, iloc_col_x], df.iloc[:, iloc_col_y], s=250, hue=abs_ee_mean.index.get_level_values(0))
+
     
-    ax.legend(
-    
-                frameon=True,
+    # Reorder legend.
+    handles,labels = ax.get_legend_handles_labels()
+    handles = [handles[0], handles[3], handles[1], handles[2], handles[4], handles[5]]
+    labels = [labels[0], labels[3], labels[1], labels[2], labels[4], labels[5]]
+    ax.legend(handles,labels,
+                              frameon=True,
                 framealpha=1.0,
                 fontsize=22,
                 edgecolor="black",
                 fancybox=False,
                 borderpad=0.5,
                 handletextpad=-0.06,
-                markerscale=2.4
-            )
-    
+                markerscale=2.4)
     
     ax.grid(True, linestyle="-", alpha=0.5)
     ax.set_xlim(0, xlim)
@@ -142,15 +144,6 @@ param_groups = np.array(
 abs_ee_mean = pd.DataFrame(np.hstack(measures_to_plot), index=[param_groups, param_labels],
                     columns= ["traj_uncorr", "traj_corr",
                            "rad_uncorr", "rad_corr"])
-
-abs_ee_mean = abs_ee_mean.reindex([
-        "Discount factor",
-        "Education",
-        "Blue-collar",
-        "White-collar",
-        "Home",
-        "Choleskies"
-    ], level=0)
 
 scatter_plot(abs_ee_mean, 1, 0, 0.9, 6)
 
