@@ -17499,4 +17499,32 @@
   publisher = {North-Holland},
 }
 
+@Article{madar2015direct,
+  author    = {Madar, Vered},
+  title     = {Direct formulation to Cholesky decomposition of a general nonsingular correlation matrix},
+  journal   = {Statistics \& probability letters},
+  year      = {2015},
+  volume    = {103},
+  pages     = {142--147},
+  publisher = {Elsevier},
+}
+
+@Article{mcbride2019overview,
+  author    = {McBride, Kevin and Sundmacher, Kai},
+  title     = {Overview of surrogate modeling in chemical process engineering},
+  journal   = {Chemie Ingenieur Technik},
+  year      = {2019},
+  volume    = {91},
+  number    = {3},
+  pages     = {228--239},
+  publisher = {Wiley Online Library},
+}
+
+@Book{xiu2010numerical,
+  title     = {Numerical methods for stochastic computations: a spectral method approach},
+  publisher = {Princeton university press},
+  year      = {2010},
+  author    = {Xiu, Dongbin},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}

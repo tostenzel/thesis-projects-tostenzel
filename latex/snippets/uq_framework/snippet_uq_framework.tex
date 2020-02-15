@@ -1,0 +1,170 @@
+\documentclass[a4paper,12pt]{article} 
+
+% packages and main settings
+\usepackage[left=3cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+\usepackage[english]{babel}    
+\usepackage[utf8]{inputenc}  
+\usepackage[T1]{fontenc}        
+\usepackage{lmodern}            
+\usepackage{microtype}          
+\usepackage{amsmath}
+\usepackage{amsfonts, amsthm, amssymb, graphicx, booktabs}
+\usepackage{bm} %bold epsilon
+\usepackage{newclude}   
+\usepackage{placeins}  %surpresses floating tables
+\usepackage[labelfont=bf]{caption} %Figure etc steht dann in small caps 
+\usepackage[labelsep=period]{caption} % dot after figure, table caption.
+\usepackage[flushleft]{threeparttable} % for notes below table
+\usepackage{multirow} % for table cell merge along rows
+\usepackage{graphicx} % to adjust tablesize to textwidth
+\usepackage{caption}  % for centered captions
+\usepackage{float} % to set of autopositioning of tables
+\usepackage[bottom,hang,flushmargin]{footmisc} % forces footnotes to the bottom
+\usepackage{setspace}           % Fuer 1.5 fachen Zeilenabstand  
+\onehalfspacing % 1.5 cm Zeilenabstand
+%Bibtex
+\usepackage[round,sort&compress]{natbib}
+
+\bibliographystyle{chicago} % chicago bib style like in AER
+\usepackage[hidelinks]{hyperref} % fuer links und verweise. Cleverref ist eigentlich besser. 
+
+
+% Create header. The header must be surpressed for 
+% every first page per section and a solution
+% for the Appendix is used in the respective subfile.
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\chead{\nouppercase{\textit{\leftmark}}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0pt} % no vertical line
+
+%\usepackage{lipsum}  % check if formats work
+
+\usepackage{afterpage} %clearpage w/o pagebreak for "header bug"
+
+% Expectation symbol
+\DeclareMathOperator*{\E}{\mathbb{E}}
+
+% thin space, limits underneath in displays
+% for strike through
+\DeclareMathOperator*{\argmax}{argmax}
+\newcommand*{\defeq}{\stackrel{\text{def}}{=}}
+\usepackage[normalem]{ulem}
+% try to use strikeout in section headers and others
+\DeclareRobustCommand{\hsout}[1]{\texorpdfstring{\sout{#1}}{#1}}
+
+% for gray table row color
+\usepackage[table]{xcolor}
+
+% decimal dot alignment in table columns
+\usepackage{siunitx}
+
+% for footnotes in table
+\usepackage[flushleft]{threeparttable}
+
+% for underbar
+\newcommand{\ubar}[1]{\text{\b{$#1$}}}
+
+\usepackage{tikz}
+
+% Setup for urls
+\usepackage{url}
+
+\defcitealias{Respy-Stenzel.2019}{\textit{respy}}
+\defcitealias{Gabler.2019}{\textit{estimagic}}
+\defcitealias{Stenzel.2020}{\textit{Master's Thesis Replication Repository}}
+\defcitealias{NLSY79}{NLSY79}
+
+
+\usepackage{tikz}
+\begin{document}
+
+\newpage % delete after section is complete
+
+\section{Uncertainty Quantification Framework}
+\thispagestyle{plain} % surpress header on first page
+
+This section consists of two main parts. The first part gives an overview of uncertainty quantification and introduces the basic notation. The second part describes the subdiscipline General Sensitivity Analysis. This part, in turn, is divided in Quantitative and Qualitative GSA. I will explain the most common measures for both levels of GSA and how they relate. The main quantitative measures are the Sobol' sensitivity indices. The main qualitative measures are centered around the Elementary Effects.
+These qualitative measures constitute the thesis' main result.
+
+\subsection{Overview of Uncertainty Quantification}
+Model-based forecasting includes two main steps (\cite{Smith.2014})\footnote{See page ix.}: The first step is the calibration. In this step, the input parameters of the model are estimated. The second step is the prediction. The prediction contains the evaluation at the estimated parameters to make statements about the future. These statements are made in a probabilistic way. Thereby, the uncertainty of these statements is emphasised.\footnote{The general procedure of model-based forecasting can also include other steps. However, steps like model validation and model verification can also be viewed as belonging to the analysis of the so-called model uncertainty. The concept of model uncertainty is briefly explained in the next paragraph.}\\
+\newline
+There are four sources of uncertainty in modern forecasts that are based on complex computational models (\cite{Smith.2014})\footnote{See page 4-7.}. The first source, the model uncertainty, is the uncertainty on whether the mathematical model represents the reality appropriately.\footnote{However, apparently there are not many powerful instruments to evaluate and improve the model uncertainty except comparing statements derived from the model to the data and then improving it where appropriate.} The second source, the input uncertainty, is the uncertainty about the size of the input parameters of the model. The third one, the numerical uncertainty, comes from potential errors and uncertainties introduced by the translation of a mathematical to a computational model. The last source of uncertainty, the measurement uncertainty, is the accuracy of the experimental data that is used to approximate and calibrate the model.
+
+The thesis deals with the second source of uncertainty, the input uncertainty. In my view, this is the source for which uncertainty quantification offers the most and also the strongest instruments. This results from the fact that the estimation step produces standard errors as basic measures for the variability or uncertainty in the input parameter estimates. These can then be used to compute a variety of measures for the impact of the input uncertainty on the model output.\\
+\newline
+The following explains the basic notation for the quantification of the input uncertainty's impact. An essential step is to define the quantity that one wants to predict with a model. This quantity is called the quantity of interest (henceforth QoI) and is denoted by $q$. For instance, the QoI in the thesis is the impact of a 500 USD tuition subsidy for higher education on average schooling years. The uncertain model parameters are denoted by vector $\bold{X}$. The function that computes QoI $q$ by evaluating a computation model and, if necessary, post-processing the model output is denoted by $f$. Thus,
+\begin{align}
+q = f(\bold{X}).
+\end{align}
+Large-scale UQ applications draw from various disciplines like probability, statistics, analysis, and numeric. They are used in a combined effort for parameter estimation, surrogate model construction, parameter selection, uncertainty propagation, LSA, and GSA, amongst others. Drawing from \cite{Smith.2014}\footnote{See page 8-10.}, I briefly sketch the first five components. The last component, GSA, is discussed more extensively thereafter.
+
+Parameter estimation covers the calibration step. There is a large number of estimation techniques for various types of models. The thesis uses a maximum likelihood approach detailed in the Model section and in Appendix C.
+
+
+If the run time of a model is too long to compute the desired UQ measures, surrogate models are constructed to substitute the original model $f$ (\cite{mcbride2019overview}). These surrogate models are functions of the model input parameters which are faster to evaluate. They are also called interpolants because these functions are computed from a random sample of input parameter vectors drawn from the input distribution and evaluated by the model. Therefore, the surrogate model interpolates this sample. Some specifications, like orthogonal polynomials, have properties which can simplify the computation of some UQ measures tremendously (\cite{xiu2010numerical}).
+
+Another way to reduce the computation time, not directly of the model but of UQ measures, is to reduce the number of uncertain input parameters as part of a parameter selection. The decision to fix input parameters is made based on sensitivity measures. This is also called Factor Fixing (\cite{Saltelli.2008})\footnote{See page 33-34.}. Therefore, this point will be taken up again after this overview.
+
+Uncertainty propagation is the core of the prediction step. It comprises two steps. The first step is the  construction of the QoI's probability distribution by propagating the input uncertainty through the model. For instance, this can be achieved by evaluating a sample of random input parameters by the model (as also required for the construction of a surrogate model). The second step is the computation of descriptive statistics like the probabilities for a set of specific events in the QoI range using this distribution. Both steps are conceptually simple. The construction of the probability distribution is also important for designing subsequent steps like a sensitivity analysis. For example, if the distribution is unimodal and symmetric, then variance-based UQ measures are meaningful. If the distribution has a less tractable, for instance a bimodal shape, then density-based measures are better suited (\cite{plischke2013global}).
+
+In UQ, sensitivity analysis has the broad objective of quantifying the relative contribution of the uncertainty in individual input parameters to the total uncertainty in the QoI. Moreover, it answers the question of how specific changes in parameters affect QoI responses. A measure for this can, for instance, be the derivative of the model with respect to individual parameters. The thesis aims at answering the first part. One reason for this orientation is that the range of the QoI's distribution has no particularly critical interval that deserves particular attention.
+
+Local sensitivity analysis provides measures for the above objectives by changes of input parameter values about some nominal values at specific choices of local points in the input parameter space. The two choices, the nominal value that changes the input parameters and the local point at which to change the parameters, contain a degree of arbitrariness. This arbitrariness can yield false results if the model is non-linear (\cite{Smith.1961})\footnote{See page 303.}. For instance, using derivatives for LSA corresponds to the specific case of considering the model at a base input parameter vector where one parameter is changed by a small margin. However, for non-linear models, the choice of the base value of the input parameter vector is crucial for the result. These conceptual limitations can be overcome in a global sensitivity analysis (henceforth GSA).\\
+
+\subsection{Global Sensitivity Analysis}
+\subsubsection{Quantitative Global Sensitivity Analysis}
+
+I need a remark on the low number of GSA and correlation contributions somewhere here.
+
+
+
+The quantitative GSA then aims to determine the precise effect size of each random input parameter on the function output. The most common measures in quantitative GSA are the so-called Sobol' sensitivtiy indices. Equation 1 shows the first order index. It is the share of the variance in the function output induced by exclusively one single input parameter $X_i$ of the variance induced by all random input parameters $X_1, X_2, ..., X_k$.
+
+
+\begin{align}
+S_i = \frac{\text{Var}_i[Y|X_i ]}{\text{Var}[Y]}
+\end{align}
+
+\noindent
+Let $\sim i$ denote the set of indices except $i$. Equation 2 shows the total order index. This measure is equal to the first order index except of that its numerator includes the variance in the function output that is induced by changes in the other input parameters $X_{\sim i}$, caused by interactions with the variation in $X_i$.
+
+\begin{align}
+S_{i}^T = \frac{\E_{\sim i}[\text{Var}_{i}[Y|\bold{X_{\sim i}]]}}{\text{Var}[Y]}
+\end{align}
+
+\noindent
+Computing these measures requires many function evaluations, even if an estimator is used as a shortcut. The more time-intense one function evaluation is, the more utility provides the aforementioned Factor Fixing based on qualitative measures. 
+
+
+\subsubsection{Qualitative Global Sensitivity Analysis}
+
+Qualitative Global Sensitivity Analysis (Qualitative GSA) deals with computing measures that can rank random input parameters in terms of their impact on the function output and the variability thereof. If the measures for some input parameters are negligibly small, these parameters can be fixed so that the number of random input parameters decreases for a subsequent quantitative GSA. This pre-selection step is called Factor Fixing.  \\
+
+
+The most commonly used measures in qualitative GSA is the mean Elementary Effect (EE), $\mu$, the mean absolute Elementary Effects, $\mu^*$, and the standard deviation of the Elementary Effects, $\sigma$. The Elementary Effect of $X_i$ is given by one individual function derivative with respect to $X_i$. The "change in", or the "step of" the input parameter, denoted by $\Delta$, has not to be infinitesimally small. The only restriction is that $X_i + \Delta$ is in the domain of $X_i$. The Elementary Effect, or derivative, is denoted by
+\begin{align}
+d_i^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delta^{(i,j)}},
+\end{align}
+where $j$ is an index for the number of $r$ observations of $X_i$.
+Then, the mean Elementary Effect is given by
+
+\begin{align}
+\mu_i = \frac{1}{r} \sum_{j=1}^{r} d_i^{(j)}.
+\end{align}
+\noindent
+The mean absolute Elementary Effect, $\mu_i^*$ is used to prevent observations of opposite sign to cancel each other out:
+
+\begin{align}
+\mu_i^* = \frac{1}{r} \sum_{j=1}^{r} \big| d_i^{(j)} \big|.
+\end{align}
+\noindent
+Step $\Delta^{(i,j)}$ may or may not vary depending on the sample design that is used to draw the input parameters. These measures (together) are used to proxy the total Sobol' indices that contains the parameter-specific interactions with all other parameter, as shown in Equation (2). The total Sobol' index is the relevant one because the interactions are potentially be important. If the qualitative measures are close to 0 for one particular parameter, its variation can be rendered as irrelevant for the variation in the function output (given there are parameters with measures substantially different from 0).
+
+
+\newpage
+\bibliography{../../bibliography/literature}
+
+\end{document}
