@@ -17527,4 +17527,34 @@
   author    = {Xiu, Dongbin},
 }
 
+@Article{plischke2013global,
+  author    = {Plischke, Elmar and Borgonovo, Emanuele and Smith, Curtis L},
+  title     = {Global sensitivity measures from given data},
+  journal   = {European Journal of Operational Research},
+  year      = {2013},
+  volume    = {226},
+  number    = {3},
+  pages     = {536--550},
+  publisher = {Elsevier},
+}
+
+@Book{saltelli2004sensitivity,
+  title     = {Sensitivity analysis in practice: a guide to assessing scientific models},
+  publisher = {Wiley Online Library},
+  year      = {2004},
+  author    = {Saltelli, Andrea and Tarantola, Stefano and Campolongo, Francesca and Ratto, Marco},
+  volume    = {1},
+}
+
+@Article{rabitz1989systems,
+  author    = {Rabitz, Herschel},
+  title     = {Systems analysis at the molecular scale},
+  journal   = {Science},
+  year      = {1989},
+  volume    = {246},
+  number    = {4927},
+  pages     = {221--226},
+  publisher = {American Association for the Advancement of Science},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}

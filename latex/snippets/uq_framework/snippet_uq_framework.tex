@@ -78,6 +78,8 @@
 
 
 \usepackage{tikz}
+
+
 \begin{document}
 
 \newpage % delete after section is complete
@@ -85,8 +87,8 @@
 \section{Uncertainty Quantification Framework}
 \thispagestyle{plain} % surpress header on first page
 
-This section consists of two main parts. The first part gives an overview of uncertainty quantification and introduces the basic notation. The second part describes the subdiscipline General Sensitivity Analysis. This part, in turn, is divided in Quantitative and Qualitative GSA. I will explain the most common measures for both levels of GSA and how they relate. The main quantitative measures are the Sobol' sensitivity indices. The main qualitative measures base on the Elementary Effects.
-These qualitative measures constitute the thesis' main result.
+This section consists of two main parts. The first part gives an overview of uncertainty quantification and introduces the basic notation. The second part describes the subdiscipline Sensitivity Analysis. After general remarks, this part, in turn, is divided in Quantitative and Qualitative GSA. I will explain the most common measures for both levels of GSA and how they relate. The main quantitative measures are the Sobol' sensitivity indices. The main qualitative measures base on the Elementary Effects.
+These qualitative measures constitute the thesis' main result. The section concludes with remarks on the role of correlated input parameters in UQ.
 
 \subsection{Overview of Uncertainty Quantification}
 Model-based forecasting includes two main steps (\cite{Smith.2014})\footnote{See page ix.}: The first step is the calibration. In this step, the input parameters of the model are estimated. The second step is the prediction. The prediction contains the evaluation at the estimated parameters to make statements about the future. These statements are made in a probabilistic way. Thereby, the uncertainty of these statements is emphasised.\footnote{The general procedure of model-based forecasting can also include other steps. However, steps like model validation and model verification can also be viewed as belonging to the analysis of the so-called model uncertainty. The concept of model uncertainty is briefly explained in the next paragraph.}\\
@@ -95,9 +97,9 @@ There are four sources of uncertainty in modern forecasting that are based on co
 
 The thesis deals with the second source of uncertainty, the input uncertainty. In my view, this is the source for which uncertainty quantification offers the most and also the strongest instruments. This results from the fact that the estimation step produces standard errors as basic measures for the variability or uncertainty in the input parameter estimates. These can then be used to compute a variety of measures for the impact of the input uncertainty on the model output.\\
 \newline
-The following explains the basic notation for the quantification of the input uncertainty's impact. An essential step is to define the quantity that one wants to predict with a model. This quantity is called the quantity of interest (henceforth QoI) and is denoted by $q$. For instance, the QoI in the thesis is the impact of a 500 USD tuition subsidy for higher education on average schooling years. The uncertain model parameters are denoted by vector $\bold{X}$. The function that computes QoI $q$ by evaluating a  model and, if necessary, post-processing the model output is denoted by $f$. Thus,
+The following explains the basic notation for the quantification of the input uncertainty's impact. An essential step is to define the quantity that one wants to predict with a model. This quantity is called the quantity of interest (henceforth QoI) and is denoted by $Y$. For instance, the QoI in the thesis is the impact of a 500 USD tuition subsidy for higher education on average schooling years. The uncertain model parameters $X_1, X_2, ..., X_k$ are denoted by vector $\bold{X}$. The function that computes QoI $Y$ by evaluating a  model and, if necessary, post-processing the model output is denoted by $f(X_1, X_2, ..., X_k)$. Thus,
 \begin{align}
-q = f(\bold{X}).
+Y = f(\bold{X}).
 \end{align}
 Large-scale UQ applications draw from various disciplines like probability, statistics, analysis, and numeric. They are used in a combined effort for parameter estimation, surrogate model construction, parameter selection, uncertainty analysis, LSA, and GSA, amongst others. Drawing mainly from \cite{Smith.2014}\footnote{See page 8-10.}, I briefly sketch the first four components. The last two components, local and especially global sensitivity analysis, are discussed more extensively thereafter.
 
@@ -110,66 +112,105 @@ Another way to reduce the computation time, not directly of the model but of UQ 
 Uncertainty analysis is the core of the prediction step. It comprises two steps. The first step is the  construction of the QoI's probability distribution by propagating the input uncertainty through the model. For instance, this can be achieved by evaluating a sample of random input parameters by the model (as also required for the construction of a surrogate model). The second step is the computation of descriptive statistics like the probabilities for a set of specific events in the QoI range using this distribution. Both steps are conceptually simple. The construction of the probability distribution is also important for designing subsequent steps like a sensitivity analysis. For example, if the distribution is unimodal and symmetric, then variance-based UQ measures are meaningful. If the distribution has a less tractable, for instance a bimodal shape, then density-based measures are better suited (\cite{plischke2013global}).
 
 
-\subsection{(Global) Sensitivity Analysis}
+\subsection{Sensitivity Analysis}
 
 
-In UQ, sensitivity analysis has the broad objective of quantifying the relative contribution of the uncertainty in individual input parameters to the total uncertainty in the QoI. Moreover, it answers the question of how specific changes in parameters affect QoI responses. A measure for this can, for instance, be the derivative of the model with respect to individual parameters. The thesis aims at answering the first part. One reason for this orientation is that the range of the QoI's distribution has no particularly critical interval that deserves particular attention.
+This section draws largely from \cite{Saltelli.2004} and \cite{Saltelli.2004}.
+The following definition of sensitivity is given by \citeauthor{Saltelli.2004} (2004, page 42): It is "the study of how uncertainty in the output of model (numerical or otherwise) can be apportioned to different sources of uncertainty in the model input." This apportioning implies a ranking of input parameters in terms of their importance for the model ouput. \citeauthor{Saltelli.2004} (2004, page 52) define the most important parameter as "the one that [if fixed to its true, albeit unknown value]
+would lead to the greatest reduction in the variance of the output Y. Therefore, a factor is not important if it influences the output Y directly but rather its variance.\\
 
-Local sensitivity analysis provides measures for the above objectives by changes of input parameter values about some nominal values at specific choices of local points in the input parameter space. The two choices, the nominal value that changes the input parameters and the local point at which to change the parameters, contain a degree of arbitrariness. This arbitrariness can yield false results if the model is non-linear (\cite{Smith.1961})\footnote{See page 303.}. For instance, using derivatives for LSA corresponds to the specific case of considering the model at a base input parameter vector where one parameter is changed by a small margin. However, for non-linear models, the choice of the base value of the input parameter vector is crucial for the result. These conceptual limitations can be overcome in a global sensitivity analysis (henceforth GSA).\\
+\noindent
+Sensitivity Analysis includes different objectives. These have to be determined at first because the choice of methods depends on the objective. The main objective is factor prioritisation. It is the aforementioned ranking of input parameters in terms of their importance. This ranking can be used to distribute resources to improve the data acquisition and estimation of a subset of input parameters. The methods that best meet the demands of factor prioritisation are called quantitative. These methods typically require the highest computational effort.\\
+
+\noindent
+There are multiple other objectives. The one additional objective featured in this thesis is factor fixing, or screening. It is basically the same as factor prioritisation except that it only aims to identify the input parameters that can be fixed at a given value without significantly reducing the output variance. Therefore, it focuses on the lowest parameters in the importance ranking that a factor prioritisation would require. The reason why one would purse factor fixing instead of factor prioritisation is computational costs. As factor fixing requires less information than factor prioritisation, less powerful methods that require less computational resources can be applied. These methods are qualitative as they only indicate a binary level of significance. Factor fixing is typically used as a preparation step for factor prioritisation for models that are more costly to evaluate. In this sense it serves the same purpose as surrogate modelling.\\
+
+\noindent
+Another important distinction is local versus global sensitivity analysis. It essentially refers to the applied methods. In fact, the given definition is already tailored to a global sensitivity analysis for models with general properties. In contrast to the given definition, following \citeauthor{Saltelli.2004} (2004, page 42) "Until quite recently, sensitivity analysis was [...] defined as a local measure of the effect of a given input on a given output". This old definition differs from the definition used here in two points. First, it emphasises the level of output rather than its variance. Second, it describes the measure as a local one. The drawback of this approach become clear by considering an example sensitivity measure tailored to the old definition. This measure is the so-called system derivate $D_i = \frac{\partial Y}{\partial X_i}$ (\cite{rabitz1989systems}). The derivative is typically computed at the mean of the estimate for $X_i$. This measures is a so-called one-at-a-time measures because it changes only one factor. It has following four drawbacks: First, it does not account for interaction between multiple input parameters because it is one-at-a-time. Second, If the model derivation is not analytical, the choice of the marginal change in $X_i$ is arbitrary. Third, the local derivative at $\overline{X_i}$ is only representative for a the whole sample space of a random input if the model is linear in $X_i$. Fourth, the measure does not relate to the output variance $Var(Y)$. For these reasons, the fields, its definition and its methods have evolved beyond the notion of local sensitivity analysis. Yet, until recently, the main part of applications in different fields, such as physics (\cite{Saltelli.2004})\footnote{See page 42.} and economics (\cite{Harenberg.2019}), still use local measures despite their drawbacks.
+
+The thesis consists of an uncertainty and especially a global sensitivity analysis for the occupation choice model in \cite{Keane.1994}. As the runtime of the computational model is considerable, the sensitivity analysis here is on the qualitative level. The next section sketches measures of quantitative GSA to further motivate the qualitative measures in the section thereafter.
 
 
 \subsubsection{Quantitative Global Sensitivity Analysis}
 
-I need a remark on the low number of GSA and correlation contributions somewhere here.
 
 
+The quantitative GSA aims to determine the precise effect size of each random input parameter and its variation on the function output variation. The most common measures in quantitative GSA are the Sobol' sensitivity indices. Equation (\ref{eq:gen_sobol}) shows the general expression for the first order index. Let $\text{Var}_{X_i} (Y|X_i)$ denote the variance of the model output $Y$ conditional on input parameter $X_i$.
 
-The quantitative GSA then aims to determine the precise effect size of each random input parameter on the function output. The most common measures in quantitative GSA are the so-called Sobol' sensitivtiy indices. Equation 1 shows the first order index. It is the share of the variance in the function output induced by exclusively one single input parameter $X_i$ of the variance induced by all random input parameters $X_1, X_2, ..., X_k$.
+\begin{align} \label{eq:gen_sobol}
+S_i = \frac{\text{Var}_{X_i}(Y|X_i)}{\text{Var}(Y)}
+\end{align}
+
+\noindent
+The computation becomes clearer with the following equivalent expression for $S_i$ in Equation (\ref{eq:gen_sobol}).
+Let $\sim i$ denote the set of indices except $i$. The expectation of $Y$ for one specific value of $X_i$ is the average of the model evaluations from a sample of $\bold{X_{\sim i}}$ and a given
+$X_i = x_i^*$. We denote the sample by $\pmb{\chi_{\sim i}}$. Then, we can use $\E[f(X_i = x_i^*,\pmb{\chi_{\sim i}} )] \defeq \E_{\bold{X_{\sim i}}} [Y|X_i ]$ to write the first-order Sobol' index as the variance of $\E_{\bold{X_{\sim i}}} [Y|X_i ]$ over all $x_i^*$.
 
 
-\begin{align}
+\begin{align} \label{eq:spec_sobol}
 S_i = \frac{\text{Var}_{X_i}\big( \E_{\bold{X_{\sim i}}} [Y|X_i ]\big)}{\text{Var}(Y)}
 \end{align}
 
-\noindent
-Let $\sim i$ denote the set of indices except $i$. Equation 2 shows the total order index. This measure is equal to the first order index except of that its numerator includes the variance in the function output that is induced by changes in the other input parameters $X_{\sim i}$, caused by interactions with the variation in $X_i$.
 
-\begin{align}
-S_{i}^T = \frac{\text{Var}\big( \E_{\sim i}[Y|\bold{X_{\sim i}]} \big)}{\text{Var}(Y)}
+\noindent
+The first-order index does not include the additional variance in $Y$ that may occur from the interaction of $\bold{X_{\sim i}}$ with $X_i$. This additional variance is included in the total-order Sobol' index given by Equation (\ref{eq:tot_sobol}). It is the same expression as in Equation (\ref{eq:spec_sobol}) except that the positions for $X_i$ and $\bold{X_{\sim i}}$ are interchanged. Conditioning on $\bold{X_{\sim i}}$ accounts for the inclusion of the interaction effects of $X_i$.
+
+
+\begin{align} \label{eq:tot_sobol}
+S_{i}^T = \frac{\text{Var}_{\bold{X_{\sim i}}}\big( \E_{\sim i}[Y|\bold{X_{\sim i}]} \big)}{\text{Var}(Y)}
 \end{align}
 
 \noindent
-Computing these measures requires many function evaluations, even if an estimator is used as a shortcut. The more time-intense one function evaluation is, the more utility provides the aforementioned Factor Fixing based on qualitative measures. 
+Computing these measures requires many function evaluations, even if an estimator is used as a shortcut (\cite{Saltelli.2004})\footnote{See page 124 -149.}. The more time-intense one function evaluation is, the more utility provides the aforementioned factor fixing based on qualitative measures. 
 
 
 \subsubsection{Qualitative Global Sensitivity Analysis}
 
-Qualitative Global Sensitivity Analysis (Qualitative GSA) deals with computing measures that can rank random input parameters in terms of their impact on the function output and the variability thereof. If the measures for some input parameters are negligibly small, these parameters can be fixed so that the number of random input parameters decreases for a subsequent quantitative GSA. This pre-selection step is called Factor Fixing.  \\
 
+Qualitative Global Sensitivity Analysis (Qualitative GSA) deals with computing measures that can rank random input parameters in terms of their impact on the function output and the variability thereof. If the measures for some input parameters are negligibly small, these parameters can be fixed so that the number of random input parameters decreases for a subsequent quantitative GSA. This pre-selection step is called Factor Fixing. The gain in computation time for qualitative vis-á-vis quantitative measures comes at the cost of accuracy. This section explains the qualitative measures and the trade-off. \\
 
-The most commonly used measures in qualitative GSA is the mean Elementary Effect (EE), $\mu$, the mean absolute Elementary Effects, $\mu^*$, and the standard deviation of the Elementary Effects, $\sigma$. The Elementary Effect of $X_i$ is given by one individual function derivative with respect to $X_i$. The "change in", or the "step of" the input parameter, denoted by $\Delta$, has not to be infinitesimally small. The only restriction is that $X_i + \Delta$ is in the domain of $X_i$. The Elementary Effect, or derivative, is denoted by
+\noindent
+The most commonly used measures in qualitative GSA is the mean Elementary Effect (EE), $\mu$, the mean absolute Elementary Effects, $\mu^*$, and the standard deviation of the Elementary Effects, $\sigma$. The Elementary Effect of $X_i$ is given by one individual function derivative with respect to $X_i$. The "change in", or the "step of" the input parameter, denoted by $\Delta$, has not to be infinitesimally small. The only restriction is that $X_i + \Delta$ is in the sample space of $X_i$. The Elementary Effect, or derivative, is denoted by
 \begin{align}
 d_i^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delta^{(i,j)}},
 \end{align}
 where $j$ is an index for the number of $r$ observations of $X_i$.
-Then, the mean Elementary Effect is given by
+Note, that the Elementary Effect, $d_i^{(j)}$ is equal to the aforementioned local measure, the system derivate $S_i = \frac{\partial Y}{\partial X_i}$ except that the choice of step $\Delta$ is written more explicitly. To offset the third drawback, that base vector $X_i$ does not represent the whole input space, one computes the mean Elementary Effect, $\mu_i$, based on a random sample of $X_i$ from the input space. The second drawback, that interaction effects are disregarded, is also offset because elements $X_{\sim i}$ are also resampled for each new $X_i$. This measure is given by
 
 \begin{align}
 \mu_i = \frac{1}{r} \sum_{j=1}^{r} d_i^{(j)}.
 \end{align}
 \noindent
-The mean absolute Elementary Effect, $\mu_i^*$ is used to prevent observations of opposite sign to cancel each other out:
+Thus, $\mu_i$ is the global version of $d_i^{(j)}$. Then, the standard deviation of the Elementary effects writes $\sigma_i = \frac{1}{r} \sum_{j=1}^{r} (d_i^{(j)} - \mu_i)$. The mean absolute Elementary Effect, $\mu_i^*$ is used to prevent observations of opposite sign to cancel each other out:
 
 \begin{align}
 \mu_i^* = \frac{1}{r} \sum_{j=1}^{r} \big| d_i^{(j)} \big|.
 \end{align}
 \noindent
-Step $\Delta^{(i,j)}$ may or may not vary depending on the sample design that is used to draw the input parameters. These measures (together) are used to proxy the total Sobol' indices that contains the parameter-specific interactions with all other parameter, as shown in Equation (2). The total Sobol' index is the relevant one because the interactions are potentially be important. If the qualitative measures are close to 0 for one particular parameter, its variation can be rendered as irrelevant for the variation in the function output (given there are parameters with measures substantially different from 0).
+Step $\Delta^{(i,j)}$ may or may not vary depending on the sample design that is used to draw the input parameters.\\
+
+\noindent
+There are two drawbacks remaining from the set of drawbacks of the local derivate $D_i = \frac{\partial Y}{\partial X_i}$. The are, first, the missing direct connection to the variation in $Var(Y)$, and second, that the choice of $\delta$ is rather arbitrary. To this date, the literature has not found convincing solutions to these issues. In an attempt to establish a closer link between Elementary Effects-based measures and Sobol' Indices, \cite{kucherenko2009derivative} made two conclusions: An upper bound for the total index, $S_i^T$ is provided such that
+\begin{align}
+S_i^T \leq \frac{\frac{1}{r} \sum_{j=1}^{r} {d_i^2}^{(j)}|}{\pi^2 \sigma_Y}.
+\end{align}
+This expression makes use of the squared Elementary Effect. This rescaling makes its interpretability more difficult. The other conclusion is that the Elementary Effects method can lead to false selections for non-monotonic functions. The reasons is linked to the aforementioned second issue, the arbitrary choice of step $\delta$. Depending on the sampling scheme, $delta$ might be random instead of arbitrary. In each case, $\delta$ can be too large, to constitute a derivative. If the function is, for example, highly non-linear of varying degree with respect to each input parameter $X_i$, $\Delta > \epsilon$ will distort the results.\\
+
+\noindent
+One last improvement is provided in \cite{Smith.2014}\footnote{See page 332.} and in \cite{Saltelli.2004}\footnote{See page 15-16.}. That is, the scaling of $\mu_{i}^*$ by $\frac{\sigma_{X_i}}{\sigma_Y}$:
+
 
 \begin{align}
 \mu_{i,\sigma}^* = \mu_i^* \frac{\sigma_{X_i}}{\sigma_Y}.
 \end{align}
 
+\noindent
+This improvement is necessary for a consistent ranking of $X_i$. Otherwise, the ranking would be distorted by differences in variation of the input parameters. 
+
+\subsection{Correlated input parameters}
+
+mara, kucherenko.
+words to ge menendez.
 
 \newpage
 \bibliography{../../bibliography/literature}
