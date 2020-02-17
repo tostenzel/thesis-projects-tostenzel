@@ -63,4 +63,4 @@ ax.set_xlabel(r"Uniform sample space", labelpad=+25, fontsize=28)
 
 
 
-plt.savefig("figures/quantile_fct.png", bbox_inches="tight")
+plt.savefig("../figures/quantile_fct.png", bbox_inches="tight")

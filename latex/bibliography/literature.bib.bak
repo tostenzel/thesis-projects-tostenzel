@@ -17538,14 +17538,6 @@
   publisher = {Elsevier},
 }
 
-@Book{saltelli2004sensitivity,
-  title     = {Sensitivity analysis in practice: a guide to assessing scientific models},
-  publisher = {Wiley Online Library},
-  year      = {2004},
-  author    = {Saltelli, Andrea and Tarantola, Stefano and Campolongo, Francesca and Ratto, Marco},
-  volume    = {1},
-}
-
 @Article{rabitz1989systems,
   author    = {Rabitz, Herschel},
   title     = {Systems analysis at the molecular scale},
@@ -17555,6 +17547,17 @@
   number    = {4927},
   pages     = {221--226},
   publisher = {American Association for the Advancement of Science},
+}
+
+@Article{kucherenko2009derivative,
+  author    = {Kucherenko, S and others},
+  title     = {Derivative based global sensitivity measures and their link with global sensitivity indices},
+  journal   = {Mathematics and Computers in Simulation},
+  year      = {2009},
+  volume    = {79},
+  number    = {10},
+  pages     = {3009--3017},
+  publisher = {Elsevier},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

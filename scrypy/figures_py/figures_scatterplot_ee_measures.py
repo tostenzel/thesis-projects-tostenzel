@@ -151,4 +151,4 @@ plt.savefig("figures/scatter_traj.png", bbox_inches="tight")
 
 scatter_plot(abs_ee_mean, 3, 2, 0.9, 12)
 
-plt.savefig("figures/scatter_rad.png", bbox_inches="tight")
+plt.savefig("../figures/scatter_rad.png", bbox_inches="tight")
