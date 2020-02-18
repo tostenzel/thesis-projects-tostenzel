@@ -52,7 +52,7 @@ S_i = \frac{\text{Var}_{X_i}(Y|X_i)}{\text{Var}(Y)}.
 \end{align}
 
 \noindent
-The equation becomes clearer with the following equivalent expression in Equation (\ref{eq:spec_sobol}).
+The equation becomes clearer with the following equivalent expression in Equation (\ref{eq:spec_sobol}) (\cite{Wiederkehr.2018}).
 For this purpose, let $\sim i$ denote the set of indices except $i$. The expectation of $Y$ for one specific value of $X_i$ equals the average of the model evaluations from a sample, $\pmb{\chi_{\sim i}}$,  of $\bold{X_{\sim i}}$ and a given value
 $X_i = x_i^*$. Then, we use $\E[f(X_i = x_i^*,\pmb{\chi_{\sim i}} )] \defeq \E_{\bold{X_{\sim i}}} [Y|X_i ]$ to write the first-order Sobol' index as the variance of $\E_{\bold{X_{\sim i}}} [Y|X_i ]$ over all $x_i^*$s as
 
@@ -81,7 +81,7 @@ Qualitative GSA deals with the computation of measures that can rank random inpu
 
 \noindent
 The most commonly used measures in qualitative GSA is the mean EE, $\mu$, the mean absolute EEs, $\mu^*$, and the standard deviation of the EEs, $\sigma$. The EE of $X_i$ is given by one individual function derivative with respect to $X_i$. The "change in", or the "step of" the input parameter, denoted by $\Delta$. The only restriction is that $X_i + \Delta$ is in the sample space of $X_i$. The Elementary Effect, or derivative, is denoted by
-\begin{align}
+\begin{align} \label{eq:EE}
 d_i^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delta^{(i,j)}},
 \end{align}
 where $j$ is an index for the number of $r$ observations of $X_i$.
@@ -117,7 +117,7 @@ From the aforementioned set of drawbacks of the local derivate $D_i = \frac{\par
 
 In an attempt to establish a closer link between EE-based measures and Sobol' indices, \cite{kucherenko2009derivative} made two conclusions: The first conclusion is that there is an upper bound for the total index, $S_i^T$, such that
 \begin{align}
-S_i^T \leq \frac{\frac{1}{r} \sum_{j=1}^{r} {d_i^2}^{(j)}|}{\pi^2 \sigma_Y}.
+S_i^T \leq \frac{\frac{1}{r} \sum_{j=1}^{r} {d_i^2}^{(j)}}{\pi^2 \sigma_Y}.
 \end{align}
 This expression makes use of the squared EE. In light of this characteristic, the use of $\sigma_i$ as a measure that aims to include the variation of $d_i^{j}$ appears less relevant. Nevertheless, this rescaling makes the interpretation more difficult. The second conclusion is that the Elementary Effects method can lead to false selections for non-monotonic functions. This is also true if functions are non-linear. The reason is linked to the aforementioned second drawback, the arbitrary choice of step $\Delta$. More precisely, depending on the sampling scheme, $\Delta$ might be random instead of arbitrary and constant. In both cases, $\Delta$ can be too large to approximate a derivative. If, for example, the function is highly non-linear of varying degree with respect to the input parameters $\bold{X}$, $\Delta > \epsilon$ can easily distort the results. Especially if the characteristic length of function variation is much smaller than $\Delta$.
 
