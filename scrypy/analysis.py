@@ -6,6 +6,16 @@ from screening_measures import compute_measures
 
 # Loadings.
 
+# Check EE-based measures
+# Load Trajectory EE obs..  
+with open('results/measures_traj.pkl', 'rb') as f:
+  traj_ee_meas = pickle.load(f)
+  
+# Load Radial EE obs..
+with open("results/measures_radial.pkl", "rb") as f:
+    rad_ee_meas = pickle.load(f)
+
+
 # Load standard deviations of input paramters.
 with open('results/10_000_draws/mc_change_mean_edu_df.pkl', 'rb') as f:
   sample_qoi = pickle.load(f)
