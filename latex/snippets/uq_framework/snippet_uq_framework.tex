@@ -185,7 +185,7 @@ Step $\Delta^{(i,j)}$ may or may not vary depending on the sample design that is
 
 
 \noindent
-One last improvement is provided in \cite{Smith.2014}\footnote{See page 332.}. That is, the scaling of $\mu_{i}^*$ by $\frac{\sigma_{X_i}}{\sigma_Y}$. This measure is called the sigma-normalized mean absolute EE: 
+One last variant is provided in \cite{Smith.2014}\footnote{See page 332.}. That is, the scaling of $\mu_{i}^*$ by $\frac{\sigma_{X_i}}{\sigma_Y}$. This measure is called the sigma-normalized mean absolute EE: 
 
 
 \begin{align}
@@ -193,7 +193,7 @@ One last improvement is provided in \cite{Smith.2014}\footnote{See page 332.}. T
 \end{align}
 
 \noindent
-This improvement is necessary for a consistent ranking of $X_i$. Otherwise, the ranking would be distorted by differences in the variation of the input parameters. The reason is that the input space constrains $\Delta$. If the input space is larger, the base value of $X_i$ can be changed by a larger $\Delta$.\\
+This scaling accounts for the variability in $X_i$. Otherwise, the ranking would be influenced by differences in the variation of the input parameters. The reason is that the input space constrains $\Delta$. If the input space is larger, the base value of $X_i$ can be changed by a larger $\Delta$. On the other hand, a GSA measure should reflect the uncertainty, or variation, in $X_i$ given by $\sigma_x$. Therefore, $\mu_{i,\sigma}^*e$ is a better measure for the $\mu_{i}^*$ as a normed mean absolute derivative, but not as a measure of the propagated uncertainty from $X_i$ to $Y$. \\
 
 
 \noindent
@@ -203,9 +203,11 @@ In an attempt to establish a closer link between EE-based measures and Sobol' in
 \begin{align}
 S_i^T \leq \frac{\frac{1}{r} \sum_{j=1}^{r} {d_i^2}^{(j)}|}{\pi^2 \sigma_Y}.
 \end{align}
-This expression makes use of the squared EE. In light of this characteristic, the use of $\sigma_i$ as a measure that aims to include the variation of $d_i^{j}$ appears less relevant. Nevertheless, this rescaling makes the interpretation more difficult. The second conclusion is that the Elementary Effects method can lead to false selections for non-monotonic functions. This is also true if functions are non-linear. The reason is linked to the aforementioned second drawback, the arbitrary choice of step $\Delta$. More precisely, depending on the sampling scheme, $\Delta$ might be random instead of arbitrary and constant. In both cases, $\Delta$ can be too large to approximate a derivative. If, for example, the function is highly non-linear of varying degree with respect to the input parameters $\bold{X}$, $\Delta > \epsilon$ can easily distort the results. Especially if the characteristic length of function variation is much smaller than $\Delta$.
+This expression makes use of the squared EE. In light of this characteristic, the use of $\sigma_i$ as a measure that aims to include the variation of $d_i^{j}$ appears less relevant. Nevertheless, this rescaling makes the interpretation more difficult. The second conclusion is that the Elementary Effects method can lead to false selections for non-monotonic functions. This is also true if functions are non-linear. The reason is linked to the aforementioned second drawback, the arbitrary choice of step $\Delta$. More precisely, depending on the sampling scheme, $\Delta$ might be random instead of arbitrary and constant. In both cases, $\Delta$ can be too large to approximate a derivative. If, for example, the function is highly non-linear of varying degree with respect to the input parameters $\bold{X}$, $\Delta > \epsilon$ can easily distort the results. Especially if the characteristic length of function variation is much smaller than $\Delta$.\\
 
 
+\noindent
+In my view, a brief, intuitive summary of the link from EEs to Sobol' indices can be as follows: Sobol' indices are variance-based. Therefore, they deal with the squared distance of random draws from the input distribution to the mean, both evaluated by function $f$. The EE-based means are derivative-based, linear and they do not use the mean as a reference point. This last property implies that EE-based measures are derived from partly larger (untransformed) differences because step $\Delta$ has not to be taken from the mean. This property can cause large differences and deflate the EE-based measures vis-á-vis the Sobol' indices if $f$ is non-linear. However, given the number of samples is large, $\mu_i^*=0$ implies $S_t=0$. This is because the Elementary Effects also contain differences from random draws to draws that are close to the mean. Yet, it remains unclear how to make inferences from $\mu_i^*>0$ about Sobol' indices in the context of factor fixing.
 
 \subsection{Correlated input parameters}
 
@@ -216,7 +218,7 @@ Today, several recent contributions deal with the extension of the Sobol' sensit
 On the other hand, the only contribution to the computation of EE-based screening measures for the correlated setup has been made by \cite{ge2017extending}. Some authors, e.g. \cite{Saltelli.2004}\footnote{See page 46.} even negate the necessity for expanded Elementary Effects due to overcomplexity. Obviously, this can lead to false results.\\
 
 \noindent
-As the computation time of the \cite{Keane.1994} model is considerable\footnote{On my machine it takes approximately six seconds to compute the QoI. Given that Sobol' indices can require a five digits number of evaluations per input parameter, the computation time is not small.}, the thesis reviews \cite{ge2017extending} and computes measures derived from this contribution to the occupational choice model. The aim is to fix parameters as preparation for a potential quantitative GSA. The measures correspond to the sigma-normalised mean absolute Elementary Effects. The measure in \citeauthor{kucherenko2009derivative} is discarded because their results are not valid in the presence of correlations.\footnote{The fundamental reason is that the unique first- and higher-order Sobol' indices do not add to one if input parameters are correlated.}
+As the computation time of the \cite{Keane.1994} model is considerable\footnote{On my machine it takes approximately six seconds to compute the QoI. Given that Sobol' indices can require a five digits number of evaluations per input parameter, the computation time is not small.}, the thesis reviews \cite{ge2017extending} and computes measures derived from this contribution to the occupational choice model. The aim is to fix parameters as preparation for a potential quantitative GSA. The measures correspond to $\mu_{i,\sigma}^*$ and $\mu_{i}^*$. The measure in \citeauthor{kucherenko2009derivative} is discarded because their results are not valid in the presence of correlations.\footnote{The fundamental reason is that the unique first- and higher-order Sobol' indices do not add to one if input parameters are correlated.}
 
 The next chapter reviews uncertainty analyses and quantitative GSAs for economic models in the literature. 
 
