@@ -291,7 +291,7 @@ Furthermore, I develop improved measures that finally correspond to the actual E
 
 \subsection{Drawbacks in \cite{ge2017extending} and Corrected Elementary Effects.}
 
-The drawback in the EE definitions by \cite{ge2017extending} is that $\Delta$ is transformed multiple times in the numerator but not in the denominator. Therefore, these measures are not Elementary Effects in the sense of a derivative. The transformation in the numerator is performed by applying $F^{-1}(\Phi^c)$ to $u_i^j = a_i^j + \Delta^{(i,j)}$. The corrected and slightly renamed measures are the correlated and the uncorrelated Elementary Effects, $d_i^{c}$ and $d_i^{u}$. They are given below for arbitrary input distributions and for samples in trajectory and radial design. Let ${Q^T}_{k,*k-1}$ be the last row except of the last element of the lower triangular Cholesky matrix of the correlation matrix in the respective order of $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$ and $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$. Let ${Q^T}_{k,k}$ be the last element of the same matrix. Let $\Phi^u$ be the transformation from $[0,1]$ to standard normal space without regarding correlations in Step 3. Let $F^{-1}$ be the transformation that maps standard normal deviates to an arbitrary sample space like in Step 1. Index $*k-1$ represents all elements except of the last one of a vector of length $k$. Index $j$ is used to indicate an element-wise multiplication. Then
+The drawback in the EE definitions by \cite{ge2017extending} is that $\Delta$ is transformed multiple times in the numerator but not in the denominator. Therefore, these measures are not Elementary Effects in the sense of a derivative. The transformation in the numerator is performed by applying $F^{-1}(\Phi^c)$ to $u_i^j = a_i^j + \Delta^{(i,j)}$. The corrected and slightly renamed measures are the correlated and the uncorrelated Elementary Effects, $d_i^{c}$ and $d_i^{u}$. They are given below for arbitrary input distributions and for samples in trajectory and radial design. Let ${Q^T}_{k,*k-1}$ be the last row except of the last element of the lower triangular Cholesky matrix of the correlation matrix in the respective order of $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$ and $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$. Let ${Q^T}_{k,k}$ be the last element of the same matrix. Let $\Phi^u$ be the transformation from $[0,1]$ to standard normal space without regarding correlations in Step 3. Let $F^{-1}$ be the transformation that maps standard normal deviates to an arbitrary sample space like in Step 1. Index $*k-1$ represents all elements except of the last one of a vector of length $k$. Index $j$ is used to indicate an element-wise multiplication.
 
 \begin{align}
 d_i^{c,T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i-1,*}}; i)\big)}{F^{-1}\big(\Phi^u(b_i)\big) - F^{-1}\big( \Phi^u(a_i)\big)}
@@ -329,19 +329,19 @@ The next section presents results for a test function to demonstrate a replicati
 
 \subsection{Replication and Validation}
 
-Let $f(X_1, ..., X_k)$ = $\sum_{i = 1}^{k} c_i X_i$ be an arbitrary linear function. Let $\rho_{i,j}$ be the linear correlation between $X_i$ and $X_j$. Then, for all $i \in 1, ..., k$,
+Let $f(X_1, ..., X_k)$ = $\sum_{i = 1}^{k} c_i X_i$ be an arbitrary linear function. Let $\rho_{i,j}$ be the linear correlation between $X_i$ and $X_j$. Then, for all $i \in 1, ..., k$, I expect:\footnote{These results correspond to the intuition provided by the example in \cite{Saltelli.2008}, p. 123.}
 \begin{align}
 d_i^{u,*} = c_i \label{eq:diu}\\
-d_i^{c,*} = \sum_{j = 1}^{k} \rho_{i,j} c_{j}. \label{eq:dic}
+d_i^{c,*} = \sum_{j = 1}^{k} \rho_{i,j} c_{j}. \label{eq:dic}.
 \end{align}
 Both equations state that, conceptually, the result does not depend on the sampling scheme.
 
-Equation (\ref{eq:diu}) shows that the uncorrelated EE of each input equals the derivative of $f(\bold{X})$ with respect to $X_i$. This corresponds to the concept of the original EE as a derivative. As the function is linear, the derivative is equal for all values in the sample space of each $X_i$. This implies $\mu=0$, $\mu^*=0 $ and $ \sigma=0$.
+Equation (\ref{eq:diu}) shows that the uncorrelated EE of each input equals the derivative of $f(\bold{X})$ with respect to $X_i$. This corresponds to the concept of the original EE as a derivative. As the function is linear, the derivative is equal for all values in the sample space of each $X_i$. This implies $\mu=\mu^*=d_i $ and $ \sigma=0$ for both sampling schemes and both EE versions.
 
-Equation (\ref{eq:dic}) states that the correlated EE of input parameter $X_i$ also includes the effects of the other input parameters that are correlated with $X_i$. As the model is linear, these effects are included by adding the respective coefficients multiplied by the correlation with $X_i$ to the uncorrelated effect, $d_i^{u,*}$.\footnote{These results correspond to the intuition provided by the example in \cite{Saltelli.2008}, page 123.}\\
+Equation (\ref{eq:dic}) states that $d_i^{c,*}$ also includes the effects of the other input parameters that are correlated with $X_i$. Then, the function's linearity implies that these effects are included by adding the respective coefficients multiplied by the correlation with $X_i$ to the uncorrelated effect $d_i^{u,*}$.\\
 
 \noindent
-Table \ref{tab:repval1} and Table \ref{tab:repval2} show results for a simple linear test function with 3 input parameters, where $X_i \sim \mathcal{N}(0, 1)$ for $i=\{1,2,3\}$, and with correlations $\rho_{1,2}=0.9$, $\rho_{1,3}=0.4$, $\rho_{2,3}=0.01$. The first columns in both tables show the aggregate EE-based measures by \cite{ge2017extending}. The second (and third) columns show my replications for these measures. Table \ref{tab:repval1} consists of two replications because the trajectory design implies two numerical decisions. The details are explained in the following. The last columns in both tables depict the results for the measures developed in this thesis.
+Table \ref{tab:repval1} and Table \ref{tab:repval2} show results for a simple linear test function with 3 input parameters, where $X_i \sim \mathcal{N}(0, 1)$ for $i=\{1,2,3\}$, and with correlations $\rho_{1,2}=0.9$, $\rho_{1,3}=0.4$, $\rho_{2,3}=0.01$. The first columns in both tables show the aggregate EE-based measures by \cite{ge2017extending}. The second (and third) columns show my replications for these measures. Table \ref{tab:repval1} consists of two replications because the trajectory design contains two numerical decisions. The details are explained in the following. The last columns in both tables depict the results for the measures developed in this thesis. \citeauthor{ge2017extending} generate 240 trajectories and 260 radial samples to compute their results. My figures base on 10,000 samples for each scheme.
 \newpage
 % Please add the following required packages to your document preamble:
 % \usepackage{booktabs}
@@ -417,8 +417,17 @@ Table \ref{tab:repval1} and Table \ref{tab:repval2} show results for a simple li
 
 \newpage
 \noindent
-We can observe three things for the measures in \cite{ge2017extending} in the first columns. First the measures do not represent the derivative of $F$ with respect to $X_i$, as the non-linear transformation $F(\Phi^c(\cdot))$ is only applied to the EE numerator. This causes the second and third observations. The second one is that the measures differ between trajectory and radial design. This is because the non-linearity introduces variation to the measures. This reveals differences in sampling of the base values and the steps between the sampling schemes. Additionally, not enough samples have been drawn relative to the degree of variation. Therefore, the measures are noisy. Another reason for the differences between the measures based on radial and trajectory design in \cite{ge2017extending} are the two numerical parameters required by the trajectory design. These are. first, the approximation of $0$ and $1$ to prevent infinite values returned by the inverse CDF. It is enough to approximate $0$ by $0^{num}$. The lower $0^{num}$, the more extreme are the transformed draws for $0$ and $1$ The second approximation is the number of levels $l$, or grid points, in $[0,1]$. The more grid points, the less imprecise are the results.
-The authors indicate that they use $0^{num}=0.00001$ and $l$ for the trajectory design.\footnote{I obtained this information from an unofficial email from Qiao Ge.} Additionally, the authors generated 240 trajectories and 260 radial samples. My figures base on 10,000 samples each. I replicate their measure for these parameters in the second column in Table \ref{tab:repval1}. The mean and mean absolute EEs, $\mu^{*,ind}$ and $\mu^{*,full}$ come reasonably close. However, the standard deviations, $\sigma^{*,ind}$ and $\sigma^{*,full}$ equal 0. The reason is that four grid points re-linearise the transformed numerator in the EEs. This argument is illustrated by Figure \ref{fig:invcdf}.
+From the first columns, we can observe three things about the measures in \cite{ge2017extending}. First the measures are not related to derivatives, as the non-linear transformation $F(\Phi^c(\cdot))$ is only applied to the EE numerator. This transformation leads to two additional observations.
+
+
+The second result is that the measures differ between trajectory and radial design. This is because the non-linearity introduces variation to these measure according to the values of the draws in $[0,1]$. This variation is due to two reasons. The first reason are the general differences between both sampling schemes.
+
+
+The last observation results from the fact that the trajectory design, in contrary to the radial design, includes two numeric parameters. These are, first, the approximation of $0$ and $1$ to prevent the inverse CDF from returning infinite values. It is enough to approximate $0$ by $0^{num}$. The lower $0^{num}$, the more extreme are the transformed draws for $0$ and $1$. The second approximation is the number of levels, or grid points, $l$ in $[0,1]$. The more grid points, the less imprecise are the results.
+The authors indicate that they use $0^{num}=0.00001$ and $l$ for the trajectory design.\footnote{I obtained this information from an unofficial email from Qiao Ge.}\\
+
+\noindent
+My replications for the trajectory design are depicted in the second column of Table \ref{tab:repval1}. The mean and mean absolute EEs, $\mu^{*,ind}$ and $\mu^{*,full}$ come reasonably close. However, the standard deviations, $\sigma^{*,ind}$ and $\sigma^{*,full}$ equal 0. The reason is that four grid points re-linearise the transformed numerator in the EEs. This argument is illustrated by Figure \ref{fig:invcdf}.
 
 
 
@@ -430,14 +439,15 @@ The authors indicate that they use $0^{num}=0.00001$ and $l$ for the trajectory 
 \end{figure}
 
 \noindent
-The grid points with four levels are $ \{ 0^{num}, 1/3, 2/3, 1-0^{num} \}$ and $\Delta=2/3$. The quantile function is non-linear but point-symmetric to $(0.5, 0)$. Thus, $\Phi(\frac{1/3 - (1-0^{num})}{2/3}) = \Phi(\frac{0^{num} - 2/3}{2/3})$. Hence, the Elementary Effects are equal for each single $X_i$ because the transformed $\Delta$-specific derivation is equal at each of the two lower half grid points.\\
+The grid points with four levels are $ \{ 0^{num}, 1/3, 2/3, 1-0^{num} \}$ and $\Delta=2/3$. The quantile function is non-linear but point-symmetric to $(0.5, 0)$. Thus, $\Phi(\frac{1/3 - (1-0^{num})}{2/3}) = \Phi(\frac{0^{num} - 2/3}{2/3})$. Hence, for each single $X_i$ the Elementary Effects are constant the transformed $\Delta$-specific derivation is equal at each of the two base grid points.
+
+Therefore, I used $0^{num}=0.00000001$ and $l=24$ to increase the variation amongst the EEs by \cite{ge2017extending} in order to achieve similar results.\\
 
 \noindent
-Therefore, I used $0^{num}=0.00000001$ and $l=24$ to increase the variation amongst the EEs by \cite{ge2017extending} in order to achieve similar results.
+The replication in Table \ref{tab:repval2} for the radial design is relatively close for the mean Effects. However, there are considerable differences for the standard deviations. In my view, this results, first, from different start values from which the Sobol' sequence is generated, and second, from a too low number of samples in \cite{ge2017extending}. This indicates that the appropriate number of samples for correlated parameters has to be higher than what is common for functions with uncorrelated input parameters.\\
 
-The replication in Table \ref{tab:repval2} for the radial design is relatively close for the mean Effects. However, there are some differences for the standard deviations. In my opinion this results, first, from different start values from which the Sobol' sequence is generated, and second, from a too low number of samples in \cite{ge2017extending}. This indicates that the appropriate number of samples for correlated parameters has to be higher than what is common for functions with uncorrelated input parameters.
-
-The last column in both Table \ref{tab:repval1} and Table \ref{tab:repval2} depicts the aggregate measures based on the improved EEs. These are equal to what is anticipated at the start of this section. Therefore, the correlated and uncorrealted Elementary Effects developed in this thesis can be regarded as a valid extension of Elementary Effects for models with correlated input parameters.\\
+\noindent
+The last column in both Table \ref{tab:repval1} and Table \ref{tab:repval2} depicts the aggregate measures based on the improved EEs. These are equal to what is anticipated at the beginning of this section. Therefore, the correlated and uncorrealted Elementary Effects developed in this thesis can be regarded as a valid extension of Elementary Effects for models with correlated input parameters.\\
 
 \noindent
 The next chapter presents the occupational choice model in \cite{Keane.1994}.
