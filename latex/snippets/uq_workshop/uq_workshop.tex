@@ -104,10 +104,14 @@ d_i^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delt
 \mu_{i,\sigma}^* = \mu_i^* \frac{\sigma_{X_i}}{\sigma_Y}.
 \end{align}
 
+Scaling compresses EEs. But fails the purpose.
+
 \newpage
 
 
 \section{Sampling schemes}
+
+One EE per parameter per subsample.
 
 \begin{align}
 \underset{(k+1)\times k}{\bold{R}} =
@@ -120,7 +124,7 @@ a_1 & a_2 & ... & \bold{b_k}
 \end{pmatrix}
 \end{align}
 \noindent
-
+Contains choice of (quasi-random) sequence. Implies share of very high steps.
 
 \begin{align}
 \underset{(k+1)\times k}{\bold{T}} =
@@ -132,7 +136,7 @@ a_1 & a_2 & ... & a_k \\
 \bold{b_1} & \bold{b_2} & ... & \bold{b_k}
 \end{pmatrix}
 \end{align}\newpage
-
+Contains choice of two numerical parameters. Lower bound of step is 0.5 given step function.
 
 \section{EE method for correlated inputs}
 
@@ -143,10 +147,12 @@ a_1 & a_2 & ... & a_k \\
 	\item $\bold{x} = \pmb{\mu} + \bold{z_c(i)}\pmb{\sigma(i)}$
 	\end{enumerate}
 
-
+Transform samples. $N(3k+1)$ and $3Nk$ function evals.
 
 \newpage
-Trajectory design only
+Trajectory design only.
+
+Activates distortions by numerical parameters and general differences in drawing the elements between schemes.
 
 \begin{align} \label{eq:d_full}
 d_i^{full,T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i,*}}; i)\big)}{\Delta}.
@@ -158,7 +164,7 @@ d_i^{ind, T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathca
 \end{align}
 
 \newpage
-Improvements
+Improvements. Denominator can be written much simpler as $\mathcal{T}(b_i) - \mathcal{T}(a_i)$.
 
 \begin{align}
 d_i^{c,T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i-1,*}}; i)\big)}{F^{-1}\big(\Phi^u(b_i)\big) - F^{-1}\big( \Phi^u(a_i)\big)}
@@ -170,6 +176,20 @@ d_i^{u, T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{
 \newpage
 
 \section{Replication and Validation}
+
+Linear function with three parameters and Correlations equal to 0.9, 0.4, 0.01.
+Numerical parameter lead to re-lineariation of measures in GM'17.\\
+
+
+Let $f(X_1, ..., X_k)$ = $\sum_{i = 1}^{k} c_i X_i$ be an arbitrary linear function. Let $\rho_{i,j}$ be the linear correlation between $X_i$ and $X_j$. Then, for all $i \in 1, ..., k$, I expect:\footnote{These results correspond to the intuition provided by the example in \cite{Saltelli.2008}, p. 123.}
+\begin{align}
+d_i^{u,*} = c_i \label{eq:diu}\\
+d_i^{c,*} = \sum_{j = 1}^{k} \rho_{i,j} c_{j}. \label{eq:dic}.
+\end{align}
+Both equations state that, conceptually, the result does not depend on the sampling scheme.
+\newpage
+
+
 \setlength{\tabcolsep}{12pt} %from 6
 \begin{table}[H]
 	\centering
@@ -207,6 +227,44 @@ d_i^{u, T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{
 		\end{tablenotes}
 	\end{threeparttable}
 \end{table}
+\hspace{1cm} %linebreak.
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\setlength{\tabcolsep}{12pt} %from 6
+\begin{table}[H]
+	\centering
+	\caption{Replication and validation - radial design}
+	\label{tab:repval2}
+	\renewcommand{\arraystretch}{1.2}%
+	\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]S[table-format=3.2]}
+		\toprule
+		{Measure}     & {GM'17}   & {Replication}  & {S'20} \\ 
+		\midrule
+		
+		& 0.60  & 0.57         &  1.00 \\
+		\qquad $\mu^{*,ind}$                               & 0.75  & 0.85         &  1.00 \\
+		& 1.50  & 1.31         &  1.00 \\
+		&&& \\
+		& 0.20   & 0.10         &  0.00 \\
+		\qquad $\sigma^{ind}$                            & 0.30   & 0.41         &  0.00 \\
+		& 0.85  & 0.22         & 0.00 \\
+		&&& \\
+		& 7.50  & 6.84         &  2.30 \\
+		\qquad $\mu^{*,full}$                              & 6.80   & 7.77         &  1.91 \\
+		& 4.75  & 4.19         &  1.41 \\
+		&&& \\
+		& 2.90  & 1.15         &  0.00 \\
+		\qquad $\sigma^{full}$                           & 2.65  & 3.68         &  0.00 \\
+		& 2.50   & 0.70         &  0.00 \\ \bottomrule
+	\end{tabular}
+\end{table}
+\newpage
+\begin{figure}[H]
+	\caption{Grid points in standard normal sample space for trajectory design with $l=4$}
+	\centering
+	\includegraphics[scale=0.40]{../../../scrypy/figures/quantile_fct}
+	\label{fig:invcdf}
+\end{figure}
 
 \newpage
 \section{Results: Uncertainty Analysis}
@@ -229,6 +287,7 @@ d_i^{u, T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{
 
 \newpage
 \subsection{Results: Qualitative Sensitivity Analysis}
+FF successful, ranking - be cautious!
 \newpage
 \setlength{\tabcolsep}{22pt} %from 6
 \begin{table}[H] 
@@ -291,8 +350,11 @@ d_i^{u, T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i)\big) - f\big(\mathcal{
 	\label{fig:rad}
 \end{figure}
 
+\subsection{Improvement: Sampling scheme tailored to Sobol' indices}
 
+Similar to trajectory design to have interactions still included.
+Base row is expectation. Shuffle row. Add random value between $[0, 0.5]$. Take square root of squared difference and divide by step.
 \newpage
-\bibliography{../../../bibliography/literature}
+\bibliography{../../bibliography/literature}
 
 \end{document}
