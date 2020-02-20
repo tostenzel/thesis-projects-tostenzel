@@ -189,10 +189,10 @@ def distplot(sample, qoi_name, save=False):
     handles.append(kde_handle)
     labels = [
         "KDE",
-        r"Sample mean $\gamma_Y$",
-        r"$Y_n \in [\gamma_Y \pm \sigma_Y]$",
-        r"$Y_n \in [\gamma_Y \pm 2\sigma_Y]$",
-        r"$Y_n ~ \notin [\gamma_Y \mp 2\sigma_Y]$",
+        r"Sample mean $\overline{Y}$",
+        r"$Y_n \in [\overline{Y} \pm \sigma_Y]$",
+        r"$Y_n \in [\overline{Y} \pm 2\sigma_Y]$",
+        r"$Y_n ~ \notin [\overline{Y} \mp 2\sigma_Y]$",
     ]
     # Reverse list order.
     ax.legend(handles[::-1], labels, edgecolor="white", fontsize=20)

@@ -89,7 +89,7 @@
 \begin{figure}[H]
 	\caption{Probability distribution of quantity of interest $q$}
 	\centering
-	\includegraphics[scale=0.7]{../../../scrypy/figures/distplot}
+	\includegraphics[scale=0.5]{../../../scrypy/figures/distplot}
 	\label{fig:dist}
 \end{figure}
 
@@ -99,7 +99,56 @@
 	\includegraphics[scale=0.75]{../../../scrypy/figures/cone_plot_choice_shares}
 	\label{fig:paths}
 \end{figure}
-
+\newpage
+\subsection{Experiment \cite{ge2017extending}}
+\newpage
+\setlength{\tabcolsep}{22pt} %from 6
+\begin{table}[H] 
+	\centering
+	\begin{threeparttable}
+		\caption[Model Parametrization]{EE-based measures by \cite{ge2017extending} for 100 trajectories}
+		\label{tab:gm17measures_traj}
+		\renewcommand{\arraystretch}{1.2}%
+		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]@{\hskip 0.7in}|@{\hskip 0.5in}S[table-format=3.2]S[table-format=3.2]}
+			
+			{Parameter}     & {$\mu^{*,full}_T$}   & {$\mu^{*,ind}_T$} & {$\sigma^{*,full}_T$} & {$\sigma^{*,ind}_T$}\\ \midrule
+			\textit{General} \\
+			$\delta$ & 53.40   & 0.00 & 69.23 & 0.09   \\    \midrule
+			\textit{Blue-collar}\\    
+			$\beta^b$ & 3.55   & 0.05            & 4.38 & 0.07    \\
+			$\beta_e^b$ & 39.84  &    0.05        & 49.69  & 0.07    \\
+			$\beta^b_b$ & 77.21  & 0.05            & 90.23  & 0.07    \\
+			$\beta^b_{bb}$ & 2616.50 & 0.05           & 3357.92  & 0.06     \\
+			$\beta^b_w$ & 94.74    & 0.05             & 113.49  &  0.06  \\
+			$\beta^b_{ww}$ & 1136.58    & 0.03          & 1405.94 &  0.04    \\ \midrule
+			\textit{White-collar}\\
+			$\beta^w$ & 5.07   & 0.05            & 6.42 &  0.06   \\
+			$\beta^w_e$ & 90.25   & 0.07          & 111.50 &  0.08    \\
+			$\beta^w_w$ & 82.88  & 0.05            & 103.66 &  0.07   \\
+			$\beta^w_{ww}$ & 2444.13  & 0.06           & 3044.69 & 0.07   \\
+			$\beta^w_b$ & 452.91 & 0.07           & 490.31 &  0.09   \\
+			$\beta^w_{bb}$ & 4317.58 & 0.05         & 4851.54 &  0.06   \\ \midrule
+			\textit{Education} \\
+			$\beta^e$     & 0.00    & 0.09             & 0.00&  0.10   \\
+			$\beta_{he}^e$     & 0.00    & 0.11              & 0.00  & 0.13    \\
+			$\beta_{re}^e$     & 0.00  & 0.04               & 0.000  &   0.09  \\ \midrule
+			\textit{Home} \\
+			$\beta^h$    & 0.00  & 0.04                 & 0.00  & 0.05     \\ \midrule
+			\multicolumn{4}{l}{\textit{Lower Triangular Cholesky Matrix}} \\
+			$c_{1}$      & 27.94    & 0.07             & 33.72 &  0.08   \\
+			$c_{2}$      & 31.89   & 0.05             & 38.58 & 0.06   \\
+			$c_{3}$      & 0.00   & 0.06             & 0.00 & 0.07    \\
+			$c_{4}$      & 0.00    & 0.04              & 0.00 & 0.09    \\
+			$c_{1,2}$     & 12.41   & 0.06            & 14.33 &  0.08  \\
+			$c_{1,3}$      & 0.00   & 0.09              & 0.00 &  0.10   \\
+			$c_{2,3}$      & 0.00    & 0.05             &  0.00 &   0.06 \\
+			$c_{1,4}$      & 0.00    & 0.04            &   0.00 &  0.05 \\
+			$c_{2,4}$      & 0.00    & 0.03           & 0.00  &  0.03  \\
+			$c_{3,4}$      & 0.00   & 0.04                & 0.00  &  0.05   \\ \bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{table}
+\newpage
 
 
 
@@ -109,7 +158,7 @@
 \begin{table}[H] 
 	\centering
 	\begin{threeparttable}
-		\caption[Model Parametrization]{Mean absolute correlated and uncorrelated elementary effects\\ (based on 150 subsamples in trajectory and radial design)}
+		\caption[Model Parametrization]{Mean absolute correlated and uncorrelated elementary effects\\ (based on 100 subsamples in trajectory and radial design)}
 		\label{tab:params}
 		\renewcommand{\arraystretch}{1.2}%
 		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]@{\hskip 0.7in}|@{\hskip 0.5in}S[table-format=3.2]S[table-format=3.2]}
@@ -168,6 +217,6 @@
 
 
 \newpage
-\bibliography{../../../bibliography/literature}
+\bibliography{../../bibliography/literature}
 
 \end{document}
