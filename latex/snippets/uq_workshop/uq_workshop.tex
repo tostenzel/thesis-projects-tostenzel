@@ -96,6 +96,7 @@ d_i^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delt
 \sigma_i = \frac{1}{r} \sum_{j=1}^{r} (d_i^{(j)} - \mu_i)
 \end{align}
 
+
 \begin{align}
 \mu_i^* = \frac{1}{r} \sum_{j=1}^{r} \big| d_i^{(j)} \big|.
 \end{align}
@@ -104,7 +105,9 @@ d_i^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delt
 \mu_{i,\sigma}^* = \mu_i^* \frac{\sigma_{X_i}}{\sigma_Y}.
 \end{align}
 
-Scaling compresses EEs. But fails the purpose.
+Scaling provides link from "deterministic effect" to impact on variation of Y. Parameters may have large effects on Y but not on its variation: The impact of $X$ may be strong but always the same if $\sigma_x=\epsilon$.  Especially tricky, if Y does also not vary a lot.
+
+Example: linear function with two parameters: high coeff - low SD and low coeff, high SD.
 
 \newpage
 
@@ -148,6 +151,44 @@ Contains choice of two numerical parameters. Lower bound of step is 0.5 given st
 	\end{enumerate}
 
 Transform samples. $N(3k+1)$ and $3Nk$ function evals.
+
+
+Correlations include step.
+
+\begin{align} \label{eq:t1_min}
+\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)
+=
+\begin{pmatrix}
+a_k & a_1 & ... & ... &  a_{k-1} \\
+\bold{b_1} & a_2 & ... & ... &  a_k \\
+\bold{b_2} & a_3 & ... & ... &  \bold{b_1} \\
+\vdots & \vdots & \vdots & 	\ddots &  \vdots\\
+\bold{b_k} & \bold{b_{1}} & ... & ... &  \bold{b_{k-1}}
+\end{pmatrix}
+\end{align}
+\begin{align} \label{eq:t1_sub}
+\mathcal{T}_1(\bold{T_{i,*}}; i-1)=
+\begin{pmatrix}
+a_1 & a_2 & ... & ... &  a_k \\
+a_2 & ... & ... &  a_k & \bold{b_1} \\
+a_3 & ... & ... &  \bold{b_1} & \bold{b_2} & \\
+\vdots & \vdots & \vdots & 	\ddots &  \vdots\\
+\bold{b_1} & \bold{b_{2}} & ... & ... &  \bold{b_{k}}
+\end{pmatrix}
+\end{align}
+
+Correlations exclude step.
+
+\begin{align}
+\mathcal{T}_1(\bold{T_{i,*}}; i-1)=
+\begin{pmatrix}
+a_2 & a_3 & ... & ... &  a_1 \\
+a_3 & ... & a_k &  \bold{b_1} & a_2 \\
+a_4 & ... & \bold{b_1} &  \bold{b_2} & a_3 & \\
+\vdots & \vdots & \vdots & 	\ddots &  \vdots\\
+\bold{b_2} & \bold{b_{3}} & ... & ... &  \bold{b_{1}}
+\end{pmatrix}
+\end{align}
 
 \newpage
 Trajectory design only.
@@ -287,7 +328,7 @@ Both equations state that, conceptually, the result does not depend on the sampl
 
 \newpage
 \subsection{Results: Qualitative Sensitivity Analysis}
-FF successful, ranking - be cautious!
+Be cautious!
 \newpage
 \setlength{\tabcolsep}{22pt} %from 6
 \begin{table}[H] 
@@ -350,6 +391,56 @@ FF successful, ranking - be cautious!
 	\label{fig:rad}
 \end{figure}
 
+
+\newpage
+\subsection{Review: Estimation Results}
+% increase spacing between table columns
+\setlength{\tabcolsep}{18pt} %from 6
+\begin{table}[H] 
+	\centering
+	\begin{threeparttable}
+		\caption[Model Parametrization]{Estimates for the distribution of input parameters}
+		\label{tab:params}
+		\renewcommand{\arraystretch}{1.2}%
+		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]S[table-format=3.2]}
+			\toprule
+			{Parameter}     & {Mean}   & {Standard error (SE)} & {SE in KW94} \\ \midrule
+			\textit{General} \\
+			$\delta$ & 0.95   & 0.00084 & \textit{-}    \\    \midrule
+			\textit{Blue-collar}\\    
+			$\beta^b$ & 9.21   & .013            & 0.014      \\
+			$\beta_e^b$ & 0.038  &    0.0011        & 0.0015       \\
+			$\beta^b_b$ & 0.033  & 0.00044            & 0.00079       \\
+			$\beta^b_{bb}$ & -0.0005 & 0.000013           & 0.000019       \\
+			$\beta^b_w$ & 0.0    & 0.00067             & 0.0024      \\
+			$\beta^b_{ww}$ & 0.0    & 0.000029           & 0.000096       \\ \midrule
+			\textit{White-collar}\\
+			$\beta^w$ & 8.48   & 0.0076             & 0.0123      \\
+			$\beta^w_e$ & 0.07   & 0.00047          & 0.00096       \\
+			$\beta^w_w$ & 0.067  & 0.00055            & 0.00090      \\
+			$\beta^w_{ww}$ & -0.001  & 0.000017           & 0.000070     \\
+			$\beta^w_b$ & 0.022  & 0.00033           & 0.0010      \\
+			$\beta^w_{bb}$ & -0.0005 & 0.000021         & 0.000030      \\ \midrule
+			\textit{Education} \\
+			$\beta^e$     & 0.0    & 330                & 459       \\
+			$\beta_{he}^e$     & 0.0    & 155               & 410       \\
+			$\beta_{re}^e$     & -4000   & 202                & 660       \\ \midrule
+			\textit{Home} \\
+			$\beta^h$    & 17750  & 390                & 1442      \\ \midrule
+			\multicolumn{4}{l}{\textit{Lower Triangular Cholesky Matrix}} \\
+			$c_{1}$      & 0.2    & 0.0015             & 0.0056      \\
+			$c_{2}$      & 0.25    & 0.0013             & 0.0046     \\
+			$c_{3}$      & 1500   & 108             & 350      \\
+			$c_{4}$      & 1500    & 173              & 786      \\
+			$c_{1,2}$     & 0.0    & 0.0064              & 0.023     \\
+			$c_{1,3}$      & 0.0   & 143               & 0.412      \\
+			$c_{2,3}$      & 0.0    & 116             &  0.379     \\
+			$c_{1,4}$      & 0.0    & 232             &   0.911    \\
+			$c_{2,4}$      & 0.0    & 130            & 0.624      \\
+			$c_{3,4}$      & 0.0   & 177                & 0.870       \\ \bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{table}
 \subsection{Improvement: Sampling scheme tailored to Sobol' indices}
 
 Similar to trajectory design to have interactions still included.
