@@ -11,7 +11,7 @@ import seaborn as sns
 from matplotlib.ticker import FormatStrFormatter
 from cycler import cycler
 # Load Measures.  
-with open('results/measures_to_plot.pkl', 'rb') as f:
+with open('../results/measures_to_plot.pkl', 'rb') as f:
   measures_to_plot = pickle.load(f)
 
 """
@@ -147,7 +147,7 @@ abs_ee_mean = pd.DataFrame(np.hstack(measures_to_plot), index=[param_groups, par
 
 scatter_plot(abs_ee_mean, 1, 0, 0.9, 6)
 
-plt.savefig("figures/scatter_traj.png", bbox_inches="tight")
+plt.savefig("../figures/scatter_traj.png", bbox_inches="tight")
 
 scatter_plot(abs_ee_mean, 3, 2, 0.9, 12)
 

@@ -105,7 +105,7 @@ def heatmap_corr_chol(corr_df, save=False):
     if save is True:
         # Define the script path relative to the jupyter notebook that calls the script.
         abs_dir = os.path.dirname(__file__)
-        plt.savefig(os.path.join(abs_dir, "figures/heatmap.png"), bbox_inches="tight")
+        plt.savefig(os.path.join(abs_dir, "../figures/heatmap.png"), bbox_inches="tight")
     else:
         pass
 
@@ -207,7 +207,7 @@ def distplot(sample, qoi_name, save=False):
     if save is True:
         # Define the script path relative to the jupyter notebook that calls the script.
         abs_dir = os.path.dirname(__file__)
-        plt.savefig(os.path.join(abs_dir, "figures/distplot.png"), bbox_inches="tight")
+        plt.savefig(os.path.join(abs_dir, "../figures/distplot.png"), bbox_inches="tight")
     else:
         pass
 
@@ -295,7 +295,7 @@ def convergence_plot(sample, expected, qoi_name, absolute_deviation=False, save=
         # Define the script path relative to the jupyter notebook that calls the script.
         abs_dir = os.path.dirname(__file__)
         plt.savefig(
-            os.path.join(abs_dir, "figures/convergence_plot_{}.png").format(file_str),
+            os.path.join(abs_dir, "../figures/convergence_plot_{}.png").format(file_str),
             bbox_inches="tight",
         )
     else:

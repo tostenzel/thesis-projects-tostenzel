@@ -291,7 +291,7 @@ Furthermore, I develop improved measures that finally correspond to the actual E
 
 \subsection{Drawbacks in \cite{ge2017extending} and Corrected Elementary Effects.}
 
-The drawback in the EE definitions by \cite{ge2017extending} is that $\Delta$ is transformed multiple times in the numerator but not in the denominator. Therefore, these measures are not Elementary Effects in the sense of a derivative. The transformation in the numerator is performed by applying $F^{-1}(\Phi^c)$ to $u_i^j = a_i^j + \Delta^{(i,j)}$. The corrected and slightly renamed measures are the correlated and the uncorrelated Elementary Effects, $d_i^{c}$ and $d_i^{u}$. They are given below for arbitrary input distributions and for samples in trajectory and radial design. Let ${Q^T}_{k,*k-1}$ be the last row except of the last element of the lower triangular Cholesky matrix of the correlation matrix in the respective order of $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$ and $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$. Let ${Q^T}_{k,k}$ be the last element of the same matrix. Let $\Phi^u$ be the transformation from $[0,1]$ to standard normal space without regarding correlations in Step 3. Let $F^{-1}$ be the transformation that maps standard normal deviates to an arbitrary sample space like in Step 1. Index $*k-1$ represents all elements except of the last one of a vector of length $k$. Index $j$ is used to indicate an element-wise multiplication.
+The drawback in the EE definitions by \cite{ge2017extending} is that $\Delta$ is transformed multiple times in the numerator but not in the denominator. Therefore, these measures are not Elementary Effects in the sense of a derivative. The transformation in the numerator is performed by applying $F^{-1}(\Phi^c)$ to $u_i^j = a_i^j + \Delta^{(i,j)}$. The implications of this approach is twofold. For the following explanation, I refer to the normal sample space. The first implication is that function $f$ is evaluated at arguments that are non-linearily transformed by Step 1 and Step 2. Then, the difference in the numerator is divided by the  difference between the changed input parameter and the base input parameter - in unit space. This makes the results hard to interpret. It also increases the influence of more extreme draws in $[0,1]$ because $\Phi^{-1}$ is very sensitive to these. Therefore, it will take a larger sample for the aggregate EE measures in \cite{ge2017extending} to converge. Additionally, these problems are amplified if there are large differences between the inputs' standard deviation through the subsequent multiplicative scaling. The largest drawback, however, is that $\Delta$ in the denominator of $d_i^{ind}$ does not account for the transformation of the $\Delta$ in the nominator by the establishing of correlations in Step 2. This transformation decreases $\Delta$ proportional to the degree of correlations of the respective input parameter as can be seen by the last row of the lower Cholesky matrix in Eq. (\ref{eq:corr}). Hence, $d_i^{ind}$ is inflated by the the input parameters' correlations even tough this measure is introduced as an independent effect. Because the full EE has to be interpreted with regards to the independent Effect, this problem spills over to $d_i^{full}$. For these reasons, I argue that these measures can not be used for screening. I refine the measures in \cite{ge2017extending} by scaling the $\Delta$ in the denominator according to the nominator. I refer to these measures as the correlated and the uncorrelated Elementary Effects, $d_i^{c}$ and $d_i^{u}$. They are given below for arbitrary input distributions and for samples in trajectory and radial design. For this purpose, let ${Q^T}_{k,*k-1}$ be the last row except of the last element of the lower triangular Cholesky matrix of the correlation matrix in the respective order of $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$ and $\mathcal{T}_1(\bold{T_{i+1,*}}; i-1)$. Let ${Q^T}_{k,k}$ be the last element of the same matrix. Let $\Phi^u$ be the transformation from $[0,1]$ to standard normal space without regarding correlations in Step 3. Let $F^{-1}$ be the transformation that maps standard normal deviates to an arbitrary sample space like in Step 1. Index $*k-1$ represents all elements except of the last one of a vector of length $k$. Index $j$ is used to indicate an element-wise multiplication.
 
 \begin{align}
 d_i^{c,T} = \frac{f\big(\mathcal{T}(\bold{T_{i+1,*}}; i-1)\big) - f\big(\mathcal{T}(\bold{T_{i-1,*}}; i)\big)}{F^{-1}\big(\Phi^u(b_i)\big) - F^{-1}\big( \Phi^u(a_i)\big)}
@@ -329,7 +329,7 @@ The next section presents results for a test function to demonstrate a replicati
 
 \subsection{Replication and Validation}
 
-Let $f(X_1, ..., X_k)$ = $\sum_{i = 1}^{k} c_i X_i$ be an arbitrary linear function. Let $\rho_{i,j}$ be the linear correlation between $X_i$ and $X_j$. Then, for all $i \in 1, ..., k$, I expect:\footnote{These results correspond to the intuition provided by the example in \cite{Saltelli.2008}, p. 123.}
+Let $g(X_1, ..., X_k)$ = $\sum_{i = 1}^{k} c_i X_i$ be an arbitrary linear function. Let $\rho_{i,j}$ be the linear correlation between $X_i$ and $X_j$. Then, for all $i \in 1, ..., k$, I expect:\footnote{These results correspond to the intuition provided by the example in \cite{Saltelli.2008}, p. 123.}
 \begin{align}
 d_i^{u,*} = c_i \label{eq:diu}\\
 d_i^{c,*} = \sum_{j = 1}^{k} \rho_{i,j} c_{j}. \label{eq:dic}.
@@ -423,7 +423,7 @@ From the first columns, we can observe three things about the measures in \cite{
 The second result is that the measures differ between trajectory and radial design. This is because the non-linearity introduces variation to these measure according to the values of the draws in $[0,1]$. This variation is due to two reasons. The first reason are the general differences between both sampling schemes.
 
 
-The last observation results from the fact that the trajectory design, in contrary to the radial design, includes two numeric parameters. These are, first, the approximation of $0$ and $1$ to prevent the inverse CDF from returning infinite values. It is enough to approximate $0$ by $0^{num}$. The lower $0^{num}$, the more extreme are the transformed draws for $0$ and $1$. The second approximation is the number of levels, or grid points, $l$ in $[0,1]$. The more grid points, the less imprecise are the results.
+The last observation results from the fact that the trajectory design, in contrary to the radial design, includes two numeric parameters. These are, first, the approximation of $0$ and $1$ to prevent the inverse CDF from returning infinite values. It is enough to approximate $0$ by $0^{num}$. The lower $0^{num}$, the more extreme are the transformed draws for $0$ and $1$. Therefore, lower $0^{num}$ also increase $\sigma$. The second approximation is the number of levels, or grid points, $l$ in $[0,1]$. The more grid points, the less imprecise are the results.
 The authors indicate that they use $0^{num}=0.00001$ and $l$ for the trajectory design.\footnote{I obtained this information from an unofficial email from Qiao Ge.}\\
 
 \noindent
@@ -448,6 +448,29 @@ The replication in Table \ref{tab:repval2} for the radial design is relatively c
 
 \noindent
 The last column in both Table \ref{tab:repval1} and Table \ref{tab:repval2} depicts the aggregate measures based on the improved EEs. These are equal to what is anticipated at the beginning of this section. Therefore, the correlated and uncorrealted Elementary Effects developed in this thesis can be regarded as a valid extension of Elementary Effects for models with correlated input parameters.\\
+
+\noindent
+To facilitate the analysis in the results section, I describe the link from EE-measures to Sobol' indices by means of another linear test function $h$. However, let us consider the case without any correlations between the inputs Additionaly, let $c_i = \{3,2,1\}$ and $\sigma^2_{X_i}=\{1,4,9\}$. The following results are derived from \cite{Saltelli.2008}\footnote{See p.15-25.}. Let us first compute the Sobol' indices. As $g$ does not include any interactions, $S_i^T = S_i$. Additionally, we have $\text{Var}(Y)=\sum_{i=1}^k c_i^2 \sigma_{X_i}^2$ and $\text{Var}_{\bold{X_{\sim i}}}\big( \E_{X_{\sim i}}[Y|\bold{X_{\sim i}]} \big) = c_i^2 \sigma_{X_i}^2$. Table \ref{tab:bad-mu} compares three different sensitvity measures. These are the total Sobol' indices, $S_i^T$, the mean absolute EE, $\gamma_i^*$, and the \textit{squared} sigma-normalized mean absolute EE, $(\mu_i^* \frac{\sigma_{X_i}}{\sigma_Y})^2$.  \\
+
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[H]
+	\centering
+	\caption{Comparison of sensitivity measures for a linear function}
+	\label{tab:bad-mu}
+	\begin{tabular}{@{}lccc@{}}
+		\toprule
+		Parameters & $S_i^T$ & $\gamma_i^*$ & $(\mu_i^* \frac{\sigma_{X_i}}{\sigma_Y})^2$ \\ \midrule
+		$X_1$ & $9$                       & $3$   & $9$   \\
+		$X_2$ & $8$                       & $2$   & $8$   \\
+		$X_3$ & $9$                       & $1$   & $9$   \\ \bottomrule
+	\end{tabular}
+\end{table}
+
+\noindent
+In context of screening, $S_i^T$ is the objective measure that we would like to predict approximately. We observe that $\gamma_i^*$ ranks the parameters incorrectly. The reason, is that $\gamma_i^*$ is only a measure of the influence of $X_i$ on $Y$ and not of the influence of the variation and the level of $X_i$ on the variation of $Y$. We also see that $(\mu_i^* \frac{\sigma_{X_i}}{\sigma_Y})^2$ is a exact predictor for $S_i^T$ as it does not only generate the correct ranking but also the right effect size. Of course, this result is specific to a linear function without interactions and correlation. However, it underlines the point that $\gamma_i^*$ alone is not sufficient for screening. One approach would be to additionally consider the EE variation, $\sigma_i$. However, analysing two measures at once is difficult for models with a large number of input parameters. Table \ref{tab:bad-mu} indicates that $\mu_i^* \frac{\sigma_{X_i}}{\sigma_Y}$ and also $\mu_i^* \frac{\sigma_{X_i}}{\sigma_Y}$ can be an appropriate alternative. The actual derivative version of this measure is also recommended by guidelines of the Intergovernmental Panel for Climate Change (\citeauthor{ipcc1999} (1999, 2000)).\\
+
+
 
 \noindent
 The next chapter presents the occupational choice model in \cite{Keane.1994}.

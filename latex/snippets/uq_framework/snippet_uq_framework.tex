@@ -166,7 +166,7 @@ Qualitative GSA deals with the computation of measures that can rank random inpu
 \noindent
 The most commonly used measures in qualitative GSA is the mean EE, $\mu$, the mean absolute EEs, $\mu^*$, and the standard deviation of the EEs, $\sigma$. The EE of $X_i$ is given by one individual function derivative with respect to $X_i$. The "change in", or the "step of" the input parameter, denoted by $\Delta$. The only restriction is that $X_i + \Delta$ is in the sample space of $X_i$. The Elementary Effect, or derivative, is denoted by
 \begin{align}
-d_i^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delta^{(i,j)}},
+d_i^{(j)} =  \frac{f(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})- f(\bold{X})}{\Delta^{(i,j)}},
 \end{align}
 where $j$ is an index for the number of $r$ observations of $X_i$.
 Note, that the EE, $d_i^{(j)}$ is equal to the aforementioned local measure, the system derivate $S_i = \frac{\partial Y}{\partial X_i}$, except that the value $\Delta$ has not to be infinitesimally small. To offset the third drawback of $d_i$ or $S_i$, that base vector $X_i$ does not represent the whole input space, one computes the mean EE, $\mu_i$, based on a random sample of $X_i$ from the input space. The second drawback, that interaction effects are disregarded, is also offset because elements $X_{\sim i}$ are also resampled for each new $X_i$. This measure is given by
@@ -175,7 +175,7 @@ Note, that the EE, $d_i^{(j)}$ is equal to the aforementioned local measure, the
 \mu_i = \frac{1}{r} \sum_{j=1}^{r} d_i^{(j)}.
 \end{align}
 \noindent
-Thus, $\mu_i$ is the global version of $d_i^{(j)}$. Then, the standard deviation of the EEs writes $\sigma_i = \frac{1}{r} \sum_{j=1}^{r} (d_i^{(j)} - \mu_i)$. The mean absolute EE, $\mu_i^*$ is used to prevent observations of opposite sign to cancel each other out:
+Thus, $\mu_i$ is the global version of $d_i^{(j)}$. Then, the standard deviation of the EEs writes $\sigma_i = \sqrt{\frac{1}{r} \sum_{j=1}^{r} (d_i^{(j)} - \mu_i)^2}$. The mean absolute EE, $\mu_i^*$ is used to prevent observations of opposite sign to cancel each other out:
 
 \begin{align}
 \mu_i^* = \frac{1}{r} \sum_{j=1}^{r} \big| d_i^{(j)} \big|.
