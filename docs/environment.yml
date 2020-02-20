@@ -1,9 +1,9 @@
+name: docs-env
+
 channels:
-  - conda-forge
+    - anaconda
 dependencies:
-  - pip
-  - pip:
-    - ipython
-    - nbsphinx
-    - numpydoc
-    - sphinx
+    - python=3.7
+    - pip:
+      - numpydoc
+      - sphinx
