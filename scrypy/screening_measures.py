@@ -134,11 +134,11 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
         ee_uncorr_i[:, traj] = (
             fct_evals_piplusone_i[1 : n_inputs + 1, traj]
             - fct_evals_pi_i[0:n_inputs, traj]
-        ) / (
-            step_list[traj]
-            * np.squeeze(coeff_step[traj])
-            * np.squeeze(np.sqrt(np.diag(cov)))
-        )
+        ) /  step_list[traj]#
+            #* np.squeeze(coeff_step[traj])
+            #* np.squeeze(np.sqrt(np.diag(cov)))
+        #)
+        # Taken back for GM17: 
         # Above, we additionally need to account for the decorrelation
         # when we account for the scaling by the SD.
 
@@ -160,8 +160,8 @@ def screening_measures(function, traj_list, step_list, cov, mu, radial=False):
             ee_corr_i[:, traj] = (
                 fct_evals_piplusone_iminusone[1 : n_inputs + 1, traj]
                 - temp[0:n_inputs]
-            ) / (step_list[traj] * np.squeeze(np.sqrt(np.diag(cov))))
-            # Above, account for the scaling by the SD.
+            ) / step_list[traj]# * np.squeeze(np.sqrt(np.diag(cov))))
+            # Taken back for GM17: Above, account for the scaling by the SD.
 
     # Init measures.
     ee_uncorr = np.ones([n_inputs, 1]) * np.nan
