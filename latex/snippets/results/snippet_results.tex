@@ -113,14 +113,27 @@ The next section computes measures for these contributions.\footnote{For QoI $Y$
 
 
 \newpage
-\subsection{Experiment \cite{ge2017extending}}
+\subsection{Quantitative Global Sensitivity Analysis}
+The analysis is divided in three parts. The first part computes the measures by \cite{ge2017extending} for the occupational choice model to validate the conceptual analysis and the results derived from the linear test function. The second part computes measures based on the further developed EEs. They are used for a comparison with the first part and also to compare the two sampling schemes. The third part presents results for a measure that combines the influence of $X_i$ on the level and on the variation of QoI $Y$. This measure is used for cautious recommendation about which input parameters are rather non-influential.
+
+Due to time restrictions, I am only able to present results based on 100 samples in trajectory and radial designs. This is equal to 8200 and 8100 model evaluations.\\
+
+\noindent
+Table \ref{tab:kw94gm17} presents the aggregate measures for the full and independent EEs as developed in \cite{ge2014efficient}. I choose the trajectory design because it does not produce extreme steps $b-a$. Additionally I have more control over the set of random parameters and can adjust it to the relatively low number of draws for the subsamples. The numerical parameters that I use are numeric zero, $0^{num}$, equals 0.005 and number of grid points in [0,1], $l$, equals 100. The 100 trajectories are selected based on 200 trajectories in standard normal space following the first improvement in \cite{ge2014efficient}. I do not use the unit space for the post-selection because I do not want to have a concentration of draws in the centre of the normal space. I use this procedure for all trajectory samples throughout the section.
+
+The second and third columns depict the mean absolute EEs, $\mu^{*,full}_T$ and $\mu^{*,ind}_T$ and the fourth and fifth columns show the standard deviations of the EEs, $\mu^{*,ind}_T$ and $\sigma^{*,full}_T$.The authors state that mean EEs and standard deviations have to be interpreted jointly for inferences about the variance of $Y$. Additionally, if for one parameter $X_i$, the full measures are close to 0, the independent measures must also be low to infer that this parameter can be fixed.
+
+We make the following four main observations. First, the level of mean effects and standard deviations is very similar for each variable. Following the interpretation by \cite{ge2017extending} this would suggest that there are no parameters with low effect on the level but high effect on the variation of $Y$. Second, the highest $\mu^{*,full}$ and $\sigma^{*,full}_T$ are achieved by the coefficients for the quadratic (cross-sector) experience for blue- and white-collar sector, $\beta^b_{bb}$, $\beta^b_{ww}$, $\beta^w_{ww}$, $\beta^w_{bb}$. This makes sense because, first, quadratic terms should dominate linear terms (if the variation is comparable and the level is above for value larger than |1|), and second, Figure \ref{fig:uq_paths} already indicated that the home and the education sector are less important for the variation in $Y$. The third observation is that the $\mu^{*,full}$ and $\sigma^{*,full}_T$ contain large variations amongst the different parameters and very high values. These values seem detached from the level of the variation in $Y$. The fourth observation is that the results for the independent measures all below 0.005. Following \cite{ge2014efficient}, this would mean, that there each parameter with full measures close to zero, i.e. all parameters for the home and the education sector can be fixed as the independent measures are close to zero anyway.\\
+
+\noindent
+The third and fourth observation is exactly what is expected from the previous conceptual and practical analyses of the measures in \cite{ge2017extending}. Let us first analyse the fourth observation. The independent Elementary Effects are strongly deflated for parameters with large correlations because the denominator does not account for the second transformation step, that involved the lower Cholesky matrix, $Q^T$, of the correlation matrix. As the correlations between all parameters are relatively high, all parameters, even those for the blue- and white-collar sector, are close to 0. The third observation, extreme values for the full measures, can be explained by the transformations that are also missing in the EEs denominator, namely the transformation from uniform to normal space in Step 1 and Step 3. This non-linear transformation is not equalized and therefore, comparably high values are even higher. Both explanations will be confirmed in the next analysis part by the respective columns for the further developed measures $\mu^{*,full}_T$ and $\mu^{*,ind}_T$ in Table \ref{tab:params}.
 \newpage
 \setlength{\tabcolsep}{22pt} %from 6
 \begin{table}[H] 
 	\centering
 	\begin{threeparttable}
 		\caption[Model Parametrization]{EE-based measures by \cite{ge2017extending} for 100 trajectories}
-		\label{tab:gm17measures_traj}
+		\label{tab:kw94gm17}
 		\renewcommand{\arraystretch}{1.2}%
 		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]@{\hskip 0.7in}|@{\hskip 0.5in}S[table-format=3.2]S[table-format=3.2]}
 			
@@ -163,16 +176,28 @@ The next section computes measures for these contributions.\footnote{For QoI $Y$
 \end{table}
 \newpage
 
+Table \ref{tab:devees} depict the further developed measures that correspond to the mean absolute relative EEs, $\mu^{*,full}$ and $\mu^{*,ind}$ for both sampling schemes in \cite{ge2017extending}. As in Table \ref{tab:kw94gm17}, the standard deviations, in genera, are relatively close to the Elementary Effects. \\
+
+\noindent
+The analysis of Table \ref{tab:devees} is divided in three parts. First, I compare the results in \ref{tab:devees} to the findings in Table \ref{tab:kw94gm17}. Then, I compare the results with respect to the different sampling schemes. Thereafter, I analyse more general findings.\\
+
+\noindent
+One observation from Table \ref{tab:kw94gm17} are that $\mu^{*,full_T}$ and $\sigma^{*,full}_T$ have a large variation caused by the unbalanced non-linear transformation in the numerator of the respective EEs. This causes larger values to be even larger. Comparing column $\mu^{*,full}_T$ in Table \ref{tab:kw94gm17} with column $\mu^{*,c}_T$ in Table \ref{tab:devees}, we find that the value are indeed, more compressed. This again confirms the first drawback in \cite{ge2017extending}. Still, the variation in $\mu^{*,c}_T$ is relatively large. One explanation is that the model itself is highly non-linear many input parameters.
+
+Another observation from Table \ref{tab:kw94gm17} is that $\mu^{*,ind}_T$ and $\sigma^{*,ind}_T$ are both close to zero because these respective EEs deflate parameters with larger correlations. Looking at $\mu^{*,c}_T$, we find that this drawback is also erased, such that the correlated and uncorrelated can now, potentially, be interpreted jointly for factor fixing. We also see, that $\mu^{*,u}$ is even larger than $\mu^{*,c}$ for both designs. I discuss this point later.\\
+
+\noindent
 
 
-\subsection{Qualitative Sensitivity Analysis}
+
+
 \newpage
 \setlength{\tabcolsep}{22pt} %from 6
 \begin{table}[H] 
 	\centering
 	\begin{threeparttable}
 		\caption[Model Parametrization]{Mean absolute correlated and uncorrelated elementary effects\\ (based on 100 subsamples in trajectory and radial design)}
-		\label{tab:params}
+		\label{tab:devees}
 		\renewcommand{\arraystretch}{1.2}%
 		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]@{\hskip 0.7in}|@{\hskip 0.5in}S[table-format=3.2]S[table-format=3.2]}
 
@@ -192,7 +217,7 @@ The next section computes measures for these contributions.\footnote{For QoI $Y$
 			$\beta^w_w$ & 24  & 47            & 718 &  1521   \\
 			$\beta^w_{ww}$ & 933  & 997           & 12257 & 18069   \\
 			$\beta^w_b$ & 131 & 127           & 309 &  356   \\
-			$\beta^w_{bb}$ & 120 & 1352         & 2088 &  2477   \\ \midrule
+			$\beta^w_{bb}$ & 1230 & 1352         & 2088 &  2477   \\ \midrule
 			\textit{Education} \\
 			$\beta^e$     & 0.0008    & 0.0002              & 0.001&  0.003   \\
 			$\beta_{he}^e$     & 0.0001    & 0.0002              & 0.001  & 0.001    \\
