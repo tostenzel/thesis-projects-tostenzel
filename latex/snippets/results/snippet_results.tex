@@ -84,8 +84,26 @@
 
 \section{Results}
 
-\subsection{Uncertainty Analysis}
+The section is divided in two parts. First, I present the results of the uncertainty analysis for an overview of the general variation in QoI $Y$. Thereafter, I present the results of the qualitative GSA. The aim is to draw inferences about the contribution of an individual input $X_i$ and its uncertainty on the uncertainty in QoI $Y$ to a degree that allows the identification of non-influential parameters.
 
+\subsection{Uncertainty Analysis}
+The following results are obtained by evaluating the occupational choice model at each parameter vector from a random sample. This sample is drawn from the estimated joint distribution. The number of draws is $10,000$. A reasonable level of convergence has already been achieved after about 800 evaluation.\footnote{See the respective notebook in the \citetalias{Stenzel.2020}.}
+
+
+Figure \ref{fig:uq_paths} incorporates the input uncertainty in the shares of life-time occupation decisions that we have previously seen in Figure \ref{fig:paths}. It depicts the mean and the intervals for $99\%$ of the shares' probability distribution. We can see that the input uncertainty has an effect on the decisions for white- and blue-collar occupation but almost none on the decision for occupation in the education and home sector. This suggests that individuals mainly tend to change between occupation in blue- and white-collar occupation given the distribution of input parameters. Yet, the uncertainty in the shares for both labour sectors is not strikingly large. There is also no visible difference in the uncertainties between both scenarios.
+\begin{figure}[H]
+	\caption{Comparison of shares of occupation decision over time between scenarios including 99$\%$ confidence intervals}
+	\centering
+	\includegraphics[scale=0.75]{../../../scrypy/figures/cone_plot_choice_shares}
+	\label{fig:uq_paths}
+\end{figure}
+
+\noindent
+Figure \ref{fig:dist} shows the probability distribution for QoI $Y$. The colorised bars depict the realisations within one and two and outside of two standard deviations, $\sigma_Y$, from sample mean $\overline{Y}$.  The distribution is minimally skewed to the left but can be considered as almost normal. This leads to the first conclusion for a potential quantitative GSA. That is, variance-based measures like Sobol' indices can be used because the variance is a good summary measure for normally distributed random variables.
+
+Standard deviation $\sigma_Y$ equals 0.1 and variance $\sigma_Y^2$ equals 0.01. The final goal of a quantitative GSA is to compute the share that input parameter $X_i$ and its variation contribute to $\sigma_Y$ or $\sigma_Y^2$. We can expect that reasonable measures for the contribution of $X_i$ are not completely detached from the measures for the total variation in $Y$ if they are on the same scale. As we have seen earlier, for a linear function without interactions and correlations, we would even expect that the contribution of $X_i$ are smaller than the measure for the variation in $Y$.
+
+The next section computes measures for these contributions.\footnote{For QoI $Y$, it is not necessary to compute the probabilities for specific regions in the probability space of $Y$. The reasons is that, for example in contrary to models for nuclear power plants, there are no regions that are particularly critical.}
 \begin{figure}[H]
 	\caption{Probability distribution of quantity of interest $q$}
 	\centering
@@ -93,12 +111,7 @@
 	\label{fig:dist}
 \end{figure}
 
-\begin{figure}[H]
-	\caption{Comparison of shares of occupation decision over time between scenarios with cone plots}
-	\centering
-	\includegraphics[scale=0.75]{../../../scrypy/figures/cone_plot_choice_shares}
-	\label{fig:paths}
-\end{figure}
+
 \newpage
 \subsection{Experiment \cite{ge2017extending}}
 \newpage
