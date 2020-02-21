@@ -4,11 +4,389 @@
 
 \thispagestyle{plain} % surpress header on first page
 
-\section*{Appendix A: Correlated standard normal deviates}
+\section*{Appendix A: Tables}
 \thispagestyle{plain} % surpress header on first page
-\section*{Appendix B: Inverse transformations of probability distributions}
-\section*{Appendix C: Simulated maximum likelihood estimation}
 
+\phantom{This text will be invisible} 
+\hspace{20cm}
+\begin{table}[H]
+	\centering
+	\caption{Overview of UQ literature}
+	\label{tab:lit}
+	\renewcommand{\arraystretch}{1.2}%
+	\begin{tabular}{lc}
+		\toprule
+		Content                      & Number of articles \\ \midrule
+		$Topics$                       &                    \\
+		\qquad Climate economics            & 8                  \\
+		\qquad Macroeconomics               & 4                 \\ \midrule
+		$Analyses$                     &                    \\
+		\qquad Uncertainty analysis      & 8                  \\
+		\qquad Globabl sensitivity analysis & 7                  \\
+		\qquad Local sensitivity analysis   & 2                  \\ \midrule
+		$Measures$                     &                    \\
+		\qquad Sobol' indices               & 6                  \\
+		\qquad Univariate effects           & 4                  \\
+		\qquad Density-based measures & 2                  \\ \midrule
+		$Methods$                      &                    \\
+		\qquad Monte Carlo sampling         & 7                  \\
+		\qquad Latin hypercube sampling         & 3                  \\
+		\qquad Surrogate model              & 7                  \\
+		\qquad Polynomial chaos expansions  & 2                  \\
+		\qquad Intrusive methods            & 2                  \\ \midrule
+		& 14                 \\ \bottomrule
+	\end{tabular}
+\end{table}
+\noindent
+
+% increase spacing between table columns
+\setlength{\tabcolsep}{18pt} %from 6
+\begin{table}[H] 
+	\centering
+	\begin{threeparttable}
+		\caption[Model Parametrization]{Estimates for the distribution of input parameters}
+		\label{tab:params}
+		\renewcommand{\arraystretch}{1.2}%
+		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]S[table-format=3.2]}
+			\toprule
+			{Parameter}     & {Mean}   & {Standard error (SE)} & {SE in KW94} \\ \midrule
+			\textit{General} \\
+			$\delta$ & 0.95   & 0.00084 & \textit{-}    \\    \midrule
+			\textit{Blue-collar}\\    
+			$\beta^b$ & 9.21   & .013            & 0.014      \\
+			$\beta_e^b$ & 0.038  &    0.0011        & 0.0015       \\
+			$\beta^b_b$ & 0.033  & 0.00044            & 0.00079       \\
+			$\beta^b_{bb}$ & -0.0005 & 0.000013           & 0.000019       \\
+			$\beta^b_w$ & 0.0    & 0.00067             & 0.0024      \\
+			$\beta^b_{ww}$ & 0.0    & 0.000029           & 0.000096       \\ \midrule
+			\textit{White-collar}\\
+			$\beta^w$ & 8.48   & 0.0076             & 0.0123      \\
+			$\beta^w_e$ & 0.07   & 0.00047          & 0.00096       \\
+			$\beta^w_w$ & 0.067  & 0.00055            & 0.00090      \\
+			$\beta^w_{ww}$ & -0.001  & 0.000017           & 0.000070     \\
+			$\beta^w_b$ & 0.022  & 0.00033           & 0.0010      \\
+			$\beta^w_{bb}$ & -0.0005 & 0.000021         & 0.000030      \\ \midrule
+			\textit{Education} \\
+			$\beta^e$     & 0.0    & 330                & 459       \\
+			$\beta_{he}^e$     & 0.0    & 155               & 410       \\
+			$\beta_{re}^e$     & -4000   & 202                & 660       \\ \midrule
+			\textit{Home} \\
+			$\beta^h$    & 17750  & 390                & 1442      \\ \midrule
+			\multicolumn{4}{l}{\textit{Lower Triangular Cholesky Matrix}} \\
+			$c_{1}$      & 0.2    & 0.0015             & 0.0056      \\
+			$c_{2}$      & 0.25    & 0.0013             & 0.0046     \\
+			$c_{3}$      & 1500   & 108             & 350      \\
+			$c_{4}$      & 1500    & 176              & 786      \\
+			$c_{1,2}$     & 0.0    & 0.0064              & 0.023     \\
+			$c_{1,3}$      & 0.0   & 145               & 0.412      \\
+			$c_{2,3}$      & 0.0    & 116             &  0.379     \\
+			$c_{1,4}$      & 0.0    & 235             &   0.911    \\
+			$c_{2,4}$      & 0.0    & 131            & 0.624      \\
+			$c_{3,4}$      & 0.0   & 178                & 0.870       \\ \bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{table}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\setlength{\tabcolsep}{12pt} %from 6
+\begin{table}[H]
+	\centering
+	\caption{Replication and validation - trajectory design}
+	\label{tab:repval1}
+	\renewcommand{\arraystretch}{1.2}%
+	\begin{threeparttable}
+		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]S[table-format=3.2]S[table-format=3.2]}
+			\toprule
+			{Measure}     & {GM'17}   & {Repl. $\mu^{*}$}\tnote{$\dagger$} & {Repl. $\sigma$}\tnote{$\ddagger$} & {S'20} \\ \midrule
+			
+			
+			& 1.20  & 1.36         & 0.83         & 1.00 \\
+			\qquad $\mu^{*,ind}$                               & 1.30  & 1.48         & 0.91         & 1.00 \\
+			& 3.20  & 3.11         & 1.94         & 1.00 \\
+			&&&& \\
+			& 0.55  & 0.00         & 0.56         & 0.00 \\
+			\qquad $\sigma^{ind}$                            & 0.60  & 0.00         & 0.62         & 0.00 \\
+			& 1.30  & 0.00         & 1.32         & 0.00 \\
+			&&&& \\
+			& 14.90 & 16.20        & 9.97         & 2.30 \\
+			\qquad $\mu^{*,full}$                              & 12.50 & 13.45        & 8.31         & 1.91 \\
+			& 10.00 & 9.93         & 6.18         & 1.41 \\
+			&&&& \\
+			& 6.50  & 0.00         & 6.74         & 0.00 \\
+			\qquad $\sigma^{full}$                           & 5.50  & 0.00         & 5.63         & 0.00 \\
+			& 4.00  & 0.00         & 4.20         & 0.00 \\		
+			\bottomrule	
+		\end{tabular}
+		\begin{tablenotes}
+			
+			\item[$\dagger$] \footnotesize $0^{num}=0.00001$ and $l=4$. 
+			\item[$\ddagger$] $0^{num}=0.00000001$ and $l=24$.\par
+			
+		\end{tablenotes}
+	\end{threeparttable}
+\end{table}
+
+\phantom{This text will be invisible} 
+\hspace{5cm} %linebreak.
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\setlength{\tabcolsep}{12pt} %from 6
+\begin{table}[H]
+	\centering
+	\caption{Replication and validation - radial design}
+	\label{tab:repval2}
+	\renewcommand{\arraystretch}{1.2}%
+	\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]S[table-format=3.2]}
+		\toprule
+		{Measure}     & {GM'17}   & {Replication}  & {S'20} \\ 
+		\midrule
+		
+		& 0.60  & 0.57         &  1.00 \\
+		\qquad $\mu^{*,ind}$                               & 0.75  & 0.85         &  1.00 \\
+		& 1.50  & 1.31         &  1.00 \\
+		&&& \\
+		& 0.20   & 0.10         &  0.00 \\
+		\qquad $\sigma^{ind}$                            & 0.30   & 0.41         &  0.00 \\
+		& 0.85  & 0.22         & 0.00 \\
+		&&& \\
+		& 7.50  & 6.84         &  2.30 \\
+		\qquad $\mu^{*,full}$                              & 6.80   & 7.77         &  1.91 \\
+		& 4.75  & 4.19         &  1.41 \\
+		&&& \\
+		& 2.90  & 1.15         &  0.00 \\
+		\qquad $\sigma^{full}$                           & 2.65  & 3.68         &  0.00 \\
+		& 2.50   & 0.70         &  0.00 \\ \bottomrule
+	\end{tabular}
+\end{table}
+
+\newpage
+\phantom{This text will be invisible} 
+\vspace{10mm} %5mm vertical space
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[H]
+	\centering
+	\caption{Comparison of sensitivity measures for a linear function}
+	\label{tab:bad-mu}
+	\begin{tabular}{@{}lccc@{}}
+		\toprule
+		Parameters & $S_i^T$ & $\gamma_i^*$ & $(\mu_i^* \frac{\sigma_{X_i}}{\sigma_Y})^2$ \\ \midrule
+		$X_1$ & $9$                       & $3$   & $9$   \\
+		$X_2$ & $8$                       & $2$   & $8$   \\
+		$X_3$ & $9$                       & $1$   & $9$   \\ \bottomrule
+	\end{tabular}
+\end{table}
+
+\newpage
+\setlength{\tabcolsep}{22pt} %from 6
+\begin{table}[H] 
+	\centering
+	\begin{threeparttable}
+		\caption[Model Parametrization]{EE-based measures by \cite{ge2017extending} for 100 trajectories}
+		\label{tab:kw94gm17}
+		\renewcommand{\arraystretch}{1.2}%
+		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]@{\hskip 0.7in}|@{\hskip 0.5in}S[table-format=3.2]S[table-format=3.2]}
+			
+			{Parameter}     & {$\mu^{*,full}_T$}   & {$\mu^{*,ind}_T$} & {$\sigma^{*,full}_T$} & {$\sigma^{*,ind}_T$}\\ \midrule
+			\textit{General} \\
+			$\delta$ & 53.40   & 0.00 & 69.23 & 0.09   \\    \midrule
+			\textit{Blue-collar}\\    
+			$\beta^b$ & 3.55   & 0.05            & 4.38 & 0.07    \\
+			$\beta_e^b$ & 39.84  &    0.05        & 49.69  & 0.07    \\
+			$\beta^b_b$ & 77.21  & 0.05            & 90.23  & 0.07    \\
+			$\beta^b_{bb}$ & 2616.50 & 0.05           & 3357.92  & 0.06     \\
+			$\beta^b_w$ & 94.74    & 0.05             & 113.49  &  0.06  \\
+			$\beta^b_{ww}$ & 1136.58    & 0.03          & 1405.94 &  0.04    \\ \midrule
+			\textit{White-collar}\\
+			$\beta^w$ & 5.07   & 0.05            & 6.42 &  0.06   \\
+			$\beta^w_e$ & 90.25   & 0.07          & 111.50 &  0.08    \\
+			$\beta^w_w$ & 82.88  & 0.05            & 103.66 &  0.07   \\
+			$\beta^w_{ww}$ & 2444.13  & 0.06           & 3044.69 & 0.07   \\
+			$\beta^w_b$ & 452.91 & 0.07           & 490.31 &  0.09   \\
+			$\beta^w_{bb}$ & 4317.58 & 0.05         & 4851.54 &  0.06   \\ \midrule
+			\textit{Education} \\
+			$\beta^e$     & 0.00    & 0.09             & 0.00&  0.10   \\
+			$\beta_{he}^e$     & 0.00    & 0.11              & 0.00  & 0.13    \\
+			$\beta_{re}^e$     & 0.00  & 0.04               & 0.000  &   0.09  \\ \midrule
+			\textit{Home} \\
+			$\beta^h$    & 0.00  & 0.04                 & 0.00  & 0.05     \\ \midrule
+			\multicolumn{4}{l}{\textit{Lower Triangular Cholesky Matrix}} \\
+			$c_{1}$      & 27.94    & 0.07             & 33.72 &  0.08   \\
+			$c_{2}$      & 31.89   & 0.05             & 38.58 & 0.06   \\
+			$c_{3}$      & 0.00   & 0.06             & 0.00 & 0.07    \\
+			$c_{4}$      & 0.00    & 0.04              & 0.00 & 0.09    \\
+			$c_{1,2}$     & 12.41   & 0.06            & 14.33 &  0.08  \\
+			$c_{1,3}$      & 0.00   & 0.09              & 0.00 &  0.10   \\
+			$c_{2,3}$      & 0.00    & 0.05             &  0.00 &   0.06 \\
+			$c_{1,4}$      & 0.00    & 0.04            &   0.00 &  0.05 \\
+			$c_{2,4}$      & 0.00    & 0.03           & 0.00  &  0.03  \\
+			$c_{3,4}$      & 0.00   & 0.04                & 0.00  &  0.05   \\ \bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{table}
+
+
+\newpage
+\setlength{\tabcolsep}{22pt} %from 6
+\begin{table}[H] 
+	\centering
+	\begin{threeparttable}
+		\caption[Model Parametrization]{Mean absolute correlated and uncorrelated elementary effects\\ (based on 100 subsamples in trajectory and radial design)}
+		\label{tab:devees}
+		\renewcommand{\arraystretch}{1.2}%
+		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]@{\hskip 0.7in}|@{\hskip 0.5in}S[table-format=3.2]S[table-format=3.2]}
+			
+			{Parameter}     & {$\mu^{*,c}_T$}   & {$\mu^{*,c}_R$} & {$\mu^{*,u}_T$} & {$\mu^{*,u}_R$}\\ \midrule
+			\textit{General} \\
+			$\delta$ & 17   & 23 & 476 & 415   \\    \midrule
+			\textit{Blue-collar}\\    
+			$\beta^b$ & 1   & 3            & 43 & 88    \\
+			$\beta_e^b$ & 11  &    14        & 406  & 443    \\
+			$\beta^b_b$ & 25  & 51            & 688  & 1169    \\
+			$\beta^b_{bb}$ & 871 & 934           & 15540  & 17860     \\
+			$\beta^b_w$ & 29    & 48             & 73  &  143  \\
+			$\beta^b_{ww}$ & 389    & 460           & 869 &  1183    \\ \midrule
+			\textit{White-collar}\\
+			$\beta^w$ & 1   & 3            & 50 &  117   \\
+			$\beta^w_e$ & 26   & 28          & 943 &  852    \\
+			$\beta^w_w$ & 24  & 47            & 718 &  1521   \\
+			$\beta^w_{ww}$ & 933  & 997           & 12257 & 18069   \\
+			$\beta^w_b$ & 131 & 127           & 309 &  356   \\
+			$\beta^w_{bb}$ & 1230 & 1352         & 2088 &  2477   \\ \midrule
+			\textit{Education} \\
+			$\beta^e$     & 0.0008    & 0.0002              & 0.001&  0.003   \\
+			$\beta_{he}^e$     & 0.0001    & 0.0002              & 0.001  & 0.001    \\
+			$\beta_{re}^e$     & 0.0003   & 0.0002               & 0.0003  &   0.0006  \\ \midrule
+			\textit{Home} \\
+			$\beta^h$    & 0.0003  & 0.0003                 & 0.00002  & 0.00002     \\ \midrule
+			\multicolumn{4}{l}{\textit{Lower Triangular Cholesky Matrix}} \\
+			$c_{1}$      & 8    & 16             & 18 &  37   \\
+			$c_{2}$      & 8   & 11             & 22 & 24   \\
+			$c_{3}$      & 0.0004   & 0.0004             & 0.0004 & 0.0007    \\
+			$c_{4}$      & 0.0004    & 0.00008              & 0.0002 & 0.0003    \\
+			$c_{1,2}$     & 4   & 4            & 10 &  10  \\
+			$c_{1,3}$      & 0.0005   & 0.0006              & 0.0006 &  0.0005   \\
+			$c_{2,3}$      & 0.0003    & 0.0005             &  0.0006 &   0.001 \\
+			$c_{1,4}$      & 0.00004    & 0.00005            &   0.0004 &  0.0005 \\
+			$c_{2,4}$      & 0.0001    & 0.0002           & 0.0001  &  0.0002  \\
+			$c_{3,4}$      & 0.0001   & 0.0001                & 0.00008  &  0.0001   \\ \bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{table}
+
+
+\section*{Appendix B: Figures}
+\thispagestyle{plain} % surpress header on first page
+
+\vspace{10mm} %5mm vertical space
+\begin{figure}[H]
+	\caption{Series of events} \label{fig:order}
+	\vspace{-0.0cm}
+	
+	\begin{center}        
+		\begin{tikzpicture}
+		% upper part
+		\draw [ultra thick] (0,0) -- (10,0);
+		\foreach \x in {0,10}
+		\draw [ultra thick] (\x cm,0.2) -- (\x cm, -0.2);
+		\small % derease fontsize
+		\draw (2.0,0) node[above=0.35cm] {$\big\{U(\bold{s_t^-}, \pmb{\varepsilon_t},a_t)\big\}_{a \in A}$};
+		\draw (5.0,0) node[above=0.35cm] {$a_t(\bold{s_t^-}, \pmb{\varepsilon_t})$};
+		\draw (8.25,0) node[above=0.35cm] {$U\big(\bold{s_t^-}, \pmb{\varepsilon_t},a_t(\bold{s_t^-}, \pmb{\varepsilon_t})\big)$};
+		
+		\draw (2.0,0) node[above=1.2cm] {Learn};
+		\draw (5.0,0) node[above=1.2cm] {Choose};
+		\draw (8.25,0) node[above=1.2cm] {Receive};
+		
+		\normalsize %reincrease fontsize
+		\draw (5.0,0) node[below=0.15cm] {$t$};
+		
+		%lower part
+		\draw [ultra thick] (2.0,-3) -- (15,-3);
+		\foreach \x in {2.0,15}
+		\draw [ultra thick] (\x cm,-2.8) -- (\x cm, -3.2);
+		\small % derease fontsize
+		\draw (4.25,-3) node[above=0.35cm] {$\big\{U(\bold{s_{t+1}^-}, \pmb{\varepsilon_{t+1}},a_{t+1})\big\}_{a \in A}$};
+		\draw (8.0,-3) node[above=0.35cm] {$a_t(\bold{s_{t+1}^-}, \pmb{\varepsilon_{t+1}})$};
+		\draw (12.25,-3) node[above=0.35cm] {$U\big(\bold{s_{t+1}^-}, \pmb{\varepsilon_{t+1}},a_{t+1}(\bold{s_{t+1}^-}, \pmb{\varepsilon_{t+1}})\big)$};
+		
+		\draw (4.25,-3) node[above=1.2cm] {Learn};
+		\draw (8.0,-3) node[above=1.2cm] {Choose};
+		\draw (12.25,-3) node[above=1.2cm] {Receive};
+		
+		\normalsize %reincrease fontsize
+		\draw (8.0,-3) node[below=0.15cm] {$t+1$};      
+		
+		%\draw (2.35,0) node[above=6pt, align=center] {(estimation \\ window]};
+		\end{tikzpicture}
+	\end{center}
+\end{figure}
+
+\vspace{20mm} %5mm vertical space
+
+
+\begin{figure}[H]
+	\caption{Correlations between estimates for important input parameters}
+	\centering
+	\includegraphics[scale=0.45]{../scrypy/figures/heatmap}
+	\label{fig:corr}
+\end{figure}
+\newpage
+\vspace{10mm} %5mm vertical space
+\begin{figure}[H]
+	\caption{Comparison of shares of occupation decision over time between scenarios}
+	\centering
+	\includegraphics[scale=0.75]{../scrypy/figures/occ_choice_shares}
+	\label{fig:paths}
+\end{figure}
+
+\vspace{10mm} %5mm vertical space
+
+\begin{figure}[H]
+	\caption{Grid points in standard normal sample space for trajectory design with $l=4$}
+	\centering
+	\includegraphics[scale=0.40]{../scrypy/figures/quantile_fct}
+	\label{fig:invcdf}
+\end{figure}
+
+
+
+\begin{figure}[H]
+	\caption{Comparison of shares of occupation decision over time between scenarios including 99$\%$ confidence intervals}
+	\centering
+	\includegraphics[scale=0.75]{../scrypy/figures/cone_plot_choice_shares}
+	\label{fig:uq_paths}
+\end{figure}
+
+\vspace{10mm} %5mm vertical space
+
+\begin{figure}[H]
+	\caption{Probability distribution of quantity of interest $Y$}
+	\centering
+	\includegraphics[scale=0.55]{../scrypy/figures/distplot}
+	\label{fig:dist}
+\end{figure}
+
+\begin{figure}[H]
+	\caption{Sigma-normalized mean absolute Elementary Effects for radial design}
+	\centering
+	\includegraphics[scale=0.52]{../scrypy/figures/scatter_rad}
+	\label{fig:rad}
+\end{figure}
+
+
+\begin{figure}[H]
+	\caption{Sigma-normalized mean absolute Elementary Effects for trajectory design}
+	\centering
+	\includegraphics[scale=0.52]{../scrypy/figures/scatter_traj}
+	\label{fig:traj}
+\end{figure}
+
+
+
+\section*{Appendix C: Simulated maximum likelihood estimation}
+\thispagestyle{plain} % surpress header on first page
 To estimate the exogenous model parameters, the approach that this thesis and also KW94 use is the simulated maximum likelihood method (\cite{Albright.1977})\footnote{See \cite{Aguirregabiria.2010}, p. 42-44 and \cite{Raabe.2019}, p. 21-26 for more details.}.
 
 This method can be applied to a set of longitudinal data on occupational choices $a_t$ and, if available, wages $W_{a,t}^{-}$ of a sample of $i \in I$ individuals starting from age 16. To distinguish from its functional form, let $\mathcal{W}^{-}_{a(k),t}$ henceforth denote the measured wages. For each period $t$, the recorded choices $a_0$, ..., $a_{t-1}$  imply the occupation-specific experiences $x_{a,t}$. Together with $t$, they constitute the observable state vector $\bold{s_t^-}$. Consequently, the measured, observable endogenous variables are $\pmb{\mathcal{D}}\defeq(\bold{s_t^-},\mathcal{W}^{-}_{a,t})$. Given this setup, the goal is to estimate the exogenous model parameters $\pmb{\theta}\defeq(\delta, \pmb{\beta}, \pmb{\Sigma_\varepsilon})$.\footnote{Improvements in this thesis' estimation over KW94 are that, first, it is not assumed that the standard errors of the parameters estimates are uncorrelated, and, second, that $\beta$ is not left out of the estimation.} Thus, in the following, every probability is a function of the exogenous model parameters $\pmb{\theta}$.
@@ -38,7 +416,7 @@ observed wage $\mathcal{W}^{-}_{a(k),t}$, this information can be used to form t
 \begin{align} \label{eq:prob-choice}
 \text{p}\big(a_t(k) | \bold{s_t^-},W^{-}_{a(k),t}\big) = \int_{\pmb{\varepsilon_t}(a_t(k),\bold{s_t^-})} f(\pmb{\varepsilon_t}|\varepsilon_{a(k),t}) d^{|A|} \pmb{\varepsilon_t}.
 \end{align}
-Applying integration by substitution yields the following expression for the probability of the observed wage:\footnote{See \cite{Raabe.2019}, p. 29, 39-40 for the complete derivation.}
+Applying integration by substitution yields the following expression for the probability of the observed wage:\footnote{See \cite{Raabe.2019}, p. 29, 39-40 for a complete derivation.}
 \begin{align} \label{eq:prob-wage}
 \text{p}\big(\mathcal{W}^{-}_{a(k),t} | \bold{s_t^-}\big) = \omega_t^{-1} \frac{1}{\sigma_{a(k)}} \phi\bigg(\frac{\varepsilon_{a(k),t}}{\sigma_{a(k)}}\bigg).
 \end{align}

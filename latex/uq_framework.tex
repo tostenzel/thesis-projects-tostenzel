@@ -52,7 +52,7 @@ S_i = \frac{\text{Var}_{X_i}(Y|X_i)}{\text{Var}(Y)}.
 \end{align}
 
 \noindent
-The equation becomes clearer with the following equivalent expression in Equation (\ref{eq:spec_sobol}) (\cite{Wiederkehr.2018}).
+The equation becomes clearer with the following equivalent expression in Equation (\ref{eq:spec_sobol}).
 For this purpose, let $\sim i$ denote the set of indices except $i$. The expectation of $Y$ for one specific value of $X_i$ equals the average of the model evaluations from a sample, $\pmb{\chi_{\sim i}}$,  of $\bold{X_{\sim i}}$ and a given value
 $X_i = x_i^*$. Then, we use $\E[f(X_i = x_i^*,\pmb{\chi_{\sim i}} )] \defeq \E_{\bold{X_{\sim i}}} [Y|X_i ]$ to write the first-order Sobol' index as the variance of $\E_{\bold{X_{\sim i}}} [Y|X_i ]$ over all $x_i^*$s as
 
@@ -81,8 +81,8 @@ Qualitative GSA deals with the computation of measures that can rank random inpu
 
 \noindent
 The most commonly used measures in qualitative GSA is the mean EE, $\mu$, the mean absolute EEs, $\mu^*$, and the standard deviation of the EEs, $\sigma$. The EE of $X_i$ is given by one individual function derivative with respect to $X_i$. The "change in", or the "step of" the input parameter, denoted by $\Delta$. The only restriction is that $X_i + \Delta$ is in the sample space of $X_i$. The Elementary Effect, or derivative, is denoted by
-\begin{align} \label{eq:EE}
-d_i^{(j)} =  \frac{Y(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})}{\Delta^{(i,j)}},
+\begin{align}
+d_i^{(j)} =  \frac{f(\bold{X_{\sim i}^{(j)}}, X_i^{(j)} + \Delta^{(i,j)})- f(\bold{X})}{\Delta^{(i,j)}},
 \end{align}
 where $j$ is an index for the number of $r$ observations of $X_i$.
 Note, that the EE, $d_i^{(j)}$ is equal to the aforementioned local measure, the system derivate $S_i = \frac{\partial Y}{\partial X_i}$, except that the value $\Delta$ has not to be infinitesimally small. To offset the third drawback of $d_i$ or $S_i$, that base vector $X_i$ does not represent the whole input space, one computes the mean EE, $\mu_i$, based on a random sample of $X_i$ from the input space. The second drawback, that interaction effects are disregarded, is also offset because elements $X_{\sim i}$ are also resampled for each new $X_i$. This measure is given by
@@ -91,7 +91,7 @@ Note, that the EE, $d_i^{(j)}$ is equal to the aforementioned local measure, the
 \mu_i = \frac{1}{r} \sum_{j=1}^{r} d_i^{(j)}.
 \end{align}
 \noindent
-Thus, $\mu_i$ is the global version of $d_i^{(j)}$. Then, the standard deviation of the EEs writes $\sigma_i = \frac{1}{r} \sum_{j=1}^{r} (d_i^{(j)} - \mu_i)$. The mean absolute EE, $\mu_i^*$ is used to prevent observations of opposite sign to cancel each other out:
+Thus, $\mu_i$ is the global version of $d_i^{(j)}$. Then, the standard deviation of the EEs writes $\sigma_i = \sqrt{\frac{1}{r} \sum_{j=1}^{r} (d_i^{(j)} - \mu_i)^2}$. The mean absolute EE, $\mu_i^*$ is used to prevent observations of opposite sign to cancel each other out:
 
 \begin{align}
 \mu_i^* = \frac{1}{r} \sum_{j=1}^{r} \big| d_i^{(j)} \big|.
@@ -101,7 +101,7 @@ Step $\Delta^{(i,j)}$ may or may not vary depending on the sample design that is
 
 
 \noindent
-One last improvement is provided in \cite{Smith.2014}\footnote{See page 332.}. That is, the scaling of $\mu_{i}^*$ by $\frac{\sigma_{X_i}}{\sigma_Y}$. This measure is called the sigma-normalized mean absolute EE: 
+One last variant is provided in \cite{Smith.2014}\footnote{See page 332.}. That is, the scaling of $\mu_{i}^*$ by $\frac{\sigma_{X_i}}{\sigma_Y}$. This measure is called the sigma-normalized mean absolute EE: 
 
 
 \begin{align}
@@ -109,57 +109,8 @@ One last improvement is provided in \cite{Smith.2014}\footnote{See page 332.}. T
 \end{align}
 
 \noindent
-This improvement is necessary for a consistent ranking of $X_i$. Otherwise, the ranking would be distorted by differences in the variation of the input parameters. The reason is that the input space constrains $\Delta$. If the input space is larger, the base value of $X_i$ can be changed by a larger $\Delta$.\\
-
-
 \noindent
-From the aforementioned set of drawbacks of the local derivate $D_i = \frac{\partial Y}{\partial X_i}$, two drawbacks are remaining for the EE method. The first drawback is the missing direct link to the variation in $Var(Y)$. The second drawback is that the choice of $\Delta$ is somewhat arbitrary if the derivative is not analytic. To this date, the literature has not developed convincing solutions to these issues.
-
-In an attempt to establish a closer link between EE-based measures and Sobol' indices, \cite{kucherenko2009derivative} made two conclusions: The first conclusion is that there is an upper bound for the total index, $S_i^T$, such that
-\begin{align}
-S_i^T \leq \frac{\frac{1}{r} \sum_{j=1}^{r} {d_i^2}^{(j)}}{\pi^2 \sigma_Y}.
-\end{align}
-This expression makes use of the squared EE. In light of this characteristic, the use of $\sigma_i$ as a measure that aims to include the variation of $d_i^{j}$ appears less relevant. Nevertheless, this rescaling makes the interpretation more difficult. The second conclusion is that the Elementary Effects method can lead to false selections for non-monotonic functions. This is also true if functions are non-linear. The reason is linked to the aforementioned second drawback, the arbitrary choice of step $\Delta$. More precisely, depending on the sampling scheme, $\Delta$ might be random instead of arbitrary and constant. In both cases, $\Delta$ can be too large to approximate a derivative. If, for example, the function is highly non-linear of varying degree with respect to the input parameters $\bold{X}$, $\Delta > \epsilon$ can easily distort the results. Especially if the characteristic length of function variation is much smaller than $\Delta$.
-
-
-
-\subsection{Correlated input parameters}
-
-So far, all measures described in this chapter assumed uncorrelated input parameters. Typically, this assumption is not met by practical applications as joint estimations of parameters tend to produce correlated estimates. This gives reason to expand sensitivity measures to a more general setting.\\
-
-\noindent
-Today, several recent contributions deal with the extension of the Sobol' sensitivity measures to the setup with correlated inputs. For instance, estimators for two complementary sets of measures have been developed by \cite{kucherenko2012estimation} and \cite{mara2015non}.
-On the other hand, the only contribution to the computation of EE-based screening measures for the correlated setup has been made by \cite{ge2017extending}. Some authors, e.g. \cite{Saltelli.2004}\footnote{See page 46.} even negate the necessity for expanded Elementary Effects due to overcomplexity. Obviously, this can lead to false results.\\
-
-\noindent
-As the computation time of the \cite{Keane.1994} model is considerable\footnote{On my machine it takes approximately six seconds to compute the QoI. Given that Sobol' indices can require a five digits number of evaluations per input parameter, the computation time is not small.}, the thesis reviews \cite{ge2017extending} and computes measures derived from this contribution to the occupational choice model. The aim is to fix parameters as preparation for a potential quantitative GSA. The measures correspond to the sigma-normalised mean absolute Elementary Effects. The measure in \citeauthor{kucherenko2009derivative} is discarded because their results are not valid in the presence of correlations.\footnote{The fundamental reason is that the unique first- and higher-order Sobol' indices do not add to one if input parameters are correlated.}
-
-The next chapter reviews uncertainty analyses and quantitative GSAs for economic models in the literature. 
-isregarded, is also offset because elements $X_{\sim i}$ are also resampled for each new $X_i$. This measure is given by
-
-\begin{align}
-\mu_i = \frac{1}{r} \sum_{j=1}^{r} d_i^{(j)}.
-\end{align}
-\noindent
-Thus, $\mu_i$ is the global version of $d_i^{(j)}$. Then, the standard deviation of the EEs writes $\sigma_i = \frac{1}{r} \sum_{j=1}^{r} (d_i^{(j)} - \mu_i)$. The mean absolute EE, $\mu_i^*$ is used to prevent observations of opposite sign to cancel each other out:
-
-\begin{align}
-\mu_i^* = \frac{1}{r} \sum_{j=1}^{r} \big| d_i^{(j)} \big|.
-\end{align}
-\noindent
-Step $\Delta^{(i,j)}$ may or may not vary depending on the sample design that is used to draw the input parameters.\\
-
-
-\noindent
-One last improvement is provided in \cite{Smith.2014}\footnote{See page 332.}. That is, the scaling of $\mu_{i}^*$ by $\frac{\sigma_{X_i}}{\sigma_Y}$. This measure is called the sigma-normalized mean absolute EE: 
-
-
-\begin{align}
-\mu_{i,\sigma}^* = \mu_i^* \frac{\sigma_{X_i}}{\sigma_Y}.
-\end{align}
-
-\noindent
-This improvement is necessary for a consistent ranking of $X_i$. Otherwise, the ranking would be distorted by differences in the variation of the input parameters. The reason is that the input space constrains $\Delta$. If the input space is larger, the base value of $X_i$ can be changed by a larger $\Delta$.\\
+This improvement is necessary for a consistent ranking of $X_i$. Otherwise, the ranking would be distorted by differences in the level of the the input parameters. The reason is that the input space constrains $\Delta$. If the input space is larger, the base value of $X_i$ can be changed by a larger $\Delta$.\\
 
 
 \noindent
@@ -169,7 +120,7 @@ In an attempt to establish a closer link between EE-based measures and Sobol' in
 \begin{align}
 S_i^T \leq \frac{\frac{1}{r} \sum_{j=1}^{r} {d_i^2}^{(j)}|}{\pi^2 \sigma_Y}.
 \end{align}
-This expression makes use of the squared EE. In light of this characteristic, the use of $\sigma_i$ as a measure that aims to include the variation of $d_i^{j}$ appears less relevant. Nevertheless, this rescaling makes the interpretation more difficult. The second conclusion is that the Elementary Effects method can lead to false selections for non-monotonic functions. This is also true if functions are non-linear. The reason is linked to the aforementioned second drawback, the arbitrary choice of step $\Delta$. More precisely, depending on the sampling scheme, $\Delta$ might be random instead of arbitrary and constant. In both cases, $\Delta$ can be too large to approximate a derivative. If, for example, the function is highly non-linear of varying degree with respect to the input parameters $\bold{X}$, $\Delta > \epsilon$ can easily distort the results. Especially if the characteristic length of function variation is much smaller than $\Delta$.
+This expression makes use of the squared EE. In light of this characteristic, the use of $\sigma_i$ as a measure that aims to include the variation of $d_i^{j}$ appears less relevant. Nevertheless, this rescaling makes the interpretation more difficult. The second conclusion is that the Elementary Effects method can lead to false selections for non-monotonic functions. This is also true if functions are non-linear. The reason is linked to the aforementioned second drawback, the arbitrary choice of step $\Delta$. More precisely, depending on the sampling scheme, $\Delta$ might be random instead of arbitrary and constant. In both cases, $\Delta$ can be too large to approximate a derivative. If, for example, the function is highly non-linear of varying degree with respect to the input parameters $\bold{X}$, $\Delta > \epsilon$ can easily distort the results. Especially if the characteristic length of function variation is much smaller than $\Delta$.\\
 
 
 
@@ -182,6 +133,6 @@ Today, several recent contributions deal with the extension of the Sobol' sensit
 On the other hand, the only contribution to the computation of EE-based screening measures for the correlated setup has been made by \cite{ge2017extending}. Some authors, e.g. \cite{Saltelli.2004}\footnote{See page 46.} even negate the necessity for expanded Elementary Effects due to overcomplexity. Obviously, this can lead to false results.\\
 
 \noindent
-As the computation time of the \cite{Keane.1994} model is considerable\footnote{On my machine it takes approximately six seconds to compute the QoI. Given that Sobol' indices can require a five digits number of evaluations per input parameter, the computation time is not small.}, the thesis reviews \cite{ge2017extending} and computes measures derived from this contribution to the occupational choice model. The aim is to fix parameters as preparation for a potential quantitative GSA. The measures correspond to the sigma-normalised mean absolute Elementary Effects. The measure in \citeauthor{kucherenko2009derivative} is discarded because their results are not valid in the presence of correlations.\footnote{The fundamental reason is that the unique first- and higher-order Sobol' indices do not add to one if input parameters are correlated.}
+As the computation time of the \cite{Keane.1994} model is considerable\footnote{On my machine it takes approximately six seconds to compute the QoI. Given that Sobol' indices can require a five digits number of evaluations per input parameter, the computation time is not small.}, the thesis reviews \cite{ge2017extending} and computes measures derived from this contribution to the occupational choice model. The aim is to fix parameters as preparation for a potential quantitative GSA. The measures correspond to $\mu_{i,\sigma}^*$ and $\mu_{i}^*$. The measure in \citeauthor{kucherenko2009derivative} is discarded because their results are not valid in the presence of correlations.\footnote{The fundamental reason is that the unique first- and higher-order Sobol' indices do not add to one if input parameters are correlated.}
 
 The next chapter reviews uncertainty analyses and quantitative GSAs for economic models in the literature. 

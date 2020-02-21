@@ -24,54 +24,7 @@ This paragraph describes the Eckstein-Keane-Wolpin model framework without perma
 
 In each period, a representative agent receives utility $U$. This utility depends on the state space and on choice $a$ in period $t \in \{0,1,2,...,T\}$. Choices are mutually exclusive. The state space is the set of information in each period which is relevant for present and future utilities. It is split into an observable part $\bm{s_t^-}$ and an unobservable part $\pmb{\varepsilon_{t}}$. Choice $a_t$ itself is also a function of the state space. This function is the decision rule, or policy, under which the rational agent chooses his utility for period t. For convenience, or to view utility and choices from different angles, $U$ is denoted as function of only the states, as a function of $a_t$ and the states, or as a function of function $a_t(\bold{s_t^-}, \pmb{\varepsilon_t})$ and the states.
 
-For some occupation alternatives, utility and prior decisions may be intertemporally connected: Agents receive a higher utility if they accumulated skills in past occupations that are useful for these alternatives. Other occupations may not reward experience. The observable part of the state space comprises the period, the work experience and the choice in the previous period. The unobservable part of the state space consists of the alternative-specific shocks $\{\varepsilon_{a,t}\}_{a \in A}$. Figure \ref{fig:order} depicts the series of events.
-
-
-
-
-
-\begin{figure}[H]
-	\caption{Series of events} \label{fig:order}
-	\vspace{-0.0cm}
-	
-	\begin{center}        
-		\begin{tikzpicture}
-		% upper part
-		\draw [ultra thick] (0,0) -- (10,0);
-		\foreach \x in {0,10}
-		\draw [ultra thick] (\x cm,0.2) -- (\x cm, -0.2);
-		\small % derease fontsize
-		\draw (2.0,0) node[above=0.35cm] {$\big\{U(\bold{s_t^-}, \pmb{\varepsilon_t},a_t)\big\}_{a \in A}$};
-		\draw (5.0,0) node[above=0.35cm] {$a_t(\bold{s_t^-}, \pmb{\varepsilon_t})$};
-		\draw (8.25,0) node[above=0.35cm] {$U\big(\bold{s_t^-}, \pmb{\varepsilon_t},a_t(\bold{s_t^-}, \pmb{\varepsilon_t})\big)$};
-
-		\draw (2.0,0) node[above=1.2cm] {Learn};
-		\draw (5.0,0) node[above=1.2cm] {Choose};
-		\draw (8.25,0) node[above=1.2cm] {Receive};
-
-		\normalsize %reincrease fontsize
-		\draw (5.0,0) node[below=0.15cm] {$t$};
-        
-        %lower part
- 		\draw [ultra thick] (2.0,-3) -- (15,-3);
-		\foreach \x in {2.0,15}
-		\draw [ultra thick] (\x cm,-2.8) -- (\x cm, -3.2);
-		\small % derease fontsize
-		\draw (4.25,-3) node[above=0.35cm] {$\big\{U(\bold{s_{t+1}^-}, \pmb{\varepsilon_{t+1}},a_{t+1})\big\}_{a \in A}$};
-		\draw (8.0,-3) node[above=0.35cm] {$a_t(\bold{s_{t+1}^-}, \pmb{\varepsilon_{t+1}})$};
-		\draw (12.25,-3) node[above=0.35cm] {$U\big(\bold{s_{t+1}^-}, \pmb{\varepsilon_{t+1}},a_{t+1}(\bold{s_{t+1}^-}, \pmb{\varepsilon_{t+1}})\big)$};
-		
-		\draw (4.25,-3) node[above=1.2cm] {Learn};
-		\draw (8.0,-3) node[above=1.2cm] {Choose};
-		\draw (12.25,-3) node[above=1.2cm] {Receive};
-		
-		\normalsize %reincrease fontsize
-		\draw (8.0,-3) node[below=0.15cm] {$t+1$};      
-       
-		%\draw (2.35,0) node[above=6pt, align=center] {(estimation \\ window]};
-		\end{tikzpicture}
-	\end{center}
-\end{figure}
+For some occupation alternatives, utility and prior decisions may be intertemporally connected: Agents receive a higher utility if they accumulated skills in past occupations that are useful for these alternatives. Other occupations may not reward experience. The observable part of the state space comprises the period, the work experience and the choice in the previous period. The unobservable part of the state space consists of the alternative-specific shocks $\{\varepsilon_{a,t}\}_{a \in A}$. Figure \ref{fig:order} depicts the series of events.\\
 
 \noindent
 At the beginning of each period $t$, the agent recognizes the reward shocks $\{\varepsilon_{a,t}\}_{a \in A}$ (as opposed to the observer), and the shocks become part of the unobserved state space $\pmb{\varepsilon_t}$. Thus, the alternative-specific utilities $\{U(\bold{s_t^-}, \pmb{\varepsilon_t},a_t)\}_{a \in A}$ are known to the agent in period $t$. However, he can only form expectations about rewards in the future as the alternative-specific shocks $\{\varepsilon_{a,t}\}_{a \in A}$ are stochastic. The specification in KW94 assumes the rewards shocks $\{\varepsilon_{a,t}\}_{a \in A}$ to be serially uncorrelated. Therefore, prior shocks do not enter the state space. Next, the agent chooses his occupation $a_t$ based on the state space information and according to his policy rule $a_t(\bold{s_t^-}, \pmb{\varepsilon_t})$. Then he receives the occupation-specific reward. The reward can be written as a function composition of utility and policy. This flow repeats for each $t < T$. The computation of the optimal policy is sketched in the next paragraph.\\
@@ -131,14 +84,8 @@ The parameter estimates $\pmb{\hat{\theta}}$ are precise. This means they equal 
 The third column shows this thesis' estimates of the standard errors $\text{SE}(\pmb{\hat{\theta}})$. The fourth column shows the standard errors computed in KW94. Given the differences between both estimation specifications, namely the inclusion of $\beta$ and correlations between standard errors in this thesis, the estimates are reasonably similar. However, the one exception that stands out is the results for the non-diagonal Choleksy factors $c_{i,j}$.\\
 
 \noindent
-Figure \ref{fig:corr} depicts the correlations between the estimates of important parameters in $\pmb{\theta}$. In general, the share of high correlations is considerable. Thus, to allow for covariation between the standard errors of the parameter estimates is an important improvement over KW94. The coefficients that stand out are $\text{corr}(\hat{\delta},\hat{\beta^e})$, $\text{corr}(\hat{\delta},\hat{\beta^h})$, $\text{corr}(\hat{\beta^e},\hat{\beta^w})$, $\text{corr}(\hat{c_3},\hat{\beta^e})$ and $\text{corr}(\hat{c_4},\hat{\beta^h})$ with $-0.83$, $-0.31$, $0.45$, $-0.34$ and $-0.82$, respectively. 
+Figure \ref{fig:corr} depicts the correlations between the estimates of important parameters in $\pmb{\theta}$. In general, the share of high correlations is considerable. Thus, to allow for covariation between the standard errors of the parameter estimates is an important improvement over KW94. The coefficients that stand out are $\text{corr}(\hat{\delta},\hat{\beta^e})$, $\text{corr}(\hat{\delta},\hat{\beta^h})$, $\text{corr}(\hat{\beta^e},\hat{\beta^w})$, $\text{corr}(\hat{c_3},\hat{\beta^e})$ and $\text{corr}(\hat{c_4},\hat{\beta^h})$ with $-0.83$, $-0.31$, $0.45$, $-0.34$ and $-0.82$, respectively.\\
 
-\begin{figure}[H]
-	\caption{Correlations between estimates for important input parameters}
-	\centering
-	\includegraphics[scale=0.45]{../scrypy/figures/heatmap}
-	\label{fig:corr}
-\end{figure}
 \noindent
 The intuition behind these results can be obtained from the following insight: Negative correlations imply similar effects, and positive correlations imply opposing effects on the likelihood of observed endogenous variables $\pmb{\mathcal{D}}$. For instance, consider an individual that decides for a long occupation in the education sector in the first years and then continues to work in the white-collar sector for the rest of his life. The likelihood to observe this individual increases when $\delta$ rises because all individuals get more patient, and therefore, ceteris paribus, they invest more in education. However, the same likelihood also increases if the educational utility constant $\beta^e$ rises. Hence, because they can compensate each other, the likelihood around the optimal parameter $\pmb{\hat{\theta}}$ decreases less for changes of both parameters in opposing directions than for changes in the same direction. Therefore, parameters $\delta$ and $\beta^e$ are negatively correlated in terms of the score function in (\ref{eq:scores}) around $\pmb{\hat{\theta}}$. It follows from (\ref{eq:est-cov}) that their standard errors are negatively correlated.
 
@@ -149,64 +96,11 @@ The QoI is the effect of a 500 USD subsidy on annual tuition costs for higher ed
 \newline
 Figure \ref{fig:paths} depicts a comparison between the shares of occupations in the different sectors for a sample of 1000 individuals over their relevant lifetime between two different scenarios. The left graph shows the occupation paths under baseline parametrization $\hat{\theta}$ and the right graph the paths for the same model with subsidised tuition costs.
 
-The red, blue, white, and green lines mark the shares of individuals occupied in the education, blue-collar, white-collar, and home sector, respectively. Both graphs show the typical life-cycle behaviour. Many agents tend to invest in their education early and continue in the white-collar sector as this sector rewards education. Another large group works in the blue-collar sector, and some of them switch to the white-collar sector, as well. This switch from white to blue-collar is caused by an accumulated blue-collar experience that is also rewarded in the white-collar sector and by positive shocks. The home sector is relatively irrelevant because the participation therein is comparably low for all ages.
-\begin{figure}[H]
-	\caption{Comparison of shares of occupation decision over time between scenarios}
-	\centering
-	\includegraphics[scale=0.75]{../scrypy/figures/occ_choice_shares}
-	\label{fig:paths}
-\end{figure}
+The red, blue, white, and green lines mark the shares of individuals occupied in the education, blue-collar, white-collar, and home sector, respectively. Both graphs show the typical life-cycle behaviour. Many agents tend to invest in their education early and continue in the white-collar sector as this sector rewards education. Another large group works in the blue-collar sector, and some of them switch to the white-collar sector, as well. This switch from white to blue-collar is caused by an accumulated blue-collar experience that is also rewarded in the white-collar sector and by positive shocks. The home sector is relatively irrelevant because the participation therein is comparably low for all ages.\\
+
 \noindent
 The QoI is the sum of the differences between the education shares at each age in the right and in the left graph as depicted by the red lines.\footnote{If the red lines would depict continuous functions instead of discrete points in time, the QoI would be the difference between the integrals of the education shares as a function of time in the policy and the base scenario.} This is because the vertical axis can also be interpreted as the share of one year that the average agent is occupied in the education sector. Comparing both graphs, we can see that the tuition subsidy incentivises younger individuals to stay in the education sector for a longer time and older individuals to work in the white-collar sector. The latter observation is a consequence of the first because the white-collar sector rewards education.\\
 \newline
 The QoI, the impact of a 500 USD tuition subsidy for higher education on average schooling years, is chosen because it is relevant to society in many areas, for example, education, inequality, and economic growth. The discussion section expands on this point. The QoI's relevance allows me to illustrate the importance of UQ in economics in the context of political decisions.\\
 \newline
 The next section shows the results of the first part of the UQ, the uncertainty propagation.
-
-% increase spacing between table columns
-\setlength{\tabcolsep}{18pt} %from 6
-\begin{table}[H] 
-	\centering
-	\begin{threeparttable}
-		\caption[Model Parametrization]{Estimates for the distribution of input parameters}
-		\label{tab:params}
-		\renewcommand{\arraystretch}{1.2}%
-		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]S[table-format=3.2]}
-			\toprule
-			{Parameter}     & {Mean}   & {Standard error (SE)} & {SE in KW94} \\ \midrule
-			\textit{General} \\
-			$\delta$ & 0.95   & 0.00084 & \textit{-}    \\    \midrule
-			\textit{Blue-collar}\\    
-			$\beta^b$ & 9.21   & .013            & 0.014      \\
-			$\beta_e^b$ & 0.038  &    0.0011        & 0.0015       \\
-			$\beta^b_b$ & 0.033  & 0.00044            & 0.00079       \\
-			$\beta^b_{bb}$ & -0.0005 & 0.000013           & 0.000019       \\
-			$\beta^b_w$ & 0.0    & 0.00067             & 0.0024      \\
-			$\beta^b_{ww}$ & 0.0    & 0.000029           & 0.000096       \\ \midrule
-			\textit{White-collar}\\
-			$\beta^w$ & 8.48   & 0.0076             & 0.0123      \\
-			$\beta^w_e$ & 0.07   & 0.00047          & 0.00096       \\
-			$\beta^w_w$ & 0.067  & 0.00055            & 0.00090      \\
-			$\beta^w_{ww}$ & -0.001  & 0.000017           & 0.000070     \\
-			$\beta^w_b$ & 0.022  & 0.00033           & 0.0010      \\
-			$\beta^w_{bb}$ & -0.0005 & 0.000021         & 0.000030      \\ \midrule
-			\textit{Education} \\
-			$\beta^e$     & 0.0    & 330                & 459       \\
-			$\beta_{he}^e$     & 0.0    & 155               & 410       \\
-			$\beta_{re}^e$     & -4000   & 202                & 660       \\ \midrule
-			\textit{Home} \\
-			$\beta^h$    & 17750  & 390                & 1442      \\ \midrule
-			\multicolumn{4}{l}{\textit{Lower Triangular Cholesky Matrix}} \\
-			$c_{1}$      & 0.2    & 0.0015             & 0.0056      \\
-			$c_{2}$      & 0.25    & 0.0013             & 0.0046     \\
-			$c_{3}$      & 1500   & 108             & 350      \\
-			$c_{4}$      & 1500    & 176              & 786      \\
-			$c_{1,2}$     & 0.0    & 0.0064              & 0.023     \\
-			$c_{1,3}$      & 0.0   & 145               & 0.412      \\
-			$c_{2,3}$      & 0.0    & 116             &  0.379     \\
-			$c_{1,4}$      & 0.0    & 235             &   0.911    \\
-			$c_{2,4}$      & 0.0    & 131            & 0.624      \\
-			$c_{3,4}$      & 0.0   & 178                & 0.870       \\ \bottomrule
-		\end{tabular}
-	\end{threeparttable}
-\end{table}
