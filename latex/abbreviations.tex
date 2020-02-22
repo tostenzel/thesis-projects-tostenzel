@@ -5,9 +5,26 @@
 \section*{Abbreviations} % no number before Appendix in toc
 \thispagestyle{plain} % surpress header on first page
 
-%USE LIST OF ACRONYMNS FUNCTION IN LATEX
+\phantom{This text will be invisible} 
+\hspace{20cm}
 
-[see UQ book , center table, two horizontal lines to the top and at the bottom...]
 
 
-USD, GSA, UQ, QoI, LSA
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[H]
+	\centering
+	\renewcommand{\arraystretch}{1.2}%
+	\begin{tabular}{@{}ll@{}}
+		\toprule
+	Term	& Meaning \\ \midrule
+		EE	& Elementary Effect \\
+	GSA	& Global sensitivity analysis \\
+	i.i.d.	& Independent and identically distributed  \\
+	LSA	& Local sensitivity analysis \\
+    QoI	& Quantity of interest \\
+    UQ	& Uncertainty quantification \\
+    USD	& US-Dollar  \\
+ \bottomrule
+	\end{tabular}
+\end{table}
