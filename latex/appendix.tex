@@ -92,7 +92,7 @@
 \setlength{\tabcolsep}{12pt} %from 6
 \begin{table}[H]
 	\centering
-	\caption{Replication and validation - trajectory design}
+	\caption{Replication and Validation - trajectory design}
 	\label{tab:repval1}
 	\renewcommand{\arraystretch}{1.2}%
 	\begin{threeparttable}
@@ -134,7 +134,7 @@
 \setlength{\tabcolsep}{12pt} %from 6
 \begin{table}[H]
 	\centering
-	\caption{Replication and validation - radial design}
+	\caption{Replication and Validation - radial design}
 	\label{tab:repval2}
 	\renewcommand{\arraystretch}{1.2}%
 	\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]S[table-format=3.2]}
@@ -183,7 +183,7 @@
 \begin{table}[H] 
 	\centering
 	\begin{threeparttable}
-		\caption[Model Parametrization]{EE-based measures by \cite{ge2017extending} for 100 trajectories}
+		\caption[Quantitative GSA measures by \cite{ge2017extending}]{EE-based measures by \cite{ge2017extending} for 100 trajectories}
 		\label{tab:kw94gm17}
 		\renewcommand{\arraystretch}{1.2}%
 		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]@{\hskip 0.7in}|@{\hskip 0.5in}S[table-format=3.2]S[table-format=3.2]}
@@ -232,7 +232,7 @@
 \begin{table}[H] 
 	\centering
 	\begin{threeparttable}
-		\caption[Model Parametrization]{Mean absolute correlated and uncorrelated elementary effects\\ (based on 100 subsamples in trajectory and radial design)}
+		\caption[Quantitative GSA measures for the Occupational Choice Model]{Mean absolute correlated and uncorrelated elementary effects\\ (based on 100 subsamples in trajectory and radial design)}
 		\label{tab:devees}
 		\renewcommand{\arraystretch}{1.2}%
 		\begin{tabular}{cS[table-format=3.2]S[table-format=3.2]@{\hskip 0.7in}|@{\hskip 0.5in}S[table-format=3.2]S[table-format=3.2]}
@@ -333,9 +333,10 @@
 	\label{fig:corr}
 \end{figure}
 \newpage
-\vspace{10mm} %5mm vertical space
+\phantom{This text will be invisible} 
+\vspace{20mm} %5mm vertical space
 \begin{figure}[H]
-	\caption{Comparison of shares of occupation decision over time between scenarios}
+	\caption[Comparison of shares of occupation decision]{Comparison of shares of occupation decision over time between scenarios}
 	\centering
 	\includegraphics[scale=0.75]{../scrypy/figures/occ_choice_shares}
 	\label{fig:paths}
@@ -344,7 +345,7 @@
 \vspace{10mm} %5mm vertical space
 
 \begin{figure}[H]
-	\caption{Grid points in standard normal sample space for trajectory design with $l=4$}
+	\caption[Grid points in standard normal sample]{Grid points in standard normal sample space for trajectory design with $l=4$}
 	\centering
 	\includegraphics[scale=0.40]{../scrypy/figures/quantile_fct}
 	\label{fig:invcdf}
@@ -353,7 +354,7 @@
 
 
 \begin{figure}[H]
-	\caption{Comparison of shares of occupation decision over time between scenarios including 99$\%$ confidence intervals}
+	\caption[Comparison of uncertain shares of occupation decision]{Comparison of shares of occupation decision over time between scenarios including 99$\%$ confidence intervals}
 	\centering
 	\includegraphics[scale=0.75]{../scrypy/figures/cone_plot_choice_shares}
 	\label{fig:uq_paths}
@@ -362,14 +363,14 @@
 \vspace{10mm} %5mm vertical space
 
 \begin{figure}[H]
-	\caption{Probability distribution of quantity of interest $Y$}
+	\caption{Probability distribution of QoI $Y$}
 	\centering
 	\includegraphics[scale=0.55]{../scrypy/figures/distplot}
 	\label{fig:dist}
 \end{figure}
 
 \begin{figure}[H]
-	\caption{Sigma-normalized mean absolute Elementary Effects for radial design}
+	\caption[Sigma-normalized mean absolute EEs for radial design]{Sigma-normalized mean absolute Elementary Effects for radial design}
 	\centering
 	\includegraphics[scale=0.52]{../scrypy/figures/scatter_rad}
 	\label{fig:rad}
@@ -377,12 +378,12 @@
 
 
 \begin{figure}[H]
-	\caption{Sigma-normalized mean absolute Elementary Effects for trajectory design}
+	\caption[Sigma-normalized mean absolute EEs for trajectory design]{Sigma-normalized mean absolute Elementary Effects for trajectory design}
 	\centering
 	\includegraphics[scale=0.52]{../scrypy/figures/scatter_traj}
 	\label{fig:traj}
 \end{figure}
-
+\newpage
 
 
 \section*{Appendix C: Simulated maximum likelihood estimation}
