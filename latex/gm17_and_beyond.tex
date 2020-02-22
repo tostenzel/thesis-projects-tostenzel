@@ -68,7 +68,7 @@ This is computationally very costly because each aggregate distance is a sum of 
 
 
 \noindent
-So far, we have only considered draws in [0,1]. For uncorrelated input parameters from arbitrary distributions with well-defined CDF, $\Phi$, one would simply evaluate each element (potentially including the addition of the step) by the inverse CDF, or quantile function, $\Phi^{-1}$, of the respective parameter. One intuition is, that $\Phi$ maps the sample space to [0,1]. Hence $\Phi^{-1}$ can be used to transform random draws in [0,1] to the sample space of the arbitrary distribution. This is a basic example of so-called inverse transform sampling (\cite{devroye1986sample}) which we will recall in the next section.
+So far, we have only considered draws in [0,1]. For uncorrelated input parameters from arbitrary distributions with well-defined CDF, $\Phi^{-1}$, one would simply evaluate each element (potentially including the addition of the step) by the inverse CDF, or quantile function, $\Phi$, of the respective parameter. One intuition is, that $\Phi^{-1}$ maps the sample space to [0,1]. Hence $\Phi$ can be used to transform random draws in [0,1] to the sample space of the arbitrary distribution. This is a basic example of so-called inverse transform sampling (\cite{devroye1986sample}) which we will recall in the next section.
 
 
 
@@ -101,7 +101,7 @@ The last step to construct the final approach is to recall the inverse transform
 \[
 \left.\parbox{0.5\textwidth}{%
 	\begin{enumerate}[label=\bfseries Step \arabic*:,leftmargin=*,labelindent=5em]
-	\item $\bold{z} = \pmb{\Phi^{-1}({u})}$
+	\item $\bold{z} = \pmb{\Phi({u})}$
 	\item $\bold{z_c} = \bold{Q^T z^T}$
 	\item $\bold{x} = \pmb{\mu} + \bold{z_c(i)}\pmb{\sigma(i)}$
 	\end{enumerate}
@@ -109,7 +109,7 @@ The last step to construct the final approach is to recall the inverse transform
 \]
 
 \noindent
-To map $u$ to different sample spaces, Step 3 can be substituted. For instance, this could be achieved by applying $\Phi^u$ and the inverse CDF of the desired distribution to $z_c$.\footnote{The procedure described by the three steps above is equivalent to an inverse Rosenblatt transformation and a linear inverse Nataf transformation for parameters in normal sample space and connects to Gaussian copulas. For the first two transformations, see \cite{lemaire2013structural}, p. 78 - 113. These concepts can be used to transform deviates in [0,1] to the sample space of arbitrary distributions by using the properties sketched above under different conditions.}\\
+To map $u$ to different sample spaces, Step 3 can be substituted. For instance, this could be achieved by applying $\Phi^{-1,u}$ and the inverse CDF of the desired distribution to $z_c$.\footnote{The procedure described by the three steps above is equivalent to an inverse Rosenblatt transformation and a linear inverse Nataf transformation for parameters in normal sample space and connects to Gaussian copulas. For the first two transformations, see \cite{lemaire2013structural}, p. 78 - 113. These concepts can be used to transform deviates in [0,1] to the sample space of arbitrary distributions by using the properties sketched above under different conditions.}\\
 
 \noindent
 The one most important point to understand is that the transformation comprised by the three steps is not unique for correlated input parameters. Rather, the transformation changes with the order of parameters in vector $\bold{u}$\footnote{This point is more obvious in the formal definition of the Rosenblatt transformation.}. This can be seen from the lower triangular matrix $\bold{Q^T}$. To prepare the next equation, let $\bold{R_k} = (\rho_{ij})_{ij=1}^k$ and sub-matrix $\bold{R_h} = (\rho_{ij})_{ij=1}^h$, $h \leq k$. Also let $\pmb{\rho_i^{*,j}} = (\rho_{1,j}, \rho_{2,j}, ..., \rho_{i-1,j})$ for $j \geq i$ with the following abbreviation $\pmb{\rho_i}\defeq\pmb{\rho_i^{*,i}}$. Following \cite{madar2015direct}, the lower matrix can be written as
