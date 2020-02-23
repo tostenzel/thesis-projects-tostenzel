@@ -281,7 +281,7 @@
 
 \vspace{10mm} %5mm vertical space
 \begin{figure}[H]
-	\caption{Series of events} \label{fig:order}
+	\caption{Timeline of events} \label{fig:order}
 	\vspace{-0.0cm}
 	
 	\begin{center}        
@@ -390,10 +390,10 @@
 \thispagestyle{plain} % surpress header on first page
 To estimate the exogenous model parameters, the approach that this thesis and also KW94 use is the simulated maximum likelihood method (\cite{Albright.1977})\footnote{See \cite{Aguirregabiria.2010}, p. 42-44 and \cite{Raabe.2019}, p. 21-26 for more details.}.
 
-This method can be applied to a set of longitudinal data on occupational choices $a_t$ and, if available, wages $W_{a,t}^{-}$ of a sample of $i \in I$ individuals starting from age 16. To distinguish from its functional form, let $\mathcal{W}^{-}_{a(k),t}$ henceforth denote the measured wages. For each period $t$, the recorded choices $a_0$, ..., $a_{t-1}$  imply the occupation-specific experiences $x_{a,t}$. Together with $t$, they constitute the observable state vector $\bold{s_t^-}$. Consequently, the measured, observable endogenous variables are $\pmb{\mathcal{D}}\defeq(\bold{s_t^-},\mathcal{W}^{-}_{a,t})$. Given this setup, the goal is to estimate the exogenous model parameters $\pmb{\theta}\defeq(\delta, \pmb{\beta}, \pmb{\Sigma_\varepsilon})$.\footnote{Improvements in this thesis' estimation over KW94 are that, first, it is not assumed that the standard errors of the parameters estimates are uncorrelated, and, second, that $\beta$ is not left out of the estimation.} Thus, in the following, every probability is a function of the exogenous model parameters $\pmb{\theta}$.
-The approach to compute the likelihood function $L_{\pmb{\mathcal{D}}}(\pmb{\theta})$ of the observables in the data begins with the individual latent variable representation in period $t$.
+This method can be applied to a set of longitudinal data on occupational choices $a_t$ and, if available, wages $W_{a,t}^{-}$ of a sample of $i \in I$ individuals starting from age 16. To distinguish from its functional form, let $\mathcal{W}^{-}_{a(k),t}$ denote the measured wages. For each period $t$, the recorded choices $a_0$, ..., $a_{t-1}$  imply the occupation-specific experiences $x_{a,t}$. Together with $t$, they constitute the observable state vector $\bold{s_t^-}$. Consequently, the measured, observable endogenous variables are $\pmb{\mathcal{D}}\defeq(\bold{s_t^-},\mathcal{W}^{-}_{a,t})$. Given this setup, the goal is to estimate the exogenous model parameters $\pmb{\theta}\defeq(\delta, \pmb{\beta}, \pmb{\Sigma_\varepsilon})$.\footnote{Improvements in this thesis' estimation over KW94 are that, first, it is not assumed that the standard errors of the parameters estimates are uncorrelated, and, second, that $\beta$ is not left out of the estimation.} Thus, every probability is a function of the exogenous model parameters $\pmb{\theta}$.
+The approach to compute the likelihood function $L_{\pmb{\mathcal{D}}}(\pmb{\theta})$ of the observables in the data begins with the individual latent variable representation in period $t$. The optimal choice is given by
 \begin{align}
-a_t = \argmax_a V(\bold{s_t^-},\pmb{\varepsilon_t},a_t)
+a_t = \argmax_a V(\bold{s_t^-},\pmb{\varepsilon_t},a_t),
 \end{align}
 As $a_t$ and $\bold{s_t^-}$ are known, the next step is to derive the unobservable shocks $\pmb{\varepsilon_t}$ in terms of $a_t$ and $\bold{s_t^-}$. Therefore, write the set of shocks for which the alternative-specific value function $V(\bold{s_t^-},\pmb{\varepsilon_t},a_t(j))$ is higher than the other value functions $V(\bold{s_t^-},\pmb{\varepsilon_t},a_t(k\neq j))$ as
 \begin{align}
@@ -406,7 +406,7 @@ Consider first the case of non-working alternatives $a_t(j) \in [e,h]$. The prob
 \text{p}\big(a_t(j) | \bold{s_t^-}\big) = \int_{\pmb{\varepsilon_t}(a_t(j),\bold{s_t^-})} f(\pmb{\varepsilon_t}) d^{|A|} \pmb{\varepsilon_t}.
 \end{align}
 \noindent
-The second case is $a_t(k) \in [b,w]$. Assuming the dataset contains wages for the working alternatives $a_t(k)$, the probabilities of choosing $a_t(k)$ take a few steps more to compute. First, note from the wage equations that the the alternative-specific shocks $\pmb{\varepsilon_{a,t}}$ are log normally distributed. Second, in contrary to the non-working alternatives, using (\ref{eq:returns_b_w}), the shocks can directly be expressed as a function of the alternative-specific model parameters $\pmb{\beta_{a(k)}}$ by inserting the inferred alternative-specific experiences $\pmb{x_{a(k),t}}$ into $W_{a(k),t}$ and subtracting the expression from the observed wage $\mathcal{W}^{-}_{a(k),t}$ for each individual. Both wages are logarithmized. Thus,
+The second case is $a_t(k) \in [b,w]$. Assuming the dataset contains wages for the working alternatives $a_t(k)$, the probabilities of choosing $a_t(k)$ take a few steps more to compute. First, note from the wage equations that the alternative-specific shocks $\pmb{\varepsilon_{a,t}}$ are normally distributed. Second, in contrary to the non-working alternatives, using (\ref{eq:returns_b_w}), the shocks can directly be expressed as a function of the alternative-specific model parameters $\pmb{\beta_{a(k)}}$ by inserting the inferred alternative-specific experiences $\pmb{x_{a(k),t}}$ into $W_{a(k),t}$ and subtracting the expression from the observed wage $\mathcal{W}^{-}_{a(k),t}$ for each individual. Both wages are logarithmized. Thus,
 \begin{align} \label{eq:epsilon}
 \varepsilon_{a(k),t} = \text{ln}(\mathcal{W}^{-}_{a(k),t}) - \text{ln}(W_{a(k),t}^{-}).
 \end{align}
@@ -424,34 +424,34 @@ Applying integration by substitution yields the following expression for the pro
 Here, $\omega_t^{-1}$ is the Jacobian of the transformation from observed wage $\mathcal{W}^{-}_{a(k),t}$ to error $\varepsilon_{a(k),t}$ in (\ref{eq:epsilon}) and $\phi$ is the standard normal probability density function.
 Finally, the joint probability of observing choice $a_t(k)$ and wage $\mathcal{W}^{-}_{a(k),t}$ conditional on the observed states is given by the product of the two probabilities in (\ref{eq:prob-choice}) and (\ref{eq:prob-wage}):
 \begin{align}
-\text{p}\big(a_t(k),\mathcal{W}^{-}_{a(k),t}|\bold{s_t^-}\big) = \text{p}\big(a_t(k)|\bold{s_t^-}, \mathcal{W}^{-}_{a(k),t}\big)\text{p}\big(\mathcal{W}^{-}_{a(k),t}|\bold{s_t^-}\big)
+\text{p}\big(a_t(k),\mathcal{W}^{-}_{a(k),t}|\bold{s_t^-}\big) = \text{p}\big(a_t(k)|\bold{s_t^-}, \mathcal{W}^{-}_{a(k),t}\big)\text{p}\big(\mathcal{W}^{-}_{a(k),t}|\bold{s_t^-}\big).
 \end{align}
-Based on these results, the likelihood contribution of one individual $i$ can be written as the product of the probability to observe the measured endogenous variables for one individual and for one period over all time periods:
+Based on these results, the likelihood contribution $L^{i}_{\pmb{\mathcal{D}}}$ of one individual $i$ can be written as the product of the probability to observe the measured endogenous variables for one individual and for one period over all time periods:
 \begin{align}
-L^{i}_{\pmb{\mathcal{D}}}(\pmb{\theta}) = P\big(\{a_{t,}^{i},\mathcal{W}^{-,i}_{a,t,}\}_{t=0}^T\big) = \prod_{t=0}^{T} \text{p}\big(a_t^{i},\mathcal{W}_{a,t}^{-,i}|\bold{s_t^{-,i}}\big)
+L^{i}_{\pmb{\mathcal{D}}}(\pmb{\theta}) = P\big(\{a_{t,}^{i},\mathcal{W}^{-,i}_{a,t,}\}_{t=0}^T\big) = \prod_{t=0}^{T} \text{p}\big(a_t^{i},\mathcal{W}_{a,t}^{-,i}|\bold{s_t^{-,i}}\big).
 \end{align}
 Therefore, the sample likelihood is given by the product of the individual likelihoods over the whole sample of individuals:
 \begin{align} \label{eq:sample-likelihood}
-L_{\pmb{\mathcal{D}}}(\pmb{\theta}) = P\big(\big\{\{a_{t,}^{i},\mathcal{W}^{-,i}_{a,t,}\}_{t=0}^T\big\}_{i \in I}\big) = \prod_{i \in I}\prod_{t=0}^{T} \text{p}(a_t^{i},\mathcal{W}_{a,t}^{-,i}|\bold{s_t^{-,i})}
+L_{\pmb{\mathcal{D}}}(\pmb{\theta}) = P\big(\big\{\{a_{t,}^{i},\mathcal{W}^{-,i}_{a,t,}\}_{t=0}^T\big\}_{i \in I}\big) = \prod_{i \in I}\prod_{t=0}^{T} \text{p}(a_t^{i},\mathcal{W}_{a,t}^{-,i}|\bold{s_t^{-,i})}.
 \end{align}
-Since the probabilities are functions of the exogenous parameters $\pmb{\theta}$, the simulated maximum likelihood estimator $\pmb{\hat{\theta}}$ is the vector of exogenous parameters that maximizes (\ref{eq:sample-likelihood}). As maximum likelihoods estimates are asymptotically normal\footnote{This property is an advantage of this thesis' estimation approach. It facilitates the uncertainty quantification via Monte Carlo sampling because there is a simple closed form for the (marginal) probability density available. This eases the construction of the desired samples.}, these results are taken as the mean vector for the input parameters in the uncertainty quantification.
+Since the probabilities are functions of the exogenous parameters $\pmb{\theta}$, the simulated maximum likelihood estimator $\pmb{\hat{\theta}}$ is the vector of exogenous parameters that maximizes (\ref{eq:sample-likelihood}). As the maximum likelihood estimator can be shown to be asymptotically normal under some regularity conditions\footnote{This property is an advantage of this thesis' estimation approach. It facilitates the uncertainty quantification via Monte Carlo sampling because there is a simple closed form for the (marginal) probability density available. This eases the construction of the desired samples.}, these results are taken as the mean vector for the input parameters in the uncertainty quantification.
 
 The procedure to estimate the parameter vector $\pmb{\theta}$ using the expressions for the likelihood is as follows: first, The optimization algorithm of choice proposes a parameter vector. Second, the model is solved via backward induction. Third, using the policy functions, the likelihood is computed. These steps are repeated until the optimizer has found the parameter vector that yields the maximal likelihood.\\
 \newline
 Finally, the calculation of the estimator's covariance is described.\footnote{See \cite{Verbeek.2012}, p. 184-186.} The result is used as the covariance matrix for the input parameters in the UQ.
 
-The asymptotic covariance of a maximum likelihood estimator equals the inverse of the Fisher information matrix: $\text{Var}(\theta)=\mathcal{I}(\theta)^{-1}$. In this thesis, the information matrix $\mathcal{I}(\pmb{\theta})$ is given by the variance of the scores of the parameters.\footnote{The computation of $\text{Cov}(\pmb{\theta})$ by using the Jacobian of the individual likelihood contributions is chosen over other approaches because, first, it yields no error in the inversion step of $\mathcal{I}(\pmb{\theta})$ and, second, the results are reasonably close to the similar specification in KW94.} The scores $\text{s}(\pmb{\theta})$ are the first derivatives of the likelihood function. This can be written in terms of sample and individual likelihoods. Formally, the relationships are given by
+Under regularity conditions, the asymptotic covariance of a maximum likelihood estimator equals the inverse of the Fisher information matrix $\mathcal{I}(\theta)^{-1}$: $\text{Var}(\theta)=\mathcal{I}(\theta)^{-1}$. In this thesis, the information matrix $\mathcal{I}(\pmb{\theta})$ is given by the variance of the scores of the parameters.\footnote{The computation of $\text{Cov}(\pmb{\theta})$ by using the Jacobian of the individual likelihood contributions is chosen over other approaches because, first, it yields no error in the inversion step of $\mathcal{I}(\pmb{\theta})$ and, second, the results are reasonably close to the similar specification in KW94.} The scores $\text{s}(\pmb{\theta})$ are the first derivatives of the likelihood function. This can be written in terms of sample and individual likelihoods. Formally, the relationships are given by
 \begin{align} \label{eq:scores}
 \text{s}(\pmb{\theta}) \defeq \frac{\partial L_{\pmb{\mathcal{D}}}({\pmb{\theta}})} {\partial \pmb{\theta}} = \sum_{i \in I} \frac{L_{\pmb{\mathcal{D}}}^{i}(\pmb{\theta})}{\partial \pmb{\theta}} \defeq \sum_{i \in I}\text{s}_i(\pmb{\theta}).
 \end{align}
 Having multiple individual likelihood contributions, the scores are in the form of the  Jacobian matrix.
-Using the property that the expected values of scores, $\E[\text{s}(\theta)]$, are zero at the maximum likelihood estimator, the variance of the scores is given by (\ref{eq:info-matrix}). It is equal to the inverse of the Fisher information matrix.
+Using the property that the expected values of scores, $\E[\text{s}(\theta)]$, are zero at the maximum likelihood estimator. The variance of the scores is given by (\ref{eq:info-matrix}). It is equal to the inverse of the Fisher information matrix.
 \begin{align} \label{eq:info-matrix}
 \mathcal{I}^{-1}(\pmb{\theta}) = \text{Var}(\text{s}(\pmb{\theta})) = \E[\text{s}(\pmb{\theta})\text{s}(\pmb{\theta})'].
 \end{align}
-Hence, the estimator for the asymptotic covariance of the maximum likelihood estimator is given by
+Hence, the estimator for the asymptotic covariance of the maximum likelihood estimator can be written as
 \begin{align} \label{eq:est-cov}
-\hat{\text{Cov}_J}(\pmb{\hat{\theta}}) = \bigg( \frac{1}{|I|} \sum_{i \in I} \text{s}_i(\pmb{\hat{\theta}})\text{s}_i(\pmb{\hat{\theta}})' \bigg)^{-1}.
+\hat{\text{Cov}_J}(\pmb{\hat{\theta}}) = \bigg( \frac{1}{|I|} \sum_{i \in I} \text{s}_i(\pmb{\hat{\theta}})\text{s}_i(\pmb{\hat{\theta}})' \bigg)^{-1},
 \end{align}
-$|I|$ is the number of individuals in the data set.
+where $|I|$ is the number of individuals contained in the data set.
 The intuition behind the above expression is the following: Estimator $\pmb{\hat{\theta}}$ maximizes the sample likelihood. This is equivalent to $\pmb{\hat{\theta}}$ setting the sample scores to zero. However, the individual likelihood may not be zero at the optimal parameter vector for the sample likelihood. This variation is captured by the variance of the individual scores evaluated at $\pmb{\hat{\theta}}$. The relations in (\ref{eq:scores}) and (\ref{eq:info-matrix}) then imply that the inverse of the variance of the individual scores is equivalent to the variance of the maximum likelihood estimator.
