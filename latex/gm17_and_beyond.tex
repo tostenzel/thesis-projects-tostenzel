@@ -68,7 +68,7 @@ This is computationally very costly because each aggregate distance is a sum of 
 
 
 \noindent
-So far, we have only considered draws in [0,1]. For uncorrelated input parameters from arbitrary distributions with well-defined CDF, $\Phi^{-1}$, one would simply evaluate each element (potentially including the addition of the step) by the inverse CDF, or quantile function, $\Phi$, of the respective parameter. One intuition is, that $\Phi^{-1}$ maps the sample space to [0,1]. Hence $\Phi$ can be used to transform random draws in [0,1] to the sample space of the arbitrary distribution. This is a basic example of so-called inverse transform sampling (\cite{devroye1986sample}) which we recall in the next section.
+So far, we have only considered draws in [0,1]. For uncorrelated input parameters from arbitrary distributions with well-defined cumulative distribution function (CDF), $\Phi^{-1}$, one would simply evaluate each element (potentially including the addition of the step) by the inverse CDF, or quantile function, $\Phi$, of the respective parameter. One intuition is, that $\Phi^{-1}$ maps the sample space to [0,1]. Hence $\Phi$ can be used to transform random draws in [0,1] to the sample space of the arbitrary distribution. This is a basic example of so-called inverse transform sampling (\cite{devroye1986sample}) which we recall in the next section.
 
 
 
@@ -82,7 +82,7 @@ The next paragraph deals with developing a recipe for transforming draws $\bold{
 For this purpose, let $\bold{\Sigma}$ be a non-singular variance-covariance matrix and let $\pmb{\mu}$ be the mean vector. The $k$-variate normal distribution is denoted by $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$. \\
 
 \noindent
-Creating potentially correlated draws $\bold{x}$ from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$ is simple. Following \cite{gentle2006random}\footnote{See p. 197}, this can be achieved the following way: draw a $k$-dimensional row vector of i.i.d standard normal deviates from the univariate $N(0,1)$ distribution, such that  $\bold{z} = \{z_1, z_2, ..., z_k\}$, and compute the Cholesky decomposition of $\Sigma$, such that $\bold{\Sigma} = \bold{T^T T}$. The lower triangular matrix is denoted by $\bold{T^T}$. Then apply the operation in Equation (10) to obtain the correlated deviates $\bold{x}$ from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$. Then,
+Creating potentially correlated draws $\bold{x}$ from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$ is simple. Following \cite{gentle2006random}\footnote{See p. 197}, this can be achieved the following way: draw a $k$-dimensional row vector of independent and identically distributed (i.i.d.) standard normal deviates from the univariate $N(0,1)$ distribution, such that  $\bold{z} = \{z_1, z_2, ..., z_k\}$, and compute the Cholesky decomposition of $\Sigma$, such that $\bold{\Sigma} = \bold{T^T T}$. The lower triangular matrix is denoted by $\bold{T^T}$. Then apply the operation in Equation (10) to obtain the correlated deviates $\bold{x}$ from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$. Then,
 \begin{align}
 \bold{x} = \pmb{\mu} + \bold{T^T z^T}.
 \end{align}

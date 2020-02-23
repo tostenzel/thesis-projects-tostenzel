@@ -1,7 +1,7 @@
 \section{Uncertainty Quantification Framework}
 \thispagestyle{plain} % surpress header on first page
 
-This chapter consists of three parts. The first section gives an overview of UQ and introduces the basic notation. The second part describes the subdiscipline sensitivity analysis. This part is divided into quantitative and qualitative GSA. I explain the most common measures for both levels of GSA and how they relate. The third part concludes with remarks on the role of correlated input parameters.
+This chapter consists of three parts. The first section gives an overview of UQ and introduces the basic notation. The second part describes the subdiscipline sensitivity analysis. This part is divided into quantitative and qualitative global sensitivity analysis (GSA). I explain the most common measures for both levels of GSA and how they relate. The third part concludes with remarks on the role of correlated input parameters.
 
 \subsection{Overview of Uncertainty Quantification}
 According to \cite{Smith.2014}\footnote{See p. ix.}, Model-based forecasting includes two main steps: the first step is calibration. In this step, the input parameters of the model are estimated. The second step is the prediction. The prediction contains the model evaluation at the estimated parameters. This allows us to make statements about potential scenarios. These statements are made in a probabilistic way. Thereby, the uncertainty of these statements is emphasised.\footnote{The general procedure of model-based forecasting can also include other steps. However, steps like model validation and model verification can also be viewed as belonging to the analysis of the so-called model uncertainty.}\\
@@ -14,7 +14,7 @@ The following explains the basic notation. It is essential to define the quantit
 \begin{align}
 Y = f(\bold{X}).
 \end{align}
-From this point forward, I also refer to $f$ as the model. Large-scale UQ applications draw from various fields such as probability, statistics, analysis, and numerical mathematics. These disciplines are used in a combined effort for parameter estimation, surrogate model construction, parameter selection, uncertainty analysis, LSA, and GSA, amongst others. Drawing from \cite{Smith.2014}\footnote{See p. 8-10.}, I briefly sketch the first four components. The last two components, local and especially global sensitivity analysis, are discussed more extensively after that.
+From this point forward, I also refer to $f$ as the model. Large-scale UQ applications draw from various fields such as probability, statistics, analysis, and numerical mathematics. These disciplines are used in a combined effort for parameter estimation, surrogate model construction, parameter selection, uncertainty analysis, local sensitivity analysis (LSA), and GSA, amongst others. Drawing from \cite{Smith.2014}\footnote{See p. 8-10.}, I briefly sketch the first four components. The last two components, local and especially global sensitivity analysis, are discussed more extensively after that.
 
 Parameter estimation covers the calibration step. There is a large number of estimation techniques for various types of models. This thesis uses a maximum likelihood approach. The estimation is detailed in the model chapter and in Appendix C.
 
