@@ -1,5 +1,5 @@
 
-\section{Qualitative GSA measures for functions with correlated input parameters}
+\section{Qualitative global sensitivity analysis measures for functions with correlated input parameters}
 \thispagestyle{plain} % suppress header on first page
 
 This chapter explains the computation of the EE-based screening measures that are applied to the model in \cite{Keane.1994}.
@@ -15,7 +15,7 @@ According to several experiments with common test functions by \cite{campolongo2
 Both designs are comprised by a $(k + 1) \times k$-dimensional matrix. The elements are generated in $[0,1]$. Afterwards, they can potentially be transformed to the distributions of choice. The columns represent the different input parameters and each row is a complete input parameter vector. To compute the aggregate qualitative measures, a set of multiple matrices, or sample subsets, of input parameters has to be generated.\\
 
 \noindent
-A matrix in radial design is generated the following way: Draw a vector of length $2k$ from a quasi-random sequence. The first row, or parameter vector, is the first half of the sequence. Then, copy the first row to the remaining $k$ rows. For each row $k'$ of the remaining 2, ..., $k+1$ rows, replace the $k'$-th element by the $k'$-th element of the second half of the vector. This generates a matrix of the following form:
+A matrix in radial design is generated the following way: draw a vector of length $2k$ from a quasi-random sequence. The first row, or parameter vector, is the first half of the sequence. Then, copy the first row to the remaining $k$ rows. For each row $k'$ of the remaining 2, ..., $k+1$ rows, replace the $k'$-th element by the $k'$-th element of the second half of the vector. This generates a matrix of the following form:
 \begin{align}
 \underset{(k+1)\times k}{\bold{R}} =
 \begin{pmatrix}
@@ -24,7 +24,7 @@ a_1 & a_2 & ... & a_k \\
 a_1 & \bold{b_2} & ... & a_k \\
 \vdots & \vdots & 	\ddots & \vdots\\
 a_1 & a_2 & ... & \bold{b_k}
-\end{pmatrix}
+\end{pmatrix}.
 \end{align}
 \noindent
 Note here, that each column consists only of the respective first row element, except in one row.
@@ -82,9 +82,9 @@ The next paragraph deals with developing a recipe for transforming draws $\bold{
 For this purpose, let $\bold{\Sigma}$ be a non-singular variance-covariance matrix and let $\pmb{\mu}$ be the mean vector. The $k$-variate normal distribution is denoted by $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$. \\
 
 \noindent
-Creating potentially correlated draws $\bold{x}$ from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$ is simple. Following \cite{gentle2006random}\footnote{See p. 197}, this can be achieved the following way: Draw a $k$-dimensional row vector of i.i.d standard normal deviates from the univariate $N(0,1)$ distribution, such that  $\bold{z} = \{z_1, z_2, ..., z_k\}$, and compute the Cholesky decomposition of $\Sigma$, such that $\bold{\Sigma} = \bold{T^T T}$. The lower triangular matrix is denoted by $\bold{T^T}$. Then apply the operation in Equation (10) to obtain the correlated deviates from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$.
+Creating potentially correlated draws $\bold{x}$ from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$ is simple. Following \cite{gentle2006random}\footnote{See p. 197}, this can be achieved the following way: draw a $k$-dimensional row vector of i.i.d standard normal deviates from the univariate $N(0,1)$ distribution, such that  $\bold{z} = \{z_1, z_2, ..., z_k\}$, and compute the Cholesky decomposition of $\Sigma$, such that $\bold{\Sigma} = \bold{T^T T}$. The lower triangular matrix is denoted by $\bold{T^T}$. Then apply the operation in Equation (10) to obtain the correlated deviates $\bold{x}$ from $\mathcal{N}_k(\pmb{\mu}, \bold{\Sigma})$. Then,
 \begin{align}
-\bold{x} = \pmb{\mu} + \bold{T^T z^T} 
+\bold{x} = \pmb{\mu} + \bold{T^T z^T}.
 \end{align}
 
 \noindent
@@ -125,7 +125,7 @@ The one most important point to understand is that the transformation comprised 
 ... & \sqrt{1-\pmb{\rho_{k}}\bold{R^{-1}_2}\pmb{\rho_{k}^T}}
 \end{pmatrix}.
 \end{align}
-Equation (\ref{eq:corr}), together with Step 2, implies that the order of the uncorrelated standard normal deviates $\pmb{z}$ constitutes a hierarchy amongst the correlated deviates $\bold{z_c}$ in the following manner: The first parameter is not subject to any correlations, the second parameter is subject to the correlation with the first parameter, the third parameter is subject to the correlations with the parameters before, etc. Therefore, if parameters are correlated, typically $\bold{Q^T z^T} \neq \bold{Q^T (z')^T}$ and $F^{-1}(\Phi)(\bold{u}) \neq F^{-1}(\Phi)(\bold{u'})$, where $\bold{z'}$ and $\bold{u'}$ denote $\bold{z}$ and $\bold{u}$ in different orders.\\
+Equation (\ref{eq:corr}), together with Step 2, implies that the order of the uncorrelated standard normal deviates $\pmb{z}$ constitutes a hierarchy amongst the correlated deviates $\bold{z_c}$ in the following manner: the first parameter is not subject to any correlations, the second parameter is subject to the correlation with the first parameter, the third parameter is subject to the correlations with the parameters before, etc. Therefore, if parameters are correlated, typically $\bold{Q^T z^T} \neq \bold{Q^T (z')^T}$ and $F^{-1}(\Phi)(\bold{u}) \neq F^{-1}(\Phi)(\bold{u'})$, where $\bold{z'}$ and $\bold{u'}$ denote $\bold{z}$ and $\bold{u}$ in different orders.\\
 
 \noindent
 Coming back to the EE-based measures for correlated inputs, \cite{ge2017extending} attempt to construct two variations of $d_i$. They name one EE the independent Elementary Effect, $d_i^{ind}$, and the other one the full Elementary Effect, $d_i^{full}$. For each of these two EEs, they derive the aggreate measures $\mu$, $\mu^*$ and $\sigma$. The difference between the two EEs is that $d^{ind}$ excludes and $d^{full}$ includes the effect of the correlations from adding step $\Delta^i$ to $X_i$ on the other parameters $\bold{X_{\sim i}}$. Knowing $d_i^{ind}$ is important because the correlations can decrease $d_i^{full}$ (close to 0). However, if the independent-EE-based measures are not close to zero, $X_i$ is still important. Additionally, fixing this parameter can potentially change $d_i^{full}$ for $\bold{X_{\sim i}}$. Therefore, $d_i^{full}$ and $d_i^{ind}$ have to be interpreted together.\\
